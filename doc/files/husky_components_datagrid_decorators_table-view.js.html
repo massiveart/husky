@@ -191,169 +191,169 @@ define(function() {
     &#x27;use strict&#x27;;
 
     var defaults = {
-            editable: false,
-            fullWidth: false,
-            removeRow: false,
-            selectItem: {
-                type: &#x27;checkbox&#x27;,
-                inFirstCell: false
-            },
-            noItemsText: &#x27;This list is empty&#x27;,
-            addRowTop: true,
-            excludeFields: [&#x27;&#x27;],
-            cssClass: &#x27;&#x27;,
-            thumbnailFormat: &#x27;50x50&#x27;,
-            showHead: true,
-            hideChildrenAtBeginning: true,
-            openChildId: null,
-            highlightSelected: false,
-            stickyHeader: false,
-            icons: [],
-            removeIcon: &#x27;trash-o&#x27;,
-            croppedMaxLength: 35
+        editable: false,
+        fullWidth: false,
+        removeRow: false,
+        selectItem: {
+            type: &#x27;checkbox&#x27;,
+            inFirstCell: false
         },
+        noItemsText: &#x27;This list is empty&#x27;,
+        addRowTop: true,
+        excludeFields: [&#x27;&#x27;],
+        cssClass: &#x27;&#x27;,
+        thumbnailFormat: &#x27;50x50&#x27;,
+        showHead: true,
+        hideChildrenAtBeginning: true,
+        openChildId: null,
+        highlightSelected: false,
+        stickyHeader: false,
+        icons: [],
+        removeIcon: &#x27;trash-o&#x27;,
+        croppedMaxLength: 35
+    },
 
-        constants = {
-            fullWidthClass: &#x27;fullwidth&#x27;,
-            stickyHeaderClass: &#x27;sticky-header&#x27;,
-            selectedRowClass: &#x27;selected&#x27;,
-            isSelectableClass: &#x27;is-selectable&#x27;,
-            sortableClass: &#x27;is-sortable&#x27;,
-            skeletonClass: &#x27;husky-table&#x27;,
-            containerClass: &#x27;table-container&#x27;,
-            overflowClass: &#x27;overflow&#x27;,
-            emptyListElementClass: &#x27;empty-list&#x27;,
-            rowRemoverClass: &#x27;row-remover&#x27;,
-            checkboxClass: &#x27;checkbox&#x27;,
-            radioClass: &#x27;radio&#x27;,
-            cellFitClass: &#x27;fit&#x27;,
-            tableClass: &#x27;table&#x27;,
-            rowClass: &#x27;row&#x27;,
-            thumbSrcKey: &#x27;url&#x27;,
-            thumbAltKey: &#x27;alt&#x27;,
-            headerCellClass: &#x27;header-cell&#x27;,
-            ascSortedClass: &#x27;sorted-asc&#x27;,
-            descSortedClass: &#x27;sorted-desc&#x27;,
-            headerCellLoaderClass: &#x27;header-loader&#x27;,
-            headerLoadingClass: &#x27;is-loading&#x27;,
-            editableItemClass: &#x27;editable&#x27;,
-            editableInputClass: &#x27;editable-input&#x27;,
-            inputWrapperClass: &#x27;input-wrapper&#x27;,
-            editedErrorClass: &#x27;server-validation-error&#x27;,
-            newRecordId: &#x27;newrecord&#x27;,
-            gridIconClass: &#x27;grid-icon&#x27;,
-            childWrapperClass: &#x27;child-wrapper&#x27;,
-            parentClass: &#x27;children-toggler&#x27;,
-            noChildrenClass: &#x27;no-children&#x27;,
-            toggleIconClass: &#x27;toggle-icon&#x27;,
-            collapsedIcon: &#x27;fa-caret-right&#x27;,
-            expandedIcon: &#x27;fa-caret-down&#x27;,
-            checkboxCellClass: &#x27;checkbox-cell&#x27;,
-            textContainerClass: &#x27;cell-content&#x27;,
-            renderingClass: &#x27;rendering&#x27;,
-            headerCloneClass: &#x27;header-clone&#x27;,
-            childIndent: 25 //px
-        },
+    constants = {
+        fullWidthClass: &#x27;fullwidth&#x27;,
+        stickyHeaderClass: &#x27;sticky-header&#x27;,
+        selectedRowClass: &#x27;selected&#x27;,
+        isSelectableClass: &#x27;is-selectable&#x27;,
+        sortableClass: &#x27;is-sortable&#x27;,
+        skeletonClass: &#x27;husky-table&#x27;,
+        containerClass: &#x27;table-container&#x27;,
+        overflowClass: &#x27;overflow&#x27;,
+        emptyListElementClass: &#x27;empty-list&#x27;,
+        rowRemoverClass: &#x27;row-remover&#x27;,
+        checkboxClass: &#x27;checkbox&#x27;,
+        radioClass: &#x27;radio&#x27;,
+        cellFitClass: &#x27;fit&#x27;,
+        tableClass: &#x27;table&#x27;,
+        rowClass: &#x27;row&#x27;,
+        thumbSrcKey: &#x27;url&#x27;,
+        thumbAltKey: &#x27;alt&#x27;,
+        headerCellClass: &#x27;header-cell&#x27;,
+        ascSortedClass: &#x27;sorted-asc&#x27;,
+        descSortedClass: &#x27;sorted-desc&#x27;,
+        headerCellLoaderClass: &#x27;header-loader&#x27;,
+        headerLoadingClass: &#x27;is-loading&#x27;,
+        editableItemClass: &#x27;editable&#x27;,
+        editableInputClass: &#x27;editable-input&#x27;,
+        inputWrapperClass: &#x27;input-wrapper&#x27;,
+        editedErrorClass: &#x27;server-validation-error&#x27;,
+        newRecordId: &#x27;newrecord&#x27;,
+        gridIconClass: &#x27;grid-icon&#x27;,
+        childWrapperClass: &#x27;child-wrapper&#x27;,
+        parentClass: &#x27;children-toggler&#x27;,
+        noChildrenClass: &#x27;no-children&#x27;,
+        toggleIconClass: &#x27;toggle-icon&#x27;,
+        collapsedIcon: &#x27;fa-caret-right&#x27;,
+        expandedIcon: &#x27;fa-caret-down&#x27;,
+        checkboxCellClass: &#x27;checkbox-cell&#x27;,
+        textContainerClass: &#x27;cell-content&#x27;,
+        renderingClass: &#x27;rendering&#x27;,
+        headerCloneClass: &#x27;header-clone&#x27;,
+        childIndent: 25 //px
+    },
 
-        selectItems = {
-            CHECKBOX: &#x27;checkbox&#x27;,
-            RADIO: &#x27;radio&#x27;
-        },
+    selectItems = {
+        CHECKBOX: &#x27;checkbox&#x27;,
+        RADIO: &#x27;radio&#x27;
+    },
 
-        /**
-         * Templates used by this class
-         */
-        templates = {
-            skeleton: [
-                &#x27;&lt;div class=&quot;&#x27;+ constants.skeletonClass +&#x27;&quot;&gt;&#x27;,
-                &#x27;   &lt;div class=&quot;&#x27;+ constants.containerClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;),
-            table: &#x27;&lt;table class=&quot;&#x27;+ constants.tableClass +&#x27;&quot;&gt;&lt;/table&gt;&#x27;,
-            header: &#x27;&lt;thead&gt;&lt;/thead&gt;&#x27;,
-            body: &#x27;&lt;tbody&gt;&lt;/tbody&gt;&#x27;,
-            row: &#x27;&lt;tr class=&quot;&#x27; + constants.rowClass + &#x27;&quot;&gt;&lt;/tr&gt;&#x27;,
-            headerCell: &#x27;&lt;th class=&quot;&#x27;+ constants.headerCellClass +&#x27;&quot;&gt;&lt;/th&gt;&#x27;,
-            cell: &#x27;&lt;td&gt;&lt;/td&gt;&#x27;,
-            textContainer: &#x27;&lt;span class=&quot;&#x27;+ constants.textContainerClass +&#x27;&quot;&gt;&lt;%= content %&gt;&lt;/span&gt;&#x27;,
-            headerCellLoader: &#x27;&lt;div class=&quot;&#x27;+ constants.headerCellLoaderClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-            removeCellContent: &#x27;&lt;span class=&quot;fa-&lt;%= icon %&gt; &#x27;+ constants.rowRemoverClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
-            editableCellContent: [
-                &#x27;&lt;span class=&quot;&#x27;+ constants.editableItemClass +&#x27;&quot;&gt;&lt;%= value %&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;div class=&quot;&#x27;+ constants.inputWrapperClass +&#x27;&quot;&gt;&#x27;,
-                &#x27;   &lt;input type=&quot;text&quot; class=&quot;form-element husky-validate &#x27;+ constants.editableInputClass +&#x27;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;),
-            img: &#x27;&lt;img alt=&quot;&lt;%= alt %&gt;&quot; src=&quot;&lt;%= src %&gt;&quot;/&gt;&#x27;,
-            childWrapper: &#x27;&lt;div class=&quot;&#x27;+ constants.childWrapperClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-            toggleIcon: &#x27;&lt;span class=&quot;&#x27;+ constants.toggleIconClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
-            icon: [
-                &#x27;&lt;span class=&quot;&#x27;+ constants.gridIconClass +&#x27; &lt;%= align %&gt;&quot; data-icon-index=&quot;&lt;%= index %&gt;&quot;&gt;&#x27;,
-                &#x27;   &lt;span class=&quot;fa-&lt;%= icon %&gt;&quot;&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;/span&gt;&#x27;
-            ].join(&#x27;&#x27;),
-            checkbox: [
-                &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
-                &#x27;   &lt;input class=&quot;&#x27; + constants.checkboxClass + &#x27;&quot; type=&quot;checkbox&quot; data-form=&quot;false&quot;/&gt;&#x27;,
-                &#x27;   &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;),
-            radio: [
-                &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
-                &#x27;    &lt;input class=&quot;&#x27; + constants.radioClass + &#x27;&quot; name=&quot;&lt;%= name %&gt;&quot; type=&quot;radio&quot; data-form=&quot;false&quot;/&gt;&#x27;,
-                &#x27;    &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;),
-            empty: [
-                &#x27;&lt;div class=&quot;&#x27;+ constants.emptyListElementClass +&#x27;&quot;&gt;&#x27;,
-                &#x27;   &lt;div class=&quot;fa-coffee icon&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;   &lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;)
-        },
+    /**
+     * Templates used by this class
+     */
+    templates = {
+        skeleton: [
+            &#x27;&lt;div class=&quot;&#x27;+ constants.skeletonClass +&#x27;&quot;&gt;&#x27;,
+            &#x27;   &lt;div class=&quot;&#x27;+ constants.containerClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+            &#x27;&lt;/div&gt;&#x27;
+        ].join(&#x27;&#x27;),
+        table: &#x27;&lt;table class=&quot;&#x27;+ constants.tableClass +&#x27;&quot;&gt;&lt;/table&gt;&#x27;,
+        header: &#x27;&lt;thead&gt;&lt;/thead&gt;&#x27;,
+        body: &#x27;&lt;tbody&gt;&lt;/tbody&gt;&#x27;,
+        row: &#x27;&lt;tr class=&quot;&#x27; + constants.rowClass + &#x27;&quot;&gt;&lt;/tr&gt;&#x27;,
+        headerCell: &#x27;&lt;th class=&quot;&#x27;+ constants.headerCellClass +&#x27;&quot;&gt;&lt;/th&gt;&#x27;,
+        cell: &#x27;&lt;td&gt;&lt;/td&gt;&#x27;,
+        textContainer: &#x27;&lt;span class=&quot;&#x27;+ constants.textContainerClass +&#x27;&quot;&gt;&lt;%= content %&gt;&lt;/span&gt;&#x27;,
+        headerCellLoader: &#x27;&lt;div class=&quot;&#x27;+ constants.headerCellLoaderClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+        removeCellContent: &#x27;&lt;span class=&quot;fa-&lt;%= icon %&gt; &#x27;+ constants.rowRemoverClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+        editableCellContent: [
+            &#x27;&lt;span class=&quot;&#x27;+ constants.editableItemClass +&#x27;&quot;&gt;&lt;%= value %&gt;&lt;/span&gt;&#x27;,
+            &#x27;&lt;div class=&quot;&#x27;+ constants.inputWrapperClass +&#x27;&quot;&gt;&#x27;,
+            &#x27;   &lt;input type=&quot;text&quot; class=&quot;form-element husky-validate &#x27;+ constants.editableInputClass +&#x27;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x27;,
+            &#x27;&lt;/div&gt;&#x27;
+        ].join(&#x27;&#x27;),
+        img: &#x27;&lt;img alt=&quot;&lt;%= alt %&gt;&quot; src=&quot;&lt;%= src %&gt;&quot;/&gt;&#x27;,
+        childWrapper: &#x27;&lt;div class=&quot;&#x27;+ constants.childWrapperClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+        toggleIcon: &#x27;&lt;span class=&quot;&#x27;+ constants.toggleIconClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+        icon: [
+            &#x27;&lt;span class=&quot;&#x27;+ constants.gridIconClass +&#x27; &lt;%= align %&gt;&quot; data-icon-index=&quot;&lt;%= index %&gt;&quot;&gt;&#x27;,
+            &#x27;   &lt;span class=&quot;fa-&lt;%= icon %&gt;&quot;&gt;&lt;/span&gt;&#x27;,
+            &#x27;&lt;/span&gt;&#x27;
+        ].join(&#x27;&#x27;),
+        checkbox: [
+            &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
+            &#x27;   &lt;input class=&quot;&#x27; + constants.checkboxClass + &#x27;&quot; type=&quot;checkbox&quot; data-form=&quot;false&quot;/&gt;&#x27;,
+            &#x27;   &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+            &#x27;&lt;/div&gt;&#x27;
+        ].join(&#x27;&#x27;),
+        radio: [
+            &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
+            &#x27;    &lt;input class=&quot;&#x27; + constants.radioClass + &#x27;&quot; name=&quot;&lt;%= name %&gt;&quot; type=&quot;radio&quot; data-form=&quot;false&quot;/&gt;&#x27;,
+            &#x27;    &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+            &#x27;&lt;/div&gt;&#x27;
+        ].join(&#x27;&#x27;),
+        empty: [
+            &#x27;&lt;div class=&quot;&#x27;+ constants.emptyListElementClass +&#x27;&quot;&gt;&#x27;,
+            &#x27;   &lt;div class=&quot;fa-coffee icon&quot;&gt;&lt;/div&gt;&#x27;,
+            &#x27;   &lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&#x27;,
+            &#x27;&lt;/div&gt;&#x27;
+        ].join(&#x27;&#x27;)
+    },
 
-        /**
-         * used to update the table width and its containers due to responsiveness
-         * @event husky.datagrid.update.table
-         */
-            UPDATE_TABLE = function() {
-            return this.datagrid.createEventName.call(this.datagrid, &#x27;update.table&#x27;);
-        },
+    /**
+     * used to update the table width and its containers due to responsiveness
+     * @event husky.datagrid.update.table
+     */
+    UPDATE_TABLE = function() {
+        return this.datagrid.createEventName.call(this.datagrid, &#x27;update.table&#x27;);
+    },
 
-        /**
-         * used to update the table width and its containers due to responsiveness
-         * @event husky.datagrid.table.open-child
-         * @param {Number|String} id The id of the data-record to open the parents for
-         */
-            OPEN_PARENTS = function() {
-            return this.datagrid.createEventName.call(this.datagrid, &#x27;table.open-parents&#x27;);
-        },
+    /**
+     * used to update the table width and its containers due to responsiveness
+     * @event husky.datagrid.table.open-child
+     * @param {Number|String} id The id of the data-record to open the parents for
+     */
+    OPEN_PARENTS = function() {
+        return this.datagrid.createEventName.call(this.datagrid, &#x27;table.open-parents&#x27;);
+    },
 
-        /**
-         * triggered when a radio button inside the datagrid is clicked
-         * @event husky.datagrid.table.open-child
-         * @param {Number|String} id The id of the data-record to open the parents for
-         * @param {String} columnName column name
-         */
-            RADIO_SELECTED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, &#x27;radio.selected&#x27;);
-        },
+    /**
+     * triggered when a radio button inside the datagrid is clicked
+     * @event husky.datagrid.table.open-child
+     * @param {Number|String} id The id of the data-record to open the parents for
+     * @param {String} columnName column name
+     */
+    RADIO_SELECTED = function() {
+        return this.datagrid.createEventName.call(this.datagrid, &#x27;radio.selected&#x27;);
+    },
 
-        /**
-         * triggered when children were collapsed
-         * @event husky.datagrid.table.children.collapsed
-         */
-            CHILDREN_COLLAPSED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, &#x27;children.collapsed&#x27;);
-        },
+    /**
+     * triggered when children were collapsed
+     * @event husky.datagrid.table.children.collapsed
+     */
+    CHILDREN_COLLAPSED = function() {
+        return this.datagrid.createEventName.call(this.datagrid, &#x27;children.collapsed&#x27;);
+    },
 
-        /**
-         * triggered when children were expanded
-         * @event husky.datagrid.table.children.expanded
-         */
-            CHILDREN_EXPANDED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, &#x27;children.expanded&#x27;);
-        };
+    /**
+     * triggered when children were expanded
+     * @event husky.datagrid.table.children.expanded
+     */
+    CHILDREN_EXPANDED = function() {
+        return this.datagrid.createEventName.call(this.datagrid, &#x27;children.expanded&#x27;);
+    };
 
     return {
 
@@ -632,7 +632,7 @@ define(function() {
          * @returns {String} html if no render is set to true
          */
         renderRowSelectItem: function(id, norender) {
-            if (this.datagrid.options.onlySelectLeaves === true &amp;&amp; this.table.rows[id].numberChildren &gt; 0) {
+            if (this.datagrid.options.onlySelectLeaves === true &amp;&amp; this.table.rows[id].hasChildren &gt; 0) {
                 return &#x27;&#x27;;
             }
             if (!!this.options.selectItem &amp;&amp; !!this.options.selectItem.type &amp;&amp;
@@ -675,7 +675,7 @@ define(function() {
                 childrenLoaded: false,
                 childrenExpanded: false,
                 parent: !!(record.parent) ? record.parent : null,
-                numberChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : 0,
+                hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
                 level: 1
             };
             this.renderRowSelectItem(record.id);
@@ -846,8 +846,7 @@ define(function() {
             var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
                 $icon;
             // if has children
-            if (!!record[this.datagrid.options.childrenPropertyName]
-                &amp;&amp; record[this.datagrid.options.childrenPropertyName] &gt; 0) {
+            if (!!record[this.datagrid.options.childrenPropertyName]) {
                 this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
                 $icon = this.sandbox.dom.createElement(templates.toggleIcon);
                 this.sandbox.dom.prependClass($icon, constants.collapsedIcon);
@@ -1275,7 +1274,7 @@ define(function() {
                 if (this.options.highlightSelected === true) {
                     this.uniqueHighlightRecord(recordId);
                 }
-                if (!!this.table.rows[recordId].numberChildren &gt; 0) {
+                if (!!this.table.rows[recordId].hasChildren) {
                     this.toggleChildren(recordId);
                 }
             }
@@ -1463,7 +1462,7 @@ define(function() {
         hideChildren: function(recordId) {
             this.sandbox.util.each(this.table.rows, function(rowId, row) {
                 if (row.parent == recordId) {
-                    if (row.numberChildren &gt; 0) {
+                    if (row.hasChildren &gt; 0) {
                         this.hideChildren(rowId);
                     }
                     this.sandbox.dom.hide(row.$el);
