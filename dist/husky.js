@@ -34359,7 +34359,6 @@ define('__component__$toolbar@husky',[],function() {
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
- * @param {Boolean} [options.active] If true input field value gets deleted on blur
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  * @param {Function} [options.selectCallback] function which will be called when element is selected
  */
@@ -34372,119 +34371,119 @@ define('__component__$auto-complete@husky',[], function() {
      * Default values for options
      */
     var defaults = {
-            prefetchUrl: '',
-            localData: [],
-            remoteUrl: '',
-            getParameter: 'query',
-            valueKey: 'name',
-            resultKey: 'countries',
-            value: null,
-            instanceName: 'undefined',
-            noNewValues: false,
-            suggestionClass: 'suggestion',
-            suggestionIcon: '',
-            autoCompleteIcon: '',
-            stickToInput: false,
-            hint: false,
-            emptyOnBlur: false,
-            excludes: [],
-            selectCallback: null
-        },
+        prefetchUrl: '',
+        localData: [],
+        remoteUrl: '',
+        getParameter: 'query',
+        valueKey: 'name',
+        resultKey: 'countries',
+        value: null,
+        instanceName: 'undefined',
+        noNewValues: false,
+        suggestionClass: 'suggestion',
+        suggestionIcon: '',
+        autoCompleteIcon: '',
+        stickToInput: false,
+        hint: false,
+        emptyOnBlur: false,
+        excludes: [],
+        selectCallback: null
+    },
 
-        templates = {
-            main: [
-                '<div class="husky-auto-complete">',
-                    '<% if (!!autoCompleteIcon) { %>',
-                    '<div class="front">',
-                        '<a class="fa-<%= autoCompleteIcon %>"></a>',
-                    '</div>',
-                    '<% } %>',
-                    '<div class="input"></div>',
-                '</div>'
-            ].join('')
-        },
+    templates = {
+        main: [
+            '<div class="husky-auto-complete">',
+                '<% if (!!autoCompleteIcon) { %>',
+                '<div class="front">',
+                    '<a class="fa-<%= autoCompleteIcon %>"></a>',
+                '</div>',
+                '<% } %>',
+                '<div class="input"></div>',
+            '</div>'
+        ].join('')
+    },
 
-        eventNamespace = 'husky.auto-complete.',
+    eventNamespace = 'husky.auto-complete.',
 
-        /**
-         * raised after initialization
-         * @event husky.auto-complete.initialized
-         */
-        INITIALIZED = function() {
-            return createEventName.call(this, 'initialized');
-        },
+    /**
+     * raised after initialization
+     * @event husky.auto-complete.initialized
+     */
+    INITIALIZED = function() {
+        return createEventName.call(this, 'initialized');
+    },
 
-        /**
-         * raised after prefetched data is retrieved
-         * @event husky.auto-complete.prefetch-data
-         */
-        PREFETCH_LOAD = function() {
-            return createEventName.call(this, 'prefetch-data');
-        },
+    /**
+     * raised after prefetched data is retrieved
+     * @event husky.auto-complete.prefetch-data
+     */
+    PREFETCH_LOAD = function() {
+        return createEventName.call(this, 'prefetch-data');
+    },
 
-        /**
-         * raised before remoted data is loaded
-         * @event husky.auto-complete.remote-data-load
-         */
-        REMOTE_LOAD = function() {
-            return createEventName.call(this, 'remote-data-load');
-        },
+    /**
+     * raised before remoted data is loaded
+     * @event husky.auto-complete.remote-data-load
+     */
+    REMOTE_LOAD = function() {
+        return createEventName.call(this, 'remote-data-load');
+    },
 
-        /**
-         * raised after remoted data is retrieved
-         * @event husky.auto-complete.remote-data
-         */
-        REMOTE_RETRIEVE = function() {
-            return createEventName.call(this, 'remote-data');
-        },
+    /**
+     * raised after remoted data is retrieved
+     * @event husky.auto-complete.remote-data
+     */
+    REMOTE_RETRIEVE = function() {
+        return createEventName.call(this, 'remote-data');
+    },
 
-        /**
-         * raised before the component tries to request a match after blur
-         * @event husky.auto-complete.request-match
-         */
-        REQUEST_MATCH = function() {
-            return createEventName.call(this, 'request-match');
-        },
+    /**
+     * raised before the component tries to request a match after blur
+     * @event husky.auto-complete.request-match
+     */
+    REQUEST_MATCH = function() {
+        return createEventName.call(this, 'request-match');
+    },
 
-        /**
-         * raised after autocomplete suggestion is selected
-         * @event husky.auto-complete.select
-         * @param {object} selected datum with id and name
-         */
-        SELECT = function() {
-            return createEventName.call(this, 'select');
-        },
+    /**
+     * raised after autocomplete suggestion is selected
+     * @event husky.auto-complete.select
+     * @param {object} selected datum with id and name
+     */
+    SELECT = function() {
+        return createEventName.call(this, 'select');
+    },
 
-        /**
-         * raised after selection has been removed
-         * @event husky.auto-complete.selection-removed
-         */
-        SELECTION_REMOVED = function() {
-            return createEventName.call(this, 'selection-removed');
-        },
+    /**
+     * raised after selection has been removed
+     * @event husky.auto-complete.selection-removed
+     */
+    SELECTION_REMOVED = function() {
+        return createEventName.call(this, 'selection-removed');
+    },
 
-        /**
-         * raised after autocomplete suggestion is selected
-         * @event husky.auto-complete.set-excludes
-         * @param {array} array of objects to exclude from suggestions
-         */
-        SET_EXCLUDES = function() {
-            return createEventName.call(this, 'set-excludes');
-        },
+    /**
+     * raised after autocomplete suggestion is selected
+     * @event husky.auto-complete.set-excludes
+     * @param {array} array of objects to exclude from suggestions
+     */
+    SET_EXCLUDES = function() {
+        return createEventName.call(this, 'set-excludes');
+    },
 
-        /**
-         * listens on and passes boolean to callback if input is matched exactly
-         * @event husky.auto-complete.is-matched
-         * @param {Function} Callback which gets the booloan passed
-         */
-        IS_MATCHED = function() {
-            return createEventName.call(this, 'is-matched');
-        },
+    /**
+     * listens on and passes boolean to callback if input is matched exactly
+     * @event husky.auto-complete.is-matched
+     * @param {Function} Callback which gets the booloan passed
+     */
+    IS_MATCHED = function() {
+        return createEventName.call(this, 'is-matched');
+    },
 
-        /** returns normalized event names */
-        createEventName = function(postFix) {
-            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-        };
+    /** returns normalized event names */
+    createEventName = function(postFix) {
+        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+    };
 
     return {
 
@@ -34574,7 +34573,7 @@ define('__component__$auto-complete@husky',[], function() {
          * the main-template gets rendered and displayed
          */
         renderMain: function() {
-            this.sandbox.dom.html(this.$el, _.template(templates.main)({
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.main, {
                 autoCompleteIcon: this.options.autoCompleteIcon
             }));
         },
@@ -34786,7 +34785,6 @@ define('__component__$auto-complete@husky',[], function() {
          * Gets called when the input box triggers the blur event
          */
         handleBlur: function() {
-
             if (!!this.selectedElement) { // selected via dropdown
                 this.selectedElement = null;
             } else if (this.options.noNewValues === true) {

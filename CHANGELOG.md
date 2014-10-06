@@ -4,6 +4,10 @@ CHANGELOGS:
 Unmerged
 --------
 
+ - autocomplete-list api change: 
+      'autoCompleteIcon' is the input icon
+      'suggestionIcon' is the icon inside the typeahead suggestion dropdown
+
  - using template method through sandbox
 
  - fixed autocomplete rendering on multiline text (show ellipsis)
