@@ -5,14 +5,22 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - updated datagrid api
+   'children' property is now 'hasChildren'
+
+ - fixed indentation for datagrid code
+
+2014/10/06 v0.1.2
+=================
+
  - removed jekyll files
 
  - removed compass scss dependency
 
  - removed old unused images
 
-2014/10/06
-==========
+2014/10/06 v0.1.1
+=================
 
  - autocomplete-list api change: 
    'autoCompleteIcon' is the input icon
