@@ -9,11 +9,6 @@ Unmerged
 
  - fixed autocomplete margin in horizontal form
 
- - updated datagrid api
-   'children' property is now 'hasChildren'
-
- - fixed indentation for datagrid code
-
 2014/10/06 v0.8.2
 =================
 
