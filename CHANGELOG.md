@@ -5,14 +5,26 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - added default icon for autocomplete
+
+ - fixed autocomplete margin in horizontal form
+
+ - updated datagrid api
+   'children' property is now 'hasChildren'
+
+ - fixed indentation for datagrid code
+
+2014/10/06 v0.8.2
+=================
+
  - removed jekyll files
 
  - removed compass scss dependency
 
  - removed old unused images
 
-2014/10/06
-==========
+2014/10/06 v0.8.1
+=================
 
  - autocomplete-list api change: 
    'autoCompleteIcon' is the input icon

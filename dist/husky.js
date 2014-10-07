@@ -34382,7 +34382,7 @@ define('__component__$auto-complete@husky',[], function() {
         noNewValues: false,
         suggestionClass: 'suggestion',
         suggestionIcon: '',
-        autoCompleteIcon: '',
+        autoCompleteIcon: 'search',
         stickToInput: false,
         hint: false,
         emptyOnBlur: false,
@@ -34393,11 +34393,9 @@ define('__component__$auto-complete@husky',[], function() {
     templates = {
         main: [
             '<div class="husky-auto-complete">',
-                '<% if (!!autoCompleteIcon) { %>',
                 '<div class="front">',
                     '<a class="fa-<%= autoCompleteIcon %>"></a>',
                 '</div>',
-                '<% } %>',
                 '<div class="input"></div>',
             '</div>'
         ].join('')
