@@ -10,7 +10,7 @@ Unmerged
 
  - fixed indentation for datagrid code
 
-2014/10/06 v0.1.2
+2014/10/06 v0.8.2
 =================
 
  - removed jekyll files
@@ -19,7 +19,7 @@ Unmerged
 
  - removed old unused images
 
-2014/10/06 v0.1.1
+2014/10/06 v0.8.1
 =================
 
  - autocomplete-list api change: 
