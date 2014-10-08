@@ -63,6 +63,14 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
     width: 100% !important;
 }
 
+.cke_dialog_contents_body > div {
+    display: block !important;
+}
+
+.cke_dialog_contents_body > div:nth-child(3) {
+    display: none !important;
+}
+
 .cke_dialog_footer {
     text-align: right;
     position: relative;
@@ -181,6 +189,7 @@ a.cke_dialog_tab_disabled {
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
+    background-repeat: no-repeat;
     -webkit-font-smoothing: antialiased;
 }
 
