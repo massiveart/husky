@@ -5,6 +5,11 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - updated ckeditor link-dialog in extension
+
+2014/10/08 v0.8.3
+=================
+
  - added default icon for autocomplete
 
  - fixed autocomplete margin in horizontal form
