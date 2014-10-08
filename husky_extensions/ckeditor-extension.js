@@ -50,8 +50,48 @@
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {
                             $editor = $(selector).ckeditor(configuration);
-
                         }
+
+                        // customize ckeditor dialog appearance on 'dialogDefinition' (=> open)
+                        // and filter link/target options
+                        CKEDITOR.on('dialogDefinition', function(ev) {
+                            // take the dialog name and its definition from the event
+                            // data.
+                            var dialogName = ev.data.name,
+                                dialogDefinition = ev.data.definition;
+
+                            // check if the definition is from the dialog we're
+                            // interested in (the "Link" dialog).
+                            if (dialogName == 'link') {
+                                    // get a reference to the "Link Info" and "Target" tab.
+                                var infoTab = dialogDefinition.getContents('info'),
+                                    targetTab = dialogDefinition.getContents('target'),
+                                
+                                    // get a reference to the link type
+                                    linkOptions = infoTab.get('linkType'),
+                                    targetOptions = targetTab.get('linkTargetType'),
+
+                                    // list of excluded link target options
+                                    includedTargetOptions = [
+                                        'notSet',
+                                        '_blank',
+                                        '_self'
+                                    ],
+                                    selectedTargetOptions = [];
+                            
+                                // remove 'link to anchor' option
+                                linkOptions.items.splice(1, 1);
+
+                                // just show included target options
+                                for (var i = 0; i < targetOptions.items.length; i++) {
+                                    if (includedTargetOptions.indexOf(targetOptions.items[i][1]) !== -1) {
+                                        selectedTargetOptions.push(targetOptions.items[i]);
+                                    }
+                                }
+
+                                targetOptions.items = selectedTargetOptions;
+                            }
+                        });
 
                         return $editor.editor;
                     }
