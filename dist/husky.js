@@ -41939,6 +41939,8 @@ define('__component__$input@husky',[], function() {
                             $editor = $(selector).ckeditor(configuration);
                         }
 
+                        // customize ckeditor dialog appearance on 'dialogDefinition' (=> open)
+                        // and filter link/target options
                         CKEDITOR.on('dialogDefinition', function(ev) {
                             // take the dialog name and its definition from the event
                             // data.
@@ -41946,7 +41948,7 @@ define('__component__$input@husky',[], function() {
                                 dialogDefinition = ev.data.definition;
 
                             // check if the definition is from the dialog we're
-                            // interested on (the "Link" dialog).
+                            // interested in (the "Link" dialog).
                             if (dialogName == 'link') {
                                     // get a reference to the "Link Info" and "Target" tab.
                                 var infoTab = dialogDefinition.getContents('info'),
@@ -41958,6 +41960,7 @@ define('__component__$input@husky',[], function() {
 
                                     // list of excluded link target options
                                     includedTargetOptions = [
+                                        'notSet',
                                         '_blank',
                                         '_self'
                                     ],
