@@ -26066,7 +26066,7 @@ define('type/husky-input',[
                     return regex.test(value);
                 },
                 url:  function(value) {
-                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-\?\$\#])*\/?/;
                     return regex.test(value);
                 },
                 color:  function(value) {
@@ -46552,6 +46552,10 @@ define("datepicker-zh-TW", function(){});
             };
 
             app.core.util.ajax = $.ajax;
+
+            app.core.util.ajaxError = function(callback) {
+                $(document).ajaxError(callback);
+            };
 
             app.core.util.when = function(deferreds){
                 return $.when(deferreds);
