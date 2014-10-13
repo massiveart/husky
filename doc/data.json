@@ -9091,126 +9091,126 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 477,
+            "line": 472,
             "description": "Sets the default properties",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 501,
+            "line": 496,
             "description": "Event handler for the overlay-trigger event",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 508,
+            "line": 503,
             "description": "Opens the overlay. If Overlay doesn't exist it first initializes it",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 543,
+            "line": 538,
             "description": "Sets the height of all slides equal",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 561,
+            "line": 556,
             "description": "bind custom events",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 569,
+            "line": 564,
             "description": "slide left",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 580,
+            "line": 575,
             "description": "slide right",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 591,
+            "line": 586,
             "description": "slide to given number",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 598,
+            "line": 593,
             "description": "Initializes the Backdrop",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 609,
+            "line": 604,
             "description": "Removes the overlay-element from the DOM",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 632,
+            "line": 623,
             "description": "Inserts the overlay-element into the DOM",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 659,
+            "line": 650,
             "description": "Creates the overlay-element with a skeleton-template",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 722,
+            "line": 713,
             "description": "Renders a language changer and places it within the header",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 748,
+            "line": 739,
             "description": "Renders all buttons and appends them to the footer",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 791,
+            "line": 782,
             "description": "Sets the content of the overlay. If the data option is set set it as raw html.\nIf the message option is set render a template with the message",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 810,
+            "line": 801,
             "description": "Renders the tab-contents of of the overlay\nand initializes the tab component",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 832,
+            "line": 823,
             "description": "Starts the tabs-component",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 852,
+            "line": 843,
             "description": "Su",
             "params": [
                 {
@@ -9223,35 +9223,35 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 865,
+            "line": 856,
             "description": "Binds overlay events",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 931,
+            "line": 922,
             "description": "Binds custom events used by the overlay",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 940,
+            "line": 931,
             "description": "Handles the click on an overlay tab",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 954,
+            "line": 945,
             "description": "Hides all tab elements",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 963,
+            "line": 954,
             "description": "Handles the click on ok-buttons",
             "params": [
                 {
@@ -9264,7 +9264,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 979,
+            "line": 970,
             "description": "Handles the click on cancel-buttons and close-icon",
             "params": [
                 {
@@ -9277,7 +9277,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 993,
+            "line": 984,
             "description": "Handles the mousemove event for making the overlay draggable",
             "params": [
                 {
@@ -9296,28 +9296,28 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1007,
+            "line": 998,
             "description": "Sets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1018,
+            "line": 1009,
             "description": "Handles the shrinking and enlarging of the overlay\nif the window gets smaller",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1050,
+            "line": 1041,
             "description": "Positions the overlay in the middle of the screen",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1068,
+            "line": 1059,
             "description": "Updates the coordinates of the overlay",
             "params": [
                 {
@@ -9336,7 +9336,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1078,
+            "line": 1069,
             "description": "Executes a passed callback",
             "params": [
                 {
@@ -13203,123 +13203,123 @@
         },
         {
             "message": "Missing item type\nSets the default properties",
-            "line": " husky_components/overlay/main.js:477"
+            "line": " husky_components/overlay/main.js:472"
         },
         {
             "message": "Missing item type\nEvent handler for the overlay-trigger event",
-            "line": " husky_components/overlay/main.js:501"
+            "line": " husky_components/overlay/main.js:496"
         },
         {
             "message": "Missing item type\nOpens the overlay. If Overlay doesn't exist it first initializes it",
-            "line": " husky_components/overlay/main.js:508"
+            "line": " husky_components/overlay/main.js:503"
         },
         {
             "message": "Missing item type\nSets the height of all slides equal",
-            "line": " husky_components/overlay/main.js:543"
+            "line": " husky_components/overlay/main.js:538"
         },
         {
             "message": "Missing item type\nbind custom events",
-            "line": " husky_components/overlay/main.js:561"
+            "line": " husky_components/overlay/main.js:556"
         },
         {
             "message": "Missing item type\nslide left",
-            "line": " husky_components/overlay/main.js:569"
+            "line": " husky_components/overlay/main.js:564"
         },
         {
             "message": "Missing item type\nslide right",
-            "line": " husky_components/overlay/main.js:580"
+            "line": " husky_components/overlay/main.js:575"
         },
         {
             "message": "Missing item type\nslide to given number",
-            "line": " husky_components/overlay/main.js:591"
+            "line": " husky_components/overlay/main.js:586"
         },
         {
             "message": "Missing item type\nInitializes the Backdrop",
-            "line": " husky_components/overlay/main.js:598"
+            "line": " husky_components/overlay/main.js:593"
         },
         {
             "message": "Missing item type\nRemoves the overlay-element from the DOM",
-            "line": " husky_components/overlay/main.js:609"
+            "line": " husky_components/overlay/main.js:604"
         },
         {
             "message": "Missing item type\nInserts the overlay-element into the DOM",
-            "line": " husky_components/overlay/main.js:632"
+            "line": " husky_components/overlay/main.js:623"
         },
         {
             "message": "Missing item type\nCreates the overlay-element with a skeleton-template",
-            "line": " husky_components/overlay/main.js:659"
+            "line": " husky_components/overlay/main.js:650"
         },
         {
             "message": "Missing item type\nRenders a language changer and places it within the header",
-            "line": " husky_components/overlay/main.js:722"
+            "line": " husky_components/overlay/main.js:713"
         },
         {
             "message": "Missing item type\nRenders all buttons and appends them to the footer",
-            "line": " husky_components/overlay/main.js:748"
+            "line": " husky_components/overlay/main.js:739"
         },
         {
             "message": "Missing item type\nSets the content of the overlay. If the data option is set set it as raw html.\nIf the message option is set render a template with the message",
-            "line": " husky_components/overlay/main.js:791"
+            "line": " husky_components/overlay/main.js:782"
         },
         {
             "message": "Missing item type\nRenders the tab-contents of of the overlay\nand initializes the tab component",
-            "line": " husky_components/overlay/main.js:810"
+            "line": " husky_components/overlay/main.js:801"
         },
         {
             "message": "Missing item type\nStarts the tabs-component",
-            "line": " husky_components/overlay/main.js:832"
+            "line": " husky_components/overlay/main.js:823"
         },
         {
             "message": "Missing item type\nSu",
-            "line": " husky_components/overlay/main.js:852"
+            "line": " husky_components/overlay/main.js:843"
         },
         {
             "message": "Missing item type\nBinds overlay events",
-            "line": " husky_components/overlay/main.js:865"
+            "line": " husky_components/overlay/main.js:856"
         },
         {
             "message": "Missing item type\nBinds custom events used by the overlay",
-            "line": " husky_components/overlay/main.js:931"
+            "line": " husky_components/overlay/main.js:922"
         },
         {
             "message": "Missing item type\nHandles the click on an overlay tab",
-            "line": " husky_components/overlay/main.js:940"
+            "line": " husky_components/overlay/main.js:931"
         },
         {
             "message": "Missing item type\nHides all tab elements",
-            "line": " husky_components/overlay/main.js:954"
+            "line": " husky_components/overlay/main.js:945"
         },
         {
             "message": "Missing item type\nHandles the click on ok-buttons",
-            "line": " husky_components/overlay/main.js:963"
+            "line": " husky_components/overlay/main.js:954"
         },
         {
             "message": "Missing item type\nHandles the click on cancel-buttons and close-icon",
-            "line": " husky_components/overlay/main.js:979"
+            "line": " husky_components/overlay/main.js:970"
         },
         {
             "message": "Missing item type\nHandles the mousemove event for making the overlay draggable",
-            "line": " husky_components/overlay/main.js:993"
+            "line": " husky_components/overlay/main.js:984"
         },
         {
             "message": "Missing item type\nSets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
-            "line": " husky_components/overlay/main.js:1007"
+            "line": " husky_components/overlay/main.js:998"
         },
         {
             "message": "Missing item type\nHandles the shrinking and enlarging of the overlay\nif the window gets smaller",
-            "line": " husky_components/overlay/main.js:1018"
+            "line": " husky_components/overlay/main.js:1009"
         },
         {
             "message": "Missing item type\nPositions the overlay in the middle of the screen",
-            "line": " husky_components/overlay/main.js:1050"
+            "line": " husky_components/overlay/main.js:1041"
         },
         {
             "message": "Missing item type\nUpdates the coordinates of the overlay",
-            "line": " husky_components/overlay/main.js:1068"
+            "line": " husky_components/overlay/main.js:1059"
         },
         {
             "message": "Missing item type\nExecutes a passed callback",
-            "line": " husky_components/overlay/main.js:1078"
+            "line": " husky_components/overlay/main.js:1069"
         },
         {
             "message": "Missing item type\nnamespace for events",

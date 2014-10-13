@@ -70,7 +70,7 @@ define([], function() {
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
-            removeOnClose: false,
+            removeOnClose: true,
             backdrop: true,
             backdropClose: true,
             backdropColor: '#000000',
@@ -229,13 +229,13 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.overlay.',
+        eventNamespace = 'husky.overlay.',
 
         /**
          * raised after initialization process
          * @event husky.overlay.<instance-name>.initialize
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
@@ -243,7 +243,7 @@ define([], function() {
          * raised after overlay is opened
          * @event husky.overlay.<instance-name>.opened
          */
-            OPENED = function() {
+        OPENED = function() {
             return createEventName.call(this, 'opened');
         },
 
@@ -251,7 +251,7 @@ define([], function() {
          * raised after overlay is closed
          * @event husky.overlay.<instance-name>.closed
          */
-            CLOSED = function() {
+        CLOSED = function() {
             return createEventName.call(this, 'closed');
         },
 
@@ -259,7 +259,7 @@ define([], function() {
          * raised after overlay is closing
          * @event husky.overlay.<instance-name>.closing
          */
-            CLOSING = function() {
+        CLOSING = function() {
             return createEventName.call(this, 'closing');
         },
 
@@ -267,7 +267,7 @@ define([], function() {
          * used to activate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.activate
          */
-            OKBUTTON_ACTIVATE = function() {
+        OKBUTTON_ACTIVATE = function() {
             return createEventName.call(this, 'okbutton.activate');
         },
 
@@ -275,7 +275,7 @@ define([], function() {
          * used to deactivate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.deactivate
          */
-            OKBUTTON_DEACTIVATE = function() {
+        OKBUTTON_DEACTIVATE = function() {
             return createEventName.call(this, 'okbutton.deactivate');
         },
 
@@ -283,7 +283,7 @@ define([], function() {
          * removes the component
          * @event husky.overlay.<instance-name>.remove
          */
-            REMOVE = function() {
+        REMOVE = function() {
             return createEventName.call(this, 'remove');
         },
 
@@ -291,7 +291,7 @@ define([], function() {
          * opens the overlay
          * @event husky.overlay.<instance-name>.open
          */
-            OPEN = function() {
+        OPEN = function() {
             return createEventName.call(this, 'open');
         },
 
@@ -299,7 +299,7 @@ define([], function() {
          * closes the overlay
          * @event husky.overlay.<instance-name>.close
          */
-            CLOSE = function() {
+        CLOSE = function() {
             return createEventName.call(this, 'close');
         },
 
@@ -307,7 +307,7 @@ define([], function() {
          * calls the resize handler of the overlay to set the position, height etc.
          * @event husky.overlay.<instance-name>.set-position
          */
-            SET_POSITION = function() {
+        SET_POSITION = function() {
             return createEventName.call(this, 'set-position');
         },
 
@@ -317,7 +317,7 @@ define([], function() {
          * @param {String} selected language
          * @param {Object} currently active tab
          */
-            LANGUAGE_CHANGED = function() {
+        LANGUAGE_CHANGED = function() {
             return createEventName.call(this, 'language-changed');
         },
 
@@ -325,7 +325,7 @@ define([], function() {
          * slide left
          * @event husky.overlay.<instance-name>.slide-left
          */
-            SLIDE_LEFT = function() {
+        SLIDE_LEFT = function() {
             return createEventName.call(this, 'slide-left');
         },
 
@@ -333,12 +333,12 @@ define([], function() {
          * slide right
          * @event husky.overlay.<instance-name>.slide-right
          */
-            SLIDE_RIGHT = function() {
+        SLIDE_RIGHT = function() {
             return createEventName.call(this, 'slide-right');
         },
 
         /** returns normalized event names */
-            createEventName = function(postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -458,18 +458,13 @@ define([], function() {
          * Removes the component
          */
         removeComponent: function() {
-            this.sandbox.dom.off(this.overlay.$el);
-            this.sandbox.dom.off(this.$backdrop);
-            this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.dom.remove(this.$backdrop);
-            this.sandbox.dom.remove(this.overlay.$el);
-
             // todo fix bug: sometimes overlay-sandbox has own sandbox or parent-sandboxes as child which
             // couses an endless loop. The bug can be reproduced by starting the component
             // in a clickhandler with openOnStart-option true
-            //this.sandbox.stop();
+            // this.sandbox.stop();
 
             this.sandbox.stop('*');
+            this.sandbox.stop();
             this.sandbox.stopListening();
             this.sandbox.dom.remove(this.$el);
         },
@@ -611,11 +606,7 @@ define([], function() {
          */
         closeOverlay: function() {
             this.sandbox.emit(CLOSING.call(this));
-
-            this.sandbox.dom.detach(this.overlay.$el);
-            if (this.options.backdrop === true) {
-                this.sandbox.dom.detach(this.$backdrop);
-            }
+            
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;

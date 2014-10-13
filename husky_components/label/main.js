@@ -233,7 +233,7 @@ define(function() {
          * Handles closing the component
          */
         close: function() {
-            this.sandbox.dom.remove(this.$el);
+            this.sandbox.stop();
         }
     };
 
