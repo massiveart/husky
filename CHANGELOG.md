@@ -5,6 +5,8 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - fixed overlay cleanup method
+
  - updated aura version
 
  - added default icon for auto-complete list
