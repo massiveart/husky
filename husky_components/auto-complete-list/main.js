@@ -83,7 +83,7 @@ define([], function() {
                 arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: '',
+                autoCompleteIcon: 'search',
                 suggestionIcon: 'tag',
                 delimiters: [9, 188, 13],
                 noNewTags: false
