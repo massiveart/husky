@@ -5,6 +5,10 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - updated aura version
+
+ - added default icon for auto-complete list
+
  - fixed url-validation in husky-input
 
  - updated ckeditor link-dialog in extension
