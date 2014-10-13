@@ -26065,7 +26065,7 @@ define('type/husky-input',[
                     return regex.test(value);
                 },
                 url:  function(value) {
-                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-\?\$\#])*\/?/;
                     return regex.test(value);
                 },
                 color:  function(value) {
@@ -26815,9 +26815,9 @@ define('bower_components/aura/lib/aura',[
      */
     app.cleanUp = function () {
       _.defer(function() {    
-        base.util.each(appSandboxes, function(sandboxRef) {
-          if (!!sandboxRef && !!appSandboxes[sandboxRef] && !!appSandboxes[sandboxRef].el && !app.core.dom.contains($(appSandboxes[sandboxRef].el)[0], document)) {
-            appSandboxes[sandboxRef].stop();
+        _.each(appSandboxes, function(sandbox) {
+          if (!!sandbox && !!sandbox.el && !app.core.dom.contains($(sandbox.el)[0], document)) {
+            sandbox.stop();
           }
         });
       });
@@ -35042,7 +35042,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: '',
+                autoCompleteIcon: 'search',
                 suggestionIcon: 'tag',
                 delimiters: [9, 188, 13],
                 noNewTags: false
@@ -46576,6 +46576,10 @@ define("datepicker-zh-TW", function(){});
             };
 
             app.core.util.ajax = $.ajax;
+
+            app.core.util.ajaxError = function(callback) {
+                $(document).ajaxError(callback);
+            };
 
             app.core.util.when = function(deferreds){
                 return $.when(deferreds);
