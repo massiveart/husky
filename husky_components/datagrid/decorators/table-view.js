@@ -478,7 +478,7 @@ define(function() {
          * @returns {String} html if no render is set to true
          */
         renderRowSelectItem: function(id, norender) {
-            if (this.datagrid.options.onlySelectLeaves === true && this.table.rows[id].hasChildren > 0) {
+            if (this.datagrid.options.onlySelectLeaves === true && !!this.table.rows[id].hasChildren) {
                 return '';
             }
             if (!!this.options.selectItem && !!this.options.selectItem.type &&
@@ -1308,7 +1308,7 @@ define(function() {
         hideChildren: function(recordId) {
             this.sandbox.util.each(this.table.rows, function(rowId, row) {
                 if (row.parent == recordId) {
-                    if (row.hasChildren > 0) {
+                    if (!!row.hasChildren) {
                         this.hideChildren(rowId);
                     }
                     this.sandbox.dom.hide(row.$el);
