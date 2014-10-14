@@ -38508,7 +38508,8 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
  * @params {String|Boolean} [options.slides[].closeIcon] icon class for the close button. If false no close icon will be displayed
- * @params {Function} [options.slides[].closeCallback] callback which gets executed after the overlay gets closed
+ * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
+ * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
  * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
@@ -38563,6 +38564,7 @@ define('__component__$overlay@husky',[], function() {
             closeIcon: 'times',
             message: '',
             closeCallback: null,
+            cancelCallback: null,
             okCallback: null,
             type: 'normal',
             data: '',
@@ -39078,7 +39080,7 @@ define('__component__$overlay@husky',[], function() {
          */
         closeOverlay: function() {
             this.sandbox.emit(CLOSING.call(this));
-            
+
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
@@ -39444,11 +39446,14 @@ define('__component__$overlay@husky',[], function() {
          * @param event
          */
         closeHandler: function(event) {
+            var cancelCallback = this.slides[this.activeSlide].closeCallback || 
+                                 this.slides[this.activeSlide].cancelCallback;
+
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
                 this.sandbox.dom.stopPropagation(event);
             }
-            if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
+            if (this.executeCallback(cancelCallback) !== false) {
                 this.closeOverlay();
             }
         },
