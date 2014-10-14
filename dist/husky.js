@@ -15732,7 +15732,6 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
             try {
               listener.apply(context, args);
             } catch(e) {
-              console.warn("App logger: ", app.logger);
               app.logger.error("Error caught in listener '" + name + "', called with arguments: ", args, "\nError:", e.message, e, args);
             }
           };
@@ -15916,7 +15915,7 @@ define('aura/ext/components', [],function() {
     }
 
     /**
-     * Method called on Components' initialization.
+     * Method called on Component's initialization.
      *
      * @method initialize
      * @param {Object} options options Object passed on Component initialization
@@ -15924,7 +15923,7 @@ define('aura/ext/components', [],function() {
     Component.prototype.initialize = function() {};
 
     /**
-     * A helper function to render markup and recursilvely start nested components.
+     * A helper function to render markup and recursively start nested components.
      *
      * @method  html
      * @param  {String} markup the markup to render in the component's root el
@@ -26066,7 +26065,7 @@ define('type/husky-input',[
                     return regex.test(value);
                 },
                 url:  function(value) {
-                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-\?\$\#])*\/?/;
                     return regex.test(value);
                 },
                 color:  function(value) {
@@ -26241,6 +26240,9 @@ define('bower_components/aura/lib/platform',[],function() {
         context = context || document;
         return $(context).find(selector);
       },
+      contains: function(selector, context) {
+        return $.contains(context || document, selector);
+      },
       data: function(selector, attribute) {
         return $(selector).data(attribute);
       }
@@ -26310,12 +26312,14 @@ define('bower_components/aura/lib/logger',[], function() {
     this._error   = (console.error || this._log);
     this._enabled = true;
 
-    if (Function.prototype.bind && typeof console === "object") {
-      var logFns = ["log", "warn", "error"];
-      for (var i = 0; i < logFns.length; i++) {
-        console[logFns[i]] = Function.prototype.call.bind(console[logFns[i]], console);
+    try {
+      if (Function.prototype.bind && typeof console === "object") {
+        var logFns = ["log", "warn", "error"];
+        for (var i = 0; i < logFns.length; i++) {
+          console[logFns[i]] = Function.prototype.call.bind(console[logFns[i]], console);
+        }
       }
-    }
+    } catch(e) {}
 
     return this;
   };
@@ -26799,6 +26803,24 @@ define('bower_components/aura/lib/aura',[
     app.stop = function() {
       // TODO: We ne to actually do some cleanup here.
       app.started = false;
+    };
+
+    /**
+     * Check if any component is not stopped correctly and still referenced by aura.
+     * If that is the case we will stop the component and remove it.
+     * TODO: Consider using 'MutationObserver' for cleanup
+     *
+     * @method cleanUp
+     * @return {void}
+     */
+    app.cleanUp = function () {
+      _.defer(function() {    
+        _.each(appSandboxes, function(sandbox) {
+          if (!!sandbox && !!sandbox.el && !app.core.dom.contains($(sandbox.el)[0], document)) {
+            sandbox.stop();
+          }
+        });
+      });
     };
 
     /**
@@ -34381,7 +34403,7 @@ define('__component__$auto-complete@husky',[], function() {
         noNewValues: false,
         suggestionClass: 'suggestion',
         suggestionIcon: '',
-        autoCompleteIcon: '',
+        autoCompleteIcon: 'search',
         stickToInput: false,
         hint: false,
         emptyOnBlur: false,
@@ -34392,11 +34414,9 @@ define('__component__$auto-complete@husky',[], function() {
     templates = {
         main: [
             '<div class="husky-auto-complete">',
-                '<% if (!!autoCompleteIcon) { %>',
                 '<div class="front">',
                     '<a class="fa-<%= autoCompleteIcon %>"></a>',
                 '</div>',
-                '<% } %>',
                 '<div class="input"></div>',
             '</div>'
         ].join('')
@@ -35021,7 +35041,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: '',
+                autoCompleteIcon: 'search',
                 suggestionIcon: 'tag',
                 delimiters: [9, 188, 13],
                 noNewTags: false
@@ -41938,8 +41958,48 @@ define('__component__$input@husky',[], function() {
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {
                             $editor = $(selector).ckeditor(configuration);
-
                         }
+
+                        // customize ckeditor dialog appearance on 'dialogDefinition' (=> open)
+                        // and filter link/target options
+                        CKEDITOR.on('dialogDefinition', function(ev) {
+                            // take the dialog name and its definition from the event
+                            // data.
+                            var dialogName = ev.data.name,
+                                dialogDefinition = ev.data.definition;
+
+                            // check if the definition is from the dialog we're
+                            // interested in (the "Link" dialog).
+                            if (dialogName == 'link') {
+                                    // get a reference to the "Link Info" and "Target" tab.
+                                var infoTab = dialogDefinition.getContents('info'),
+                                    targetTab = dialogDefinition.getContents('target'),
+                                
+                                    // get a reference to the link type
+                                    linkOptions = infoTab.get('linkType'),
+                                    targetOptions = targetTab.get('linkTargetType'),
+
+                                    // list of excluded link target options
+                                    includedTargetOptions = [
+                                        'notSet',
+                                        '_blank',
+                                        '_self'
+                                    ],
+                                    selectedTargetOptions = [];
+                            
+                                // remove 'link to anchor' option
+                                linkOptions.items.splice(1, 1);
+
+                                // just show included target options
+                                for (var i = 0; i < targetOptions.items.length; i++) {
+                                    if (includedTargetOptions.indexOf(targetOptions.items[i][1]) !== -1) {
+                                        selectedTargetOptions.push(targetOptions.items[i]);
+                                    }
+                                }
+
+                                targetOptions.items = selectedTargetOptions;
+                            }
+                        });
 
                         return $editor.editor;
                     }
@@ -42000,6 +42060,7 @@ if(jQuery) (function($) {
 			change: null,
 			changeDelay: 0,
 			control: 'hue',
+			dataUris: true,
 			defaultValue: '',
 			hide: null,
 			hideSpeed: 100,
@@ -42114,7 +42175,8 @@ if(jQuery) (function($) {
 		// The wrapper
 		minicolors
 			.addClass('minicolors-theme-' + settings.theme)
-			.toggleClass('minicolors-with-opacity', settings.opacity);
+			.toggleClass('minicolors-with-opacity', settings.opacity)
+			.toggleClass('minicolors-no-data-uris', settings.dataUris !== true);
 
 		// Custom positioning
 		if( settings.position !== undefined ) {
@@ -42132,13 +42194,13 @@ if(jQuery) (function($) {
 			.wrap(minicolors)
 			.after(
 				'<div class="minicolors-panel minicolors-slider-' + settings.control + '">' +
-					'<div class="minicolors-slider">' +
+					'<div class="minicolors-slider minicolors-sprite">' +
 						'<div class="minicolors-picker"></div>' +
 					'</div>' +
-					'<div class="minicolors-opacity-slider">' +
+					'<div class="minicolors-opacity-slider minicolors-sprite">' +
 						'<div class="minicolors-picker"></div>' +
 					'</div>' +
-					'<div class="minicolors-grid">' +
+					'<div class="minicolors-grid minicolors-sprite">' +
 						'<div class="minicolors-grid-inner"></div>' +
 						'<div class="minicolors-picker"><div></div></div>' +
 					'</div>' +
@@ -42147,7 +42209,7 @@ if(jQuery) (function($) {
 
 		// The swatch
 		if( !settings.inline ) {
-			input.after('<span class="minicolors-swatch"><span class="minicolors-swatch-color"></span></span>');
+			input.after('<span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color"></span></span>');
 			input.next('.minicolors-swatch').on('click', function(event) {
 				event.preventDefault();
 				input.focus();
@@ -46513,6 +46575,10 @@ define("datepicker-zh-TW", function(){});
             };
 
             app.core.util.ajax = $.ajax;
+
+            app.core.util.ajaxError = function(callback) {
+                $(document).ajaxError(callback);
+            };
 
             app.core.util.when = function(deferreds){
                 return $.when(deferreds);

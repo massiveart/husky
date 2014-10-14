@@ -43,6 +43,9 @@
         context = context || document;
         return $(context).find(selector);
       },
+      contains: function(selector, context) {
+        return $.contains(context || document, selector);
+      },
       data: function(selector, attribute) {
         return $(selector).data(attribute);
       }

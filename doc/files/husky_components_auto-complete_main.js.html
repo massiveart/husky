@@ -206,7 +206,7 @@ define([], function() {
         noNewValues: false,
         suggestionClass: &#x27;suggestion&#x27;,
         suggestionIcon: &#x27;&#x27;,
-        autoCompleteIcon: &#x27;&#x27;,
+        autoCompleteIcon: &#x27;search&#x27;,
         stickToInput: false,
         hint: false,
         emptyOnBlur: false,
@@ -217,11 +217,9 @@ define([], function() {
     templates = {
         main: [
             &#x27;&lt;div class=&quot;husky-auto-complete&quot;&gt;&#x27;,
-                &#x27;&lt;% if (!!autoCompleteIcon) { %&gt;&#x27;,
                 &#x27;&lt;div class=&quot;front&quot;&gt;&#x27;,
                     &#x27;&lt;a class=&quot;fa-&lt;%= autoCompleteIcon %&gt;&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
-                &#x27;&lt;% } %&gt;&#x27;,
                 &#x27;&lt;div class=&quot;input&quot;&gt;&lt;/div&gt;&#x27;,
             &#x27;&lt;/div&gt;&#x27;
         ].join(&#x27;&#x27;)

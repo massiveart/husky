@@ -5,7 +5,7 @@
   "dependencies": {
     "backbone": "~1.0.0",
     "underscore": "~1.5.1",
-    "aura": "latest",
+    "aura": "https://github.com/massiveart/aura.git#master",
     "husky-validation": "0.6.*",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
