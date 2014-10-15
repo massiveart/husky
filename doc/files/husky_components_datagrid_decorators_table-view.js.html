@@ -771,7 +771,7 @@ define(function() {
             if (!!this.datagrid.options.childrenPropertyName &amp;&amp; index === 0) {
                 content = this.wrapChildrenCellContent(content, record);
             }
-            if (!!this.options.selectItem &amp;&amp; !!this.options.selectItem.inFirstCell === true) {
+            if (!!this.options.selectItem &amp;&amp; !!this.options.selectItem.inFirstCell === true &amp;&amp; index === 0) {
                 this.sandbox.dom.attr($cell, &#x27;colspan&#x27;, 2);
                 selectItem = this.renderRowSelectItem(record.id, true);
                 if (typeof content === &#x27;string&#x27;) {

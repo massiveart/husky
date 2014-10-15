@@ -42,6 +42,10 @@ define([
                     // hex color with leading #
                     var regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
                     return regex.test(value);
+                },
+                bic: function(value){
+                    var regex = /^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/;
+                    return regex.test(value);
                 }
             },
 
