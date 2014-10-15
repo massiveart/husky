@@ -125,6 +125,10 @@ define([], function() {
                 frontIcon: 'clock-o',
                 placeholder: 'HH - MM',
                 renderMethod: 'time'
+            },
+            bic: {
+                frontIcon: 'bank',
+                placeholder: ''
             }
         },
 
