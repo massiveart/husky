@@ -38939,8 +38939,6 @@ define('__component__$overlay@husky',[], function() {
 
             this.sandbox.stop('*');
             this.sandbox.stop();
-            this.sandbox.stopListening();
-            this.sandbox.dom.remove(this.$el);
         },
 
         /**
