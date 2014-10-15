@@ -26072,10 +26072,6 @@ define('type/husky-input',[
                     // hex color with leading #
                     var regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
                     return regex.test(value);
-                },
-                bic: function(value){
-                    var regex = /^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/;
-                    return regex.test(value);
                 }
             },
 
@@ -41509,10 +41505,6 @@ define('__component__$input@husky',[], function() {
                 frontIcon: 'clock-o',
                 placeholder: 'HH - MM',
                 renderMethod: 'time'
-            },
-            bic: {
-                frontIcon: 'bank',
-                placeholder: ''
             }
         },
 
