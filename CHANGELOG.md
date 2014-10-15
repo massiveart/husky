@@ -5,6 +5,13 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - updated datagrid api
+   'children' property is now 'hasChildren'
+
+ - fixed indentation for datagrid code
+
+ - fixed overlay cleanup method
+
  - updated aura version
 
  - added default icon for auto-complete list

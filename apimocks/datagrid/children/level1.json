@@ -12,36 +12,56 @@
     },
     "_embedded": {
         "categories": [
-            {
-                "id": 1,
-                "name": "Category 1",
-                "children": 2
-            },
-            {
-                "id": 2,
-                "name": "Category 2",
-                "children": 3
-            },
-            {
-                "id": 3,
-                "name": "Category 3",
-                "children": 0
-            },
-            {
-                "id": 4,
-                "name": "Category 4",
-                "children": 0
-            },
-            {
-                "id": 5,
-                "name": "Category 5",
-                "children": 2
-            },
-            {
-                "id": 6,
-                "name": "Category 6",
-                "children": 0
-            }
+            {  
+                "id":5,
+                "key":"first-parent-key",
+                "name":"first-parent",
+                "created":"2014-10-02T08:51:27+0200",
+                "changed":"2014-10-02T08:51:27+0200",
+                "depth":0,
+                "parent":null,
+                "children":true
+             },
+             {  
+                "id":6,
+                "key":"first-child-key",
+                "name":"first-child",
+                "created":"2014-10-02T08:52:04+0200",
+                "changed":"2014-10-02T08:52:04+0200",
+                "depth":1,
+                "parent":5,
+                "children":true
+             },
+             {  
+                "id":7,
+                "key":"first-child-of-child-key",
+                "name":"first-child-of-child",
+                "created":"2014-10-02T08:53:59+0200",
+                "changed":"2014-10-02T08:53:59+0200",
+                "depth":2,
+                "parent":6,
+                "children":false
+             },
+             {  
+                "id":8,
+                "key":"second-parent-key",
+                "name":"second-parent",
+                "created":"2014-10-02T09:26:05+0200",
+                "changed":"2014-10-02T09:26:05+0200",
+                "depth":0,
+                "parent":null,
+                "children":true
+             },
+             {  
+                "id":10,
+                "key":"second-child-key",
+                "name":"second-child-c",
+                "created":"2014-10-02T16:26:28+0200",
+                "changed":"2014-10-03T08:36:18+0200",
+                "depth":1,
+                "parent":8,
+                "children":false
+             }
         ]
     },
     "total": 6,

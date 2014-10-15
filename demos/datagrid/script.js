@@ -321,7 +321,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: false,
                     childrenPropertyName: 'children',
                     resultKey: 'categories',
-                    preselected: [1, {id: 22, name: 'Category 2.2'}, {id: 23, name: 'Category 2.2'}],
+                    preselected: [1, {id: 5, name: 'Category 2.2'}, {id: 8, name: 'Category 2.2'}],
                     viewOptions: {
                         table: {
                             showHead: false,
