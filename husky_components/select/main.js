@@ -673,7 +673,7 @@ define([], function() {
                         removeOnClose: true,
                         instanceName: 'husky-select',
                         title: this.sandbox.translate('public.edit-entries'),
-                        closeCallback: function() {
+                        cancelCallback: function() {
                             this.onCloseWithCancel();
                         }.bind(this),
                         okCallback: function(data) {
