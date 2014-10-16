@@ -615,7 +615,13 @@ define([], function() {
 
             this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
 
-            if (this.options.removeOnClose === true) {
+            if (!this.options.removeOnClose) {
+                this.sandbox.dom.detach(this.overlay.$el);
+
+                if (this.options.backdrop === true) {
+                    this.sandbox.dom.detach(this.$backdrop);
+                }
+            } else {
                 this.removeComponent();
             }
         },
@@ -626,7 +632,7 @@ define([], function() {
         insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
 
-            //ensures that the overlay box fits the window form the beginning
+            // ensures that the overlay box fits the window form the beginning
             this.resetResizeVariables();
             this.resizeHandler();
 

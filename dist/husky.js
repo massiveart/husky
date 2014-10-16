@@ -36630,7 +36630,7 @@ define('__component__$select@husky',[], function() {
                         removeOnClose: true,
                         instanceName: 'husky-select',
                         title: this.sandbox.translate('public.edit-entries'),
-                        closeCallback: function() {
+                        cancelCallback: function() {
                             this.onCloseWithCancel();
                         }.bind(this),
                         okCallback: function(data) {
@@ -39086,7 +39086,13 @@ define('__component__$overlay@husky',[], function() {
 
             this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
 
-            if (this.options.removeOnClose === true) {
+            if (!this.options.removeOnClose) {
+                this.sandbox.dom.detach(this.overlay.$el);
+
+                if (this.options.backdrop === true) {
+                    this.sandbox.dom.detach(this.$backdrop);
+                }
+            } else {
                 this.removeComponent();
             }
         },
@@ -39097,7 +39103,7 @@ define('__component__$overlay@husky',[], function() {
         insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
 
-            //ensures that the overlay box fits the window form the beginning
+            // ensures that the overlay box fits the window form the beginning
             this.resetResizeVariables();
             this.resizeHandler();
 
@@ -41155,7 +41161,7 @@ define('__component__$dropzone@husky',[], function () {
                             smallHeader: true,
                             top: coordinates.top,
                             left: coordinates.left,
-                            closeCallback: function () {
+                            cancelCallback: function () {
                                 this.sandbox.dom.append(this.$el, this.$dropzone);
                                 this.sandbox.dom.height(this.$el, '');
                                 this.overlayOpened = false;
