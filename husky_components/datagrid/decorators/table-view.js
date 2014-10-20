@@ -324,7 +324,7 @@ define(function() {
             this.table = {};
             this.data = null;
             this.rowClicked = false;
-            this.preventFocusoutHandler = false;
+            this.isFocusoutHandlerEnabled = !!this.options.editable;
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
             this.cropBreakPoint = null;
@@ -508,7 +508,8 @@ define(function() {
             this.removeNewRecordRow();
             var $row = this.sandbox.dom.createElement(templates.row),
                 $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
-            record.id = (!!record.id) ? record.id : constants.newRecordId
+
+            record.id = (!!record.id) ? record.id : constants.newRecordId;
             this.sandbox.dom.data($row, 'id', record.id);
 
             if (!!record.parent) {
@@ -534,6 +535,7 @@ define(function() {
         /**
          * Inserts a body row into the dom. Looks if a row needs to be overriden, or if a parent exists etc.
          * @param record {Object} the data object of the record
+         * @param $overrideElement {Object}
          * @param prepend {Boolean} true to prepend
          */
         insertBodyRow: function(record, $overrideElement, prepend) {
@@ -763,7 +765,6 @@ define(function() {
          */
         removeNewRecordRow: function() {
             if (!!this.table.rows[constants.newRecordId]) {
-                this.preventFocusoutHandler = true;
                 this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
                 delete this.table.rows[constants.newRecordId];
             }
@@ -977,7 +978,7 @@ define(function() {
                 $inputs = this.sandbox.dom.find('.' + constants.editableInputClass, this.table.rows[recordId].$el);
                 attribute = this.sandbox.dom.data(this.sandbox.dom.parents($inputs[0], 'td'), 'attribute');
             }
-            $cell = this.table.rows[recordId].cells[attribute].$el
+            $cell = this.table.rows[recordId].cells[attribute].$el;
             this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
             this.sandbox.dom.focus(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
             this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
@@ -993,7 +994,6 @@ define(function() {
             if (event.keyCode === 13) {
                 this.sandbox.dom.stopPropagation(event);
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
-                this.preventFocusoutHandler = true;
                 this.editRow(recordId);
             }
         },
@@ -1003,7 +1003,7 @@ define(function() {
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function (event) {
-            if (this.preventFocusoutHandler === false) {
+            if (!!this.isFocusoutHandlerEnabled) {
                 this.sandbox.dom.stopPropagation(event);
                 var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
                 this.editRow(recordId);
@@ -1034,9 +1034,9 @@ define(function() {
         editedSuccessCallback: function (record) {
             var $row;
             if (!!record.id && !!this.table.rows[record.id]) {
-                $row = this.table.rows[record.id].$el
+                $row = this.table.rows[record.id].$el;
             } else if (!!this.table.rows[constants.newRecordId]) {
-                $row = this.table.rows[constants.newRecordId].$el
+                $row = this.table.rows[constants.newRecordId].$el;
             }
             if (!!$row && !!$row.length) {
                 this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.inputWrapperClass, $row));
