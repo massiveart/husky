@@ -37001,7 +37001,7 @@ define('__component__$select@husky',[], function() {
                     this.sandbox.dom.text(this.$label, this.options.defaultLabel);
                 } else {
 
-                    var text = "";
+                    var text = "", labelWidth;
                     this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
                         text += ' ' + value + ',';
                     });
