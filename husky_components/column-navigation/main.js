@@ -902,7 +902,7 @@ define([], function () {
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
                 if (!!this.options.showEditIcon) {
-                    item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
+                    item.push('<span class="' + this.options.editIcon + ' edit pull-left"></span>');
                 }
                 !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
