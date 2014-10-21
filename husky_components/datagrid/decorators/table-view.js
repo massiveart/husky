@@ -324,7 +324,7 @@ define(function() {
             this.table = {};
             this.data = null;
             this.rowClicked = false;
-            this.isFocusoutHandlerEnabled = !!this.options.editable;
+            this.isFocusoutHandlerEnabled = this.options.editable === true || this.options.editable === 'true';
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
             this.cropBreakPoint = null;
