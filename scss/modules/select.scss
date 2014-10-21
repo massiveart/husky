@@ -48,6 +48,13 @@
         }
     }
 
+    .husky-select-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+    }
+
     .dropdown-list {
         width: 100%;
         /*display: inline-block;*/
@@ -81,13 +88,13 @@
             }
         }
         .check {
-            float: left;
+            display:inline;
             width: 20px;
             margin-right: 10px;
             padding-top: 7px;
         }
         .item-value {
-            float: left;
+            display:inline;
             line-height: 30px;
         }
 
@@ -105,12 +112,22 @@
                 clear: both;
                 height: 30px;
 
+                &>div{
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+
                 &:hover,
                 &.hover {
                     background-color: $highlightColor;
                     cursor: pointer;
                 }
                 &:hover .item-value {
+                    color: $white;
+                }
+
+                &:hover > div {
                     color: $white;
                 }
             }
