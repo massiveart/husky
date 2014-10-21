@@ -41224,7 +41224,6 @@ define('__component__$dropzone@husky',[], function () {
 
                         this.on('drop', function(event) {
                             this.sandbox.dom.stopPropagation(event);
-                            this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
 
                         if (that.options.showOverlay === true) {
@@ -41233,7 +41232,7 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on('addedfile', function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
@@ -41241,9 +41240,7 @@ define('__component__$dropzone@husky',[], function () {
                             if (typeof that.options.afterDropCallback === 'function') {
                                 if (!!this.files && this.files.length > 0) {
                                     that.options.afterDropCallback(file).then(function() {
-                                        that.sandbox.util.foreach(this.files, function(file) {
-                                            that.sandbox.util.delay(this.processFile.bind(this, file), 0);
-                                        }.bind(this));
+                                        that.sandbox.util.delay(this.processFile.bind(this, file), 0);
                                     }.bind(this));
                                 }
                             }

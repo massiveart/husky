@@ -497,7 +497,6 @@ define([], function () {
 
                         this.on(&#x27;drop&#x27;, function(event) {
                             this.sandbox.dom.stopPropagation(event);
-                            this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
 
                         if (that.options.showOverlay === true) {
@@ -506,7 +505,7 @@ define([], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on(&#x27;addedfile&#x27;, function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
@@ -514,9 +513,7 @@ define([], function () {
                             if (typeof that.options.afterDropCallback === &#x27;function&#x27;) {
                                 if (!!this.files &amp;&amp; this.files.length &gt; 0) {
                                     that.options.afterDropCallback(file).then(function() {
-                                        that.sandbox.util.foreach(this.files, function(file) {
-                                            that.sandbox.util.delay(this.processFile.bind(this, file), 0);
-                                        }.bind(this));
+                                        that.sandbox.util.delay(this.processFile.bind(this, file), 0);
                                     }.bind(this));
                                 }
                             }

@@ -343,7 +343,6 @@ define([], function () {
 
                         this.on('drop', function(event) {
                             this.sandbox.dom.stopPropagation(event);
-                            this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
 
                         if (that.options.showOverlay === true) {
@@ -352,7 +351,7 @@ define([], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on('addedfile', function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
