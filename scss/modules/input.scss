@@ -93,7 +93,7 @@
 .husky-validate-error {
     .husky-input {
         input {
-            height: $inputHeight - 2px; // because of the 2px border on error
+            height: $inputHeight - 4px; // because of the 2px border on error
         }
     }
 }
