@@ -360,9 +360,7 @@ define([], function () {
                             if (typeof that.options.afterDropCallback === 'function') {
                                 if (!!this.files && this.files.length > 0) {
                                     that.options.afterDropCallback(file).then(function() {
-                                        that.sandbox.util.foreach(this.files, function(file) {
-                                            that.sandbox.util.delay(this.processFile.bind(this, file), 0);
-                                        }.bind(this));
+                                        that.sandbox.util.delay(this.processFile.bind(this, file), 0);
                                     }.bind(this));
                                 }
                             }
