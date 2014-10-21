@@ -512,7 +512,7 @@ define([], function () {
 
                             // call the after-drop callback on the last file
                             if (typeof that.options.afterDropCallback === &#x27;function&#x27;) {
-                                if (this.files.length === that.filesDropped) {
+                                if (!!this.files &amp;&amp; this.files.length &gt; 0) {
                                     that.options.afterDropCallback(file).then(function() {
                                         that.sandbox.util.foreach(this.files, function(file) {
                                             that.sandbox.util.delay(this.processFile.bind(this, file), 0);
