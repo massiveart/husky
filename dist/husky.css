@@ -7707,24 +7707,24 @@ a.btn-black, a.btn-highlight {
 .husky-input .text {
   font-size: 14px;
 }
-/* line 77, ../scss/modules/input.scss */
+/* line 75, ../scss/modules/input.scss */
 .husky-input.colorpicker .input {
   overflow: visible;
 }
-/* line 81, ../scss/modules/input.scss */
+/* line 79, ../scss/modules/input.scss */
 .husky-input.colorpicker .front {
   color: black;
   cursor: pointer;
 }
-/* line 88, ../scss/modules/input.scss */
+/* line 86, ../scss/modules/input.scss */
 .husky-input.pickdate .front {
   color: black;
   cursor: pointer;
 }
 
-/* line 97, ../scss/modules/input.scss */
+/* line 95, ../scss/modules/input.scss */
 .husky-validate-error .husky-input input {
-  height: 26px;
+  height: 28px;
 }
 
 /* line 3, ../scss/modules/auto-complete.scss */
@@ -7752,7 +7752,7 @@ a.btn-black, a.btn-highlight {
 /* line 6, ../scss/modules/input.scss */
 .husky-auto-complete .front {
   float: left;
-  line-height: 18px;
+  line-height: 20px;
   margin: 5px 0 0 0;
   padding-right: 5px;
   border-right: 1px solid #cccccc;
@@ -7784,7 +7784,7 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   top: 0px;
   right: 0px;
-  line-height: 18px;
+  line-height: 20px;
   padding: 5px 10px 0 5px;
   background: white;
   color: #999999;
@@ -7797,7 +7797,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 51, ../scss/modules/input.scss */
 .husky-auto-complete .input input {
-  height: 28px;
+  height: 30px;
   border: none;
   outline-width: 0;
   width: 100%;
@@ -7975,7 +7975,7 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   padding-left: 8px;
   font-size: 16px;
-  line-height: 28px;
+  line-height: 30px;
   vertical-align: middle;
   text-decoration: none;
 }
@@ -7984,7 +7984,7 @@ a.btn-black, a.btn-highlight {
   display: none;
   position: absolute;
   right: 10px;
-  line-height: 28px;
+  line-height: 30px;
   vertical-align: middle;
   margin: auto;
   background-color: white;
@@ -9285,8 +9285,8 @@ a.btn-black, a.btn-highlight {
   top: 0px;
   left: 0px;
   width: 100%;
-  margin: -28px 0 0 -4px;
-  height: 28px;
+  margin: -30px 0 0 -4px;
+  height: 30px;
   display: none;
 }
 /* line 166, ../scss/modules/datagrid.scss */
@@ -9642,6 +9642,12 @@ a.btn-black, a.btn-highlight {
 /* line 349, ../scss/modules/datagrid.scss */
 .husky-datagrid .empty-list span {
   display: block;
+}
+
+/* line 358, ../scss/modules/datagrid.scss */
+.editable .husky-validate-error .husky-input input {
+  height: 30px;
+  margin-top: -30px;
 }
 
 /* line 3, ../scss/modules/label.scss */
@@ -10545,7 +10551,7 @@ a.btn-black, a.btn-highlight {
 /* line 6, ../scss/modules/input.scss */
 .husky-input .front {
   float: left;
-  line-height: 18px;
+  line-height: 20px;
   margin: 5px 0 0 0;
   padding-right: 5px;
   border-right: 1px solid #cccccc;
@@ -10577,7 +10583,7 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   top: 0px;
   right: 0px;
-  line-height: 18px;
+  line-height: 20px;
   padding: 5px 10px 0 5px;
   background: white;
   color: #999999;
@@ -10590,7 +10596,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 51, ../scss/modules/input.scss */
 .husky-input .input input {
-  height: 28px;
+  height: 30px;
   border: none;
   outline-width: 0;
   width: 100%;
@@ -10599,24 +10605,24 @@ a.btn-black, a.btn-highlight {
 .husky-input .text {
   font-size: 14px;
 }
-/* line 77, ../scss/modules/input.scss */
+/* line 75, ../scss/modules/input.scss */
 .husky-input.colorpicker .input {
   overflow: visible;
 }
-/* line 81, ../scss/modules/input.scss */
+/* line 79, ../scss/modules/input.scss */
 .husky-input.colorpicker .front {
   color: black;
   cursor: pointer;
 }
-/* line 88, ../scss/modules/input.scss */
+/* line 86, ../scss/modules/input.scss */
 .husky-input.pickdate .front {
   color: black;
   cursor: pointer;
 }
 
-/* line 97, ../scss/modules/input.scss */
+/* line 95, ../scss/modules/input.scss */
 .husky-validate-error .husky-input input {
-  height: 26px;
+  height: 28px;
 }
 
 /* line 5, ../scss/modules/thumbnails.scss */
