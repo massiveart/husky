@@ -506,13 +506,13 @@ define([], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on(&#x27;addedfile&#x27;, function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
                             // call the after-drop callback on the last file
                             if (typeof that.options.afterDropCallback === &#x27;function&#x27;) {
-                                if (!!this.files &amp;&amp; this.files.length &gt; 0) {
+                                if (this.files.length === that.filesDropped) {
                                     that.options.afterDropCallback(file).then(function() {
                                         that.sandbox.util.foreach(this.files, function(file) {
                                             that.sandbox.util.delay(this.processFile.bind(this, file), 0);
@@ -527,7 +527,7 @@ define([], function () {
                             }.bind(that));
                         });
 
-                        // gets called before the file is sent
+                        // gets called before each file is sent
                         this.on(&#x27;sending&#x27;, function (file) {
                             if (typeof this.options.beforeSendingCallback === &#x27;function&#x27;) {
                                 this.options.beforeSendingCallback(file);
