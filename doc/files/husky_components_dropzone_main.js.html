@@ -527,16 +527,6 @@ define([], function () {
                             }.bind(that));
                         });
 
-                        // eventhandler for completed upload for all files
-                        this.on(&#x27;complete&#x27;, function() {
-                            if (this.getUploadingFiles().length === 0 &amp;&amp;
-                                this.getQueuedFiles().length === 0 &amp;&amp;
-                                typeof that.options.afterDropCallback === &#x27;function&#x27;
-                                ) {
-                                that.options.afterDropCallback(this.files);
-                            }
-                        });
-
                         // gets called before each file is sent
                         this.on(&#x27;sending&#x27;, function (file) {
                             if (typeof this.options.beforeSendingCallback === &#x27;function&#x27;) {

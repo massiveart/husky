@@ -41254,16 +41254,6 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         });
 
-                        // eventhandler for completed upload for all files
-                        this.on('complete', function() {
-                            if (this.getUploadingFiles().length === 0 &&
-                                this.getQueuedFiles().length === 0 &&
-                                typeof that.options.afterDropCallback === 'function'
-                                ) {
-                                that.options.afterDropCallback(this.files);
-                            }
-                        });
-
                         // gets called before each file is sent
                         this.on('sending', function (file) {
                             if (typeof this.options.beforeSendingCallback === 'function') {
