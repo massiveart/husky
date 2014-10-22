@@ -41224,6 +41224,7 @@ define('__component__$dropzone@husky',[], function () {
 
                         this.on('drop', function(event) {
                             this.sandbox.dom.stopPropagation(event);
+                            this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
 
                         if (that.options.showOverlay === true) {
@@ -41238,9 +41239,11 @@ define('__component__$dropzone@husky',[], function () {
 
                             // call the after-drop callback on the last file
                             if (typeof that.options.afterDropCallback === 'function') {
-                                if (!!this.files && this.files.length > 0) {
+                                if (this.files.length === that.filesDropped) {
                                     that.options.afterDropCallback(file).then(function() {
-                                        that.sandbox.util.delay(this.processFile.bind(this, file), 0);
+                                        that.sandbox.util.foreach(this.files, function(file) {
+                                            that.sandbox.util.delay(this.processFile.bind(this, file), 0);
+                                        }.bind(this));
                                     }.bind(this));
                                 }
                             }
@@ -41251,7 +41254,17 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         });
 
-                        // gets called before the file is sent
+                        // eventhandler for completed upload for all files
+                        this.on('complete', function() {
+                            if (this.getUploadingFiles().length === 0 &&
+                                this.getQueuedFiles().length === 0 &&
+                                typeof that.options.afterDropCallback === 'function'
+                                ) {
+                                that.options.afterDropCallback(this.files);
+                            }
+                        });
+
+                        // gets called before each file is sent
                         this.on('sending', function (file) {
                             if (typeof this.options.beforeSendingCallback === 'function') {
                                 this.options.beforeSendingCallback(file);
