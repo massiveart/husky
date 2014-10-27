@@ -54,7 +54,7 @@ define([], function() {
         },
 
         /**
-         * @event husky.ckeditor.destroy
+         * @event husky.ckeditor.start
          * @description starts the used editor plugin
          */
         START = function() {

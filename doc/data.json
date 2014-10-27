@@ -3843,7 +3843,7 @@
             "file": "husky_components/ckeditor/main.js",
             "line": 56,
             "itemtype": "event",
-            "name": "husky.ckeditor.destroy",
+            "name": "husky.ckeditor.start",
             "description": "starts the used editor plugin",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
