@@ -38369,6 +38369,22 @@ define('__component__$ckeditor@husky',[], function() {
         },
 
         /**
+         * @event husky.ckeditor.destroy
+         * @description starts the used editor plugin
+         */
+        START = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'start';
+        },
+
+        /**
+         * @event husky.ckeditor.destroy
+         * @description destroys the used editor plugin
+         */
+        DESTROY = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'destroy';
+        },
+
+        /**
          * Removes the not needed elements from the config object for the ckeditor
          * @returns {Object} configuration object for ckeditor
          */
@@ -38423,9 +38439,9 @@ define('__component__$ckeditor@husky',[], function() {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.editorContent = null;
 
-            var config = getConfig.call(this);
-            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            this.startEditor();
             this.data = this.editor.getData();
 
             this.bindChangeEvents();
@@ -38438,6 +38454,10 @@ define('__component__$ckeditor@husky',[], function() {
             this.editor.on('blur', function() {
                 this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
             }.bind(this));
+
+            this.sandbox.on(START.call(this), this.startEditor.bind(this));
+
+            this.sandbox.on(DESTROY.call(this), this.destroyEditor.bind(this));
         },
 
         /**
@@ -38462,6 +38482,24 @@ define('__component__$ckeditor@husky',[], function() {
         emitChangedEvent: function() {
             this.data = this.editor.getData();
             this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+        },
+
+        startEditor: function() {
+            var config = getConfig.call(this);
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            
+            if (!!this.editorContent) {
+                this.editor.setData(this.editorContent);
+            }
+        },
+
+        destroyEditor: function() {
+            this.editorContent = this.editor.getData();
+            this.editor.destroy();
+        },
+
+        remove: function() {
+            this.destroyEditor();
         }
     };
 
@@ -42000,6 +42038,14 @@ define('__component__$input@husky',[], function() {
                         });
 
                         return $editor.editor;
+                    },
+
+                    getInstance: function(id) {
+                        var instance = CKEDITOR.instances[id];
+
+                        if (!!instance) {
+                            return instance;
+                        }
                     }
                 };
             }

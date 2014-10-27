@@ -15,6 +15,9 @@ $grid-margin-bottom-small: 10px;
 
     margin-bottom: $grid-margin-bottom;
 
+    &:last-of-type {
+      margin-bottom: 0;
+    }
     &.small {
         margin-bottom: $grid-margin-bottom-small;
     }

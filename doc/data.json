@@ -3842,6 +3842,24 @@
         {
             "file": "husky_components/ckeditor/main.js",
             "line": 56,
+            "itemtype": "event",
+            "name": "husky.ckeditor.destroy",
+            "description": "starts the used editor plugin",
+            "class": "CKEditor",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/ckeditor/main.js",
+            "line": 64,
+            "itemtype": "event",
+            "name": "husky.ckeditor.destroy",
+            "description": "destroys the used editor plugin",
+            "class": "CKEditor",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/ckeditor/main.js",
+            "line": 72,
             "description": "Removes the not needed elements from the config object for the ckeditor",
             "return": {
                 "description": "configuration object for ckeditor",
@@ -3852,14 +3870,14 @@
         },
         {
             "file": "husky_components/ckeditor/main.js",
-            "line": 128,
+            "line": 148,
             "description": "Binds Events to emit a custom changed event",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/ckeditor/main.js",
-            "line": 144,
+            "line": 164,
             "description": "Emits the custom changed event",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
@@ -10917,7 +10935,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/ckeditor/main.js:56"
+            "line": " husky_components/ckeditor/main.js:72"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -11825,15 +11843,15 @@
         },
         {
             "message": "Missing item type\nRemoves the not needed elements from the config object for the ckeditor",
-            "line": " husky_components/ckeditor/main.js:56"
+            "line": " husky_components/ckeditor/main.js:72"
         },
         {
             "message": "Missing item type\nBinds Events to emit a custom changed event",
-            "line": " husky_components/ckeditor/main.js:128"
+            "line": " husky_components/ckeditor/main.js:148"
         },
         {
             "message": "Missing item type\nEmits the custom changed event",
-            "line": " husky_components/ckeditor/main.js:144"
+            "line": " husky_components/ckeditor/main.js:164"
         },
         {
             "message": "Missing item type\nnamespace for events",

@@ -94,6 +94,14 @@
                         });
 
                         return $editor.editor;
+                    },
+
+                    getInstance: function(id) {
+                        var instance = CKEDITOR.instances[id];
+
+                        if (!!instance) {
+                            return instance;
+                        }
                     }
                 };
             }
