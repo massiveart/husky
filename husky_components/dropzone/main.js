@@ -352,7 +352,7 @@ define([], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on('addedfile', function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
@@ -373,7 +373,7 @@ define([], function () {
                             }.bind(that));
                         });
 
-                        // gets called before the file is sent
+                        // gets called before each file is sent
                         this.on('sending', function (file) {
                             if (typeof this.options.beforeSendingCallback === 'function') {
                                 this.options.beforeSendingCallback(file);

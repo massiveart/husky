@@ -33,7 +33,7 @@
                  data-aura-title-key="Drag and drop assets here to upload"
                  data-aura-url="http://husky.lo:7878/admin/api/dropzone"
                  data-aura-instance-name="pictures"
-                 data-aura-show-overlay="true"></div>
+                 data-aura-show-overlay="false"></div>
         </div>
     </div>
     <div class="grid-row">
@@ -89,8 +89,11 @@ require(['lib/husky'], function(Husky) {
                     console.log('lets wait a bit. Why the hurry?');
                     setTimeout(function() {
                         def.resolve();
-                    }, 5000);
+                    }, 2000);
                     return def.promise();
+                },
+                beforeSendingCallback: function(){
+                    console.log('before sending a file');
                 }
             }
         }]);

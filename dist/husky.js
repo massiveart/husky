@@ -27195,7 +27195,7 @@ define('__component__$navigation@husky',[],function() {
 
             // load Data
             if (!!this.options.url) {
-                this.sandbox.util.load(this.options.url)
+                this.sandbox.util.load(this.options.url, null, 'json')
                     .then(this.render.bind(this))
                     .fail(function(data) {
                         this.sandbox.logger.log("data could not be loaded:", data);
@@ -28615,7 +28615,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.table = {};
             this.data = null;
             this.rowClicked = false;
-            this.preventFocusoutHandler = false;
+            this.isFocusoutHandlerEnabled = this.options.editable === true || this.options.editable === 'true';
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
             this.cropBreakPoint = null;
@@ -28799,7 +28799,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.removeNewRecordRow();
             var $row = this.sandbox.dom.createElement(templates.row),
                 $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
-            record.id = (!!record.id) ? record.id : constants.newRecordId
+
+            record.id = (!!record.id) ? record.id : constants.newRecordId;
             this.sandbox.dom.data($row, 'id', record.id);
 
             if (!!record.parent) {
@@ -28825,6 +28826,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         /**
          * Inserts a body row into the dom. Looks if a row needs to be overriden, or if a parent exists etc.
          * @param record {Object} the data object of the record
+         * @param $overrideElement {Object}
          * @param prepend {Boolean} true to prepend
          */
         insertBodyRow: function(record, $overrideElement, prepend) {
@@ -29054,7 +29056,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         removeNewRecordRow: function() {
             if (!!this.table.rows[constants.newRecordId]) {
-                this.preventFocusoutHandler = true;
                 this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
                 delete this.table.rows[constants.newRecordId];
             }
@@ -29268,7 +29269,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 $inputs = this.sandbox.dom.find('.' + constants.editableInputClass, this.table.rows[recordId].$el);
                 attribute = this.sandbox.dom.data(this.sandbox.dom.parents($inputs[0], 'td'), 'attribute');
             }
-            $cell = this.table.rows[recordId].cells[attribute].$el
+            $cell = this.table.rows[recordId].cells[attribute].$el;
             this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
             this.sandbox.dom.focus(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
             this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
@@ -29284,7 +29285,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (event.keyCode === 13) {
                 this.sandbox.dom.stopPropagation(event);
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
-                this.preventFocusoutHandler = true;
                 this.editRow(recordId);
             }
         },
@@ -29294,7 +29294,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function (event) {
-            if (this.preventFocusoutHandler === false) {
+            if (!!this.isFocusoutHandlerEnabled) {
                 this.sandbox.dom.stopPropagation(event);
                 var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
                 this.editRow(recordId);
@@ -29325,9 +29325,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         editedSuccessCallback: function (record) {
             var $row;
             if (!!record.id && !!this.table.rows[record.id]) {
-                $row = this.table.rows[record.id].$el
+                $row = this.table.rows[record.id].$el;
             } else if (!!this.table.rows[constants.newRecordId]) {
-                $row = this.table.rows[constants.newRecordId].$el
+                $row = this.table.rows[constants.newRecordId].$el;
             }
             if (!!$row && !!$row.length) {
                 this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.inputWrapperClass, $row));
@@ -32209,7 +32209,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         }
                     }.bind(this))
                     .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), textStatus, error);
+                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error);
 
                         if (typeof fail === 'function') {
                             fail(jqXHR, textStatus, error);
@@ -36999,7 +36999,7 @@ define('__component__$select@husky',[], function() {
                     this.sandbox.dom.text(this.$label, this.options.defaultLabel);
                 } else {
 
-                    var text = "";
+                    var text = "", labelWidth;
                     this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
                         text += ' ' + value + ',';
                     });
@@ -38167,7 +38167,7 @@ define('__component__$column-navigation@husky',[], function () {
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
                 if (!!this.options.showEditIcon) {
-                    item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
+                    item.push('<span class="' + this.options.editIcon + ' edit pull-left"></span>');
                 }
                 !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
@@ -41269,7 +41269,7 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on('addedfile', function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
@@ -41290,7 +41290,7 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         });
 
-                        // gets called before the file is sent
+                        // gets called before each file is sent
                         this.on('sending', function (file) {
                             if (typeof this.options.beforeSendingCallback === 'function') {
                                 this.options.beforeSendingCallback(file);
@@ -46913,21 +46913,27 @@ define('husky_extensions/util',[],function() {
                 }
             };
 
-            app.core.util.load = function(url, data) {
-                var deferred = new app.sandbox.data.deferred();
+            app.core.util.load = function(url, data, dataType) {
+                var deferred = new app.sandbox.data.deferred(),
+                    settings = {
+                        url: url,
+                        data: data || null,
+                        dataType: 'json',
 
-                app.sandbox.util.ajax({
-                    url: url,
-                    data: data || null,
+                        success: function(data, textStatus) {
+                            deferred.resolve(data, textStatus);
+                        }.bind(this),
 
-                    success: function(data, textStatus) {
-                        deferred.resolve(data, textStatus);
-                    }.bind(this),
+                        error: function(jqXHR, textStatus, error) {
+                            deferred.reject(textStatus, error);
+                        }
+                    };
 
-                    error: function(jqXHR, textStatus, error) {
-                        deferred.reject(textStatus, error);
-                    }
-                });
+                if (typeof(dataType) !== 'undefined') {
+                    settings.dataType = dataType;
+                }
+
+                app.sandbox.util.ajax(settings);
 
                 app.sandbox.emit('husky.util.load.data');
 

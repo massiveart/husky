@@ -351,3 +351,13 @@
       }
     }
 }
+
+
+.editable .husky-validate-error {
+    .husky-input {
+        input {
+            height: $inputHeight;
+            margin-top: -$inputHeight;
+        }
+    }
+}
