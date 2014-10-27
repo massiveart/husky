@@ -3842,6 +3842,24 @@
         {
             "file": "husky_components/ckeditor/main.js",
             "line": 56,
+            "itemtype": "event",
+            "name": "husky.ckeditor.start",
+            "description": "starts the used editor plugin",
+            "class": "CKEditor",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/ckeditor/main.js",
+            "line": 64,
+            "itemtype": "event",
+            "name": "husky.ckeditor.destroy",
+            "description": "destroys the used editor plugin",
+            "class": "CKEditor",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/ckeditor/main.js",
+            "line": 72,
             "description": "Removes the not needed elements from the config object for the ckeditor",
             "return": {
                 "description": "configuration object for ckeditor",
@@ -3852,14 +3870,14 @@
         },
         {
             "file": "husky_components/ckeditor/main.js",
-            "line": 128,
+            "line": 148,
             "description": "Binds Events to emit a custom changed event",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/ckeditor/main.js",
-            "line": 144,
+            "line": 164,
             "description": "Emits the custom changed event",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
@@ -4495,14 +4513,14 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 139,
+            "line": 138,
             "description": "custom events",
             "class": "Column-Options",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 151,
+            "line": 150,
             "description": "returns all items that are visible",
             "params": [
                 {
@@ -4515,7 +4533,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 168,
+            "line": 167,
             "description": "returns all items that are visible",
             "params": [
                 {
@@ -4528,7 +4546,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 195,
+            "line": 194,
             "description": "function checks if id is set and unique among all items\notherwise a new id is generated for the element",
             "params": [
                 {
@@ -4541,7 +4559,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 210,
+            "line": 209,
             "description": "gets called when toggle item is clicked\nopens dropdown submenu",
             "params": [
                 {
@@ -4554,28 +4572,28 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 220,
+            "line": 219,
             "description": "called when save was clicked",
             "class": "Column-Options",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 245,
+            "line": 244,
             "description": "close dropdown - callback",
             "class": "Column-Options",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 252,
+            "line": 251,
             "description": "renders list items",
             "class": "Column-Options",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 313,
+            "line": 311,
             "description": "toggles the classes of an item",
             "params": [
                 {
@@ -4588,7 +4606,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 380,
+            "line": 378,
             "description": "renders list",
             "params": [
                 {
@@ -4601,7 +4619,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 408,
+            "line": 406,
             "description": "rerenders list items (reset)",
             "class": "Column-Options",
             "module": "husky/components/column-options"
@@ -10922,7 +10940,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/ckeditor/main.js:56"
+            "line": " husky_components/ckeditor/main.js:72"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -11830,15 +11848,15 @@
         },
         {
             "message": "Missing item type\nRemoves the not needed elements from the config object for the ckeditor",
-            "line": " husky_components/ckeditor/main.js:56"
+            "line": " husky_components/ckeditor/main.js:72"
         },
         {
             "message": "Missing item type\nBinds Events to emit a custom changed event",
-            "line": " husky_components/ckeditor/main.js:128"
+            "line": " husky_components/ckeditor/main.js:148"
         },
         {
             "message": "Missing item type\nEmits the custom changed event",
-            "line": " husky_components/ckeditor/main.js:144"
+            "line": " husky_components/ckeditor/main.js:164"
         },
         {
             "message": "Missing item type\nnamespace for events",
@@ -11982,47 +12000,47 @@
         },
         {
             "message": "Missing item type\ncustom events",
-            "line": " husky_components/column-options/main.js:139"
+            "line": " husky_components/column-options/main.js:138"
         },
         {
             "message": "Missing item type\nreturns all items that are visible",
-            "line": " husky_components/column-options/main.js:151"
+            "line": " husky_components/column-options/main.js:150"
         },
         {
             "message": "Missing item type\nreturns all items that are visible",
-            "line": " husky_components/column-options/main.js:168"
+            "line": " husky_components/column-options/main.js:167"
         },
         {
             "message": "Missing item type\nfunction checks if id is set and unique among all items\notherwise a new id is generated for the element",
-            "line": " husky_components/column-options/main.js:195"
+            "line": " husky_components/column-options/main.js:194"
         },
         {
             "message": "Missing item type\ngets called when toggle item is clicked\nopens dropdown submenu",
-            "line": " husky_components/column-options/main.js:210"
+            "line": " husky_components/column-options/main.js:209"
         },
         {
             "message": "Missing item type\ncalled when save was clicked",
-            "line": " husky_components/column-options/main.js:220"
+            "line": " husky_components/column-options/main.js:219"
         },
         {
             "message": "Missing item type\nclose dropdown - callback",
-            "line": " husky_components/column-options/main.js:245"
+            "line": " husky_components/column-options/main.js:244"
         },
         {
             "message": "Missing item type\nrenders list items",
-            "line": " husky_components/column-options/main.js:252"
+            "line": " husky_components/column-options/main.js:251"
         },
         {
             "message": "Missing item type\ntoggles the classes of an item",
-            "line": " husky_components/column-options/main.js:313"
+            "line": " husky_components/column-options/main.js:311"
         },
         {
             "message": "Missing item type\nrenders list",
-            "line": " husky_components/column-options/main.js:380"
+            "line": " husky_components/column-options/main.js:378"
         },
         {
             "message": "Missing item type\nrerenders list items (reset)",
-            "line": " husky_components/column-options/main.js:408"
+            "line": " husky_components/column-options/main.js:406"
         },
         {
             "message": "Missing item type\nTemplates used by this class",

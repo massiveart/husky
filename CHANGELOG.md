@@ -2,8 +2,12 @@
 CHANGELOGS:
 ===========
 
-Unmerged
-========
+Unreleased
+==========
+
+ - added start and destroy interface for ckeditor component
+
+ - updated text block design in content-types
 
  - updated datagrid api
    'children' property is now 'hasChildren'

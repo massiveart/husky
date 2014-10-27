@@ -280,7 +280,7 @@ define([], function () {
                             smallHeader: true,
                             top: coordinates.top,
                             left: coordinates.left,
-                            cancelCallback: function () {
+                            cancelCallback: function() {
                                 this.sandbox.dom.append(this.$el, this.$dropzone);
                                 this.sandbox.dom.height(this.$el, '');
                                 this.overlayOpened = false;
