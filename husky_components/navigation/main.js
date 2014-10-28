@@ -237,7 +237,7 @@ define(function() {
 
             // load Data
             if (!!this.options.url) {
-                this.sandbox.util.load(this.options.url)
+                this.sandbox.util.load(this.options.url, null, 'json')
                     .then(this.render.bind(this))
                     .fail(function(data) {
                         this.sandbox.logger.log("data could not be loaded:", data);

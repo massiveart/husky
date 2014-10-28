@@ -1809,7 +1809,7 @@
                         }
                     }.bind(this))
                     .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), textStatus, error);
+                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error);
 
                         if (typeof fail === &#x27;function&#x27;) {
                             fail(jqXHR, textStatus, error);

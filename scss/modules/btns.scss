@@ -11,29 +11,35 @@
     cursor: pointer;
     line-height: 30px;
     height: 30px;
+    outline: 0;
 
     &.fit {
         display: inline-block;
         padding-right: 30px;
     }
+
     &.only-icon {
         padding-left: 0;
         padding-right: 0;
         text-align: center;
         min-width: 40px;
     }
+
     &.action {
         background-color: $highlightColor;
         color: $white;
     }
+
     &.action2 {
         background-color: $yellow;
         color: $white;
     }
+
     &.large {
         line-height: 40px;
         height: 40px;
     }
+
     &.small {
       font-size: $smallFontSize;
       height: 20px;
@@ -48,24 +54,34 @@
           }
       }
     }
+
     &.grey, &.gray {
         background-color: $grayLighter;
         color: $white;
     }
+
     &.black-text {
         color: $black;
     }
+
     &.gray-dark {
         background-color: $grayLight;
         color: $white;
     }
+
     &.black {
       background-color: $black;
       color: $white;
     }
+
     &.inactive {
         cursor: default;
     }
+
+    &.link {
+        background: transparent;
+    }
+
     [class^="fa-"] {
         font-size: 18px;
         margin-left: -15px;
@@ -84,6 +100,7 @@
             margin-left: 0;
         }
     }
+
     .text {
         padding: 0 8px;
     }
