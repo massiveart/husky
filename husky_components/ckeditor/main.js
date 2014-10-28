@@ -181,10 +181,6 @@ define([], function() {
         destroyEditor: function() {
             this.editorContent = this.editor.getData();
             this.editor.destroy();
-        },
-
-        remove: function() {
-            this.destroyEditor();
         }
     };
 
