@@ -31095,10 +31095,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         url: url
                     });
 
-                } else if (!!this.options.data.items) {
+                } else if (!!this.options.data) {
 
                     this.sandbox.logger.log('load data from array');
-                    this.data = this.options.data;
+                    this.data = {};
+                    if (this.options.resultKey && !!this.options.data[this.options.resultKey]) {
+                        this.data.embedded = this.options.data[this.options.resultKey];
+                    } else {
+                        this.data.embedded = this.options.data;
+                    }
 
                     this.renderView();
                     if (!!this.paginations[this.paginationId]) {

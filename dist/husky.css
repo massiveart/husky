@@ -1,4 +1,4 @@
-/* line 3, ../scss/abstract/abstract-validation.scss */
+/* line 2, ../scss/abstract/abstract-validation.scss */
 .husky-auto-complete-error label, .husky-validate-error label,
 .husky-auto-complete-error .control-label,
 .husky-validate-error .control-label {
@@ -27,7 +27,7 @@
 /**
  * Correct `block` display not defined in IE 8/9.
  */
-/* line 22, ../scss/normalize.scss */
+/* line 11, ../scss/normalize.scss */
 article,
 aside,
 details,
@@ -46,7 +46,7 @@ summary {
 /**
  * Correct `inline-block` display not defined in IE 8/9.
  */
-/* line 32, ../scss/normalize.scss */
+/* line 30, ../scss/normalize.scss */
 audio,
 canvas,
 video {
@@ -112,7 +112,7 @@ a:focus {
 /**
  * Improve readability when focused and also mouse hovered in all browsers.
  */
-/* line 97, ../scss/normalize.scss */
+/* line 96, ../scss/normalize.scss */
 a:active,
 a:hover {
   outline: 0;
@@ -142,7 +142,7 @@ abbr[title] {
 /**
  * Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome.
  */
-/* line 128, ../scss/normalize.scss */
+/* line 127, ../scss/normalize.scss */
 b,
 strong {
   font-weight: bold;
@@ -178,7 +178,7 @@ mark {
 /**
  * Correct font family set oddly in Safari 5 and Chrome.
  */
-/* line 166, ../scss/normalize.scss */
+/* line 163, ../scss/normalize.scss */
 code,
 kbd,
 pre,
@@ -214,7 +214,7 @@ small {
 /**
  * Prevent `sub` and `sup` affecting `line-height` in all browsers.
  */
-/* line 200, ../scss/normalize.scss */
+/* line 199, ../scss/normalize.scss */
 sub,
 sup {
   font-size: 75%;
@@ -293,7 +293,7 @@ legend {
  * 2. Correct font size not being inherited in all browsers.
  * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.
  */
-/* line 280, ../scss/normalize.scss */
+/* line 277, ../scss/normalize.scss */
 button,
 input,
 select,
@@ -310,7 +310,7 @@ textarea {
  * Address Firefox 4+ setting `line-height` on `input` using `!important` in
  * the UA stylesheet.
  */
-/* line 292, ../scss/normalize.scss */
+/* line 291, ../scss/normalize.scss */
 button,
 input {
   line-height: normal;
@@ -322,7 +322,7 @@ input {
  * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.
  * Correct `select` style inheritance in Firefox 4+ and Opera.
  */
-/* line 304, ../scss/normalize.scss */
+/* line 303, ../scss/normalize.scss */
 button,
 select {
   text-transform: none;
@@ -338,7 +338,7 @@ select {
 /**
  * Deactivate inner-shadow for inputs on mobile devices
  */
-/* line 331, ../scss/normalize.scss */
+/* line 327, ../scss/normalize.scss */
 input[type="text"],
 input[type="email"],
 input[type="search"],
@@ -352,7 +352,7 @@ textarea {
 /**
  * Re-set default cursor for disabled elements.
  */
-/* line 341, ../scss/normalize.scss */
+/* line 340, ../scss/normalize.scss */
 button[disabled],
 html input[disabled] {
   cursor: default;
@@ -362,7 +362,7 @@ html input[disabled] {
  * 1. Address box sizing set to `content-box` in IE 8/9.
  * 2. Remove excess padding in IE 8/9.
  */
-/* line 351, ../scss/normalize.scss */
+/* line 350, ../scss/normalize.scss */
 input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;
@@ -392,7 +392,7 @@ input[type="search"] {
  * Remove inner padding and search cancel button in Safari 5 and Chrome
  * on OS X.
  */
-/* line 377, ../scss/normalize.scss */
+/* line 376, ../scss/normalize.scss */
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -401,7 +401,7 @@ input[type="search"]::-webkit-search-decoration {
 /**
  * Remove inner padding and border in Firefox 4+.
  */
-/* line 386, ../scss/normalize.scss */
+/* line 385, ../scss/normalize.scss */
 button::-moz-focus-inner,
 input::-moz-focus-inner {
   border: 0;
@@ -443,7 +443,6 @@ table {
     opacity: 1;
   }
 }
-
 @-moz-keyframes HIGHLIGHT-ANIMATION {
   /* line 6, ../scss/animations.scss */
   0% {
@@ -455,7 +454,6 @@ table {
     opacity: 1;
   }
 }
-
 @-o-keyframes HIGHLIGHT-ANIMATION {
   /* line 10, ../scss/animations.scss */
   0% {
@@ -467,7 +465,6 @@ table {
     opacity: 1;
   }
 }
-
 @keyframes HIGHLIGHT-ANIMATION {
   /* line 14, ../scss/animations.scss */
   0% {
@@ -479,7 +476,6 @@ table {
     opacity: 1;
   }
 }
-
 /* line 20, ../scss/animations.scss */
 .highlight-animation {
   -webkit-animation: HIGHLIGHT-ANIMATION 1500ms;
@@ -514,7 +510,6 @@ table {
     transform: rotate(360deg);
   }
 }
-
 @-moz-keyframes ROTATE-ANIMATION {
   /* line 43, ../scss/animations.scss */
   0% {
@@ -534,7 +529,6 @@ table {
     transform: rotate(360deg);
   }
 }
-
 @-o-keyframes ROTATE-ANIMATION {
   /* line 55, ../scss/animations.scss */
   0% {
@@ -554,7 +548,6 @@ table {
     transform: rotate(360deg);
   }
 }
-
 @keyframes ROTATE-ANIMATION {
   /* line 67, ../scss/animations.scss */
   0% {
@@ -574,7 +567,6 @@ table {
     transform: rotate(360deg);
   }
 }
-
 /* line 7, ../scss/utilities.scss */
 .pull-right {
   float: right !important;
@@ -655,7 +647,7 @@ table {
   cursor: pointer;
 }
 
-/* line 77, ../scss/utilities.scss */
+/* line 76, ../scss/utilities.scss */
 .editable:focus,
 .editable:active {
   background: white;
@@ -876,7 +868,7 @@ body {
   line-height: 20px;
 }
 
-/* line 20, ../scss/typo.scss */
+/* line 15, ../scss/typo.scss */
 h1,
 h2,
 h3,
@@ -1121,8 +1113,8 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
   display: none;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
 }
 /* line 30, ../scss/colorpicker.scss */
@@ -2961,8 +2953,8 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 1.428571429;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
 }
 /* line 1638, ../scss/datepicker.scss */
@@ -2983,7 +2975,6 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   font-weight: normal;
   font-style: normal;
 }
-
 /* line 4, ../scss/fontsawesome/_core.scss */
 .fa, [class^="fa-"], .custom-checkbox input:checked + .icon::after, .custom-checkbox input.is-checked + .icon::after, .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a::before, .navigation-item-container .navigation-items li.is-selected a::before, .addButton, .pagination-wrapper.dropdowns .pagination .pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pagination-next::after, .toolbar-dropdown-menu li.marked::before, .auto-complete-list-selection .tm-tag-remove, .husky-datagrid .husky-table.overflow:after, .husky-datagrid thead tr th.sorted-asc .cell-content::after, .husky-datagrid thead tr th.sorted-desc .cell-content::after, .husky-matcher.overflow .wrapper:after, .sortable .text-block .head label::before {
   display: inline-block;
@@ -3098,7 +3089,6 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
     -moz-transform: rotate(359deg);
   }
 }
-
 @-webkit-keyframes spin {
   /* line 16, ../scss/fontsawesome/_spinning.scss */
   0% {
@@ -3110,7 +3100,6 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
     -webkit-transform: rotate(359deg);
   }
 }
-
 @-o-keyframes spin {
   /* line 20, ../scss/fontsawesome/_spinning.scss */
   0% {
@@ -3122,7 +3111,6 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
     -o-transform: rotate(359deg);
   }
 }
-
 @keyframes spin {
   /* line 24, ../scss/fontsawesome/_spinning.scss */
   0% {
@@ -3136,7 +3124,6 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
     transform: rotate(359deg);
   }
 }
-
 /* line 4, ../scss/fontsawesome/_rotated-flipped.scss */
 .fa-rotate-90 {
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
@@ -3312,7 +3299,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f012";
 }
 
-/* line 23, ../scss/fontsawesome/_icons.scss */
+/* line 22, ../scss/fontsawesome/_icons.scss */
 .fa-gear:before,
 .fa-cog:before {
   content: "\f013";
@@ -3368,7 +3355,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f01d";
 }
 
-/* line 35, ../scss/fontsawesome/_icons.scss */
+/* line 34, ../scss/fontsawesome/_icons.scss */
 .fa-rotate-right:before,
 .fa-repeat:before {
   content: "\f01e";
@@ -3504,7 +3491,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f03a";
 }
 
-/* line 63, ../scss/fontsawesome/_icons.scss */
+/* line 62, ../scss/fontsawesome/_icons.scss */
 .fa-dedent:before,
 .fa-outdent:before {
   content: "\f03b";
@@ -3520,7 +3507,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f03d";
 }
 
-/* line 68, ../scss/fontsawesome/_icons.scss */
+/* line 66, ../scss/fontsawesome/_icons.scss */
 .fa-photo:before,
 .fa-image:before,
 .fa-picture-o:before {
@@ -3547,7 +3534,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f043";
 }
 
-/* line 74, ../scss/fontsawesome/_icons.scss */
+/* line 73, ../scss/fontsawesome/_icons.scss */
 .fa-edit:before,
 .fa-pencil-square-o:before {
   content: "\f044";
@@ -3698,7 +3685,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f063";
 }
 
-/* line 105, ../scss/fontsawesome/_icons.scss */
+/* line 104, ../scss/fontsawesome/_icons.scss */
 .fa-mail-forward:before,
 .fa-share:before {
   content: "\f064";
@@ -3759,7 +3746,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f070";
 }
 
-/* line 118, ../scss/fontsawesome/_icons.scss */
+/* line 117, ../scss/fontsawesome/_icons.scss */
 .fa-warning:before,
 .fa-exclamation-triangle:before {
   content: "\f071";
@@ -3855,7 +3842,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f084";
 }
 
-/* line 138, ../scss/fontsawesome/_icons.scss */
+/* line 137, ../scss/fontsawesome/_icons.scss */
 .fa-gears:before,
 .fa-cogs:before {
   content: "\f085";
@@ -4071,13 +4058,13 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0b2";
 }
 
-/* line 182, ../scss/fontsawesome/_icons.scss */
+/* line 181, ../scss/fontsawesome/_icons.scss */
 .fa-group:before,
 .fa-users:before {
   content: "\f0c0";
 }
 
-/* line 184, ../scss/fontsawesome/_icons.scss */
+/* line 183, ../scss/fontsawesome/_icons.scss */
 .fa-chain:before,
 .fa-link:before {
   content: "\f0c1";
@@ -4093,13 +4080,13 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0c3";
 }
 
-/* line 188, ../scss/fontsawesome/_icons.scss */
+/* line 187, ../scss/fontsawesome/_icons.scss */
 .fa-cut:before,
 .fa-scissors:before {
   content: "\f0c4";
 }
 
-/* line 190, ../scss/fontsawesome/_icons.scss */
+/* line 189, ../scss/fontsawesome/_icons.scss */
 .fa-copy:before,
 .fa-files-o:before {
   content: "\f0c5";
@@ -4110,7 +4097,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0c6";
 }
 
-/* line 193, ../scss/fontsawesome/_icons.scss */
+/* line 192, ../scss/fontsawesome/_icons.scss */
 .fa-save:before,
 .fa-floppy-o:before {
   content: "\f0c7";
@@ -4121,7 +4108,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0c8";
 }
 
-/* line 197, ../scss/fontsawesome/_icons.scss */
+/* line 195, ../scss/fontsawesome/_icons.scss */
 .fa-navicon:before,
 .fa-reorder:before,
 .fa-bars:before {
@@ -4213,19 +4200,19 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0db";
 }
 
-/* line 216, ../scss/fontsawesome/_icons.scss */
+/* line 215, ../scss/fontsawesome/_icons.scss */
 .fa-unsorted:before,
 .fa-sort:before {
   content: "\f0dc";
 }
 
-/* line 218, ../scss/fontsawesome/_icons.scss */
+/* line 217, ../scss/fontsawesome/_icons.scss */
 .fa-sort-down:before,
 .fa-sort-desc:before {
   content: "\f0dd";
 }
 
-/* line 220, ../scss/fontsawesome/_icons.scss */
+/* line 219, ../scss/fontsawesome/_icons.scss */
 .fa-sort-up:before,
 .fa-sort-asc:before {
   content: "\f0de";
@@ -4241,19 +4228,19 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0e1";
 }
 
-/* line 224, ../scss/fontsawesome/_icons.scss */
+/* line 223, ../scss/fontsawesome/_icons.scss */
 .fa-rotate-left:before,
 .fa-undo:before {
   content: "\f0e2";
 }
 
-/* line 226, ../scss/fontsawesome/_icons.scss */
+/* line 225, ../scss/fontsawesome/_icons.scss */
 .fa-legal:before,
 .fa-gavel:before {
   content: "\f0e3";
 }
 
-/* line 228, ../scss/fontsawesome/_icons.scss */
+/* line 227, ../scss/fontsawesome/_icons.scss */
 .fa-dashboard:before,
 .fa-tachometer:before {
   content: "\f0e4";
@@ -4269,7 +4256,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0e6";
 }
 
-/* line 232, ../scss/fontsawesome/_icons.scss */
+/* line 231, ../scss/fontsawesome/_icons.scss */
 .fa-flash:before,
 .fa-bolt:before {
   content: "\f0e7";
@@ -4285,7 +4272,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f0e9";
 }
 
-/* line 236, ../scss/fontsawesome/_icons.scss */
+/* line 235, ../scss/fontsawesome/_icons.scss */
 .fa-paste:before,
 .fa-clipboard:before {
   content: "\f0ea";
@@ -4441,7 +4428,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f10a";
 }
 
-/* line 268, ../scss/fontsawesome/_icons.scss */
+/* line 267, ../scss/fontsawesome/_icons.scss */
 .fa-mobile-phone:before,
 .fa-mobile:before {
   content: "\f10b";
@@ -4472,7 +4459,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f111";
 }
 
-/* line 275, ../scss/fontsawesome/_icons.scss */
+/* line 274, ../scss/fontsawesome/_icons.scss */
 .fa-mail-reply:before,
 .fa-reply:before {
   content: "\f112";
@@ -4538,13 +4525,13 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f121";
 }
 
-/* line 289, ../scss/fontsawesome/_icons.scss */
+/* line 288, ../scss/fontsawesome/_icons.scss */
 .fa-mail-reply-all:before,
 .fa-reply-all:before {
   content: "\f122";
 }
 
-/* line 292, ../scss/fontsawesome/_icons.scss */
+/* line 290, ../scss/fontsawesome/_icons.scss */
 .fa-star-half-empty:before,
 .fa-star-half-full:before,
 .fa-star-half-o:before {
@@ -4566,7 +4553,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f126";
 }
 
-/* line 297, ../scss/fontsawesome/_icons.scss */
+/* line 296, ../scss/fontsawesome/_icons.scss */
 .fa-unlink:before,
 .fa-chain-broken:before {
   content: "\f127";
@@ -4757,25 +4744,25 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f14e";
 }
 
-/* line 336, ../scss/fontsawesome/_icons.scss */
+/* line 335, ../scss/fontsawesome/_icons.scss */
 .fa-toggle-down:before,
 .fa-caret-square-o-down:before {
   content: "\f150";
 }
 
-/* line 338, ../scss/fontsawesome/_icons.scss */
+/* line 337, ../scss/fontsawesome/_icons.scss */
 .fa-toggle-up:before,
 .fa-caret-square-o-up:before {
   content: "\f151";
 }
 
-/* line 340, ../scss/fontsawesome/_icons.scss */
+/* line 339, ../scss/fontsawesome/_icons.scss */
 .fa-toggle-right:before,
 .fa-caret-square-o-right:before {
   content: "\f152";
 }
 
-/* line 342, ../scss/fontsawesome/_icons.scss */
+/* line 341, ../scss/fontsawesome/_icons.scss */
 .fa-euro:before,
 .fa-eur:before {
   content: "\f153";
@@ -4786,19 +4773,19 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f154";
 }
 
-/* line 345, ../scss/fontsawesome/_icons.scss */
+/* line 344, ../scss/fontsawesome/_icons.scss */
 .fa-dollar:before,
 .fa-usd:before {
   content: "\f155";
 }
 
-/* line 347, ../scss/fontsawesome/_icons.scss */
+/* line 346, ../scss/fontsawesome/_icons.scss */
 .fa-rupee:before,
 .fa-inr:before {
   content: "\f156";
 }
 
-/* line 351, ../scss/fontsawesome/_icons.scss */
+/* line 348, ../scss/fontsawesome/_icons.scss */
 .fa-cny:before,
 .fa-rmb:before,
 .fa-yen:before,
@@ -4806,20 +4793,20 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f157";
 }
 
-/* line 354, ../scss/fontsawesome/_icons.scss */
+/* line 352, ../scss/fontsawesome/_icons.scss */
 .fa-ruble:before,
 .fa-rouble:before,
 .fa-rub:before {
   content: "\f158";
 }
 
-/* line 356, ../scss/fontsawesome/_icons.scss */
+/* line 355, ../scss/fontsawesome/_icons.scss */
 .fa-won:before,
 .fa-krw:before {
   content: "\f159";
 }
 
-/* line 358, ../scss/fontsawesome/_icons.scss */
+/* line 357, ../scss/fontsawesome/_icons.scss */
 .fa-bitcoin:before,
 .fa-btc:before {
   content: "\f15a";
@@ -5075,7 +5062,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f190";
 }
 
-/* line 410, ../scss/fontsawesome/_icons.scss */
+/* line 409, ../scss/fontsawesome/_icons.scss */
 .fa-toggle-left:before,
 .fa-caret-square-o-left:before {
   content: "\f191";
@@ -5096,7 +5083,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f194";
 }
 
-/* line 415, ../scss/fontsawesome/_icons.scss */
+/* line 414, ../scss/fontsawesome/_icons.scss */
 .fa-turkish-lira:before,
 .fa-try:before {
   content: "\f195";
@@ -5132,14 +5119,14 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f19b";
 }
 
-/* line 424, ../scss/fontsawesome/_icons.scss */
+/* line 422, ../scss/fontsawesome/_icons.scss */
 .fa-institution:before,
 .fa-bank:before,
 .fa-university:before {
   content: "\f19c";
 }
 
-/* line 426, ../scss/fontsawesome/_icons.scss */
+/* line 425, ../scss/fontsawesome/_icons.scss */
 .fa-mortar-board:before,
 .fa-graduation-cap:before {
   content: "\f19d";
@@ -5185,7 +5172,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f1a6";
 }
 
-/* line 436, ../scss/fontsawesome/_icons.scss */
+/* line 435, ../scss/fontsawesome/_icons.scss */
 .fa-pied-piper-square:before,
 .fa-pied-piper:before {
   content: "\f1a7";
@@ -5271,13 +5258,13 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f1b8";
 }
 
-/* line 454, ../scss/fontsawesome/_icons.scss */
+/* line 453, ../scss/fontsawesome/_icons.scss */
 .fa-automobile:before,
 .fa-car:before {
   content: "\f1b9";
 }
 
-/* line 456, ../scss/fontsawesome/_icons.scss */
+/* line 455, ../scss/fontsawesome/_icons.scss */
 .fa-cab:before,
 .fa-taxi:before {
   content: "\f1ba";
@@ -5328,26 +5315,26 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f1c4";
 }
 
-/* line 468, ../scss/fontsawesome/_icons.scss */
+/* line 466, ../scss/fontsawesome/_icons.scss */
 .fa-file-photo-o:before,
 .fa-file-picture-o:before,
 .fa-file-image-o:before {
   content: "\f1c5";
 }
 
-/* line 470, ../scss/fontsawesome/_icons.scss */
+/* line 469, ../scss/fontsawesome/_icons.scss */
 .fa-file-zip-o:before,
 .fa-file-archive-o:before {
   content: "\f1c6";
 }
 
-/* line 472, ../scss/fontsawesome/_icons.scss */
+/* line 471, ../scss/fontsawesome/_icons.scss */
 .fa-file-sound-o:before,
 .fa-file-audio-o:before {
   content: "\f1c7";
 }
 
-/* line 474, ../scss/fontsawesome/_icons.scss */
+/* line 473, ../scss/fontsawesome/_icons.scss */
 .fa-file-movie-o:before,
 .fa-file-video-o:before {
   content: "\f1c8";
@@ -5373,7 +5360,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f1cc";
 }
 
-/* line 482, ../scss/fontsawesome/_icons.scss */
+/* line 479, ../scss/fontsawesome/_icons.scss */
 .fa-life-bouy:before,
 .fa-life-saver:before,
 .fa-support:before,
@@ -5386,13 +5373,13 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f1ce";
 }
 
-/* line 485, ../scss/fontsawesome/_icons.scss */
+/* line 484, ../scss/fontsawesome/_icons.scss */
 .fa-ra:before,
 .fa-rebel:before {
   content: "\f1d0";
 }
 
-/* line 487, ../scss/fontsawesome/_icons.scss */
+/* line 486, ../scss/fontsawesome/_icons.scss */
 .fa-ge:before,
 .fa-empire:before {
   content: "\f1d1";
@@ -5423,19 +5410,19 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: "\f1d6";
 }
 
-/* line 494, ../scss/fontsawesome/_icons.scss */
+/* line 493, ../scss/fontsawesome/_icons.scss */
 .fa-wechat:before,
 .fa-weixin:before {
   content: "\f1d7";
 }
 
-/* line 496, ../scss/fontsawesome/_icons.scss */
+/* line 495, ../scss/fontsawesome/_icons.scss */
 .fa-send:before,
 .fa-paper-plane:before {
   content: "\f1d8";
 }
 
-/* line 498, ../scss/fontsawesome/_icons.scss */
+/* line 497, ../scss/fontsawesome/_icons.scss */
 .fa-send-o:before,
 .fa-paper-plane-o:before {
   content: "\f1d9";
@@ -5501,8 +5488,8 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   padding: 5px 0;
   margin-top: -7px;
   margin-left: 0px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
 }
 /* line 23, ../scss/dropdown-menu.scss */
@@ -5518,7 +5505,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   line-height: 30px;
   white-space: nowrap;
 }
-/* line 36, ../scss/dropdown-menu.scss */
+/* line 35, ../scss/dropdown-menu.scss */
 .custom-dropdown-menu li.is-selected, .custom-dropdown-menu li:hover {
   background-color: #52b6ca;
   cursor: pointer;
@@ -5527,7 +5514,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
 .custom-dropdown-menu li.is-selected a, .custom-dropdown-menu li:hover a {
   color: white;
 }
-/* line 45, ../scss/dropdown-menu.scss */
+/* line 44, ../scss/dropdown-menu.scss */
 .custom-dropdown-menu li.disabled:hover, .custom-dropdown-menu li.disabled {
   cursor: default;
   background-color: inherit;
@@ -5563,8 +5550,8 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   background-color: white;
   z-index: 1000;
   border-radius: 3px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
 }
 /* line 16, ../scss/modules/overlay.scss */
@@ -5639,9 +5626,9 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
 .husky-overlay-container .slides {
   position: relative;
   left: 0px;
-  -webkit-transition: left 500ms;
   -moz-transition: left 500ms;
   -o-transition: left 500ms;
+  -webkit-transition: left 500ms;
   transition: left 500ms;
 }
 /* line 86, ../scss/modules/overlay.scss */
@@ -5824,12 +5811,12 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
 
 /* line 8, ../scss/modules/core.scss */
 * {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-/* line 13, ../scss/modules/core.scss */
+/* line 12, ../scss/modules/core.scss */
 html,
 body {
   height: 100%;
@@ -5914,7 +5901,7 @@ hr.divider.small {
   left: 0px;
 }
 
-/* line 35, ../scss/modules/column-options.scss */
+/* line 34, ../scss/modules/column-options.scss */
 .column-options-list-item.is-selected, .column-options-list-item.hover-style {
   background-color: #cccccc;
 }
@@ -6229,7 +6216,7 @@ input[type="text"].input-round {
   border-radius: 30px;
 }
 
-/* line 38, ../scss/modules/form.scss */
+/* line 37, ../scss/modules/form.scss */
 input
 .input-description {
   margin-top: -5px;
@@ -6248,7 +6235,7 @@ input ::-moz-placeholder {
   /* Firefox 19+ */
 }
 
-/* line 72, ../scss/modules/form.scss */
+/* line 70, ../scss/modules/form.scss */
 .form-group,
 .form-group-vertical,
 .form-vertical .form-group {
@@ -6491,7 +6478,7 @@ textarea.form-element.small, textarea.small.husky-input {
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 329, ../scss/modules/form.scss */
+/* line 328, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
@@ -6654,7 +6641,7 @@ span.error {
   opacity: 1;
 }
 
-/* line 182, ../scss/modules/navigation.scss */
+/* line 181, ../scss/modules/navigation.scss */
 li.is-active > .navigation-items-toggle a,
 li.is-active > .navigation-subitems-toggle a {
   color: white;
@@ -6713,10 +6700,10 @@ li.is-active > div > a.navigation-settings-icon {
 .navigation-item-container .navigation-items.is-expanded > .navigation-items-list {
   display: block;
   opacity: 1;
-  -webkit-transition: opacity 100ms;
-  -webkit-transition-delay: 75ms;
   -moz-transition: opacity 100ms 75ms;
   -o-transition: opacity 100ms 75ms;
+  -webkit-transition: opacity 100ms;
+  -webkit-transition-delay: 75ms;
   transition: opacity 100ms 75ms;
 }
 /* line 243, ../scss/modules/navigation.scss */
@@ -6736,9 +6723,9 @@ li.is-active > div > a.navigation-settings-icon {
   padding-bottom: 20px;
   padding-top: 10px;
   z-index: 100;
-  -webkit-transition: opacity 100ms;
   -moz-transition: opacity 100ms;
   -o-transition: opacity 100ms;
+  -webkit-transition: opacity 100ms;
   transition: opacity 100ms;
 }
 /* line 265, ../scss/modules/navigation.scss */
@@ -7003,15 +6990,15 @@ li a.navigation-settings-icon {
   z-index: 100;
   color: rgba(255, 255, 255, 0.5);
 }
-/* line 504, ../scss/modules/navigation.scss */
+/* line 503, ../scss/modules/navigation.scss */
 .navigation.collapsed * .navigation-settings-icon,
 .navigation.collapsed * .navigation-toggle-icon, .navigation.collapsed .is-active .navigation-settings-icon,
 .navigation.collapsed .is-active .navigation-toggle-icon, .navigation.collapsed .is-expanded .navigation-settings-icon,
 .navigation.collapsed .is-expanded .navigation-toggle-icon {
   opacity: 0;
-  -webkit-transition: opacity 0.2s;
   -moz-transition: opacity 0.2s;
   -o-transition: opacity 0.2s;
+  -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
 }
 /* line 509, ../scss/modules/navigation.scss */
@@ -7020,7 +7007,7 @@ li a.navigation-settings-icon {
 }
 /* line 514, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-items div {
-  border: rgba(0, 0, 0, 0) !important;
+  border: transparent !important;
   padding: 0 !important;
   margin: 0 !important;
   line-height: 0;
@@ -7106,84 +7093,84 @@ li a.navigation-settings-icon {
 
 /* line 602, ../scss/modules/navigation.scss */
 .navigation {
-  -webkit-transition: width 0.5s;
   -moz-transition: width 0.5s;
   -o-transition: width 0.5s;
+  -webkit-transition: width 0.5s;
   transition: width 0.5s;
 }
 
-/* line 610, ../scss/modules/navigation.scss */
+/* line 606, ../scss/modules/navigation.scss */
 .navigation footer,
 .navigation footer > *,
 .navigation .wrapper,
 .navigation .wrapper:after,
 .navigation-items * {
-  -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
   transition: all 0.5s;
 }
 
 /* line 614, ../scss/modules/navigation.scss */
 .navigation-items {
-  -webkit-transition: all 0, opacity 0.5s, background 0.5s;
   -moz-transition: all 0, opacity 0.5s, background 0.5s;
   -o-transition: all 0, opacity 0.5s, background 0.5s;
+  -webkit-transition: all 0, opacity 0.5s, background 0.5s;
   transition: all 0, opacity 0.5s, background 0.5s;
 }
 
 /* line 618, ../scss/modules/navigation.scss */
 .navigation-header {
-  -webkit-transition: margin 0.5s;
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
+  -webkit-transition: margin 0.5s;
   transition: margin 0.5s;
 }
 /* line 621, ../scss/modules/navigation.scss */
 .navigation-header .navigation-header-title {
-  -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
   -o-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
 
 /* line 626, ../scss/modules/navigation.scss */
 .navigation-search {
-  -webkit-transition: margin 0.5s;
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
+  -webkit-transition: margin 0.5s;
   transition: margin 0.5s;
 }
 /* line 628, ../scss/modules/navigation.scss */
 .navigation-search input {
-  -webkit-transition: width 0.5s;
   -moz-transition: width 0.5s;
   -o-transition: width 0.5s;
+  -webkit-transition: width 0.5s;
   transition: width 0.5s;
 }
 
-/* line 634, ../scss/modules/navigation.scss */
+/* line 633, ../scss/modules/navigation.scss */
 .section-headline,
 .section-headline * {
-  -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
   transition: all 0.5s;
 }
 
 /* line 638, ../scss/modules/navigation.scss */
 .navigation-item-title {
-  -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
   -o-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
 
 /* line 642, ../scss/modules/navigation.scss */
 .search-icon {
-  -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
   -o-transition: color 0.5s;
+  -webkit-transition: color 0.5s;
   transition: color 0.5s;
 }
 
@@ -7204,8 +7191,8 @@ li a.navigation-settings-icon {
 
 /* line 16, ../scss/modules/dropdown.scss */
 .dropdown-shadow, .tt-dropdown-menu {
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
 }
 /* line 18, ../scss/modules/dropdown.scss */
@@ -7248,7 +7235,7 @@ li a.navigation-settings-icon {
   line-height: 30px;
   text-align: left;
 }
-/* line 55, ../scss/modules/dropdown.scss */
+/* line 54, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .dropdown-menu > ul > li.hover {
   background-color: #52b6ca;
   cursor: pointer;
@@ -7313,7 +7300,7 @@ table {
   border-spacing: 0;
 }
 
-/* line 13, ../scss/modules/tables.scss */
+/* line 12, ../scss/modules/tables.scss */
 .table th,
 .table td {
   text-align: left;
@@ -7859,7 +7846,7 @@ a.btn-black, a.btn-highlight {
   width: 100%;
 }
 
-/* line 75, ../scss/modules/auto-complete.scss */
+/* line 74, ../scss/modules/auto-complete.scss */
 .suggestion:hover,
 .tt-is-under-cursor .suggestion {
   background: #52b6ca;
@@ -7924,9 +7911,9 @@ a.btn-black, a.btn-highlight {
 }
 /* line 16, ../scss/modules/search.scss */
 .search-container.slide {
-  -webkit-transition: width 250ms;
   -moz-transition: width 250ms;
   -o-transition: width 250ms;
+  -webkit-transition: width 250ms;
   transition: width 250ms;
 }
 /* line 19, ../scss/modules/search.scss */
@@ -8029,7 +8016,7 @@ a.btn-black, a.btn-highlight {
 .search-container.gray.focus .search-input {
   background-color: white;
 }
-/* line 86, ../scss/modules/search.scss */
+/* line 85, ../scss/modules/search.scss */
 .search-container.gray.focus .search-icon,
 .search-container.gray.focus .remove-icon {
   color: #3e3e3e;
@@ -8229,7 +8216,7 @@ a.btn-black, a.btn-highlight {
   height: 20px;
   margin-top: 4px;
 }
-/* line 117, ../scss/modules/toolbar.scss */
+/* line 116, ../scss/modules/toolbar.scss */
 .toolbar-item.disabled:hover, .toolbar-item.disabled {
   background-color: inherit;
   cursor: default;
@@ -8248,7 +8235,7 @@ a.btn-black, a.btn-highlight {
   background-color: #52b6ca;
   border-color: transparent;
 }
-/* line 135, ../scss/modules/toolbar.scss */
+/* line 134, ../scss/modules/toolbar.scss */
 .toolbar-item.highlight.disabled:hover, .toolbar-item.highlight.disabled {
   background-color: #cccccc;
   border-color: transparent;
@@ -8356,8 +8343,8 @@ a.btn-black, a.btn-highlight {
   margin-top: -7px;
   margin-left: 0px;
   z-index: 2000;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
 }
 /* line 248, ../scss/modules/toolbar.scss */
@@ -8384,7 +8371,7 @@ a.btn-black, a.btn-highlight {
   text-decoration: none;
   padding: 0;
 }
-/* line 273, ../scss/modules/toolbar.scss */
+/* line 272, ../scss/modules/toolbar.scss */
 .toolbar-dropdown-menu li.is-selected, .toolbar-dropdown-menu li:hover {
   background-color: #52b6ca;
   color: white;
@@ -8402,7 +8389,7 @@ a.btn-black, a.btn-highlight {
   left: 7px;
   font-size: 12px;
 }
-/* line 294, ../scss/modules/toolbar.scss */
+/* line 293, ../scss/modules/toolbar.scss */
 .toolbar-dropdown-menu li.disabled:hover, .toolbar-dropdown-menu li.disabled {
   cursor: default;
   background-color: inherit;
@@ -8558,7 +8545,6 @@ a.btn-black, a.btn-highlight {
     -webkit-transform: scale(1);
   }
 }
-
 @keyframes bounce {
   /* line 34, ../scss/modules/loader.scss */
   0%, 100% {
@@ -8570,7 +8556,6 @@ a.btn-black, a.btn-highlight {
     transform: scale(1);
   }
 }
-
 /* line 1, ../scss/modules/column-navigation.scss */
 .husky-column-navigation {
   height: 100%;
@@ -8915,8 +8900,8 @@ a.btn-black, a.btn-highlight {
   left: 0;
   width: 100%;
   background-color: #ddd;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
 }
 /* line 97, ../scss/modules/auto-complete-list.scss */
@@ -9035,7 +9020,7 @@ a.btn-black, a.btn-highlight {
   top: inherit;
   bottom: 5px;
 }
-/* line 83, ../scss/modules/select.scss */
+/* line 82, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list .disabled,
 .husky-select-container .dropdown-list .disabled:hover {
   background: none;
@@ -9080,7 +9065,7 @@ a.btn-black, a.btn-highlight {
   overflow: hidden;
   white-space: nowrap;
 }
-/* line 122, ../scss/modules/select.scss */
+/* line 121, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list > ul > li:hover, .husky-select-container .dropdown-list > ul > li.hover {
   background-color: #52b6ca;
   cursor: pointer;
@@ -9211,7 +9196,7 @@ a.btn-black, a.btn-highlight {
   margin-top: -28px;
   top: 50%;
 }
-/* line 81, ../scss/modules/datagrid.scss */
+/* line 80, ../scss/modules/datagrid.scss */
 .husky-datagrid .husky-table.fullwidth th:first-child,
 .husky-datagrid .husky-table.fullwidth td:first-child {
   padding-left: 50px;
@@ -9387,170 +9372,170 @@ a.btn-black, a.btn-highlight {
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(1) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 100ms;
   -moz-transition: opacity 250ms 100ms;
   -o-transition: opacity 250ms 100ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 100ms;
   transition: opacity 250ms 100ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(2) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 140ms;
   -moz-transition: opacity 250ms 140ms;
   -o-transition: opacity 250ms 140ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 140ms;
   transition: opacity 250ms 140ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(3) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 180ms;
   -moz-transition: opacity 250ms 180ms;
   -o-transition: opacity 250ms 180ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 180ms;
   transition: opacity 250ms 180ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(4) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 220ms;
   -moz-transition: opacity 250ms 220ms;
   -o-transition: opacity 250ms 220ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 220ms;
   transition: opacity 250ms 220ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(5) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 260ms;
   -moz-transition: opacity 250ms 260ms;
   -o-transition: opacity 250ms 260ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 260ms;
   transition: opacity 250ms 260ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(6) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 300ms;
   -moz-transition: opacity 250ms 300ms;
   -o-transition: opacity 250ms 300ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 300ms;
   transition: opacity 250ms 300ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(7) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 340ms;
   -moz-transition: opacity 250ms 340ms;
   -o-transition: opacity 250ms 340ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 340ms;
   transition: opacity 250ms 340ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(8) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 380ms;
   -moz-transition: opacity 250ms 380ms;
   -o-transition: opacity 250ms 380ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 380ms;
   transition: opacity 250ms 380ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(9) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 420ms;
   -moz-transition: opacity 250ms 420ms;
   -o-transition: opacity 250ms 420ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 420ms;
   transition: opacity 250ms 420ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(10) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 460ms;
   -moz-transition: opacity 250ms 460ms;
   -o-transition: opacity 250ms 460ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 460ms;
   transition: opacity 250ms 460ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(11) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 500ms;
   -moz-transition: opacity 250ms 500ms;
   -o-transition: opacity 250ms 500ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 500ms;
   transition: opacity 250ms 500ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(12) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 540ms;
   -moz-transition: opacity 250ms 540ms;
   -o-transition: opacity 250ms 540ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 540ms;
   transition: opacity 250ms 540ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(13) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 580ms;
   -moz-transition: opacity 250ms 580ms;
   -o-transition: opacity 250ms 580ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 580ms;
   transition: opacity 250ms 580ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(14) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 620ms;
   -moz-transition: opacity 250ms 620ms;
   -o-transition: opacity 250ms 620ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 620ms;
   transition: opacity 250ms 620ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(15) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 660ms;
   -moz-transition: opacity 250ms 660ms;
   -o-transition: opacity 250ms 660ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 660ms;
   transition: opacity 250ms 660ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(16) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 700ms;
   -moz-transition: opacity 250ms 700ms;
   -o-transition: opacity 250ms 700ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 700ms;
   transition: opacity 250ms 700ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(17) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 740ms;
   -moz-transition: opacity 250ms 740ms;
   -o-transition: opacity 250ms 740ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 740ms;
   transition: opacity 250ms 740ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(18) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 780ms;
   -moz-transition: opacity 250ms 780ms;
   -o-transition: opacity 250ms 780ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 780ms;
   transition: opacity 250ms 780ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(19) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 820ms;
   -moz-transition: opacity 250ms 820ms;
   -o-transition: opacity 250ms 820ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 820ms;
   transition: opacity 250ms 820ms;
 }
 /* line 256, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(20) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 860ms;
   -moz-transition: opacity 250ms 860ms;
   -o-transition: opacity 250ms 860ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 860ms;
   transition: opacity 250ms 860ms;
 }
 /* line 260, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:nth-child(n+20) {
-  -webkit-transition: opacity 250ms;
-  -webkit-transition-delay: 900ms;
   -moz-transition: opacity 250ms 900ms;
   -o-transition: opacity 250ms 900ms;
+  -webkit-transition: opacity 250ms;
+  -webkit-transition-delay: 900ms;
   transition: opacity 250ms 900ms;
 }
 /* line 266, ../scss/modules/datagrid.scss */
@@ -9585,10 +9570,10 @@ a.btn-black, a.btn-highlight {
   margin-left: 10px;
   display: inline-block;
   opacity: 0;
-  -webkit-transition: opacity 100ms ease-in;
-  -webkit-transition-delay: 200ms;
   -moz-transition: opacity 100ms ease-in 200ms;
   -o-transition: opacity 100ms ease-in 200ms;
+  -webkit-transition: opacity 100ms ease-in;
+  -webkit-transition-delay: 200ms;
   transition: opacity 100ms ease-in 200ms;
 }
 /* line 299, ../scss/modules/datagrid.scss */
@@ -9650,7 +9635,7 @@ a.btn-black, a.btn-highlight {
   margin-top: -30px;
 }
 
-/* line 3, ../scss/modules/label.scss */
+/* line 1, ../scss/modules/label.scss */
 .husky-label-error,
 .husky-label-warning,
 .husky-label-success {
@@ -9733,9 +9718,9 @@ a.btn-black, a.btn-highlight {
   border-radius: 3px;
   display: inline-block;
   margin-right: 20px;
-  -webkit-transition: border-color 0.3s;
   -moz-transition: border-color 0.3s;
   -o-transition: border-color 0.3s;
+  -webkit-transition: border-color 0.3s;
   transition: border-color 0.3s;
 }
 /* line 39, ../scss/modules/matcher.scss */
@@ -9790,9 +9775,9 @@ a.btn-black, a.btn-highlight {
   font-weight: bold;
   color: white;
   padding-left: 10px;
-  -webkit-transition: background 0.3s;
   -moz-transition: background 0.3s;
   -o-transition: background 0.3s;
+  -webkit-transition: background 0.3s;
   transition: background 0.3s;
 }
 /* line 88, ../scss/modules/matcher.scss */
@@ -9801,9 +9786,9 @@ a.btn-black, a.btn-highlight {
   height: 40px;
   line-height: 40px;
   padding-left: 10px;
-  -webkit-transition: background 0.3s;
   -moz-transition: background 0.3s;
   -o-transition: background 0.3s;
+  -webkit-transition: background 0.3s;
   transition: background 0.3s;
 }
 /* line 95, ../scss/modules/matcher.scss */
@@ -10004,9 +9989,9 @@ a.btn-black, a.btn-highlight {
   -webkit-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
-  -webkit-transition: all 100ms ease-in;
   -moz-transition: all 100ms ease-in;
   -o-transition: all 100ms ease-in;
+  -webkit-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
 /* line 48, ../scss/modules/toggler.scss */
@@ -10021,9 +10006,9 @@ a.btn-black, a.btn-highlight {
   top: 0px;
   left: 0px;
   z-index: 10;
-  -webkit-transition: all 100ms ease-in;
   -moz-transition: all 100ms ease-in;
   -o-transition: all 100ms ease-in;
+  -webkit-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
 /* line 62, ../scss/modules/toggler.scss */
@@ -10031,9 +10016,9 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   top: 3px;
   left: 3px;
-  -webkit-transition: all 100ms ease-in;
   -moz-transition: all 100ms ease-in;
   -o-transition: all 100ms ease-in;
+  -webkit-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
   opacity: 0;
   z-index: 0;
@@ -10116,8 +10101,8 @@ a.btn-black, a.btn-highlight {
   padding: 10px 20px 20px 20px;
   background: #dddddd;
   border: 1px solid #cccccc;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
 }
 /* line 66, ../scss/modules/content-types.scss */
@@ -10341,9 +10326,9 @@ a.btn-black, a.btn-highlight {
   border: 1px dashed #cccccc;
   border-radius: 3px;
   cursor: pointer;
-  -webkit-transition: opacity 300ms;
   -moz-transition: opacity 300ms;
   -o-transition: opacity 300ms;
+  -webkit-transition: opacity 300ms;
   transition: opacity 300ms;
 }
 /* line 25, ../scss/modules/dropzone.scss */
@@ -10355,9 +10340,9 @@ a.btn-black, a.btn-highlight {
   left: 0px;
   width: 100%;
   z-index: 5;
-  -webkit-transition: margin-top 300ms;
   -moz-transition: margin-top 300ms;
   -o-transition: margin-top 300ms;
+  -webkit-transition: margin-top 300ms;
   transition: margin-top 300ms;
 }
 /* line 35, ../scss/modules/dropzone.scss */
@@ -10490,9 +10475,9 @@ a.btn-black, a.btn-highlight {
 /* line 146, ../scss/modules/dropzone.scss */
 .husky-dropzone.dropped {
   padding-bottom: 0;
-  -webkit-transition: padding 300ms;
   -moz-transition: padding 300ms;
   -o-transition: padding 300ms;
+  -webkit-transition: padding 300ms;
   transition: padding 300ms;
 }
 /* line 150, ../scss/modules/dropzone.scss */
@@ -10503,9 +10488,9 @@ a.btn-black, a.btn-highlight {
 .husky-dropzone.small {
   padding-bottom: 0;
   height: 70px;
-  -webkit-transition: height 300ms;
   -moz-transition: height 300ms;
   -o-transition: height 300ms;
+  -webkit-transition: height 300ms;
   transition: height 300ms;
 }
 /* line 160, ../scss/modules/dropzone.scss */
@@ -10780,7 +10765,7 @@ a.btn-black, a.btn-highlight {
   font-size: 70px;
   color: #cccccc;
 }
-/* line 141, ../scss/modules/thumbnails.scss */
+/* line 140, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover, .husky-thumbnails .item.is-selected {
   background: white;
 }
@@ -10831,10 +10816,10 @@ a.btn-black, a.btn-highlight {
   border: 3px solid white;
   background: white;
   border-radius: 2px;
-  -webkit-transition: all 200ms ease;
-  -webkit-transition-delay: 200ms;
   -moz-transition: all 200ms ease 200ms;
   -o-transition: all 200ms ease 200ms;
+  -webkit-transition: all 200ms ease;
+  -webkit-transition-delay: 200ms;
   transition: all 200ms ease 200ms;
 }
 /* line 190, ../scss/modules/thumbnails.scss */
@@ -10866,9 +10851,9 @@ a.btn-black, a.btn-highlight {
 }
 /* line 210, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail.first:only-child {
-  -webkit-transition: none 1s;
   -moz-transition: none 1s;
   -o-transition: none 1s;
+  -webkit-transition: none 1s;
   transition: none 1s;
   position: relative;
   margin: 0 auto;
@@ -10949,3 +10934,5 @@ a.btn-black, a.btn-highlight {
   color: #999999;
   line-height: 14px;
 }
+
+/*# sourceMappingURL=husky.css.map */
