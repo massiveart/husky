@@ -304,13 +304,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[pagination=dropdown]</code>
-                                    <span class="type">Boolean | String</span>
+                                    <code class="param-name optional">[view=&#x27;table&#x27;]</code>
+                                    <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>name of the pagination to use. If false no pagination will be initialized</p>
+                                    <p>name of the view to use</p>
 
                                 </div>
 
@@ -319,13 +319,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[view=&#x27;table&#x27;]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[pagination=dropdown]</code>
+                                    <span class="type">Boolean | String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>name of the view to use</p>
+                                    <p>name of the pagination to use. If false no pagination will be initialized</p>
 
                                 </div>
 
@@ -658,6 +658,13 @@
                         
                             <li class="index-item event">
                                 <a href="#event_husky.datagrid.data.get">husky.datagrid.data.get</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.datagrid.data.get-selected">husky.datagrid.data.get-selected</a>
 
                                 
                                 
@@ -1071,6 +1078,74 @@
 </div>
 
                 
+                    <div id="event_husky.datagrid.data.get-selected" class="events item">
+    <h3 class="name"><code>husky.datagrid.data.get-selected</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_main.js.html#l423"><code>husky_components&#x2F;datagrid&#x2F;main.js:423</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>triggers husky.datagrid.items.selected event, which returns all selected item data</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function receives array of selected items</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
                     <div id="event_husky.datagrid.data.provide" class="events item">
     <h3 class="name"><code>husky.datagrid.data.provide</code></h3>
     <span class="type"></span>
@@ -1378,7 +1453,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l201"><code>husky_components&#x2F;datagrid&#x2F;main.js:201</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l193"><code>husky_components&#x2F;datagrid&#x2F;main.js:193</code></a>
         
         </p>
 
@@ -1388,7 +1463,7 @@
     </div>
 
     <div class="description">
-        <p>raised after a view has been rendered</p>
+        <p>raised after initialization has finished</p>
 
     </div>
 
@@ -1422,7 +1497,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l193"><code>husky_components&#x2F;datagrid&#x2F;main.js:193</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l201"><code>husky_components&#x2F;datagrid&#x2F;main.js:201</code></a>
         
         </p>
 
@@ -1432,7 +1507,7 @@
     </div>
 
     <div class="description">
-        <p>raised after initialization has finished</p>
+        <p>raised after a view has been rendered</p>
 
     </div>
 
