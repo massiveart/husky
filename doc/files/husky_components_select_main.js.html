@@ -827,7 +827,7 @@ define([], function() {
                         removeOnClose: true,
                         instanceName: &#x27;husky-select&#x27;,
                         title: this.sandbox.translate(&#x27;public.edit-entries&#x27;),
-                        closeCallback: function() {
+                        cancelCallback: function() {
                             this.onCloseWithCancel();
                         }.bind(this),
                         okCallback: function(data) {
@@ -1198,7 +1198,7 @@ define([], function() {
                     this.sandbox.dom.text(this.$label, this.options.defaultLabel);
                 } else {
 
-                    var text = &quot;&quot;;
+                    var text = &quot;&quot;, labelWidth;
                     this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
                         text += &#x27; &#x27; + value + &#x27;,&#x27;;
                     });

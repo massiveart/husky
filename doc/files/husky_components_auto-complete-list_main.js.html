@@ -196,7 +196,8 @@
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
- * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-icon
+ * @param {String} [options.suggestionIcon] Icon Class-suffix for autocomplete-suggestion-icon
  * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
  * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
  */
@@ -217,7 +218,7 @@ define([], function() {
                 suggestionsUrl: &#x27;&#x27;,
                 suggestionsKey: &#x27;suggestions&#x27;,
                 label: &#x27;&#x27;,
-                inputSelector: &#x27;.husky-auto-complete&#x27;,
+                inputSelector: &#x27;.husky-auto-complete-container&#x27;,
                 autocomplete: true,
                 localData: [],
                 prefetchUrl: &#x27;&#x27;,
@@ -236,7 +237,8 @@ define([], function() {
                 arrowUpClass: &#x27;fa-caret-up&#x27;,
                 slideDuration: 500,
                 elementTagDataName: &#x27;tags&#x27;,
-                autoCompleteIcon: &#x27;tag&#x27;,
+                autoCompleteIcon: &#x27;search&#x27;,
+                suggestionIcon: &#x27;tag&#x27;,
                 delimiters: [9, 188, 13],
                 noNewTags: false
             },
@@ -246,24 +248,23 @@ define([], function() {
                     &#x27;&lt;div class=&quot;auto-complete-list-container&quot;&gt;&#x27;,
                     &#x27;    &lt;label&gt;&#x27;,
                     &#x27;        &lt;%= label %&gt;&#x27;,
-                    &#x27;            &lt;div class=&quot;auto-complete-list&quot;&gt;&#x27;,
-                    &#x27;                &lt;div class=&quot;husky-auto-complete&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;                &lt;div class=&quot;toggler&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;            &lt;/div&gt;&#x27;,
-                    &#x27;        &lt;/label&gt;&#x27;,
-                    &#x27;    &lt;/div&gt;&#x27;
+                    &#x27;        &lt;div class=&quot;auto-complete-list&quot;&gt;&#x27;,
+                    &#x27;           &lt;div class=&quot;husky-auto-complete-container&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;           &lt;div class=&quot;toggler&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;        &lt;/div&gt;&#x27;,
+                    &#x27;    &lt;/label&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;),
                 suggestion: [
                     &#x27;&lt;div class=&quot;auto-complete-list-suggestions&quot;&gt;&#x27;,
                     &#x27;    &lt;h5&gt;&lt;%= headline %&gt;&lt;/h5&gt;&#x27;,
-                    &#x27;    &lt;ul&gt;&#x27;,
-                    &#x27;    &lt;/ul&gt;&#x27;,
+                    &#x27;    &lt;ul&gt;&lt;/ul&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;)
             },
 
             /** Position values for toggling suggestions */
-                togglerPosUp = &#x27;up&#x27;,
+            togglerPosUp = &#x27;up&#x27;,
             togglerPosDown = &#x27;down&#x27;,
 
             eventNamespace = &#x27;husky.auto-complete-list.&#x27;,
@@ -272,7 +273,7 @@ define([], function() {
              * raised after initialization
              * @event husky.auto-complete-list.initialized
              */
-                INITIALIZED = function() {
+            INITIALIZED = function() {
                 return createEventName.call(this, &#x27;initialized&#x27;);
             },
 
@@ -281,7 +282,7 @@ define([], function() {
              * @event husky.auto-complete-list.set-tags
              * @param {Array} tags Array of strings
              */
-                SET_TAGS = function() {
+            SET_TAGS = function() {
                 return createEventName.call(this, &#x27;set-tags&#x27;);
             },
 
@@ -289,7 +290,7 @@ define([], function() {
              * used for receiving tags
              * @event husky.auto-complete-list.get-tags
              */
-                GET_TAGS = function() {
+            GET_TAGS = function() {
                 return createEventName.call(this, &#x27;get-tags&#x27;);
             },
 
@@ -297,7 +298,7 @@ define([], function() {
              * raised after AJAX request for loading items is sent
              * @event husky.auto-complete-list.items-request
              */
-                ITEM_REQUEST = function() {
+            ITEM_REQUEST = function() {
                 return createEventName.call(this, &#x27;item-request&#x27;);
             },
 
@@ -305,7 +306,7 @@ define([], function() {
              * raised after AJAX request for loading suggestions is sent
              * @event husky.auto-complete-list.sug-request
              */
-                SUGGESTION_REQUEST = function() {
+            SUGGESTION_REQUEST = function() {
                 return createEventName.call(this, &#x27;sug-request&#x27;);
             },
 
@@ -314,7 +315,7 @@ define([], function() {
              * @event husky.auto-complete-list.sug-added
              * @param {object} suggestion - the suggestion element with id, name, DOM-object
              */
-                SUGGESTION_ADDED = function() {
+            SUGGESTION_ADDED = function() {
                 return createEventName.call(this, &#x27;sug-added&#x27;);
             },
 
@@ -322,7 +323,7 @@ define([], function() {
              * raised after an item is deleted
              * @event husky.auto-complete-list.item-deleted
              */
-                ITEM_DELETED = function() {
+            ITEM_DELETED = function() {
                 return createEventName.call(this, &#x27;item-deleted&#x27;);
             },
 
@@ -330,7 +331,7 @@ define([], function() {
              * raised after data was loaded
              * @event husky.auto-complete-list.data-loaded
              */
-                DATA_LOADED = function() {
+            DATA_LOADED = function() {
                 return createEventName.call(this, &#x27;data-loaded&#x27;);
             },
 
@@ -339,7 +340,7 @@ define([], function() {
              * @event husky.auto-complete-list.item-added
              * @param {string} item value
              */
-                ITEM_ADDED = function() {
+            ITEM_ADDED = function() {
                 return createEventName.call(this, &#x27;item-added&#x27;);
             },
 
@@ -347,7 +348,7 @@ define([], function() {
              * raised after all item were added
              * @event husky.auto-complete-list.items-added
              */
-                ITEMS_ADDED = function() {
+            ITEMS_ADDED = function() {
                 return createEventName.call(this, &#x27;items-added&#x27;);
             },
 
@@ -355,7 +356,7 @@ define([], function() {
              * raised when the suggestion container is closed
              * @event husky.auto-complete-list.sug-closed
              */
-                SUGGESTIONS_CLOSED = function() {
+            SUGGESTIONS_CLOSED = function() {
                 return createEventName.call(this, &#x27;sug-closed&#x27;);
             },
 
@@ -363,12 +364,12 @@ define([], function() {
              * raised when the suggestion container is opened
              * @event husky.auto-complete-list.sug-opened
              */
-                SUGGESTIONS_OPENED = function() {
+            SUGGESTIONS_OPENED = function() {
                 return createEventName.call(this, &#x27;sug-opened&#x27;);
             },
 
             /** returns normalized event names */
-                createEventName = function(postFix) {
+            createEventName = function(postFix) {
                 return eventNamespace + (this.options.instanceName ? this.options.instanceName + &#x27;.&#x27; : &#x27;&#x27;) + postFix;
             };
 
@@ -389,7 +390,7 @@ define([], function() {
                 this.initItems();
 
                 if (this.options.autocomplete === true) {
-                    this.sandbox.on(&#x27;husky.auto-complete.&#x27;+this.options.instanceName+&#x27;.initialized&#x27;, function() {
+                    this.sandbox.on(&#x27;husky.auto-complete.&#x27; + this.options.instanceName + &#x27;.initialized&#x27;, function() {
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
                 } else {
@@ -482,7 +483,8 @@ define([], function() {
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
-                                suggestionImg: this.options.autoCompleteIcon,
+                                suggestionIcon: this.options.suggestionIcon,
+                                autoCompleteIcon: this.options.autoCompleteIcon,
                                 resultKey: this.options.resultKey
                             },
                             this.options.autocompleteOptions

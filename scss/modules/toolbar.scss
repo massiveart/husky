@@ -214,13 +214,12 @@ $toolbarSmallHeight: 20px;
             display: table-cell;
             vertical-align: middle;
         }
-
-        .icon + .title:not(:empty) {
-            padding-left: 10px;
-        }
-
     }
+}
 
+// Compass 1.0.1 specificity bug 
+.toolbar-item .icon + .title:not(:empty) {
+    padding-left: 10px;
 }
 
 /**  dropdown styles **/

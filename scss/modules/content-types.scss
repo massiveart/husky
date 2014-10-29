@@ -3,21 +3,55 @@
 // --------------------------------------------------
 
 .sortable {
-    .text-block {
-        .head {
-            label {
-                cursor: move;
+    .show-in-sortmode {
+        display: none;
+    }
 
-                &::before {
-                    @extend .fa;
-                    content: $fa-var-ellipsis-v;
-                    cursor: move;
-                    padding-right: 5px;
-                    margin-left: -10px;
-                }
+    &.is-sortmode {
+        .show-in-sortmode {
+            display: block;
+        }
+
+        .cke,
+        .hide-in-sortmode {
+            display: none;
+        }
+
+        .text-block {
+            label {
+                display: none;
+            }
+
+            .form-group {
+                margin-top: 0;
             }
         }
     }
+
+    .text-block {
+        .move {
+            position: relative;
+
+            &::before {
+                @extend .fa;
+                content: $fa-var-ellipsis-v;
+                cursor: move;
+                padding-right: 5px;
+                position: absolute;
+                top: 10px;
+                left: 2px;
+                z-index: 5;
+                color: #999;
+                font-size: 16px;
+                width: 20px;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.text-block-controls {
+    margin-bottom: -20px; 
 }
 
 .text-block {
@@ -32,31 +66,29 @@
             cursor: default;
         }
 
-        .options-change {
-            float: left;
-            cursor: pointer;
-            margin-left: 10px;
-            display: none;
-            font-size: 16px;
-            .dropdown-toggle::after {
-                margin-left: 0;
-            }
-        }
-        .options-remove {
-            float: right;
-            cursor: pointer;
-            margin-top: 5px;
-            margin-left: 8px;
-            display: none;
-            font-size: 16px;
-        }
-
         &::after {
             content: "";
             display: block;
             clear: both;
         }
     }
+
+    .options-change {
+        cursor: pointer;
+        font-size: 16px;
+
+        .dropdown-toggle::after {
+            margin-left: 0;
+        }
+    }
+
+    .options-remove {
+        cursor: pointer;
+        position: relative;
+        top: 2px;
+        font-size: 16px;
+    }
+
     .container {
         padding: 10px 20px 20px 20px;
         background: $grayLighterer;
@@ -73,20 +105,16 @@
             width: 100%;
         }
     }
+}
 
-    &:hover {
-        .head .options-remove, .head .options-change {
-            display: block;
-        }
-    }
+.text-blocks-toggle-btn {
+    padding: 5px 0;
+    height: auto;
 }
 
 .empty {
     .text-block {
-        .head .options-remove {
-            display: none;
-        }
-        &:hover .head .options-remove {
+        .options-remove {
             display: none;
         }
     }
@@ -103,6 +131,15 @@
     .btn.full {
         background-color: $grayLighter;
         cursor: default;
+    }
+}
+
+.block-content {
+    display: none;
+    color: #999;
+
+    p {
+        margin: 5px 0;
     }
 }
 
@@ -258,6 +295,3 @@
         }
     }
 }
-
-
-

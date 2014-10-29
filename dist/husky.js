@@ -15732,7 +15732,6 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
             try {
               listener.apply(context, args);
             } catch(e) {
-              console.warn("App logger: ", app.logger);
               app.logger.error("Error caught in listener '" + name + "', called with arguments: ", args, "\nError:", e.message, e, args);
             }
           };
@@ -15916,7 +15915,7 @@ define('aura/ext/components', [],function() {
     }
 
     /**
-     * Method called on Components' initialization.
+     * Method called on Component's initialization.
      *
      * @method initialize
      * @param {Object} options options Object passed on Component initialization
@@ -15924,7 +15923,7 @@ define('aura/ext/components', [],function() {
     Component.prototype.initialize = function() {};
 
     /**
-     * A helper function to render markup and recursilvely start nested components.
+     * A helper function to render markup and recursively start nested components.
      *
      * @method  html
      * @param  {String} markup the markup to render in the component's root el
@@ -26066,7 +26065,7 @@ define('type/husky-input',[
                     return regex.test(value);
                 },
                 url:  function(value) {
-                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-\?\$\#])*\/?/;
                     return regex.test(value);
                 },
                 color:  function(value) {
@@ -26241,6 +26240,9 @@ define('bower_components/aura/lib/platform',[],function() {
         context = context || document;
         return $(context).find(selector);
       },
+      contains: function(selector, context) {
+        return $.contains(context || document, selector);
+      },
       data: function(selector, attribute) {
         return $(selector).data(attribute);
       }
@@ -26310,12 +26312,14 @@ define('bower_components/aura/lib/logger',[], function() {
     this._error   = (console.error || this._log);
     this._enabled = true;
 
-    if (Function.prototype.bind && typeof console === "object") {
-      var logFns = ["log", "warn", "error"];
-      for (var i = 0; i < logFns.length; i++) {
-        console[logFns[i]] = Function.prototype.call.bind(console[logFns[i]], console);
+    try {
+      if (Function.prototype.bind && typeof console === "object") {
+        var logFns = ["log", "warn", "error"];
+        for (var i = 0; i < logFns.length; i++) {
+          console[logFns[i]] = Function.prototype.call.bind(console[logFns[i]], console);
+        }
       }
-    }
+    } catch(e) {}
 
     return this;
   };
@@ -26802,6 +26806,24 @@ define('bower_components/aura/lib/aura',[
     };
 
     /**
+     * Check if any component is not stopped correctly and still referenced by aura.
+     * If that is the case we will stop the component and remove it.
+     * TODO: Consider using 'MutationObserver' for cleanup
+     *
+     * @method cleanUp
+     * @return {void}
+     */
+    app.cleanUp = function () {
+      _.defer(function() {    
+        _.each(appSandboxes, function(sandbox) {
+          if (!!sandbox && !!sandbox.el && !app.core.dom.contains($(sandbox.el)[0], document)) {
+            sandbox.stop();
+          }
+        });
+      });
+    };
+
+    /**
      * Sandboxes are a way to implement the facade pattern on top of the features provided by `core`.
      *
      * The `sandbox` property of an Aura App is just an Object that will be used
@@ -27173,7 +27195,7 @@ define('__component__$navigation@husky',[],function() {
 
             // load Data
             if (!!this.options.url) {
-                this.sandbox.util.load(this.options.url)
+                this.sandbox.util.load(this.options.url, null, 'json')
                     .then(this.render.bind(this))
                     .fail(function(data) {
                         this.sandbox.logger.log("data could not be loaded:", data);
@@ -27921,7 +27943,7 @@ define('__component__$column-options@husky',[],function() {
          * triggered when component is completely initialized
          * @event husky.column-options[.INSTANCE_NAME].initialized
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return getEventName.call(this, 'initialized');
 
         },
@@ -27931,7 +27953,7 @@ define('__component__$column-options@husky',[],function() {
          * @event husky.column-options[.INSTANCE_NAME].item.enabled
          * @param {Object} item that was enabled
          */
-            ENABLED = function() {
+        ENABLED = function() {
             return getEventName.call(this, 'item.enabled');
 
         },
@@ -27941,7 +27963,7 @@ define('__component__$column-options@husky',[],function() {
          * @event husky.column-options[.INSTANCE_NAME].item.disabled
          * @param {Object} item that was disabled
          */
-            DISABLED = function() {
+        DISABLED = function() {
             return getEventName.call(this, 'item.disabled');
 
         },
@@ -27951,7 +27973,7 @@ define('__component__$column-options@husky',[],function() {
          * @event husky.column-options[.INSTANCE_NAME].saved
          * @param {Array} Contains all visible items
          */
-            SAVED = function() {
+        SAVED = function() {
             return getEventName.call(this, 'saved');
 
         },
@@ -27960,7 +27982,7 @@ define('__component__$column-options@husky',[],function() {
          * used for receiving all visible columns
          * @event husky.column-options[.INSTANCE_NAME].get-selected
          */
-            GET_SELECTED = function() {
+        GET_SELECTED = function() {
             return getEventName.call(this, 'get-selected');
 
         },
@@ -27969,7 +27991,7 @@ define('__component__$column-options@husky',[],function() {
          * used for receiving all columns
          * @event husky.column-options[.INSTANCE_NAME].get-all
          */
-            GET_ALL = function() {
+        GET_ALL = function() {
             return getEventName.call(this, 'get-all');
 
         },
@@ -27978,8 +28000,7 @@ define('__component__$column-options@husky',[],function() {
         /**
          * DOM events
          */
-            bindDOMEvents = function() {
-
+        bindDOMEvents = function() {
             this.sandbox.dom.on(this.$el, 'click', customStopPropagation.bind(this), this.$container); // prevent from unwanted events
             this.sandbox.dom.on(this.$el, 'mouseover', onMouseOver.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseout', onMouseOut.bind(this), 'li');
@@ -27990,7 +28011,7 @@ define('__component__$column-options@husky',[],function() {
         /**
          * custom events
          */
-            bindCustomEvents = function() {
+        bindCustomEvents = function() {
             this.sandbox.on(GET_SELECTED.call(this), getSelectedItems.bind(this));
             this.sandbox.on(GET_ALL.call(this), getAllItems.bind(this));
         },
@@ -28003,7 +28024,7 @@ define('__component__$column-options@husky',[],function() {
          * returns all items that are visible
          * @param callbackFunction
          */
-            getSelectedItems = function(callbackFunction) {
+        getSelectedItems = function(callbackFunction) {
             var id, items,
                 $visibleItems = this.sandbox.dom.find('li:not(.disabled)', this.$el);
 
@@ -28020,7 +28041,7 @@ define('__component__$column-options@husky',[],function() {
          * returns all items that are visible
          * @param callbackFunction
          */
-            getAllItems = function(callbackFunction) {
+        getAllItems = function(callbackFunction) {
             var id, items,
                 $visibleItems = this.sandbox.dom.find('li', this.$el);
 
@@ -28048,7 +28069,7 @@ define('__component__$column-options@husky',[],function() {
          * otherwise a new id is generated for the element
          * @param item
          */
-            checkItemId = function(item) {
+        checkItemId = function(item) {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
@@ -28063,7 +28084,7 @@ define('__component__$column-options@husky',[],function() {
          * opens dropdown submenu
          * @param event
          */
-            customStopPropagation = function(event) {
+        customStopPropagation = function(event) {
             event.preventDefault();
             event.stopPropagation();
         },
@@ -28071,7 +28092,7 @@ define('__component__$column-options@husky',[],function() {
         /**
          * called when save was clicked
          */
-            submit = function() {
+        submit = function() {
             var $items = this.sandbox.dom.find('.column-options-list-item', this.$list),
                 items = [],
                 id;
@@ -28096,14 +28117,14 @@ define('__component__$column-options@husky',[],function() {
         /**
          * close dropdown - callback
          */
-            close = function() {
+        close = function() {
             this.sandbox.dom.remove(this.$el);
         },
 
         /**
          * renders list items
          */
-            renderItems = function() {
+        renderItems = function() {
             var $listItem;
 
             // create items array
@@ -28138,7 +28159,6 @@ define('__component__$column-options@husky',[],function() {
                     {
                         name: 'overlay@husky',
                         options: {
-                            triggerEl: this.options.trigger,
                             el: $element,
                             container: this.$el,
                             data: this.$list,
@@ -28165,7 +28185,7 @@ define('__component__$column-options@husky',[],function() {
          * toggles the classes of an item
          * @param event
          */
-            toggleVisibility = function(event) {
+        toggleVisibility = function(event) {
             event.preventDefault();
 
             var $listItem = this.sandbox.dom.parent(event.currentTarget),
@@ -28308,169 +28328,169 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
     
 
     var defaults = {
-            editable: false,
-            fullWidth: false,
-            removeRow: false,
-            selectItem: {
-                type: 'checkbox',
-                inFirstCell: false
-            },
-            noItemsText: 'This list is empty',
-            addRowTop: true,
-            excludeFields: [''],
-            cssClass: '',
-            thumbnailFormat: '50x50',
-            showHead: true,
-            hideChildrenAtBeginning: true,
-            openChildId: null,
-            highlightSelected: false,
-            stickyHeader: false,
-            icons: [],
-            removeIcon: 'trash-o',
-            croppedMaxLength: 35
+        editable: false,
+        fullWidth: false,
+        removeRow: false,
+        selectItem: {
+            type: 'checkbox',
+            inFirstCell: false
         },
+        noItemsText: 'This list is empty',
+        addRowTop: true,
+        excludeFields: [''],
+        cssClass: '',
+        thumbnailFormat: '50x50',
+        showHead: true,
+        hideChildrenAtBeginning: true,
+        openChildId: null,
+        highlightSelected: false,
+        stickyHeader: false,
+        icons: [],
+        removeIcon: 'trash-o',
+        croppedMaxLength: 35
+    },
 
-        constants = {
-            fullWidthClass: 'fullwidth',
-            stickyHeaderClass: 'sticky-header',
-            selectedRowClass: 'selected',
-            isSelectableClass: 'is-selectable',
-            sortableClass: 'is-sortable',
-            skeletonClass: 'husky-table',
-            containerClass: 'table-container',
-            overflowClass: 'overflow',
-            emptyListElementClass: 'empty-list',
-            rowRemoverClass: 'row-remover',
-            checkboxClass: 'checkbox',
-            radioClass: 'radio',
-            cellFitClass: 'fit',
-            tableClass: 'table',
-            rowClass: 'row',
-            thumbSrcKey: 'url',
-            thumbAltKey: 'alt',
-            headerCellClass: 'header-cell',
-            ascSortedClass: 'sorted-asc',
-            descSortedClass: 'sorted-desc',
-            headerCellLoaderClass: 'header-loader',
-            headerLoadingClass: 'is-loading',
-            editableItemClass: 'editable',
-            editableInputClass: 'editable-input',
-            inputWrapperClass: 'input-wrapper',
-            editedErrorClass: 'server-validation-error',
-            newRecordId: 'newrecord',
-            gridIconClass: 'grid-icon',
-            childWrapperClass: 'child-wrapper',
-            parentClass: 'children-toggler',
-            noChildrenClass: 'no-children',
-            toggleIconClass: 'toggle-icon',
-            collapsedIcon: 'fa-caret-right',
-            expandedIcon: 'fa-caret-down',
-            checkboxCellClass: 'checkbox-cell',
-            textContainerClass: 'cell-content',
-            renderingClass: 'rendering',
-            headerCloneClass: 'header-clone',
-            childIndent: 25 //px
-        },
+    constants = {
+        fullWidthClass: 'fullwidth',
+        stickyHeaderClass: 'sticky-header',
+        selectedRowClass: 'selected',
+        isSelectableClass: 'is-selectable',
+        sortableClass: 'is-sortable',
+        skeletonClass: 'husky-table',
+        containerClass: 'table-container',
+        overflowClass: 'overflow',
+        emptyListElementClass: 'empty-list',
+        rowRemoverClass: 'row-remover',
+        checkboxClass: 'checkbox',
+        radioClass: 'radio',
+        cellFitClass: 'fit',
+        tableClass: 'table',
+        rowClass: 'row',
+        thumbSrcKey: 'url',
+        thumbAltKey: 'alt',
+        headerCellClass: 'header-cell',
+        ascSortedClass: 'sorted-asc',
+        descSortedClass: 'sorted-desc',
+        headerCellLoaderClass: 'header-loader',
+        headerLoadingClass: 'is-loading',
+        editableItemClass: 'editable',
+        editableInputClass: 'editable-input',
+        inputWrapperClass: 'input-wrapper',
+        editedErrorClass: 'server-validation-error',
+        newRecordId: 'newrecord',
+        gridIconClass: 'grid-icon',
+        childWrapperClass: 'child-wrapper',
+        parentClass: 'children-toggler',
+        noChildrenClass: 'no-children',
+        toggleIconClass: 'toggle-icon',
+        collapsedIcon: 'fa-caret-right',
+        expandedIcon: 'fa-caret-down',
+        checkboxCellClass: 'checkbox-cell',
+        textContainerClass: 'cell-content',
+        renderingClass: 'rendering',
+        headerCloneClass: 'header-clone',
+        childIndent: 25 //px
+    },
 
-        selectItems = {
-            CHECKBOX: 'checkbox',
-            RADIO: 'radio'
-        },
+    selectItems = {
+        CHECKBOX: 'checkbox',
+        RADIO: 'radio'
+    },
 
-        /**
-         * Templates used by this class
-         */
-        templates = {
-            skeleton: [
-                '<div class="'+ constants.skeletonClass +'">',
-                '   <div class="'+ constants.containerClass +'"></div>',
-                '</div>'
-            ].join(''),
-            table: '<table class="'+ constants.tableClass +'"></table>',
-            header: '<thead></thead>',
-            body: '<tbody></tbody>',
-            row: '<tr class="' + constants.rowClass + '"></tr>',
-            headerCell: '<th class="'+ constants.headerCellClass +'"></th>',
-            cell: '<td></td>',
-            textContainer: '<span class="'+ constants.textContainerClass +'"><%= content %></span>',
-            headerCellLoader: '<div class="'+ constants.headerCellLoaderClass +'"></div>',
-            removeCellContent: '<span class="fa-<%= icon %> '+ constants.rowRemoverClass +'"></span>',
-            editableCellContent: [
-                '<span class="'+ constants.editableItemClass +'"><%= value %></span>',
-                '<div class="'+ constants.inputWrapperClass +'">',
-                '   <input type="text" class="form-element husky-validate '+ constants.editableInputClass +'" value="<%= value %>">',
-                '</div>'
-            ].join(''),
-            img: '<img alt="<%= alt %>" src="<%= src %>"/>',
-            childWrapper: '<div class="'+ constants.childWrapperClass +'"></div>',
-            toggleIcon: '<span class="'+ constants.toggleIconClass +'"></span>',
-            icon: [
-                '<span class="'+ constants.gridIconClass +' <%= align %>" data-icon-index="<%= index %>">',
-                '   <span class="fa-<%= icon %>"></span>',
-                '</span>'
-            ].join(''),
-            checkbox: [
-                '<div class="custom-checkbox">',
-                '   <input class="' + constants.checkboxClass + '" type="checkbox" data-form="false"/>',
-                '   <span class="icon"></span>',
-                '</div>'
-            ].join(''),
-            radio: [
-                '<div class="custom-radio">',
-                '    <input class="' + constants.radioClass + '" name="<%= name %>" type="radio" data-form="false"/>',
-                '    <span class="icon"></span>',
-                '</div>'
-            ].join(''),
-            empty: [
-                '<div class="'+ constants.emptyListElementClass +'">',
-                '   <div class="fa-coffee icon"></div>',
-                '   <span><%= text %></span>',
-                '</div>'
-            ].join('')
-        },
+    /**
+     * Templates used by this class
+     */
+    templates = {
+        skeleton: [
+            '<div class="'+ constants.skeletonClass +'">',
+            '   <div class="'+ constants.containerClass +'"></div>',
+            '</div>'
+        ].join(''),
+        table: '<table class="'+ constants.tableClass +'"></table>',
+        header: '<thead></thead>',
+        body: '<tbody></tbody>',
+        row: '<tr class="' + constants.rowClass + '"></tr>',
+        headerCell: '<th class="'+ constants.headerCellClass +'"></th>',
+        cell: '<td></td>',
+        textContainer: '<span class="'+ constants.textContainerClass +'"><%= content %></span>',
+        headerCellLoader: '<div class="'+ constants.headerCellLoaderClass +'"></div>',
+        removeCellContent: '<span class="fa-<%= icon %> '+ constants.rowRemoverClass +'"></span>',
+        editableCellContent: [
+            '<span class="'+ constants.editableItemClass +'"><%= value %></span>',
+            '<div class="'+ constants.inputWrapperClass +'">',
+            '   <input type="text" class="form-element husky-validate '+ constants.editableInputClass +'" value="<%= value %>">',
+            '</div>'
+        ].join(''),
+        img: '<img alt="<%= alt %>" src="<%= src %>"/>',
+        childWrapper: '<div class="'+ constants.childWrapperClass +'"></div>',
+        toggleIcon: '<span class="'+ constants.toggleIconClass +'"></span>',
+        icon: [
+            '<span class="'+ constants.gridIconClass +' <%= align %>" data-icon-index="<%= index %>">',
+            '   <span class="fa-<%= icon %>"></span>',
+            '</span>'
+        ].join(''),
+        checkbox: [
+            '<div class="custom-checkbox">',
+            '   <input class="' + constants.checkboxClass + '" type="checkbox" data-form="false"/>',
+            '   <span class="icon"></span>',
+            '</div>'
+        ].join(''),
+        radio: [
+            '<div class="custom-radio">',
+            '    <input class="' + constants.radioClass + '" name="<%= name %>" type="radio" data-form="false"/>',
+            '    <span class="icon"></span>',
+            '</div>'
+        ].join(''),
+        empty: [
+            '<div class="'+ constants.emptyListElementClass +'">',
+            '   <div class="fa-coffee icon"></div>',
+            '   <span><%= text %></span>',
+            '</div>'
+        ].join('')
+    },
 
-        /**
-         * used to update the table width and its containers due to responsiveness
-         * @event husky.datagrid.update.table
-         */
-            UPDATE_TABLE = function() {
-            return this.datagrid.createEventName.call(this.datagrid, 'update.table');
-        },
+    /**
+     * used to update the table width and its containers due to responsiveness
+     * @event husky.datagrid.update.table
+     */
+    UPDATE_TABLE = function() {
+        return this.datagrid.createEventName.call(this.datagrid, 'update.table');
+    },
 
-        /**
-         * used to update the table width and its containers due to responsiveness
-         * @event husky.datagrid.table.open-child
-         * @param {Number|String} id The id of the data-record to open the parents for
-         */
-            OPEN_PARENTS = function() {
-            return this.datagrid.createEventName.call(this.datagrid, 'table.open-parents');
-        },
+    /**
+     * used to update the table width and its containers due to responsiveness
+     * @event husky.datagrid.table.open-child
+     * @param {Number|String} id The id of the data-record to open the parents for
+     */
+    OPEN_PARENTS = function() {
+        return this.datagrid.createEventName.call(this.datagrid, 'table.open-parents');
+    },
 
-        /**
-         * triggered when a radio button inside the datagrid is clicked
-         * @event husky.datagrid.table.open-child
-         * @param {Number|String} id The id of the data-record to open the parents for
-         * @param {String} columnName column name
-         */
-            RADIO_SELECTED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, 'radio.selected');
-        },
+    /**
+     * triggered when a radio button inside the datagrid is clicked
+     * @event husky.datagrid.table.open-child
+     * @param {Number|String} id The id of the data-record to open the parents for
+     * @param {String} columnName column name
+     */
+    RADIO_SELECTED = function() {
+        return this.datagrid.createEventName.call(this.datagrid, 'radio.selected');
+    },
 
-        /**
-         * triggered when children were collapsed
-         * @event husky.datagrid.table.children.collapsed
-         */
-            CHILDREN_COLLAPSED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, 'children.collapsed');
-        },
+    /**
+     * triggered when children were collapsed
+     * @event husky.datagrid.table.children.collapsed
+     */
+    CHILDREN_COLLAPSED = function() {
+        return this.datagrid.createEventName.call(this.datagrid, 'children.collapsed');
+    },
 
-        /**
-         * triggered when children were expanded
-         * @event husky.datagrid.table.children.expanded
-         */
-            CHILDREN_EXPANDED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, 'children.expanded');
-        };
+    /**
+     * triggered when children were expanded
+     * @event husky.datagrid.table.children.expanded
+     */
+    CHILDREN_EXPANDED = function() {
+        return this.datagrid.createEventName.call(this.datagrid, 'children.expanded');
+    };
 
     return {
 
@@ -28595,7 +28615,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.table = {};
             this.data = null;
             this.rowClicked = false;
-            this.preventFocusoutHandler = false;
+            this.isFocusoutHandlerEnabled = this.options.editable === true || this.options.editable === 'true';
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
             this.cropBreakPoint = null;
@@ -28749,7 +28769,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @returns {String} html if no render is set to true
          */
         renderRowSelectItem: function(id, norender) {
-            if (this.datagrid.options.onlySelectLeaves === true && this.table.rows[id].numberChildren > 0) {
+            if (this.datagrid.options.onlySelectLeaves === true && !!this.table.rows[id].hasChildren) {
                 return '';
             }
             if (!!this.options.selectItem && !!this.options.selectItem.type &&
@@ -28779,7 +28799,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.removeNewRecordRow();
             var $row = this.sandbox.dom.createElement(templates.row),
                 $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
-            record.id = (!!record.id) ? record.id : constants.newRecordId
+
+            record.id = (!!record.id) ? record.id : constants.newRecordId;
             this.sandbox.dom.data($row, 'id', record.id);
 
             if (!!record.parent) {
@@ -28792,7 +28813,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 childrenLoaded: false,
                 childrenExpanded: false,
                 parent: !!(record.parent) ? record.parent : null,
-                numberChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : 0,
+                hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
                 level: 1
             };
             this.renderRowSelectItem(record.id);
@@ -28805,6 +28826,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         /**
          * Inserts a body row into the dom. Looks if a row needs to be overriden, or if a parent exists etc.
          * @param record {Object} the data object of the record
+         * @param $overrideElement {Object}
          * @param prepend {Boolean} true to prepend
          */
         insertBodyRow: function(record, $overrideElement, prepend) {
@@ -28888,7 +28910,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (!!this.datagrid.options.childrenPropertyName && index === 0) {
                 content = this.wrapChildrenCellContent(content, record);
             }
-            if (!!this.options.selectItem && !!this.options.selectItem.inFirstCell === true) {
+            if (!!this.options.selectItem && !!this.options.selectItem.inFirstCell === true && index === 0) {
                 this.sandbox.dom.attr($cell, 'colspan', 2);
                 selectItem = this.renderRowSelectItem(record.id, true);
                 if (typeof content === 'string') {
@@ -28963,8 +28985,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
                 $icon;
             // if has children
-            if (!!record[this.datagrid.options.childrenPropertyName]
-                && record[this.datagrid.options.childrenPropertyName] > 0) {
+            if (!!record[this.datagrid.options.childrenPropertyName]) {
                 this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
                 $icon = this.sandbox.dom.createElement(templates.toggleIcon);
                 this.sandbox.dom.prependClass($icon, constants.collapsedIcon);
@@ -29035,7 +29056,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         removeNewRecordRow: function() {
             if (!!this.table.rows[constants.newRecordId]) {
-                this.preventFocusoutHandler = true;
                 this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
                 delete this.table.rows[constants.newRecordId];
             }
@@ -29249,7 +29269,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 $inputs = this.sandbox.dom.find('.' + constants.editableInputClass, this.table.rows[recordId].$el);
                 attribute = this.sandbox.dom.data(this.sandbox.dom.parents($inputs[0], 'td'), 'attribute');
             }
-            $cell = this.table.rows[recordId].cells[attribute].$el
+            $cell = this.table.rows[recordId].cells[attribute].$el;
             this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
             this.sandbox.dom.focus(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
             this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
@@ -29265,7 +29285,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (event.keyCode === 13) {
                 this.sandbox.dom.stopPropagation(event);
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
-                this.preventFocusoutHandler = true;
                 this.editRow(recordId);
             }
         },
@@ -29275,7 +29294,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function (event) {
-            if (this.preventFocusoutHandler === false) {
+            if (!!this.isFocusoutHandlerEnabled) {
                 this.sandbox.dom.stopPropagation(event);
                 var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
                 this.editRow(recordId);
@@ -29306,9 +29325,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         editedSuccessCallback: function (record) {
             var $row;
             if (!!record.id && !!this.table.rows[record.id]) {
-                $row = this.table.rows[record.id].$el
+                $row = this.table.rows[record.id].$el;
             } else if (!!this.table.rows[constants.newRecordId]) {
-                $row = this.table.rows[constants.newRecordId].$el
+                $row = this.table.rows[constants.newRecordId].$el;
             }
             if (!!$row && !!$row.length) {
                 this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.inputWrapperClass, $row));
@@ -29392,7 +29411,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 if (this.options.highlightSelected === true) {
                     this.uniqueHighlightRecord(recordId);
                 }
-                if (!!this.table.rows[recordId].numberChildren > 0) {
+                if (!!this.table.rows[recordId].hasChildren) {
                     this.toggleChildren(recordId);
                 }
             }
@@ -29580,7 +29599,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         hideChildren: function(recordId) {
             this.sandbox.util.each(this.table.rows, function(rowId, row) {
                 if (row.parent == recordId) {
-                    if (row.numberChildren > 0) {
+                    if (!!row.hasChildren) {
                         this.hideChildren(rowId);
                     }
                     this.sandbox.dom.hide(row.$el);
@@ -30582,423 +30601,423 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          *    Default values for options
          */
         var defaults = {
-                view: 'table',
-                viewOptions: {
-                    table: {},
-                    thumbnail: {}
-                },
-                pagination: 'dropdown',
-                paginationOptions: {
-                    dropdown: {}
-                },
-                contentFilters: null,
-                sortable: true,
-                matchings: [],
-                url: null,
-                data: null,
-                instanceName: '',
-                searchInstanceName: null,
-                searchFields: [],
-                columnOptionsInstanceName: null,
-                defaultMeasureUnit: 'px',
-                preselected: [],
-                onlySelectLeaves: false,
-                childrenPropertyName: false,
-                resizeListeners: true,
-                resultKey: 'items'
+            view: 'table',
+            viewOptions: {
+                table: {},
+                thumbnail: {}
             },
-
-            types = {
-                DATE: 'date',
-                THUMBNAILS: 'thumbnails',
-                TITLE: 'title',
-                BYTES: 'bytes',
-                RADIO: 'radio',
-                COUNT: 'count',
-                TRANSLATION: 'translation'
+            pagination: 'dropdown',
+            paginationOptions: {
+                dropdown: {}
             },
+            contentFilters: null,
+            sortable: true,
+            matchings: [],
+            url: null,
+            data: null,
+            instanceName: '',
+            searchInstanceName: null,
+            searchFields: [],
+            columnOptionsInstanceName: null,
+            defaultMeasureUnit: 'px',
+            preselected: [],
+            onlySelectLeaves: false,
+            childrenPropertyName: false,
+            resizeListeners: true,
+            resultKey: 'items'
+        },
 
-            decorators = {
-                views: {
-                    table: decoratorTableView,
-                    thumbnail: thumbnailView,
-                    group: groupView
-                },
-                paginations: {
-                    dropdown: decoratorDropdownPagination
+        types = {
+            DATE: 'date',
+            THUMBNAILS: 'thumbnails',
+            TITLE: 'title',
+            BYTES: 'bytes',
+            RADIO: 'radio',
+            COUNT: 'count',
+            TRANSLATION: 'translation'
+        },
+
+        decorators = {
+            views: {
+                table: decoratorTableView,
+                thumbnail: thumbnailView,
+                group: groupView
+            },
+            paginations: {
+                dropdown: decoratorDropdownPagination
+            }
+        },
+
+        constants = {
+            viewSpacingBottom: 80
+        },
+
+        filters = {
+            /**
+             * Takes bytes and returns a more readable string
+             * @param bytes {Number}
+             * @returns {string}
+             */
+            bytes: function(bytes) {
+                if (bytes === 0) {
+                    return '0 Byte';
                 }
+                var k = 1000,
+                    sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                    i = Math.floor(Math.log(bytes) / Math.log(k));
+                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
             },
 
-            constants = {
-                viewSpacingBottom: 80
+            title: function(content) {
+                return content;
             },
 
-            filters = {
-                /**
-                 * Takes bytes and returns a more readable string
-                 * @param bytes {Number}
-                 * @returns {string}
-                 */
-                bytes: function(bytes) {
-                    if (bytes === 0) {
-                        return '0 Byte';
-                    }
-                    var k = 1000,
-                        sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                        i = Math.floor(Math.log(bytes) / Math.log(k));
-                    return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
-                },
-
-                title: function(content) {
-                    return content;
-                },
-
-                /**
-                 * Brings a date into the right format
-                 * @param date {String} the date to parse
-                 * @returns {String}
-                 */
-                date: function(date) {
-                    var parsedDate = this.sandbox.date.format(date);
-                    if (parsedDate !== null) {
-                        return parsedDate;
-                    }
-                    return date;
-                },
-
-                /**
-                 * Translates a string
-                 * @param val {String} the string to translate
-                 * @returns {String}
-                 */
-                translation: function(val) {
-                   return this.sandbox.translate(val);
-                },
-
-
-                /**
-                 * Attaches a postfix to a number
-                 * @param number
-                 * @param postfix
-                 */
-                count: function(number, postfix) {
-                    return (!!postfix) ? number + ' ' + postfix : number;
-                },
-
-                /**
-                 * Takes an array of thumbnails and returns an object with url and and alt
-                 * @param thumbnails {Array} array of thumbnails
-                 * @param format {String} the format of the thumbnail
-                 * @returns {Object} with url and alt property
-                 */
-                thumbnails: function(thumbnails, format) {
-                    var thumbnail = {
-                        url: null,
-                        alt: null
-                    };
-                    if (!!thumbnails && !!thumbnails[format]) {
-                        if (typeof thumbnails[format] === 'object') {
-                            thumbnail.url = thumbnails[format].url;
-                            thumbnail.alt = thumbnails[format].alt;
-                        } else {
-                            thumbnail.url = thumbnails[format];
-                            thumbnail.alt = '';
-                        }
-                    }
-                    return thumbnail;
-                },
-
-                /**
-                 * checks for bool value and sets radio to true
-                 */
-                radio: function(content, index, columnName) {
-                    var checked = (!content) ? false : true;
-                    return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
+            /**
+             * Brings a date into the right format
+             * @param date {String} the date to parse
+             * @returns {String}
+             */
+            date: function(date) {
+                var parsedDate = this.sandbox.date.format(date);
+                if (parsedDate !== null) {
+                    return parsedDate;
                 }
+                return date;
             },
 
-            templates = {
-                radio: [
-                    '<div class="custom-radio custom-filter">',
-                    '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
-                    '   <span class="icon"></span>',
-                    '</div>'
-                ].join('')
+            /**
+             * Translates a string
+             * @param val {String} the string to translate
+             * @returns {String}
+             */
+            translation: function(val) {
+               return this.sandbox.translate(val);
             },
 
-            namespace = 'husky.datagrid.',
+
+            /**
+             * Attaches a postfix to a number
+             * @param number
+             * @param postfix
+             */
+            count: function(number, postfix) {
+                return (!!postfix) ? number + ' ' + postfix : number;
+            },
+
+            /**
+             * Takes an array of thumbnails and returns an object with url and and alt
+             * @param thumbnails {Array} array of thumbnails
+             * @param format {String} the format of the thumbnail
+             * @returns {Object} with url and alt property
+             */
+            thumbnails: function(thumbnails, format) {
+                var thumbnail = {
+                    url: null,
+                    alt: null
+                };
+                if (!!thumbnails && !!thumbnails[format]) {
+                    if (typeof thumbnails[format] === 'object') {
+                        thumbnail.url = thumbnails[format].url;
+                        thumbnail.alt = thumbnails[format].alt;
+                    } else {
+                        thumbnail.url = thumbnails[format];
+                        thumbnail.alt = '';
+                    }
+                }
+                return thumbnail;
+            },
+
+            /**
+             * checks for bool value and sets radio to true
+             */
+            radio: function(content, index, columnName) {
+                var checked = (!content) ? false : true;
+                return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
+            }
+        },
+
+        templates = {
+            radio: [
+                '<div class="custom-radio custom-filter">',
+                '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                '   <span class="icon"></span>',
+                '</div>'
+            ].join('')
+        },
+
+        namespace = 'husky.datagrid.',
 
         /* TRIGGERS EVENTS */
 
-            /**
-             * raised after initialization has finished
-             * @event husky.datagrid.initialized
-             */
-                INITIALIZED = function() {
-                return this.createEventName('initialized');
-            },
+        /**
+         * raised after initialization has finished
+         * @event husky.datagrid.initialized
+         */
+        INITIALIZED = function() {
+            return this.createEventName('initialized');
+        },
 
-            /**
-             * raised after a view has been rendered
-             * @event husky.datagrid.initialized
-             */
-                VIEW_RENDERED = function() {
-                return this.createEventName('view.rendered');
-            },
+        /**
+         * raised after a view has been rendered
+         * @event husky.datagrid.initialized
+         */
+        VIEW_RENDERED = function() {
+            return this.createEventName('view.rendered');
+        },
 
-            /**
-             * raised when the the current page changes
-             * @event husky.datagrid.page.change
-             */
-                PAGE_CHANGE = function() {
-                return this.createEventName('page.change');
-            },
+        /**
+         * raised when the the current page changes
+         * @event husky.datagrid.page.change
+         */
+        PAGE_CHANGE = function() {
+            return this.createEventName('page.change');
+        },
 
-            /**
-             * raised when the data is updated
-             * @event husky.datagrid.updated
-             */
-                UPDATED = function() {
-                return this.createEventName('updated');
-            },
+        /**
+         * raised when the data is updated
+         * @event husky.datagrid.updated
+         */
+        UPDATED = function() {
+            return this.createEventName('updated');
+        },
 
-            /**
-             * raised when item is deselected
-             * @event husky.datagrid.item.deselect
-             * @param {String} id of deselected item
-             */
-                ITEM_DESELECT = function() {
-                return this.createEventName('item.deselect');
-            },
+        /**
+         * raised when item is deselected
+         * @event husky.datagrid.item.deselect
+         * @param {String} id of deselected item
+         */
+        ITEM_DESELECT = function() {
+            return this.createEventName('item.deselect');
+        },
 
-            /**
-             * raised when selection of items changes
-             * @event husky.datagrid.number.selections
-             */
-                NUMBER_SELECTIONS = function() {
-                return this.createEventName('number.selections');
-            },
+        /**
+         * raised when selection of items changes
+         * @event husky.datagrid.number.selections
+         */
+        NUMBER_SELECTIONS = function() {
+            return this.createEventName('number.selections');
+        },
 
-            /**
-             * raised when clicked on an item
-             * @event husky.datagrid.item.click
-             * @param {String} id of item that was clicked
-             */
-                ITEM_CLICK = function() {
-                return this.createEventName('item.click');
-            },
+        /**
+         * raised when clicked on an item
+         * @event husky.datagrid.item.click
+         * @param {String} id of item that was clicked
+         */
+        ITEM_CLICK = function() {
+            return this.createEventName('item.click');
+        },
 
-            /**
-             * raised when item is selected
-             * @event husky.datagrid.item.select
-             * @param {String} if of selected item
-             */
-                ITEM_SELECT = function() {
-                return this.createEventName('item.select');
-            },
+        /**
+         * raised when item is selected
+         * @event husky.datagrid.item.select
+         * @param {String} if of selected item
+         */
+        ITEM_SELECT = function() {
+            return this.createEventName('item.select');
+        },
 
-            /**
-             * raised when all items get deselected via the header checkbox
-             * @event husky.datagrid.all.deselect
-             */
-                ALL_DESELECT = function() {
-                return this.createEventName('all.deselect');
-            },
+        /**
+         * raised when all items get deselected via the header checkbox
+         * @event husky.datagrid.all.deselect
+         */
+        ALL_DESELECT = function() {
+            return this.createEventName('all.deselect');
+        },
 
-            /**
-             * raised when all items get deselected via the header checkbox
-             * @event husky.datagrid.all.select
-             * @param {Array} ids of all items that have been clicked
-             */
-                ALL_SELECT = function() {
-                return this.createEventName('all.select');
-            },
+        /**
+         * raised when all items get deselected via the header checkbox
+         * @event husky.datagrid.all.select
+         * @param {Array} ids of all items that have been clicked
+         */
+        ALL_SELECT = function() {
+            return this.createEventName('all.select');
+        },
 
-            /**
-             * raised when data was saved
-             * @event husky.datagrid.data.saved
-             * @param {Object} data returned
-             */
-                DATA_SAVED = function() {
-                return this.createEventName('updated');
-            },
+        /**
+         * raised when data was saved
+         * @event husky.datagrid.data.saved
+         * @param {Object} data returned
+         */
+        DATA_SAVED = function() {
+            return this.createEventName('updated');
+        },
 
-            /**
-             * raised when save of data failed
-             * @event husky.datagrid.data.save.failed
-             * @param {String} text status
-             * @param {String} error thrown
-             *
-             */
-                DATA_SAVE_FAILED = function() {
-                return this.createEventName('data.save.failed');
-            },
+        /**
+         * raised when save of data failed
+         * @event husky.datagrid.data.save.failed
+         * @param {String} text status
+         * @param {String} error thrown
+         *
+         */
+        DATA_SAVE_FAILED = function() {
+            return this.createEventName('data.save.failed');
+        },
 
-            /**
-             * raised when editable table is changed
-             * @event husky.datagrid.data.save
-             */
-                DATA_CHANGED = function() {
-                return this.createEventName('data.changed');
-            },
+        /**
+         * raised when editable table is changed
+         * @event husky.datagrid.data.save
+         */
+        DATA_CHANGED = function() {
+            return this.createEventName('data.changed');
+        },
 
-        /* PROVIDED EVENTS */
+    /* PROVIDED EVENTS */
 
-            /**
-             * raised when husky.datagrid.data.get is triggered
-             * @event husky.datagrid.data.provide
-             */
-                DATA_PROVIDE = function() {
-                return this.createEventName('data.provide');
-            },
+        /**
+         * raised when husky.datagrid.data.get is triggered
+         * @event husky.datagrid.data.provide
+         */
+        DATA_PROVIDE = function() {
+            return this.createEventName('data.provide');
+        },
 
-            /**
-             * listens on and changes the view of the datagrid
-             * @event husky.datagrid.view.change
-             * @param {String} viewId The identifier of the view
-             * @param {Object} Options to merge with the current view options
-             */
-                CHANGE_VIEW = function() {
-                return this.createEventName('view.change');
-            },
+        /**
+         * listens on and changes the view of the datagrid
+         * @event husky.datagrid.view.change
+         * @param {String} viewId The identifier of the view
+         * @param {Object} Options to merge with the current view options
+         */
+        CHANGE_VIEW = function() {
+            return this.createEventName('view.change');
+        },
 
-            /**
-             * listens on and changes the pagination of the datagrid
-             * @event husky.datagrid.pagination.change
-             * @param {String} paginationId The identifier of the pagination
-             */
-                CHANGE_PAGINATION = function() {
-                return this.createEventName('pagination.change');
-            },
+        /**
+         * listens on and changes the pagination of the datagrid
+         * @event husky.datagrid.pagination.change
+         * @param {String} paginationId The identifier of the pagination
+         */
+        CHANGE_PAGINATION = function() {
+            return this.createEventName('pagination.change');
+        },
 
-            /**
-             * used to add a data record
-             * @event husky.datagrid.record.add
-             * @param {Object} the data of the new record
-             */
-                RECORD_ADD = function() {
-                return this.createEventName('record.add');
-            },
+        /**
+         * used to add a data record
+         * @event husky.datagrid.record.add
+         * @param {Object} the data of the new record
+         */
+        RECORD_ADD = function() {
+            return this.createEventName('record.add');
+        },
 
-            /**
-             * used to add a data record
-             * @event husky.datagrid.record.add
-             * @param {Object} the data of the new record
-             * @param callback {Function} callback to execute after process has been finished
-             */
-                RECORDS_ADD = function() {
-                return this.createEventName('records.add');
-            },
+        /**
+         * used to add a data record
+         * @event husky.datagrid.record.add
+         * @param {Object} the data of the new record
+         * @param callback {Function} callback to execute after process has been finished
+         */
+        RECORDS_ADD = function() {
+            return this.createEventName('records.add');
+        },
 
-            /**
-             * used to remove a data-record
-             * @event husky.datagrid.record.remove
-             * @param {String} id of the record to be removed
-             */
-                RECORD_REMOVE = function() {
-                return this.createEventName('record.remove');
-            },
+        /**
+         * used to remove a data-record
+         * @event husky.datagrid.record.remove
+         * @param {String} id of the record to be removed
+         */
+        RECORD_REMOVE = function() {
+            return this.createEventName('record.remove');
+        },
 
-            /**
-             * listens on and merges one or more data-records with a given ones
-             * @event husky.datagrid.records.change
-             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
-             */
-                RECORDS_CHANGE = function() {
-                return this.createEventName('records.change');
-            },
+        /**
+         * listens on and merges one or more data-records with a given ones
+         * @event husky.datagrid.records.change
+         * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+         */
+        RECORDS_CHANGE = function() {
+            return this.createEventName('records.change');
+        },
 
-            /**
-             * used to trigger an update of the data
-             * @event husky.datagrid.update
-             */
-                UPDATE = function() {
-                return this.createEventName('update');
-            },
+        /**
+         * used to trigger an update of the data
+         * @event husky.datagrid.update
+         */
+        UPDATE = function() {
+            return this.createEventName('update');
+        },
 
-            /**
-             * used to filter data by search
-             * @event husky.datagrid.data.filter
-             * @param {String} searchField
-             * @param {String} searchString
-             */
-                DATA_SEARCH = function() {
-                return this.createEventName('data.search');
-            },
+        /**
+         * used to filter data by search
+         * @event husky.datagrid.data.filter
+         * @param {String} searchField
+         * @param {String} searchString
+         */
+        DATA_SEARCH = function() {
+            return this.createEventName('data.search');
+        },
 
-            /**
-             * raised when data is sorted
-             * @event husky.datagrid.data.sort
-             */
-                DATA_SORT = function() {
-                return this.createEventName('data.sort');
-            },
+        /**
+         * raised when data is sorted
+         * @event husky.datagrid.data.sort
+         */
+        DATA_SORT = function() {
+            return this.createEventName('data.sort');
+        },
 
-            /**
-             * used to filter data by updating an url parameter
-             * @event husky.datagrid.url.update
-             * @param {Object} url parameter : key
-             */
-                URL_UPDATE = function() {
-                return this.createEventName('url.update');
-            },
+        /**
+         * used to filter data by updating an url parameter
+         * @event husky.datagrid.url.update
+         * @param {Object} url parameter : key
+         */
+        URL_UPDATE = function() {
+            return this.createEventName('url.update');
+        },
 
-            /**
-             * triggers husky.datagrid.data.provide
-             * @event husky.datagrid.data.get
-             */
-                DATA_GET = function() {
-                return this.createEventName('data.get');
-            },
+        /**
+         * triggers husky.datagrid.data.provide
+         * @event husky.datagrid.data.get
+         */
+        DATA_GET = function() {
+            return this.createEventName('data.get');
+        },
 
-            /**
-             * triggers husky.datagrid.items.selected event, which returns all selected item ids
-             * @event husky.datagrid.items.get-selected
-             * @param  {Function} callback function receives array of selected items
-             */
-                ITEMS_GET_SELECTED = function() {
-                return this.createEventName('items.get-selected');
-            },
+        /**
+         * triggers husky.datagrid.items.selected event, which returns all selected item ids
+         * @event husky.datagrid.items.get-selected
+         * @param  {Function} callback function receives array of selected items
+         */
+        ITEMS_GET_SELECTED = function() {
+            return this.createEventName('items.get-selected');
+        },
 
         /**
          * Private Methods
          * --------------------------------------------------------------------
          */
 
-            /**
-             * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
-             * If value is not set, the parameter will be removed from url
-             * @param {String} url Url string to be updated
-             * @param {String} paramName Parameter which should be added / updated / removed
-             * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
-             * @returns {String} updated url
-             */
-                setGetParameter = function(url, paramName, paramValue) {
-                if (url.indexOf(paramName + "=") >= 0) {
-                    var prefix = url.substring(0, url.indexOf(paramName + "=")),
-                        suffix = url.substring(url.indexOf(paramName + "="));
-                    suffix = suffix.substring(suffix.indexOf('=') + 1);
-                    suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
-                    if (!!paramValue) {
-                        url = prefix + paramName + '=' + paramValue + suffix;
+        /**
+         * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
+         * If value is not set, the parameter will be removed from url
+         * @param {String} url Url string to be updated
+         * @param {String} paramName Parameter which should be added / updated / removed
+         * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
+         * @returns {String} updated url
+         */
+        setGetParameter = function(url, paramName, paramValue) {
+            if (url.indexOf(paramName + "=") >= 0) {
+                var prefix = url.substring(0, url.indexOf(paramName + "=")),
+                    suffix = url.substring(url.indexOf(paramName + "="));
+                suffix = suffix.substring(suffix.indexOf('=') + 1);
+                suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
+                if (!!paramValue) {
+                    url = prefix + paramName + '=' + paramValue + suffix;
+                } else {
+                    if (url.substr(url.indexOf(paramName + '=') - 1, 1) === '&') {
+                        url = url.substring(0, prefix.length - 1) + suffix;
                     } else {
-                        if (url.substr(url.indexOf(paramName + '=') - 1, 1) === '&') {
-                            url = url.substring(0, prefix.length - 1) + suffix;
-                        } else {
-                            url = prefix + suffix.substring(1, suffix.length);
-                        }
+                        url = prefix + suffix.substring(1, suffix.length);
                     }
                 }
-                else if (!!paramValue) {
-                    if (url.indexOf("?") < 0) {
-                        url += "?" + paramName + "=" + paramValue;
-                    }
-                    else {
-                        url += "&" + paramName + "=" + paramValue;
-                    }
+            }
+            else if (!!paramValue) {
+                if (url.indexOf("?") < 0) {
+                    url += "?" + paramName + "=" + paramValue;
                 }
-                return url;
-            };
+                else {
+                    url += "&" + paramName + "=" + paramValue;
+                }
+            }
+            return url;
+        };
 
         return {
 
@@ -31890,7 +31909,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             selectingAllowed: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName] > 0) {
+                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName]) {
                     return false;
                 }
                 return true;
@@ -32190,7 +32209,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         }
                     }.bind(this))
                     .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), textStatus, error);
+                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error);
 
                         if (typeof fail === 'function') {
                             fail(jqXHR, textStatus, error);
@@ -34354,7 +34373,8 @@ define('__component__$toolbar@husky',[],function() {
  * @param {String} [options.instanceName] name of the component instance
  * @param {Boolean} [options.noNewValues] if true input value must have been suggested by auto-complete
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
- * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
+ * @param {String} [options.suggestionIcon] Icon Class - Image gets rendered before every suggestion
+ * @param {String} [options.autoCompleteIcon] Icon Class - Icon in auto complete input
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
@@ -34370,105 +34390,117 @@ define('__component__$auto-complete@husky',[], function() {
      * Default values for options
      */
     var defaults = {
-            prefetchUrl: '',
-            localData: [],
-            remoteUrl: '',
-            getParameter: 'query',
-            valueKey: 'name',
-            resultKey: 'countries',
-            value: null,
-            instanceName: 'undefined',
-            noNewValues: false,
-            suggestionClass: 'suggestion',
-            suggestionImg: '',
-            stickToInput: false,
-            hint: false,
-            emptyOnBlur: false,
-            excludes: [],
-            selectCallback: null
-        },
+        prefetchUrl: '',
+        localData: [],
+        remoteUrl: '',
+        getParameter: 'query',
+        valueKey: 'name',
+        resultKey: 'countries',
+        value: null,
+        instanceName: 'undefined',
+        noNewValues: false,
+        suggestionClass: 'suggestion',
+        suggestionIcon: '',
+        autoCompleteIcon: 'search',
+        stickToInput: false,
+        hint: false,
+        emptyOnBlur: false,
+        excludes: [],
+        selectCallback: null
+    },
 
-        eventNamespace = 'husky.auto-complete.',
+    templates = {
+        main: [
+            '<div class="husky-auto-complete">',
+                '<div class="front">',
+                    '<a class="fa-<%= autoCompleteIcon %>"></a>',
+                '</div>',
+                '<div class="input"></div>',
+            '</div>'
+        ].join('')
+    },
 
-        /**
-         * raised after initialization
-         * @event husky.auto-complete.initialized
-         */
-        INITIALIZED = function() {
-            return createEventName.call(this, 'initialized');
-        },
+    eventNamespace = 'husky.auto-complete.',
 
-        /**
-         * raised after prefetched data is retrieved
-         * @event husky.auto-complete.prefetch-data
-         */
-        PREFETCH_LOAD = function() {
-            return createEventName.call(this, 'prefetch-data');
-        },
+    /**
+     * raised after initialization
+     * @event husky.auto-complete.initialized
+     */
+    INITIALIZED = function() {
+        return createEventName.call(this, 'initialized');
+    },
 
-        /**
-         * raised before remoted data is loaded
-         * @event husky.auto-complete.remote-data-load
-         */
-        REMOTE_LOAD = function() {
-            return createEventName.call(this, 'remote-data-load');
-        },
+    /**
+     * raised after prefetched data is retrieved
+     * @event husky.auto-complete.prefetch-data
+     */
+    PREFETCH_LOAD = function() {
+        return createEventName.call(this, 'prefetch-data');
+    },
 
-        /**
-         * raised after remoted data is retrieved
-         * @event husky.auto-complete.remote-data
-         */
-        REMOTE_RETRIEVE = function() {
-            return createEventName.call(this, 'remote-data');
-        },
+    /**
+     * raised before remoted data is loaded
+     * @event husky.auto-complete.remote-data-load
+     */
+    REMOTE_LOAD = function() {
+        return createEventName.call(this, 'remote-data-load');
+    },
 
-        /**
-         * raised before the component tries to request a match after blur
-         * @event husky.auto-complete.request-match
-         */
-        REQUEST_MATCH = function() {
-            return createEventName.call(this, 'request-match');
-        },
+    /**
+     * raised after remoted data is retrieved
+     * @event husky.auto-complete.remote-data
+     */
+    REMOTE_RETRIEVE = function() {
+        return createEventName.call(this, 'remote-data');
+    },
 
-        /**
-         * raised after autocomplete suggestion is selected
-         * @event husky.auto-complete.select
-         * @param {object} selected datum with id and name
-         */
-        SELECT = function() {
-            return createEventName.call(this, 'select');
-        },
+    /**
+     * raised before the component tries to request a match after blur
+     * @event husky.auto-complete.request-match
+     */
+    REQUEST_MATCH = function() {
+        return createEventName.call(this, 'request-match');
+    },
 
-        /**
-         * raised after selection has been removed
-         * @event husky.auto-complete.selection-removed
-         */
-        SELECTION_REMOVED = function() {
-            return createEventName.call(this, 'selection-removed');
-        },
+    /**
+     * raised after autocomplete suggestion is selected
+     * @event husky.auto-complete.select
+     * @param {object} selected datum with id and name
+     */
+    SELECT = function() {
+        return createEventName.call(this, 'select');
+    },
 
-        /**
-         * raised after autocomplete suggestion is selected
-         * @event husky.auto-complete.set-excludes
-         * @param {array} array of objects to exclude from suggestions
-         */
-        SET_EXCLUDES = function() {
-            return createEventName.call(this, 'set-excludes');
-        },
+    /**
+     * raised after selection has been removed
+     * @event husky.auto-complete.selection-removed
+     */
+    SELECTION_REMOVED = function() {
+        return createEventName.call(this, 'selection-removed');
+    },
 
-        /**
-         * listens on and passes boolean to callback if input is matched exactly
-         * @event husky.auto-complete.is-matched
-         * @param {Function} Callback which gets the booloan passed
-         */
-        IS_MATCHED = function() {
-            return createEventName.call(this, 'is-matched');
-        },
+    /**
+     * raised after autocomplete suggestion is selected
+     * @event husky.auto-complete.set-excludes
+     * @param {array} array of objects to exclude from suggestions
+     */
+    SET_EXCLUDES = function() {
+        return createEventName.call(this, 'set-excludes');
+    },
 
-        /** returns normalized event names */
-        createEventName = function(postFix) {
-            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-        };
+    /**
+     * listens on and passes boolean to callback if input is matched exactly
+     * @event husky.auto-complete.is-matched
+     * @param {Function} Callback which gets the booloan passed
+     */
+    IS_MATCHED = function() {
+        return createEventName.call(this, 'is-matched');
+    },
+
+    /** returns normalized event names */
+    createEventName = function(postFix) {
+        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+    };
 
     return {
 
@@ -34527,8 +34559,8 @@ define('__component__$auto-complete@husky',[], function() {
          */
         setTemplate: function() {
             var iconHTML = '';
-            if (this.options.suggestionImg !== '') {
-                iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
+            if (this.options.suggestionIcon !== '') {
+                iconHTML = '<span class="fa-' + this.options.suggestionIcon + ' icon"></span>';
             }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
@@ -34555,10 +34587,19 @@ define('__component__$auto-complete@husky',[], function() {
         },
 
         /**
+         * the main-template gets rendered and displayed
+         */
+        renderMain: function() {
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.main, {
+                autoCompleteIcon: this.options.autoCompleteIcon
+            }));
+        },
+
+        /**
          * Initializes and appends the input, starts the typeahead-auto-complete plugin
          */
         render: function() {
-            this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
+            this.renderMain();
             this.initValueField();
             this.appendValueField();
 
@@ -34583,7 +34624,7 @@ define('__component__$auto-complete@husky',[], function() {
          */
         appendValueField: function() {
             if (!!this.$valueField.length) {
-                this.sandbox.dom.append(this.$el, this.$valueField);
+                this.sandbox.dom.append(this.sandbox.dom.find('.input', this.$el), this.$valueField);
             }
         },
 
@@ -34761,7 +34802,6 @@ define('__component__$auto-complete@husky',[], function() {
          * Gets called when the input box triggers the blur event
          */
         handleBlur: function() {
-
             if (!!this.selectedElement) { // selected via dropdown
                 this.selectedElement = null;
             } else if (this.options.noNewValues === true) {
@@ -34958,7 +34998,8 @@ define('__component__$auto-complete@husky',[], function() {
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
- * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-icon
+ * @param {String} [options.suggestionIcon] Icon Class-suffix for autocomplete-suggestion-icon
  * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
  * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
  */
@@ -34979,7 +35020,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 suggestionsUrl: '',
                 suggestionsKey: 'suggestions',
                 label: '',
-                inputSelector: '.husky-auto-complete',
+                inputSelector: '.husky-auto-complete-container',
                 autocomplete: true,
                 localData: [],
                 prefetchUrl: '',
@@ -34998,7 +35039,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                 arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: 'tag',
+                autoCompleteIcon: 'search',
+                suggestionIcon: 'tag',
                 delimiters: [9, 188, 13],
                 noNewTags: false
             },
@@ -35008,24 +35050,23 @@ define('__component__$auto-complete-list@husky',[], function() {
                     '<div class="auto-complete-list-container">',
                     '    <label>',
                     '        <%= label %>',
-                    '            <div class="auto-complete-list">',
-                    '                <div class="husky-auto-complete"></div>',
-                    '                <div class="toggler"></div>',
-                    '            </div>',
-                    '        </label>',
-                    '    </div>'
+                    '        <div class="auto-complete-list">',
+                    '           <div class="husky-auto-complete-container"></div>',
+                    '           <div class="toggler"></div>',
+                    '        </div>',
+                    '    </label>',
+                    '</div>'
                 ].join(''),
                 suggestion: [
                     '<div class="auto-complete-list-suggestions">',
                     '    <h5><%= headline %></h5>',
-                    '    <ul>',
-                    '    </ul>',
+                    '    <ul></ul>',
                     '</div>'
                 ].join('')
             },
 
             /** Position values for toggling suggestions */
-                togglerPosUp = 'up',
+            togglerPosUp = 'up',
             togglerPosDown = 'down',
 
             eventNamespace = 'husky.auto-complete-list.',
@@ -35034,7 +35075,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised after initialization
              * @event husky.auto-complete-list.initialized
              */
-                INITIALIZED = function() {
+            INITIALIZED = function() {
                 return createEventName.call(this, 'initialized');
             },
 
@@ -35043,7 +35084,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * @event husky.auto-complete-list.set-tags
              * @param {Array} tags Array of strings
              */
-                SET_TAGS = function() {
+            SET_TAGS = function() {
                 return createEventName.call(this, 'set-tags');
             },
 
@@ -35051,7 +35092,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * used for receiving tags
              * @event husky.auto-complete-list.get-tags
              */
-                GET_TAGS = function() {
+            GET_TAGS = function() {
                 return createEventName.call(this, 'get-tags');
             },
 
@@ -35059,7 +35100,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised after AJAX request for loading items is sent
              * @event husky.auto-complete-list.items-request
              */
-                ITEM_REQUEST = function() {
+            ITEM_REQUEST = function() {
                 return createEventName.call(this, 'item-request');
             },
 
@@ -35067,7 +35108,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised after AJAX request for loading suggestions is sent
              * @event husky.auto-complete-list.sug-request
              */
-                SUGGESTION_REQUEST = function() {
+            SUGGESTION_REQUEST = function() {
                 return createEventName.call(this, 'sug-request');
             },
 
@@ -35076,7 +35117,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * @event husky.auto-complete-list.sug-added
              * @param {object} suggestion - the suggestion element with id, name, DOM-object
              */
-                SUGGESTION_ADDED = function() {
+            SUGGESTION_ADDED = function() {
                 return createEventName.call(this, 'sug-added');
             },
 
@@ -35084,7 +35125,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised after an item is deleted
              * @event husky.auto-complete-list.item-deleted
              */
-                ITEM_DELETED = function() {
+            ITEM_DELETED = function() {
                 return createEventName.call(this, 'item-deleted');
             },
 
@@ -35092,7 +35133,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised after data was loaded
              * @event husky.auto-complete-list.data-loaded
              */
-                DATA_LOADED = function() {
+            DATA_LOADED = function() {
                 return createEventName.call(this, 'data-loaded');
             },
 
@@ -35101,7 +35142,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * @event husky.auto-complete-list.item-added
              * @param {string} item value
              */
-                ITEM_ADDED = function() {
+            ITEM_ADDED = function() {
                 return createEventName.call(this, 'item-added');
             },
 
@@ -35109,7 +35150,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised after all item were added
              * @event husky.auto-complete-list.items-added
              */
-                ITEMS_ADDED = function() {
+            ITEMS_ADDED = function() {
                 return createEventName.call(this, 'items-added');
             },
 
@@ -35117,7 +35158,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised when the suggestion container is closed
              * @event husky.auto-complete-list.sug-closed
              */
-                SUGGESTIONS_CLOSED = function() {
+            SUGGESTIONS_CLOSED = function() {
                 return createEventName.call(this, 'sug-closed');
             },
 
@@ -35125,12 +35166,12 @@ define('__component__$auto-complete-list@husky',[], function() {
              * raised when the suggestion container is opened
              * @event husky.auto-complete-list.sug-opened
              */
-                SUGGESTIONS_OPENED = function() {
+            SUGGESTIONS_OPENED = function() {
                 return createEventName.call(this, 'sug-opened');
             },
 
             /** returns normalized event names */
-                createEventName = function(postFix) {
+            createEventName = function(postFix) {
                 return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
             };
 
@@ -35151,7 +35192,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 this.initItems();
 
                 if (this.options.autocomplete === true) {
-                    this.sandbox.on('husky.auto-complete.'+this.options.instanceName+'.initialized', function() {
+                    this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.initialized', function() {
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
                 } else {
@@ -35244,7 +35285,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
-                                suggestionImg: this.options.autoCompleteIcon,
+                                suggestionIcon: this.options.suggestionIcon,
+                                autoCompleteIcon: this.options.autoCompleteIcon,
                                 resultKey: this.options.resultKey
                             },
                             this.options.autocompleteOptions
@@ -36586,7 +36628,7 @@ define('__component__$select@husky',[], function() {
                         removeOnClose: true,
                         instanceName: 'husky-select',
                         title: this.sandbox.translate('public.edit-entries'),
-                        closeCallback: function() {
+                        cancelCallback: function() {
                             this.onCloseWithCancel();
                         }.bind(this),
                         okCallback: function(data) {
@@ -36957,7 +36999,7 @@ define('__component__$select@husky',[], function() {
                     this.sandbox.dom.text(this.$label, this.options.defaultLabel);
                 } else {
 
-                    var text = "";
+                    var text = "", labelWidth;
                     this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
                         text += ' ' + value + ',';
                     });
@@ -38125,7 +38167,7 @@ define('__component__$column-navigation@husky',[], function () {
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
                 if (!!this.options.showEditIcon) {
-                    item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
+                    item.push('<span class="' + this.options.editIcon + ' edit pull-left"></span>');
                 }
                 !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
@@ -38327,6 +38369,22 @@ define('__component__$ckeditor@husky',[], function() {
         },
 
         /**
+         * @event husky.ckeditor.start
+         * @description starts the used editor plugin
+         */
+        START = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'start';
+        },
+
+        /**
+         * @event husky.ckeditor.destroy
+         * @description destroys the used editor plugin
+         */
+        DESTROY = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'destroy';
+        },
+
+        /**
          * Removes the not needed elements from the config object for the ckeditor
          * @returns {Object} configuration object for ckeditor
          */
@@ -38381,9 +38439,9 @@ define('__component__$ckeditor@husky',[], function() {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.editorContent = null;
 
-            var config = getConfig.call(this);
-            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            this.startEditor();
             this.data = this.editor.getData();
 
             this.bindChangeEvents();
@@ -38396,6 +38454,10 @@ define('__component__$ckeditor@husky',[], function() {
             this.editor.on('blur', function() {
                 this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
             }.bind(this));
+
+            this.sandbox.on(START.call(this), this.startEditor.bind(this));
+
+            this.sandbox.on(DESTROY.call(this), this.destroyEditor.bind(this));
         },
 
         /**
@@ -38420,6 +38482,20 @@ define('__component__$ckeditor@husky',[], function() {
         emitChangedEvent: function() {
             this.data = this.editor.getData();
             this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+        },
+
+        startEditor: function() {
+            var config = getConfig.call(this);
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            
+            if (!!this.editorContent) {
+                this.editor.setData(this.editorContent);
+            }
+        },
+
+        destroyEditor: function() {
+            this.editorContent = this.editor.getData();
+            this.editor.destroy();
         }
     };
 
@@ -38463,7 +38539,8 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
  * @params {String|Boolean} [options.slides[].closeIcon] icon class for the close button. If false no close icon will be displayed
- * @params {Function} [options.slides[].closeCallback] callback which gets executed after the overlay gets closed
+ * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
+ * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
  * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
@@ -38497,7 +38574,7 @@ define('__component__$overlay@husky',[], function() {
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
-            removeOnClose: false,
+            removeOnClose: true,
             backdrop: true,
             backdropClose: true,
             backdropColor: '#000000',
@@ -38518,6 +38595,7 @@ define('__component__$overlay@husky',[], function() {
             closeIcon: 'times',
             message: '',
             closeCallback: null,
+            cancelCallback: null,
             okCallback: null,
             type: 'normal',
             data: '',
@@ -38656,13 +38734,13 @@ define('__component__$overlay@husky',[], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.overlay.',
+        eventNamespace = 'husky.overlay.',
 
         /**
          * raised after initialization process
          * @event husky.overlay.<instance-name>.initialize
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
@@ -38670,7 +38748,7 @@ define('__component__$overlay@husky',[], function() {
          * raised after overlay is opened
          * @event husky.overlay.<instance-name>.opened
          */
-            OPENED = function() {
+        OPENED = function() {
             return createEventName.call(this, 'opened');
         },
 
@@ -38678,7 +38756,7 @@ define('__component__$overlay@husky',[], function() {
          * raised after overlay is closed
          * @event husky.overlay.<instance-name>.closed
          */
-            CLOSED = function() {
+        CLOSED = function() {
             return createEventName.call(this, 'closed');
         },
 
@@ -38686,7 +38764,7 @@ define('__component__$overlay@husky',[], function() {
          * raised after overlay is closing
          * @event husky.overlay.<instance-name>.closing
          */
-            CLOSING = function() {
+        CLOSING = function() {
             return createEventName.call(this, 'closing');
         },
 
@@ -38694,7 +38772,7 @@ define('__component__$overlay@husky',[], function() {
          * used to activate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.activate
          */
-            OKBUTTON_ACTIVATE = function() {
+        OKBUTTON_ACTIVATE = function() {
             return createEventName.call(this, 'okbutton.activate');
         },
 
@@ -38702,7 +38780,7 @@ define('__component__$overlay@husky',[], function() {
          * used to deactivate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.deactivate
          */
-            OKBUTTON_DEACTIVATE = function() {
+        OKBUTTON_DEACTIVATE = function() {
             return createEventName.call(this, 'okbutton.deactivate');
         },
 
@@ -38710,7 +38788,7 @@ define('__component__$overlay@husky',[], function() {
          * removes the component
          * @event husky.overlay.<instance-name>.remove
          */
-            REMOVE = function() {
+        REMOVE = function() {
             return createEventName.call(this, 'remove');
         },
 
@@ -38718,7 +38796,7 @@ define('__component__$overlay@husky',[], function() {
          * opens the overlay
          * @event husky.overlay.<instance-name>.open
          */
-            OPEN = function() {
+        OPEN = function() {
             return createEventName.call(this, 'open');
         },
 
@@ -38726,7 +38804,7 @@ define('__component__$overlay@husky',[], function() {
          * closes the overlay
          * @event husky.overlay.<instance-name>.close
          */
-            CLOSE = function() {
+        CLOSE = function() {
             return createEventName.call(this, 'close');
         },
 
@@ -38734,7 +38812,7 @@ define('__component__$overlay@husky',[], function() {
          * calls the resize handler of the overlay to set the position, height etc.
          * @event husky.overlay.<instance-name>.set-position
          */
-            SET_POSITION = function() {
+        SET_POSITION = function() {
             return createEventName.call(this, 'set-position');
         },
 
@@ -38744,7 +38822,7 @@ define('__component__$overlay@husky',[], function() {
          * @param {String} selected language
          * @param {Object} currently active tab
          */
-            LANGUAGE_CHANGED = function() {
+        LANGUAGE_CHANGED = function() {
             return createEventName.call(this, 'language-changed');
         },
 
@@ -38752,7 +38830,7 @@ define('__component__$overlay@husky',[], function() {
          * slide left
          * @event husky.overlay.<instance-name>.slide-left
          */
-            SLIDE_LEFT = function() {
+        SLIDE_LEFT = function() {
             return createEventName.call(this, 'slide-left');
         },
 
@@ -38760,12 +38838,12 @@ define('__component__$overlay@husky',[], function() {
          * slide right
          * @event husky.overlay.<instance-name>.slide-right
          */
-            SLIDE_RIGHT = function() {
+        SLIDE_RIGHT = function() {
             return createEventName.call(this, 'slide-right');
         },
 
         /** returns normalized event names */
-            createEventName = function(postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -38885,20 +38963,13 @@ define('__component__$overlay@husky',[], function() {
          * Removes the component
          */
         removeComponent: function() {
-            this.sandbox.dom.off(this.overlay.$el);
-            this.sandbox.dom.off(this.$backdrop);
-            this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.dom.remove(this.$backdrop);
-            this.sandbox.dom.remove(this.overlay.$el);
-
             // todo fix bug: sometimes overlay-sandbox has own sandbox or parent-sandboxes as child which
             // couses an endless loop. The bug can be reproduced by starting the component
             // in a clickhandler with openOnStart-option true
-            //this.sandbox.stop();
+            // this.sandbox.stop();
 
             this.sandbox.stop('*');
-            this.sandbox.stopListening();
-            this.sandbox.dom.remove(this.$el);
+            this.sandbox.stop();
         },
 
         /**
@@ -39039,10 +39110,6 @@ define('__component__$overlay@husky',[], function() {
         closeOverlay: function() {
             this.sandbox.emit(CLOSING.call(this));
 
-            this.sandbox.dom.detach(this.overlay.$el);
-            if (this.options.backdrop === true) {
-                this.sandbox.dom.detach(this.$backdrop);
-            }
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
@@ -39051,7 +39118,13 @@ define('__component__$overlay@husky',[], function() {
 
             this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
 
-            if (this.options.removeOnClose === true) {
+            if (!this.options.removeOnClose) {
+                this.sandbox.dom.detach(this.overlay.$el);
+
+                if (this.options.backdrop === true) {
+                    this.sandbox.dom.detach(this.$backdrop);
+                }
+            } else {
                 this.removeComponent();
             }
         },
@@ -39062,7 +39135,7 @@ define('__component__$overlay@husky',[], function() {
         insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
 
-            //ensures that the overlay box fits the window form the beginning
+            // ensures that the overlay box fits the window form the beginning
             this.resetResizeVariables();
             this.resizeHandler();
 
@@ -39408,11 +39481,14 @@ define('__component__$overlay@husky',[], function() {
          * @param event
          */
         closeHandler: function(event) {
+            var cancelCallback = this.slides[this.activeSlide].closeCallback || 
+                                 this.slides[this.activeSlide].cancelCallback;
+
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
                 this.sandbox.dom.stopPropagation(event);
             }
-            if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
+            if (this.executeCallback(cancelCallback) !== false) {
                 this.closeOverlay();
             }
         },
@@ -39751,7 +39827,7 @@ define('__component__$label@husky',[],function() {
          * Handles closing the component
          */
         close: function() {
-            this.sandbox.dom.remove(this.$el);
+            this.sandbox.stop();
         }
     };
 
@@ -41117,7 +41193,7 @@ define('__component__$dropzone@husky',[], function () {
                             smallHeader: true,
                             top: coordinates.top,
                             left: coordinates.left,
-                            closeCallback: function () {
+                            cancelCallback: function() {
                                 this.sandbox.dom.append(this.$el, this.$dropzone);
                                 this.sandbox.dom.height(this.$el, '');
                                 this.overlayOpened = false;
@@ -41189,7 +41265,7 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         }
 
-                        // gets called if file gets added (drop or via the upload window)
+                        // gets called for each added file (drop or via the upload window)
                         this.on('addedfile', function (file) {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
@@ -41210,7 +41286,7 @@ define('__component__$dropzone@husky',[], function () {
                             }.bind(that));
                         });
 
-                        // gets called before the file is sent
+                        // gets called before each file is sent
                         this.on('sending', function (file) {
                             if (typeof this.options.beforeSendingCallback === 'function') {
                                 this.options.beforeSendingCallback(file);
@@ -41914,10 +41990,70 @@ define('__component__$input@husky',[], function() {
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {
                             $editor = $(selector).ckeditor(configuration);
-
                         }
 
+                        // customize ckeditor dialog appearance on 'dialogDefinition' (=> open)
+                        // and filter link/target options
+                        CKEDITOR.on('dialogDefinition', function(ev) {
+                            // take the dialog name and its definition from the event
+                            // data.
+                            var dialogName = ev.data.name,
+                                dialogDefinition = ev.data.definition;
+
+                            // check if the definition is from the dialog we're
+                            // interested in (the "Link" dialog).
+                            if (dialogName == 'link') {
+                                    // get a reference to the "Link Info" and "Target" tab.
+                                var infoTab = dialogDefinition.getContents('info'),
+                                    targetTab = dialogDefinition.getContents('target'),
+                                
+                                    // get a reference to the link type
+                                    linkOptions = infoTab.get('linkType'),
+                                    targetOptions = targetTab.get('linkTargetType'),
+
+                                    // list of included link options
+                                    includedLinkOptions = [
+                                        'url',
+                                        'email'
+                                    ],
+                                    selectedLinkOption = [],
+
+                                    // list of included link target options
+                                    includedTargetOptions = [
+                                        'notSet',
+                                        '_blank',
+                                        '_self'
+                                    ],
+                                    selectedTargetOptions = [];
+                                    
+                                // just show included link options
+                                for (var i = 0; i < linkOptions.items.length; i++) {
+                                    if (includedLinkOptions.indexOf(linkOptions.items[i][1]) !== -1) {
+                                        selectedLinkOption.push(linkOptions.items[i]);
+                                    }
+                                }
+
+                                // just show included target options
+                                for (var i = 0; i < targetOptions.items.length; i++) {
+                                    if (includedTargetOptions.indexOf(targetOptions.items[i][1]) !== -1) {
+                                        selectedTargetOptions.push(targetOptions.items[i]);
+                                    }
+                                }
+
+                                linkOptions.items = selectedLinkOption;
+                                targetOptions.items = selectedTargetOptions;
+                            }
+                        });
+
                         return $editor.editor;
+                    },
+
+                    getInstance: function(id) {
+                        var instance = CKEDITOR.instances[id];
+
+                        if (!!instance) {
+                            return instance;
+                        }
                     }
                 };
             }
@@ -41976,6 +42112,7 @@ if(jQuery) (function($) {
 			change: null,
 			changeDelay: 0,
 			control: 'hue',
+			dataUris: true,
 			defaultValue: '',
 			hide: null,
 			hideSpeed: 100,
@@ -42090,7 +42227,8 @@ if(jQuery) (function($) {
 		// The wrapper
 		minicolors
 			.addClass('minicolors-theme-' + settings.theme)
-			.toggleClass('minicolors-with-opacity', settings.opacity);
+			.toggleClass('minicolors-with-opacity', settings.opacity)
+			.toggleClass('minicolors-no-data-uris', settings.dataUris !== true);
 
 		// Custom positioning
 		if( settings.position !== undefined ) {
@@ -42108,13 +42246,13 @@ if(jQuery) (function($) {
 			.wrap(minicolors)
 			.after(
 				'<div class="minicolors-panel minicolors-slider-' + settings.control + '">' +
-					'<div class="minicolors-slider">' +
+					'<div class="minicolors-slider minicolors-sprite">' +
 						'<div class="minicolors-picker"></div>' +
 					'</div>' +
-					'<div class="minicolors-opacity-slider">' +
+					'<div class="minicolors-opacity-slider minicolors-sprite">' +
 						'<div class="minicolors-picker"></div>' +
 					'</div>' +
-					'<div class="minicolors-grid">' +
+					'<div class="minicolors-grid minicolors-sprite">' +
 						'<div class="minicolors-grid-inner"></div>' +
 						'<div class="minicolors-picker"><div></div></div>' +
 					'</div>' +
@@ -42123,7 +42261,7 @@ if(jQuery) (function($) {
 
 		// The swatch
 		if( !settings.inline ) {
-			input.after('<span class="minicolors-swatch"><span class="minicolors-swatch-color"></span></span>');
+			input.after('<span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color"></span></span>');
 			input.next('.minicolors-swatch').on('click', function(event) {
 				event.preventDefault();
 				input.focus();
@@ -46490,6 +46628,10 @@ define("datepicker-zh-TW", function(){});
 
             app.core.util.ajax = $.ajax;
 
+            app.core.util.ajaxError = function(callback) {
+                $(document).ajaxError(callback);
+            };
+
             app.core.util.when = function(deferreds){
                 return $.when(deferreds);
             };
@@ -46779,21 +46921,27 @@ define('husky_extensions/util',[],function() {
                 }
             };
 
-            app.core.util.load = function(url, data) {
-                var deferred = new app.sandbox.data.deferred();
+            app.core.util.load = function(url, data, dataType) {
+                var deferred = new app.sandbox.data.deferred(),
+                    settings = {
+                        url: url,
+                        data: data || null,
+                        dataType: 'json',
 
-                app.sandbox.util.ajax({
-                    url: url,
-                    data: data || null,
+                        success: function(data, textStatus) {
+                            deferred.resolve(data, textStatus);
+                        }.bind(this),
 
-                    success: function(data, textStatus) {
-                        deferred.resolve(data, textStatus);
-                    }.bind(this),
+                        error: function(jqXHR, textStatus, error) {
+                            deferred.reject(textStatus, error);
+                        }
+                    };
 
-                    error: function(jqXHR, textStatus, error) {
-                        deferred.reject(textStatus, error);
-                    }
-                });
+                if (typeof(dataType) !== 'undefined') {
+                    settings.dataType = dataType;
+                }
+
+                app.sandbox.util.ajax(settings);
 
                 app.sandbox.emit('husky.util.load.data');
 

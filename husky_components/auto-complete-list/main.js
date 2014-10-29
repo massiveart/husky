@@ -42,7 +42,8 @@
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
- * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-icon
+ * @param {String} [options.suggestionIcon] Icon Class-suffix for autocomplete-suggestion-icon
  * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
  * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
  */
@@ -63,7 +64,7 @@ define([], function() {
                 suggestionsUrl: '',
                 suggestionsKey: 'suggestions',
                 label: '',
-                inputSelector: '.husky-auto-complete',
+                inputSelector: '.husky-auto-complete-container',
                 autocomplete: true,
                 localData: [],
                 prefetchUrl: '',
@@ -82,7 +83,8 @@ define([], function() {
                 arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: 'tag',
+                autoCompleteIcon: 'search',
+                suggestionIcon: 'tag',
                 delimiters: [9, 188, 13],
                 noNewTags: false
             },
@@ -92,24 +94,23 @@ define([], function() {
                     '<div class="auto-complete-list-container">',
                     '    <label>',
                     '        <%= label %>',
-                    '            <div class="auto-complete-list">',
-                    '                <div class="husky-auto-complete"></div>',
-                    '                <div class="toggler"></div>',
-                    '            </div>',
-                    '        </label>',
-                    '    </div>'
+                    '        <div class="auto-complete-list">',
+                    '           <div class="husky-auto-complete-container"></div>',
+                    '           <div class="toggler"></div>',
+                    '        </div>',
+                    '    </label>',
+                    '</div>'
                 ].join(''),
                 suggestion: [
                     '<div class="auto-complete-list-suggestions">',
                     '    <h5><%= headline %></h5>',
-                    '    <ul>',
-                    '    </ul>',
+                    '    <ul></ul>',
                     '</div>'
                 ].join('')
             },
 
             /** Position values for toggling suggestions */
-                togglerPosUp = 'up',
+            togglerPosUp = 'up',
             togglerPosDown = 'down',
 
             eventNamespace = 'husky.auto-complete-list.',
@@ -118,7 +119,7 @@ define([], function() {
              * raised after initialization
              * @event husky.auto-complete-list.initialized
              */
-                INITIALIZED = function() {
+            INITIALIZED = function() {
                 return createEventName.call(this, 'initialized');
             },
 
@@ -127,7 +128,7 @@ define([], function() {
              * @event husky.auto-complete-list.set-tags
              * @param {Array} tags Array of strings
              */
-                SET_TAGS = function() {
+            SET_TAGS = function() {
                 return createEventName.call(this, 'set-tags');
             },
 
@@ -135,7 +136,7 @@ define([], function() {
              * used for receiving tags
              * @event husky.auto-complete-list.get-tags
              */
-                GET_TAGS = function() {
+            GET_TAGS = function() {
                 return createEventName.call(this, 'get-tags');
             },
 
@@ -143,7 +144,7 @@ define([], function() {
              * raised after AJAX request for loading items is sent
              * @event husky.auto-complete-list.items-request
              */
-                ITEM_REQUEST = function() {
+            ITEM_REQUEST = function() {
                 return createEventName.call(this, 'item-request');
             },
 
@@ -151,7 +152,7 @@ define([], function() {
              * raised after AJAX request for loading suggestions is sent
              * @event husky.auto-complete-list.sug-request
              */
-                SUGGESTION_REQUEST = function() {
+            SUGGESTION_REQUEST = function() {
                 return createEventName.call(this, 'sug-request');
             },
 
@@ -160,7 +161,7 @@ define([], function() {
              * @event husky.auto-complete-list.sug-added
              * @param {object} suggestion - the suggestion element with id, name, DOM-object
              */
-                SUGGESTION_ADDED = function() {
+            SUGGESTION_ADDED = function() {
                 return createEventName.call(this, 'sug-added');
             },
 
@@ -168,7 +169,7 @@ define([], function() {
              * raised after an item is deleted
              * @event husky.auto-complete-list.item-deleted
              */
-                ITEM_DELETED = function() {
+            ITEM_DELETED = function() {
                 return createEventName.call(this, 'item-deleted');
             },
 
@@ -176,7 +177,7 @@ define([], function() {
              * raised after data was loaded
              * @event husky.auto-complete-list.data-loaded
              */
-                DATA_LOADED = function() {
+            DATA_LOADED = function() {
                 return createEventName.call(this, 'data-loaded');
             },
 
@@ -185,7 +186,7 @@ define([], function() {
              * @event husky.auto-complete-list.item-added
              * @param {string} item value
              */
-                ITEM_ADDED = function() {
+            ITEM_ADDED = function() {
                 return createEventName.call(this, 'item-added');
             },
 
@@ -193,7 +194,7 @@ define([], function() {
              * raised after all item were added
              * @event husky.auto-complete-list.items-added
              */
-                ITEMS_ADDED = function() {
+            ITEMS_ADDED = function() {
                 return createEventName.call(this, 'items-added');
             },
 
@@ -201,7 +202,7 @@ define([], function() {
              * raised when the suggestion container is closed
              * @event husky.auto-complete-list.sug-closed
              */
-                SUGGESTIONS_CLOSED = function() {
+            SUGGESTIONS_CLOSED = function() {
                 return createEventName.call(this, 'sug-closed');
             },
 
@@ -209,12 +210,12 @@ define([], function() {
              * raised when the suggestion container is opened
              * @event husky.auto-complete-list.sug-opened
              */
-                SUGGESTIONS_OPENED = function() {
+            SUGGESTIONS_OPENED = function() {
                 return createEventName.call(this, 'sug-opened');
             },
 
             /** returns normalized event names */
-                createEventName = function(postFix) {
+            createEventName = function(postFix) {
                 return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
             };
 
@@ -235,7 +236,7 @@ define([], function() {
                 this.initItems();
 
                 if (this.options.autocomplete === true) {
-                    this.sandbox.on('husky.auto-complete.'+this.options.instanceName+'.initialized', function() {
+                    this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.initialized', function() {
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
                 } else {
@@ -328,7 +329,8 @@ define([], function() {
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
-                                suggestionImg: this.options.autoCompleteIcon,
+                                suggestionIcon: this.options.suggestionIcon,
+                                autoCompleteIcon: this.options.autoCompleteIcon,
                                 resultKey: this.options.resultKey
                             },
                             this.options.autocompleteOptions

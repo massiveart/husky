@@ -259,6 +259,24 @@ define([
     };
 
     /**
+     * Check if any component is not stopped correctly and still referenced by aura.
+     * If that is the case we will stop the component and remove it.
+     * TODO: Consider using 'MutationObserver' for cleanup
+     *
+     * @method cleanUp
+     * @return {void}
+     */
+    app.cleanUp = function () {
+      _.defer(function() {    
+        _.each(appSandboxes, function(sandbox) {
+          if (!!sandbox && !!sandbox.el && !app.core.dom.contains($(sandbox.el)[0], document)) {
+            sandbox.stop();
+          }
+        });
+      });
+    };
+
+    /**
      * Sandboxes are a way to implement the facade pattern on top of the features provided by `core`.
      *
      * The `sandbox` property of an Aura App is just an Object that will be used

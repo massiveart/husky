@@ -41,21 +41,27 @@ define(function() {
                 }
             };
 
-            app.core.util.load = function(url, data) {
-                var deferred = new app.sandbox.data.deferred();
+            app.core.util.load = function(url, data, dataType) {
+                var deferred = new app.sandbox.data.deferred(),
+                    settings = {
+                        url: url,
+                        data: data || null,
+                        dataType: 'json',
 
-                app.sandbox.util.ajax({
-                    url: url,
-                    data: data || null,
+                        success: function(data, textStatus) {
+                            deferred.resolve(data, textStatus);
+                        }.bind(this),
 
-                    success: function(data, textStatus) {
-                        deferred.resolve(data, textStatus);
-                    }.bind(this),
+                        error: function(jqXHR, textStatus, error) {
+                            deferred.reject(textStatus, error);
+                        }
+                    };
 
-                    error: function(jqXHR, textStatus, error) {
-                        deferred.reject(textStatus, error);
-                    }
-                });
+                if (typeof(dataType) !== 'undefined') {
+                    settings.dataType = dataType;
+                }
+
+                app.sandbox.util.ajax(settings);
 
                 app.sandbox.emit('husky.util.load.data');
 
