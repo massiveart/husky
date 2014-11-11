@@ -67,7 +67,7 @@ define([], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
-            verticalSpacing: 20, //px
+            verticalSpacing: 100, //px
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
@@ -186,7 +186,7 @@ define([], function() {
         },
 
         /** templates for component */
-            templates = {
+        templates = {
             overlaySkeleton: [
                 '<div class="husky-overlay-container <%= overflowClass %> <%= skin %> <%= cssClass %> smart-content-overlay">',
                 '   <div class="slides"></div>',
@@ -723,7 +723,7 @@ define([], function() {
             var $element = this.sandbox.dom.createElement('<div/>');
 
             this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
-                '<div class="' + constants.languageChangerClass + '"/>'
+                    '<div class="' + constants.languageChangerClass + '"/>'
             );
             this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$languageChanger);
             this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
@@ -978,8 +978,8 @@ define([], function() {
          * @param event
          */
         closeHandler: function(event) {
-            var cancelCallback = this.slides[this.activeSlide].closeCallback || 
-                                 this.slides[this.activeSlide].cancelCallback;
+            var cancelCallback = this.slides[this.activeSlide].closeCallback ||
+                this.slides[this.activeSlide].cancelCallback;
 
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
@@ -1010,7 +1010,8 @@ define([], function() {
          */
         resetResizeVariables: function() {
             this.overlay.collapsed = false;
-            this.sandbox.dom.height(this.overlay.$content, '');
+            // FIXME shrink does not work without that but it doesnt scroll to to each time:
+            // this.sandbox.dom.height(this.overlay.$content, '');
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
         },
@@ -1021,14 +1022,14 @@ define([], function() {
          */
         resizeHandler: function() {
             //window is getting smaller - make overlay smaller
-            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2) {
+            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing * 2) {
                 this.sandbox.dom.height(this.overlay.$content,
-                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
+                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing * 2)
                 );
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
-            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2 &&
+            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing * 2 &&
                 this.overlay.collapsed === true) {
 
                 //if overlay reached its beginning height - stop
@@ -1038,7 +1039,7 @@ define([], function() {
                     // else enlarge further
                 } else {
                     this.sandbox.dom.height(this.overlay.$content,
-                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
+                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing * 2)
                     );
                 }
             }
