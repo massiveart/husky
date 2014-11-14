@@ -332,6 +332,10 @@ textarea.form-element {
   }
 }
 
+.cke_hidpi .cke_dialog_close_button {
+  background-image: none !important;
+}
+
 // Font-definition
 // -------------------------
 span.error {

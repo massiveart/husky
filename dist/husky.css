@@ -953,7 +953,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   color: #999;
 }
 
-/* line 19, ../scss/various.scss */
+/* line 14, ../scss/various.scss */
 .breadcrumb {
   list-style-type: none;
   margin: 0;
@@ -966,7 +966,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   content: ' ';
   display: block;
 }
-/* line 30, ../scss/various.scss */
+/* line 25, ../scss/various.scss */
 .breadcrumb li {
   display: block;
   float: left;
@@ -976,15 +976,15 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   cursor: pointer;
   height: 100%;
 }
-/* line 39, ../scss/various.scss */
+/* line 34, ../scss/various.scss */
 .breadcrumb li.inactive {
   cursor: default;
 }
-/* line 41, ../scss/various.scss */
+/* line 36, ../scss/various.scss */
 .breadcrumb li.inactive a {
   cursor: default;
 }
-/* line 46, ../scss/various.scss */
+/* line 41, ../scss/various.scss */
 .breadcrumb li a {
   display: inline-block;
   line-height: 18px;
@@ -997,7 +997,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   vertical-align: top;
   padding: 0 5px 0 13px;
 }
-/* line 59, ../scss/various.scss */
+/* line 54, ../scss/various.scss */
 .breadcrumb li::before {
   margin-right: -12px;
   display: inline-block;
@@ -1006,7 +1006,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   width: 9px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjExcHgiIGhlaWdodD0iMjBweCIgdmlld0JveD0iMCAwIDExIDIwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnNrZXRjaD0iaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoL25zIj4KICAgIDwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggMy4wLjEgKDc1OTcpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPlNsaWNlIDE8L3RpdGxlPgogICAgPGRlc2NyaXB0aW9uPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjcmlwdGlvbj4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHNrZXRjaDp0eXBlPSJNU1BhZ2UiPgogICAgICAgIDxnIGlkPSJpY29uMiIgc2tldGNoOnR5cGU9Ik1TTGF5ZXJHcm91cCIgZmlsbD0iIzhBRENFOCI+CiAgICAgICAgICAgIDxnIGlkPSJQYWdlLTEiIHNrZXRjaDp0eXBlPSJNU1NoYXBlR3JvdXAiPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTExLDEgTDAuNTU4NzQ5ODkzLDEgQzAuNjMyNzU2MjY5LDEgMC44MDU4Nzc1MjUsMC45MjMwNjIxOTcgMC45MzEwNTkyMzYsMC42NjQxNjcyNDQgQzEuMDU2Mjg4NiwwLjQwNTE3MzczIDEuMDA5MTE4NzgsMC4yMjMwMzE3NDggMC45NjU5NDAxMzgsMC4xNjg2NTY2NDcgTDcuNzEwNDQ2OTcsOC42NjIwNTE2NiBDOC4zNDYyMTkwMyw5LjQ2MjY4Mjk1IDguMzQ0MjQwOTgsMTAuNjg4ODUxNyA3LjcwNTkwOTczLDExLjQ4MDgyNTcgTDAuOTYxNDAyODk0LDE5Ljg0ODY5NzggQzEuMDExNTgxNzEsMTkuNzg2NDQxMiAxLjA2MDcwNTc5LDE5LjU5NTcwOTEgMC45MzM3MzMxOCwxOS4zMzQ1ODU0IEMwLjgwODgxMDUxLDE5LjA3NzY3NzUgMC42MzUxMjQzNDYsMTkgMC41NTg3NDk4OTMsMTkgTDExLDE5IEwxMSwyMCBMMC41NTg3NDk4OTMsMjAgQzAuMDA4NDYzNTk5NzQsMjAgLTAuMTYzODc2NzExLDE5LjY1MTMwMDcgMC4xODI4MTgxNTMsMTkuMjIxMTU4MyBMNi45MjczMjQ5OSwxMC44NTMyODYyIEM3LjI3MDM0NzM0LDEwLjQyNzcwMDMgNy4yNzQwMTk4NSw5LjcyMDUxNDU1IDYuOTI3MzI0OTksOS4yODM5MTk3OCBMMC4xODI4MTgxNTMsMC43OTA1MjQ3NjYgQy0wLjE2OTU1MDMyMSwwLjM0Njc4NTE4NSAwLjAwNDQzMzY2MTkxLDAgMC41NTg3NDk4OTMsMCBMMTEsMCIgaWQ9IlJlY3RhbmdsZS00ODMiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
 }
-/* line 68, ../scss/various.scss */
+/* line 63, ../scss/various.scss */
 .breadcrumb li::after {
   margin-left: -4px;
   display: inline-block;
@@ -1015,23 +1015,23 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   width: 9px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjlweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgOSAyMCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDMuMC4xICg3NTk3KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5VbnRpdGxlZCAyPC90aXRsZT4KICAgIDxkZXNjcmlwdGlvbj5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzY3JpcHRpb24+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iUGFnZS0xIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBza2V0Y2g6dHlwZT0iTVNQYWdlIj4KICAgICAgICA8ZyBpZD0iaWNvbiIgc2tldGNoOnR5cGU9Ik1TTGF5ZXJHcm91cCIgZmlsbD0iIzhBRENFOCI+CiAgICAgICAgICAgIDxnIGlkPSJQYWdlLTEiIHNrZXRjaDp0eXBlPSJNU1NoYXBlR3JvdXAiPgogICAgICAgICAgICAgICAgPGcgaWQ9Ikl0ZW0iPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0wLjAwMTE1ODI2NTE3LDIwIEMwLjU1MjgwMzMyMywyMCAxLjI4NDcyNDI0LDE5LjY0ODczMiAxLjYyNzc0NjU4LDE5LjIyNTU0MDggTDguMzcyMjUzNDIsMTAuOTA0NzU0IEM4LjcxODk0ODI4LDEwLjQ3NzAzMiA4LjcyNDYyMTg5LDkuNzgxNTg3MDkgOC4zODU1MzcwMyw5LjM1MjIwODM5IEwxLjYxNDQ2Mjk3LDAuNzc4MDg2Mzc4IEMxLjI3NTEwNDQ0LDAuMzQ4MzYxMTM4IDAuNTQyNjc2ODA2LDAgMC4wMDExNTgyNjUxNywwIEwwLjAwMTE1ODI2NTE3LDIwIEwwLjAwMTE1ODI2NTE3LDIwIFogTTAuMDAxMTU4MjY1MTcsMSBDMC4yNDE0NTQ2OSwxIDAuNjgyODk0NDMsMS4yMTE5ODQ0MSAwLjgyOTY3MDU5NywxLjM5Nzg0NTE1IEw3LjYwMDc0NDY1LDkuOTcxOTY3MTYgQzcuNjQ5NDk4MzcsMTAuMDMzNzAzMyA3LjY0ODAxMDI2LDEwLjIxMDE2NjUgNy41OTU0MDI4MSwxMC4yNzUwNjkgTDAuODUwODk1OTc2LDE4LjU5NTg1NTggQzAuNjk2MzYzMTA0LDE4Ljc4NjUwNTEgMC4yNDkwNzAyNDUsMTkgMC4wMDExNTgyNjUxNywxOSBMMC4wMDExNTgyNjUxNywxIEwwLjAwMTE1ODI2NTE3LDEgWiIgaWQ9IlJlY3RhbmdsZS00ODMiPjwvcGF0aD4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
 }
-/* line 78, ../scss/various.scss */
+/* line 73, ../scss/various.scss */
 .breadcrumb li:first-child a {
   padding-left: 5px;
   border-left-width: 1px;
   border-radius: 2px 0 0 2px;
 }
-/* line 84, ../scss/various.scss */
+/* line 79, ../scss/various.scss */
 .breadcrumb li:first-child::before {
   display: none;
 }
 
-/* line 91, ../scss/various.scss */
+/* line 86, ../scss/various.scss */
 .husky-position {
   width: 100%;
   height: 100%;
 }
-/* line 95, ../scss/various.scss */
+/* line 90, ../scss/various.scss */
 .husky-position > div {
   width: 33.33%;
   height: 33.33%;
@@ -1039,26 +1039,27 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   cursor: pointer;
   border: 1px solid #fff;
 }
-/* line 102, ../scss/various.scss */
+/* line 97, ../scss/various.scss */
 .husky-position .left {
   float: left;
   clear: left;
 }
-/* line 106, ../scss/various.scss */
+/* line 101, ../scss/various.scss */
 .husky-position .middle {
   float: left;
 }
-/* line 109, ../scss/various.scss */
+/* line 104, ../scss/various.scss */
 .husky-position .right {
   float: left;
 }
-/* line 112, ../scss/various.scss */
+/* line 107, ../scss/various.scss */
 .husky-position .selected {
   background: #52B6CA;
 }
-/* line 115, ../scss/various.scss */
+/* line 110, ../scss/various.scss */
 .husky-position .inactive {
   background: transparent;
+  cursor: default;
 }
 
 /* line 3, ../scss/colorpicker.scss */
@@ -6450,7 +6451,12 @@ textarea.form-element.small, textarea.small.husky-input {
   border-bottom-right-radius: 3px !important;
 }
 
-/* line 337, ../scss/modules/form.scss */
+/* line 335, ../scss/modules/form.scss */
+.cke_hidpi .cke_dialog_close_button {
+  background-image: none !important;
+}
+
+/* line 341, ../scss/modules/form.scss */
 span.error {
   font-size: 14px;
   color: #EA524E;
@@ -10024,11 +10030,19 @@ a.btn-black, a.btn-highlight {
 .sortable.is-sortmode .hide-in-sortmode {
   display: none;
 }
-/* line 22, ../scss/modules/content-types.scss */
+/* line 21, ../scss/modules/content-types.scss */
+.sortable.is-sortmode .text-block label {
+  display: none;
+}
+/* line 25, ../scss/modules/content-types.scss */
+.sortable.is-sortmode .text-block .form-group {
+  margin-top: 0;
+}
+/* line 32, ../scss/modules/content-types.scss */
 .sortable .text-block .move {
   position: relative;
 }
-/* line 25, ../scss/modules/content-types.scss */
+/* line 35, ../scss/modules/content-types.scss */
 .sortable .text-block .move::before {
   content: "";
   cursor: move;
@@ -10042,50 +10056,50 @@ a.btn-black, a.btn-highlight {
   width: 20px;
   text-align: center;
 }
-/* line 41, ../scss/modules/content-types.scss */
+/* line 51, ../scss/modules/content-types.scss */
 .sortable .text-block .grid-row:last-of-type {
   margin-bottom: 0;
 }
 
-/* line 47, ../scss/modules/content-types.scss */
+/* line 57, ../scss/modules/content-types.scss */
+.text-block-controls {
+  margin-bottom: -20px;
+}
+
+/* line 61, ../scss/modules/content-types.scss */
 .text-block {
   margin-bottom: 20px;
 }
-/* line 52, ../scss/modules/content-types.scss */
+/* line 66, ../scss/modules/content-types.scss */
 .text-block .head label {
   float: left;
   font-size: 16px;
   margin-bottom: 10px;
   cursor: default;
 }
-/* line 59, ../scss/modules/content-types.scss */
-.text-block .head .options-remove {
-  float: right;
-  cursor: pointer;
-  margin-top: 5px;
-  margin-left: 8px;
-  display: none;
-  font-size: 16px;
-}
-/* line 68, ../scss/modules/content-types.scss */
+/* line 73, ../scss/modules/content-types.scss */
 .text-block .head::after {
   content: "";
   display: block;
   clear: both;
 }
-/* line 75, ../scss/modules/content-types.scss */
+/* line 80, ../scss/modules/content-types.scss */
 .text-block .options-change {
-  position: absolute;
-  right: 20px;
-  top: 10px;
   cursor: pointer;
   font-size: 16px;
 }
-/* line 82, ../scss/modules/content-types.scss */
+/* line 84, ../scss/modules/content-types.scss */
 .text-block .options-change .dropdown-toggle::after {
   margin-left: 0;
 }
-/* line 87, ../scss/modules/content-types.scss */
+/* line 89, ../scss/modules/content-types.scss */
+.text-block .options-remove {
+  cursor: pointer;
+  position: relative;
+  top: 2px;
+  font-size: 16px;
+}
+/* line 96, ../scss/modules/content-types.scss */
 .text-block .container {
   padding: 10px 20px 20px 20px;
   background: #ddd;
@@ -10094,33 +10108,25 @@ a.btn-black, a.btn-highlight {
   -webkit-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
 }
-/* line 93, ../scss/modules/content-types.scss */
+/* line 102, ../scss/modules/content-types.scss */
 .text-block .container label {
   margin-bottom: 10px;
 }
-/* line 97, ../scss/modules/content-types.scss */
+/* line 106, ../scss/modules/content-types.scss */
 .text-block .container textarea {
   max-width: 100%;
   min-width: 100%;
   width: 100%;
 }
-/* line 105, ../scss/modules/content-types.scss */
-.text-block:hover .head .options-remove, .text-block:hover .head .options-change {
-  display: block;
-}
 
-/* line 111, ../scss/modules/content-types.scss */
+/* line 114, ../scss/modules/content-types.scss */
 .text-blocks-toggle-btn {
   padding: 5px 0;
   height: auto;
 }
 
-/* line 118, ../scss/modules/content-types.scss */
-.empty .text-block .head .options-remove {
-  display: none;
-}
 /* line 121, ../scss/modules/content-types.scss */
-.empty .text-block:hover .head .options-remove {
+.empty .text-block .options-remove {
   display: none;
 }
 

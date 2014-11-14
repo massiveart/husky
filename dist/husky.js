@@ -30566,8 +30566,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
+ * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  * @param {Object} [options.viewOptions] Configuration Object for the view
  * @param {Boolean} [options.sortable] Defines if records are sortable
@@ -30981,6 +30981,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         },
 
         /**
+         * triggers husky.datagrid.items.selected event, which returns all selected item data
+         * @event husky.datagrid.data.get-selected
+         * @param  {Function} callback function receives array of selected items
+         */
+        DATA_GET_SELECTED = function() {
+            return this.createEventName('data.get-selected');
+        },
+
+        /**
          * Private Methods
          * --------------------------------------------------------------------
          */
@@ -31094,10 +31103,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         url: url
                     });
 
-                } else if (!!this.options.data.items) {
+                } else if (!!this.options.data) {
 
                     this.sandbox.logger.log('load data from array');
-                    this.data = this.options.data;
+                    this.data = {};
+                    if (!!this.options.resultKey && !!this.options.data[this.options.resultKey]) {
+                        this.data.embedded = this.options.data[this.options.resultKey];
+                    } else {
+                        this.data.embedded = this.options.data;
+                    }
 
                     this.renderView();
                     if (!!this.paginations[this.paginationId]) {
@@ -31626,6 +31640,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     callback(this.getSelectedItemIds());
                 }.bind(this));
 
+                // trigger selectedItems
+                this.sandbox.on(DATA_GET_SELECTED.call(this), function(callback) {
+                    callback(this.getSelectedItemData());
+                }.bind(this));
+
                 // add a single data record
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
                 // add multiple data records
@@ -31827,13 +31846,36 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @return {Array} array with all ids
              */
             getSelectedItemIds: function() {
-                var ids = [], i, length;
+                var data = [];
+                this.iterateSelectedItems(function(item) {
+                    data.push(item.id);
+                });
+                return data;
+            },
+
+            /**
+             * Returns the data of all selected items
+             * @return {Array} array of objects containing the selected data
+             */
+            getSelectedItemData: function() {
+                var data = [];
+                this.iterateSelectedItems(function(item) {
+                    data.push(item);
+                });
+                return data;
+            },
+
+            /**
+             * function which iterates through data. on every selected item a callback is called
+             * @param callback Selected item is passed
+             */
+            iterateSelectedItems: function(callback) {
+                var i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (this.data.embedded[i].selected === true) {
-                        ids.push(this.data.embedded[i].id);
+                        callback(this.data.embedded[i]);
                     }
                 }
-                return ids;
             },
 
             /**
@@ -38579,7 +38621,7 @@ define('__component__$overlay@husky',[], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
-            verticalSpacing: 20, //px
+            verticalSpacing: 100, //px
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
@@ -38698,7 +38740,7 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /** templates for component */
-            templates = {
+        templates = {
             overlaySkeleton: [
                 '<div class="husky-overlay-container <%= overflowClass %> <%= skin %> <%= cssClass %> smart-content-overlay">',
                 '   <div class="slides"></div>',
@@ -39235,7 +39277,7 @@ define('__component__$overlay@husky',[], function() {
             var $element = this.sandbox.dom.createElement('<div/>');
 
             this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
-                '<div class="' + constants.languageChangerClass + '"/>'
+                    '<div class="' + constants.languageChangerClass + '"/>'
             );
             this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$languageChanger);
             this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
@@ -39490,8 +39532,8 @@ define('__component__$overlay@husky',[], function() {
          * @param event
          */
         closeHandler: function(event) {
-            var cancelCallback = this.slides[this.activeSlide].closeCallback || 
-                                 this.slides[this.activeSlide].cancelCallback;
+            var cancelCallback = this.slides[this.activeSlide].closeCallback ||
+                this.slides[this.activeSlide].cancelCallback;
 
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
@@ -39522,7 +39564,8 @@ define('__component__$overlay@husky',[], function() {
          */
         resetResizeVariables: function() {
             this.overlay.collapsed = false;
-            this.sandbox.dom.height(this.overlay.$content, '');
+            // FIXME shrink does not work without that but it doesnt scroll to to each time:
+            // this.sandbox.dom.height(this.overlay.$content, '');
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
         },
@@ -39533,14 +39576,14 @@ define('__component__$overlay@husky',[], function() {
          */
         resizeHandler: function() {
             //window is getting smaller - make overlay smaller
-            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2) {
+            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing * 2) {
                 this.sandbox.dom.height(this.overlay.$content,
-                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
+                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing * 2)
                 );
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
-            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2 &&
+            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing * 2 &&
                 this.overlay.collapsed === true) {
 
                 //if overlay reached its beginning height - stop
@@ -39550,7 +39593,7 @@ define('__component__$overlay@husky',[], function() {
                     // else enlarge further
                 } else {
                     this.sandbox.dom.height(this.overlay.$content,
-                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
+                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing * 2)
                     );
                 }
             }
@@ -42020,16 +42063,27 @@ define('__component__$input@husky',[], function() {
                                     linkOptions = infoTab.get('linkType'),
                                     targetOptions = targetTab.get('linkTargetType'),
 
-                                    // list of excluded link target options
+                                    // list of included link options
+                                    includedLinkOptions = [
+                                        'url',
+                                        'email'
+                                    ],
+                                    selectedLinkOption = [],
+
+                                    // list of included link target options
                                     includedTargetOptions = [
                                         'notSet',
                                         '_blank',
                                         '_self'
                                     ],
                                     selectedTargetOptions = [];
-                            
-                                // remove 'link to anchor' option
-                                linkOptions.items.splice(1, 1);
+                                    
+                                // just show included link options
+                                for (var i = 0; i < linkOptions.items.length; i++) {
+                                    if (includedLinkOptions.indexOf(linkOptions.items[i][1]) !== -1) {
+                                        selectedLinkOption.push(linkOptions.items[i]);
+                                    }
+                                }
 
                                 // just show included target options
                                 for (var i = 0; i < targetOptions.items.length; i++) {
@@ -42038,6 +42092,7 @@ define('__component__$input@husky',[], function() {
                                     }
                                 }
 
+                                linkOptions.items = selectedLinkOption;
                                 targetOptions.items = selectedTargetOptions;
                             }
                         });
