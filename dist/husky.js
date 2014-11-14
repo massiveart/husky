@@ -28960,7 +28960,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     column.attribute,
                     content,
                     column.type,
-                    Object.keys(this.table.rows).length
+                    Object.keys(this.table.rows).length,
+                    record.hasOwnProperty('id') ? record['id'] : null
                 );
             }
             if (this.options.editable === true && column.editable === true) {
@@ -30578,7 +30579,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
- * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column. If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types)
+ * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column.
+ *        If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types).
+ *        Passed will be (content, arguments, recordId).
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
  * @param {String} [options.matchings.width] width of column (used by the table view)
@@ -31573,18 +31576,18 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @param {Number|String} [argument] argument to pass to the processor
              * @returns {String} the manipulated content
              */
-            processContentFilter: function(attributeName, content, type, argument) {
+            processContentFilter: function(attributeName, content, type, argument, recordId) {
                 // check if filter is set for current column
                 if (!!this.options.contentFilters && this.options.contentFilters.hasOwnProperty(attributeName)) {
                     // check if filter is function or string and call filter
                     if (typeof this.options.contentFilters[attributeName] === 'function') {
-                        return this.options.contentFilters[attributeName].call(this, content, argument);
+                        return this.options.contentFilters[attributeName].call(this, content, argument, recordId);
                     } else if (typeof this.options.contentFilters[attributeName] === 'string') {
                         type = this.options.contentFilters[attributeName];
                         return this.manipulateContent(content, type, argument, attributeName);
                     }
                 }
-                // if no filter was set, check if type is set and call
+                // if no filter was set, check if type is set and calls
                 else if (!!type) {
                     return this.manipulateContent(content, type, argument);
                 }

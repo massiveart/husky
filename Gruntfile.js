@@ -97,6 +97,7 @@ module.exports = function(grunt) {
         compass: {
             dev: {
                 options: {
+                    sourcemap: false,
                     sassDir: 'scss/',
                     specify: 'scss/husky.scss',
                     cssDir: '.tmp/',
