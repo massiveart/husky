@@ -669,7 +669,8 @@ define(function() {
                     column.attribute,
                     content,
                     column.type,
-                    Object.keys(this.table.rows).length
+                    Object.keys(this.table.rows).length,
+                    record.hasOwnProperty('id') ? record['id'] : null
                 );
             }
             if (this.options.editable === true && column.editable === true) {
