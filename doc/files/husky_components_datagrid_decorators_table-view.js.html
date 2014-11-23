@@ -823,7 +823,8 @@ define(function() {
                     column.attribute,
                     content,
                     column.type,
-                    Object.keys(this.table.rows).length
+                    Object.keys(this.table.rows).length,
+                    record.hasOwnProperty(&#x27;id&#x27;) ? record[&#x27;id&#x27;] : null
                 );
             }
             if (this.options.editable === true &amp;&amp; column.editable === true) {

@@ -97,6 +97,7 @@ module.exports = function(grunt) {
         compass: {
             dev: {
                 options: {
+                    sourcemap: false,
                     sassDir: 'scss/',
                     specify: 'scss/husky.scss',
                     cssDir: '.tmp/',
@@ -276,8 +277,8 @@ module.exports = function(grunt) {
 						expand: true,
 						flatten: true,
 						src: [
-							'.bower_components/typeahead.js/dist/typeahead.js',
-							'.bower_components/typeahead.js/dist/typeahead.min.js'
+							'.bower_components/typeahead.js/dist/typeahead.bundle.js',
+							'.bower_components/typeahead.js/dist/typeahead.bundle.min.js'
 						],
 						dest: 'bower_components/typeahead.js'
 					},

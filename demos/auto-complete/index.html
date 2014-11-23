@@ -88,7 +88,7 @@
 
 		var app = Husky({
 					debug: {
-						enable: true
+						enable: false
 					}
 				}),
 				_ = app.sandbox.util._;
@@ -103,7 +103,24 @@
                         remoteUrl: 'http://husky.lo:7878/admin/api/autocomplete',
                         suggestionIcon: 'tag',
                         autoCompleteIcon: 'tag',
-                        localData: [{id: 89, name: 'Albanien das Land der Kämpfer und der Träumer die Kämpften um Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                        fields: [
+                            {
+                                id: 'blah',
+                                name: 'Blah',
+                                width: '30%'
+                            },
+                            {
+                                id: 'name',
+                                name: 'Lol',
+                                width: '40%'
+                            },
+                            {
+                                id: 'blah',
+                                name: 'Rofl',
+                                width: '30%'
+                            }
+                        ],
+                        localData: [{id: 89, blah: 'LOL', name: 'Albanien das Land der Kämpfer und der Träumer die Kämpften um Albanien'}, {id: 77, blah: 'LOL', name: 'Altach'}, {id: 899, blah: 'LOL', name: 'Andelsbuch'}]
                     }
                 },
                 {

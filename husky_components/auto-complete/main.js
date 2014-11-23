@@ -57,12 +57,14 @@ define([], function() {
         hint: false,
         emptyOnBlur: false,
         excludes: [],
-        selectCallback: null
+        selectCallback: null,
+        fields: [],
+        dropdownSize: ''
     },
 
     templates = {
         main: [
-            '<div class="husky-auto-complete">',
+            '<div class="husky-auto-complete <%= dropdownSize %>">',
                 '<div class="front">',
                     '<a class="fa-<%= autoCompleteIcon %>"></a>',
                 '</div>',
@@ -213,13 +215,27 @@ define([], function() {
             if (this.options.suggestionIcon !== '') {
                 iconHTML = '<span class="fa-' + this.options.suggestionIcon + ' icon"></span>';
             }
-            this._template = this.sandbox.util.template('' +
-                '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
-                '   <div class="border">' +
-                iconHTML +
-                '		<div class="text"><%= context[this.options.valueKey] %></div>' +
-                '	</div>' +
-                '</div>');
+
+            if (this.options.fields.length) {
+                this._template = this.sandbox.util.template('' +
+                    '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
+                    '   <div class="border">' +
+                    '       <div class="text">' +
+                    '           <% _.each(fields, function(field, idx) { %>' +
+                    '           <div class="suggestion-column" style="width: <%= field.width %>;"><%= context[field.id] %></div>' +
+                    '           <% }) %>' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</div>');
+            } else {
+                this._template = this.sandbox.util.template('' +
+                    '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
+                    '   <div class="border">' +
+                            iconHTML +
+                    '       <div class="text"><%= context[this.options.valueKey] %></div>' +
+                    '   </div>' +
+                    '</div>');
+            }
         },
 
         /**
@@ -229,7 +245,7 @@ define([], function() {
         buildTemplate: function(context) {
             var domObj;
             if (this._template !== null) {
-                domObj = this.sandbox.dom.createElement(this._template({context: context}));
+                domObj = this.sandbox.dom.createElement(this._template({ context: context, fields: this.options.fields }));
                 if (this.isExcluded(context)) {
                     this.sandbox.dom.addClass(domObj, 'disabled');
                 }
@@ -242,7 +258,8 @@ define([], function() {
          */
         renderMain: function() {
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.main, {
-                autoCompleteIcon: this.options.autoCompleteIcon
+                autoCompleteIcon: this.options.autoCompleteIcon,
+                dropdownSize: this.options.dropdownSize
             }));
         },
 
@@ -283,18 +300,23 @@ define([], function() {
          * Starts the typeahead auto-complete plugin
          */
         bindTypeahead: function() {
-            var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
-            this.sandbox.autocomplete.init(this.$valueField, {
-                name: this.options.instanceName,
-                local: this.handleData(this.localData),
-                valueKey: this.options.valueKey,
-                template: function(context) {
-                    //saves the fact that the current input has matches
-                    this.matches.push(context);
-                    this.matched = true;
-                    return this.buildTemplate(context);
-                }.bind(this),
-                prefetch: {
+            var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&',
+                configs = {
+                    name: this.options.instanceName,
+                    local: this.handleData(this.localData),
+                    displayKey: this.options.valueKey,
+                    templates: {
+                        suggestion: function(context) {
+                            //saves the fact that the current input has matches
+                            this.matches.push(context);
+                            this.matched = true;
+                            return this.buildTemplate(context);
+                        }.bind(this)
+                    }
+                };
+
+            if (!!this.options.prefetchUrl) {
+                configs.prefetch = {
                     url: this.options.prefetchUrl,
                     ttl: 1,
                     filter: function(data) {
@@ -302,8 +324,11 @@ define([], function() {
                         this.handleData(data);
                         return this.data;
                     }.bind(this)
-                },
-                remote: {
+                };
+            }
+
+            if (!!this.options.remoteUrl) {
+                configs.remote = {
                     url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
                     beforeSend: function() {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
@@ -313,8 +338,10 @@ define([], function() {
                         this.handleData(data);
                         return this.data;
                     }.bind(this)
-                }
-            });
+                };
+            }
+
+            this.sandbox.autocomplete.init(this.$valueField, configs);
 
             //looses the dropdown from the input box
             if (this.options.stickToInput === false) {

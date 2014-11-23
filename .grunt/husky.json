@@ -14,7 +14,7 @@
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
             "globalize_lib": "bower_components/globalize/lib/globalize",
-            "typeahead": "bower_components/typeahead.js/typeahead",
+            "typeahead": "bower_components/typeahead.js/typeahead.bundle",
             "tagsManager": "bower_components/tagmanager/tagmanager",
             "dropzone": "bower_components/dropzone/dropzone",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",

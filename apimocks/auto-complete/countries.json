@@ -2,19 +2,23 @@
     "countries": [
         {
             "id": 1,
-            "name": "Deutschland"
+            "name": "Deutschland",
+            "blah": "Blub"
         },
         {
             "id": 2,
-            "name": "Frankreich"
+            "name": "Frankreich",
+            "blah": "Blub"
         },
         {
             "id": 3,
-            "name": "USA"
+            "name": "USA",
+            "blah": "Blub"
         },
         {
             "id": 4,
-            "name": "Kroatien"
+            "name": "Kroatien",
+            "blah": "Blub"
         }
     ]
 }}
