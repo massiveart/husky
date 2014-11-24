@@ -335,6 +335,14 @@ define([], function() {
         destroyEditor: function() {
             this.editorContent = this.editor.getData();
             this.editor.destroy();
+        },
+
+        remove: function() {
+            var instance = this.sandbox.ckeditor.getInstance(this.options.instanceName);
+
+            if (!!instance) {
+                instance.destroy();
+            }
         }
     };
 

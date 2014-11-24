@@ -30,6 +30,12 @@
         }
     }
 
+    &.is-large {
+        .tt-dropdown-menu {
+            width: 150%;
+        }
+    }
+
     .front {
         padding-left: 5px;
     }
@@ -120,6 +126,12 @@
         color: $grayLight;
         cursor: default;
     }
+}
+
+.suggestion-column {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .husky-auto-complete-success {
