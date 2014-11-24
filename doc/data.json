@@ -10731,7 +10731,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 663,
+            "line": 661,
             "description": "Handles requested items",
             "params": [
                 {
@@ -10748,21 +10748,21 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 711,
+            "line": 709,
             "description": "Collapses all buttons",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 723,
+            "line": 721,
             "description": "Expands all buttons",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 739,
+            "line": 737,
             "description": "Collapses a given button",
             "params": [
                 {
@@ -10776,7 +10776,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 761,
+            "line": 759,
             "description": "Expands a given button",
             "params": [
                 {
@@ -10795,7 +10795,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 779,
+            "line": 777,
             "description": "Sorts all items with their position-property",
             "params": [
                 {
@@ -10813,7 +10813,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 797,
+            "line": 795,
             "description": "function checks if id is set and unique among all items\notherwise a new id is generated for the element",
             "params": [
                 {
@@ -10826,7 +10826,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 815,
+            "line": 813,
             "description": "Removes the dropdown of a button",
             "params": [
                 {
@@ -10839,7 +10839,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 833,
+            "line": 831,
             "description": "Inserts a search into an item",
             "params": [
                 {
@@ -10852,7 +10852,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 860,
+            "line": 858,
             "description": "Add the skin-classes to the component-element",
             "params": [
                 {
@@ -10866,7 +10866,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 870,
+            "line": 868,
             "description": "Pushes a search item to a passed data array and creates a group where the new search item gets inserted to",
             "params": [
                 {
@@ -10884,20 +10884,20 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 899,
+            "line": 897,
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 906,
+            "line": 904,
             "description": "initialize component",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 938,
+            "line": 936,
             "description": "renders the toolbar",
             "params": [
                 {
@@ -10911,7 +10911,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 1053,
+            "line": 1051,
             "description": "Renders the main container and the groups",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
@@ -11612,7 +11612,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/toolbar/main.js:870"
+            "line": " husky_components/toolbar/main.js:868"
         },
         {
             "message": "Missing item type\nreturns formatted date string",
@@ -13680,63 +13680,63 @@
         },
         {
             "message": "Missing item type\nHandles requested items",
-            "line": " husky_components/toolbar/main.js:663"
+            "line": " husky_components/toolbar/main.js:661"
         },
         {
             "message": "Missing item type\nCollapses all buttons",
-            "line": " husky_components/toolbar/main.js:711"
+            "line": " husky_components/toolbar/main.js:709"
         },
         {
             "message": "Missing item type\nExpands all buttons",
-            "line": " husky_components/toolbar/main.js:723"
+            "line": " husky_components/toolbar/main.js:721"
         },
         {
             "message": "Missing item type\nCollapses a given button",
-            "line": " husky_components/toolbar/main.js:739"
+            "line": " husky_components/toolbar/main.js:737"
         },
         {
             "message": "Missing item type\nExpands a given button",
-            "line": " husky_components/toolbar/main.js:761"
+            "line": " husky_components/toolbar/main.js:759"
         },
         {
             "message": "Missing item type\nSorts all items with their position-property",
-            "line": " husky_components/toolbar/main.js:779"
+            "line": " husky_components/toolbar/main.js:777"
         },
         {
             "message": "Missing item type\nfunction checks if id is set and unique among all items\notherwise a new id is generated for the element",
-            "line": " husky_components/toolbar/main.js:797"
+            "line": " husky_components/toolbar/main.js:795"
         },
         {
             "message": "Missing item type\nRemoves the dropdown of a button",
-            "line": " husky_components/toolbar/main.js:815"
+            "line": " husky_components/toolbar/main.js:813"
         },
         {
             "message": "Missing item type\nInserts a search into an item",
-            "line": " husky_components/toolbar/main.js:833"
+            "line": " husky_components/toolbar/main.js:831"
         },
         {
             "message": "Missing item type\nAdd the skin-classes to the component-element",
-            "line": " husky_components/toolbar/main.js:860"
+            "line": " husky_components/toolbar/main.js:858"
         },
         {
             "message": "Missing item type\nPushes a search item to a passed data array and creates a group where the new search item gets inserted to",
-            "line": " husky_components/toolbar/main.js:870"
+            "line": " husky_components/toolbar/main.js:868"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/toolbar/main.js:899"
+            "line": " husky_components/toolbar/main.js:897"
         },
         {
             "message": "Missing item type\ninitialize component",
-            "line": " husky_components/toolbar/main.js:906"
+            "line": " husky_components/toolbar/main.js:904"
         },
         {
             "message": "Missing item type\nrenders the toolbar",
-            "line": " husky_components/toolbar/main.js:938"
+            "line": " husky_components/toolbar/main.js:936"
         },
         {
             "message": "Missing item type\nRenders the main container and the groups",
-            "line": " husky_components/toolbar/main.js:1053"
+            "line": " husky_components/toolbar/main.js:1051"
         }
     ]
 }
