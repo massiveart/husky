@@ -31,6 +31,8 @@
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  * @param {Function} [options.selectCallback] function which will be called when element is selected
+ * @param {Array} [options.fields] A list of the fields to show inside the dropdown
+ * @param {String} [options.dropdownSizeClass] The styling class for the dropdown. Defined inside the autocomplete stylesheet
  */
 
 define([], function() {
@@ -59,12 +61,12 @@ define([], function() {
         excludes: [],
         selectCallback: null,
         fields: [],
-        dropdownSize: ''
+        dropdownSizeClass: ''
     },
 
     templates = {
         main: [
-            '<div class="husky-auto-complete <%= dropdownSize %>">',
+            '<div class="husky-auto-complete <%= dropdownSizeClass %>">',
                 '<div class="front">',
                     '<a class="fa-<%= autoCompleteIcon %>"></a>',
                 '</div>',
@@ -259,7 +261,7 @@ define([], function() {
         renderMain: function() {
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.main, {
                 autoCompleteIcon: this.options.autoCompleteIcon,
-                dropdownSize: this.options.dropdownSize
+                dropdownSizeClass: this.options.dropdownSizeClass
             }));
         },
 
