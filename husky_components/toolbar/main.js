@@ -653,8 +653,6 @@ define(function() {
                         maxwidth = this.sandbox.dom.width(listItem);
                     }
                 }
-                maxwidth = maxwidth + constants.dropdownToggleWidth;
-                this.sandbox.dom.css(listItem, {'min-width': Math.ceil(maxwidth) + 'px'});
                 //set button back to default
                 changeMainListItem.call(this, listItem, parent);
             }
