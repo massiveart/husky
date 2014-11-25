@@ -7828,13 +7828,13 @@ a.btn-black, a.btn-highlight {
 
 /* line 80, ../scss/modules/auto-complete.scss */
 .suggestion:hover,
-.tt-is-under-cursor .suggestion {
+.tt-cursor .suggestion {
   background: #52B6CA;
   color: #fff;
 }
 /* line 85, ../scss/modules/auto-complete.scss */
 .suggestion:hover.disabled,
-.tt-is-under-cursor .suggestion.disabled {
+.tt-cursor .suggestion.disabled {
   background: #efefef;
 }
 
