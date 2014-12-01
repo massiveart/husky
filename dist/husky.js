@@ -32620,7 +32620,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
-                        this.changePage(null, this.data.page, null);
+                        this.rerenderPagination();
                         return true;
                     }
                 }
