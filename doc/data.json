@@ -2941,6 +2941,30 @@
         {
             "file": "husky_extensions/globalize.js",
             "line": 142,
+            "description": "Parses a float value according to the given culture",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                },
+                {
+                    "name": "radix",
+                    "description": "default 10"
+                },
+                {
+                    "name": "culture",
+                    "description": "current culture if no culture given"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "AutoComplete"
+        },
+        {
+            "file": "husky_extensions/globalize.js",
+            "line": 153,
             "params": [
                 {
                     "name": "cultureName",
@@ -10932,6 +10956,10 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
+            "line": " husky_extensions/globalize.js:142"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
             "line": " husky_extensions/jquery.js:458"
         },
         {
@@ -11631,8 +11659,12 @@
             "line": " husky_extensions/globalize.js:132"
         },
         {
-            "message": "Missing item type",
+            "message": "Missing item type\nParses a float value according to the given culture",
             "line": " husky_extensions/globalize.js:142"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_extensions/globalize.js:153"
         },
         {
             "message": "Missing item type\nsee https://github.com/farhadi/html5sortable for documentation",
