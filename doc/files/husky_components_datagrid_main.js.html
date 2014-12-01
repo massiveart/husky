@@ -698,9 +698,7 @@
                     this.load({
                         url: url
                     });
-
                 } else if (!!this.options.data) {
-
                     this.sandbox.logger.log(&#x27;load data from array&#x27;);
                     this.data = {};
                     if (!!this.options.resultKey &amp;&amp; !!this.options.data[this.options.resultKey]) {
@@ -1599,7 +1597,7 @@
                 for (var i = -1, length = this.data.embedded.length; ++i &lt; length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
-                        this.rerenderPagination();
+                        this.changePage(null, this.data.page, null);
                         return true;
                     }
                 }
@@ -1664,7 +1662,8 @@
                     this.load({url: url,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this), &#x27;changed page&#x27;);
-                        }.bind(this)});
+                        }.bind(this)
+                    });
                 }
             },
 

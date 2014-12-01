@@ -31749,9 +31749,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     this.load({
                         url: url
                     });
-
                 } else if (!!this.options.data) {
-
                     this.sandbox.logger.log('load data from array');
                     this.data = {};
                     if (!!this.options.resultKey && !!this.options.data[this.options.resultKey]) {
@@ -32650,7 +32648,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
-                        this.rerenderPagination();
+                        this.changePage(null, this.data.page, null);
                         return true;
                     }
                 }
@@ -32715,7 +32713,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     this.load({url: url,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this), 'changed page');
-                        }.bind(this)});
+                        }.bind(this)
+                    });
                 }
             },
 
