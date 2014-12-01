@@ -31628,15 +31628,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         },
 
         /**
-         * triggers husky.datagrid.items.selected event, which returns all selected item data
-         * @event husky.datagrid.data.get-selected
-         * @param  {Function} callback function receives array of selected items
-         */
-        DATA_GET_SELECTED = function() {
-            return this.createEventName('data.get-selected');
-        },
-
-        /**
          * Private Methods
          * --------------------------------------------------------------------
          */
@@ -31713,6 +31704,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
                 this.$loader = null;
                 this.isLoading = false;
+                this.initialLoaded = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -31857,7 +31849,10 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Renders the data of the datagrid
              */
             render: function() {
-                this.preSelectItems();
+                if (!this.initialLoaded) {
+                    this.preSelectItems();
+                    this.initialLoaded = true;
+                }
 
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
@@ -32285,11 +32280,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     callback(this.getSelectedItemIds());
                 }.bind(this));
 
-                // trigger selectedItems
-                this.sandbox.on(DATA_GET_SELECTED.call(this), function(callback) {
-                    callback(this.getSelectedItemData());
-                }.bind(this));
-
                 // add a single data record
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
                 // add multiple data records
@@ -32486,16 +32476,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @return {Array} array with all ids
              */
             getSelectedItemIds: function() {
-                return this.selectedItems.map(function(item) {
-                    return item.id;
-                });
-            },
-
-            /**
-             * Returns the data of all selected items
-             * @return {Array} array of objects containing the selected data
-             */
-            getSelectedItemData: function() {
                 return this.selectedItems;
             },
 
@@ -32506,11 +32486,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             setSelectedItems: function(items) {
                 var count = 0, i, length, position;
-                for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (items.indexOf(this.data.embedded[i].id) !== -1 && this.selectingAllowed(this.data.embedded[i].id)) {
-                        this.selectedItems.push(this.data.embedded[i]);
+                for (i = -1, length = items.length; ++i < length;) {
+                    if (this.selectedItems.indexOf(items[i]) === -1 && this.selectingAllowed(items[i])) {
+                        this.selectedItems.push(items[i]);
                         count++;
-                    } else if ((position = this.selectedItems.indexOf(this.data.embedded[i])) !== -1) {
+                    } else if ((position = this.selectedItems.indexOf(items[i])) !== -1) {
                         this.selectedItems.splice(position, 1);
                     }
                 }
@@ -32523,12 +32503,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @returns {Boolean} returns true if item is selected
              */
             itemIsSelected: function(id) {
-                for (var i = -1, length = this.selectedItems.length; ++i < length;) {
-                    if (this.selectedItems[i].id === id) {
-                        return true;
-                    }
-                }
-                return false;
+                return this.selectedItems.indexOf(id) !== -1;
             },
 
             /**
@@ -32537,10 +32512,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @return {Boolean} true of operation was successfull
              */
             setItemSelected: function(id) {
-                var item = this.data.embedded[this.getRecordIndexById(id)];
-
-                if (this.selectedItems.indexOf(item) === -1) {
-                    this.selectedItems.push(item);
+                if (this.selectedItems.indexOf(id) === -1) {
+                    this.selectedItems.push(id);
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
@@ -32556,10 +32529,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @return {Boolean} true of operation was succesfull
              */
             setItemUnselected: function(id) {
-                var item = this.data.embedded[this.getRecordIndexById(id)],
-                    position;
+                var position;
 
-                if ((position = this.selectedItems.indexOf(item)) !== -1) {
+                if ((position = this.selectedItems.indexOf(id)) !== -1) {
                     this.selectedItems.splice(position, 1);
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
