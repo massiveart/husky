@@ -305,6 +305,21 @@ define([
      * @param  {undefined|String} DOM Selector
      */
     app.sandbox.stop = function(selector) {
+      // Stop sandbox directly if the selector is a ref and which _ref can be
+      // found
+      var sandbox = app.sandboxes.get(selector);
+      
+      if (sandbox) {
+        stopSandbox(sandbox);
+      }
+
+      // Return early if selector is invalid
+      try {
+        $.find(selector);
+      } catch (err) {
+        return err;
+      }
+
       if (selector) {
         app.core.dom.find(selector, this.el).each(function(i, el) {
           var ref = app.core.dom.find(el).data('__sandbox_ref__');
@@ -324,7 +339,9 @@ define([
         _.invoke(sandbox._children, 'stop');
         app.core.mediator.emit(event, sandbox);
         if (sandbox._component) {
+          // remove is deprecated 
           sandbox._component.invokeWithCallbacks('remove');
+          sandbox._component.invokeWithCallbacks('destroy');
         }
         sandbox.stopped  = true;
         sandbox.el && app.core.dom.find(sandbox.el).remove();
