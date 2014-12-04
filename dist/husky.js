@@ -46567,7 +46567,14 @@ define("datepicker-zh-TW", function(){});
                     if (!app.config.culture || !app.config.culture.name) {
                         return key;
                     }
-                    var translation = Globalize.localize(key, app.config.culture.name);
+
+                    try {
+                        var translation = Globalize.localize(key, app.config.culture.name);
+                    } catch (e) {
+                        app.logger.warn('Globalize threw an error when translating key "' + key + '", failling back to key. Error: ' + e);
+                        return key;
+                    }
+
                     return !!translation ? translation : key;
                 };
 
