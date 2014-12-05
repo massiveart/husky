@@ -140,6 +140,17 @@
                 };
 
                 /**
+                 * Parses a float value according to the given culture
+                 * @param value
+                 * @param radix default 10
+                 * @param culture current culture if no culture given
+                 * @returns {*}
+                 */
+                app.sandbox.parseFloat = function(value, radix, culture) {
+                    return Globalize.parseFloat(value, radix, culture);
+                };
+
+                /**
                  *
                  * @param cultureName
                  * @param messages
