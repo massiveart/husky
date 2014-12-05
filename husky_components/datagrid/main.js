@@ -423,15 +423,6 @@
         },
 
         /**
-         * triggers husky.datagrid.items.selected event, which returns all selected item data
-         * @event husky.datagrid.data.get-selected
-         * @param  {Function} callback function receives array of selected items
-         */
-        DATA_GET_SELECTED = function() {
-            return this.createEventName('data.get-selected');
-        },
-
-        /**
          * Private Methods
          * --------------------------------------------------------------------
          */
@@ -492,6 +483,7 @@
 
                 this.matchings = [];
                 this.requestFields = [];
+                this.selectedItems = [];
 
                 // make a copy of the decorators for each datagrid instance
                 // if you directly access the decorators variable the datagrid-context in the decorators will be overwritten
@@ -507,10 +499,10 @@
 
                 this.$loader = null;
                 this.isLoading = false;
+                this.initialLoaded = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
-                this.elId = this.sandbox.dom.attr(this.$el, 'id');
                 this.$el.append(this.$element);
 
                 this.sort = {
@@ -544,9 +536,7 @@
                     this.load({
                         url: url
                     });
-
                 } else if (!!this.options.data) {
-
                     this.sandbox.logger.log('load data from array');
                     this.data = {};
                     if (!!this.options.resultKey && !!this.options.data[this.options.resultKey]) {
@@ -654,7 +644,10 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                this.preSelectItems();
+                if (!this.initialLoaded) {
+                    this.preSelectItems();
+                    this.initialLoaded = true;
+                }
 
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
@@ -1082,11 +1075,6 @@
                     callback(this.getSelectedItemIds());
                 }.bind(this));
 
-                // trigger selectedItems
-                this.sandbox.on(DATA_GET_SELECTED.call(this), function(callback) {
-                    callback(this.getSelectedItemData());
-                }.bind(this));
-
                 // add a single data record
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
                 // add multiple data records
@@ -1257,9 +1245,7 @@
              * Sets all data records unselected
              */
             deselectAllItems: function() {
-                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    this.data.embedded[i].selected = false;
-                }
+                this.selectedItems = [];
                 // emit events with selected data
                 this.sandbox.emit(ALL_DESELECT.call(this));
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
@@ -1272,10 +1258,7 @@
             selectAllItems: function() {
                 var ids = [], i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.selectingAllowed(this.data.embedded[i].id)) {
-                        this.data.embedded[i].selected = true;
-                        ids.push(this.data.embedded[i].id);
-                    }
+                    this.setItemSelected(this.data.embedded[i].id);
                 }
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
@@ -1288,36 +1271,7 @@
              * @return {Array} array with all ids
              */
             getSelectedItemIds: function() {
-                var data = [];
-                this.iterateSelectedItems(function(item) {
-                    data.push(item.id);
-                });
-                return data;
-            },
-
-            /**
-             * Returns the data of all selected items
-             * @return {Array} array of objects containing the selected data
-             */
-            getSelectedItemData: function() {
-                var data = [];
-                this.iterateSelectedItems(function(item) {
-                    data.push(item);
-                });
-                return data;
-            },
-
-            /**
-             * function which iterates through data. on every selected item a callback is called
-             * @param callback Selected item is passed
-             */
-            iterateSelectedItems: function(callback) {
-                var i, length;
-                for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.data.embedded[i].selected === true) {
-                        callback(this.data.embedded[i]);
-                    }
-                }
+                return this.selectedItems;
             },
 
             /**
@@ -1326,13 +1280,13 @@
              * @param items {Array} array with all items that should be selected
              */
             setSelectedItems: function(items) {
-                var count = 0, i, length;
-                for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (items.indexOf(this.data.embedded[i].id) !== -1 && this.selectingAllowed(this.data.embedded[i].id)) {
-                        this.data.embedded[i].selected = true;
+                var count = 0, i, length, position;
+                for (i = -1, length = items.length; ++i < length;) {
+                    if (this.selectedItems.indexOf(items[i]) === -1 && this.selectingAllowed(items[i])) {
+                        this.selectedItems.push(items[i]);
                         count++;
-                    } else {
-                        this.data.embedded[i].selected = false;
+                    } else if ((position = this.selectedItems.indexOf(items[i])) !== -1) {
+                        this.selectedItems.splice(position, 1);
                     }
                 }
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), count);
@@ -1344,12 +1298,7 @@
              * @returns {Boolean} returns true if item is selected
              */
             itemIsSelected: function(id) {
-                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.data.embedded[i].id === id) {
-                        return this.data.embedded[i].selected;
-                    }
-                }
-                return false;
+                return this.selectedItems.indexOf(id) !== -1;
             },
 
             /**
@@ -1358,9 +1307,8 @@
              * @return {Boolean} true of operation was successfull
              */
             setItemSelected: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null && this.selectingAllowed(id)) {
-                    this.data.embedded[itemIndex].selected = true;
+                if (this.selectedItems.indexOf(id) === -1) {
+                    this.selectedItems.push(id);
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
@@ -1376,9 +1324,10 @@
              * @return {Boolean} true of operation was succesfull
              */
             setItemUnselected: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null) {
-                    this.data.embedded[itemIndex].selected = false;
+                var position;
+
+                if ((position = this.selectedItems.indexOf(id)) !== -1) {
+                    this.selectedItems.splice(position, 1);
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
@@ -1531,7 +1480,8 @@
                     this.load({url: url,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this), 'changed page');
-                        }.bind(this)});
+                        }.bind(this)
+                    });
                 }
             },
 

@@ -192,10 +192,10 @@ define(function() {
                     title: this.sandbox.util.cropMiddle(title, 24),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
-                    checked: !!record.selected
+                    checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id)
                 })
             );
-            if (record.selected === true) {
+            if (this.datagrid.itemIsSelected.call(this.datagrid, record.id)) {
                 this.selectItem(id, true);
             }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);

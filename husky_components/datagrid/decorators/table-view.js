@@ -567,7 +567,7 @@ define(function() {
          * @param record {Object} the data of the record
          */
         executeRowPostRenderActions: function(record) {
-            if (record.selected === true) {
+            if (!!this.datagrid.itemIsSelected.call(this.datagrid, record.id)) {
                 this.toggleSelectRecord(record.id, true);
             } else {
                 this.toggleSelectAllItem(false);
