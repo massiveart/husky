@@ -187,6 +187,7 @@
  * @param {Function} [options.selectCallback] function which will be called when element is selected
  * @param {Array} [options.fields] A list of the fields to show inside the dropdown
  * @param {String} [options.dropdownSizeClass] The styling class for the dropdown. Defined inside the autocomplete stylesheet
+ * @param {String} [options.footerContent] Could be a template or just text
  */
 
 define([], function() {
@@ -215,7 +216,8 @@ define([], function() {
         excludes: [],
         selectCallback: null,
         fields: [],
-        dropdownSizeClass: &#x27;&#x27;
+        dropdownSizeClass: &#x27;&#x27;,
+        footerContent: &#x27;&#x27;
     },
 
     templates = {
@@ -306,6 +308,14 @@ define([], function() {
         return createEventName.call(this, &#x27;is-matched&#x27;);
     },
 
+    /**
+     * raised after autocomplete footer was clicked
+     * @event husky.auto-complete.footer.clicked
+     */
+    FOOTER_CLICKED = function() {
+        return createEventName.call(this, &#x27;footer.clicked&#x27;);
+    },
+
     /** returns normalized event names */
     createEventName = function(postFix) {
         return eventNamespace + (this.options.instanceName ? this.options.instanceName + &#x27;.&#x27; : &#x27;&#x27;) + postFix;
@@ -344,17 +354,17 @@ define([], function() {
             // extend default options
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-            this._template = null;
+            this.suggestionTpl = null;
+            this.footerTpl = null;
             this.data = null;
             this.matched = true;
             this.matches = [];
-            this.executeBlurHandler = true;
             this.excludes = this.parseExcludes(this.options.excludes);
             this.localData = {};
             this.localData._embedded = {};
             this.localData._embedded[this.options.resultKey] = this.options.localData;
 
-            this.setTemplate();
+            this.setTemplates();
 
             this.render();
             this.bindDomEvents();
@@ -364,16 +374,17 @@ define([], function() {
         },
 
         /**
-         * Initializes the template for a suggestion element
+         * Initializes the templates
          */
-        setTemplate: function() {
+        setTemplates: function() {
             var iconHTML = &#x27;&#x27;;
             if (this.options.suggestionIcon !== &#x27;&#x27;) {
                 iconHTML = &#x27;&lt;span class=&quot;fa-&#x27; + this.options.suggestionIcon + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
             }
 
+            // suggestions
             if (this.options.fields.length) {
-                this._template = this.sandbox.util.template(&#x27;&#x27; +
+                this.suggestionTpl = this.sandbox.util.template(&#x27;&#x27; +
                     &#x27;&lt;div class=&quot;&#x27; + this.options.suggestionClass + &#x27;&quot; data-id=&quot;&lt;%= context[\&#x27;id \&#x27;]%&gt;&quot;&gt;&#x27; +
                     &#x27;   &lt;div class=&quot;border&quot;&gt;&#x27; +
                     &#x27;       &lt;div class=&quot;text&quot;&gt;&#x27; +
@@ -384,7 +395,7 @@ define([], function() {
                     &#x27;   &lt;/div&gt;&#x27; +
                     &#x27;&lt;/div&gt;&#x27;);
             } else {
-                this._template = this.sandbox.util.template(&#x27;&#x27; +
+                this.suggestionTpl = this.sandbox.util.template(&#x27;&#x27; +
                     &#x27;&lt;div class=&quot;&#x27; + this.options.suggestionClass + &#x27;&quot; data-id=&quot;&lt;%= context[\&#x27;id \&#x27;]%&gt;&quot;&gt;&#x27; +
                     &#x27;   &lt;div class=&quot;border&quot;&gt;&#x27; +
                             iconHTML +
@@ -392,16 +403,24 @@ define([], function() {
                     &#x27;   &lt;/div&gt;&#x27; +
                     &#x27;&lt;/div&gt;&#x27;);
             }
+
+            if (!!this.options.footerContent) {
+                this.footerTpl = this.sandbox.util.template(
+                    &#x27;&lt;div class=&quot;auto-complete-footer&quot;&gt;&#x27; +
+                        this.options.footerContent +
+                    &#x27;&lt;/div&gt;&#x27;
+                );
+            }
         },
 
         /**
          * @param context {object} context for template - id, name
          * @returns {String} html of suggestion element
          */
-        buildTemplate: function(context) {
+        buildSuggestionTemplate: function(context) {
             var domObj;
-            if (this._template !== null) {
-                domObj = this.sandbox.dom.createElement(this._template({ context: context, fields: this.options.fields }));
+            if (this.suggestionTpl !== null) {
+                domObj = this.sandbox.dom.createElement(this.suggestionTpl({ context: context, fields: this.options.fields }));
                 if (this.isExcluded(context)) {
                     this.sandbox.dom.addClass(domObj, &#x27;disabled&#x27;);
                 }
@@ -466,7 +485,14 @@ define([], function() {
                             //saves the fact that the current input has matches
                             this.matches.push(context);
                             this.matched = true;
-                            return this.buildTemplate(context);
+                            return this.buildSuggestionTemplate(context);
+                        }.bind(this),
+
+                        footer: function() {
+                            if (!!this.footerTpl) {
+                                return this.footerTpl();
+                            }
+                            return null;
                         }.bind(this)
                     }
                 };
@@ -595,29 +621,24 @@ define([], function() {
                 }
             }.bind(this));
 
-            //ensures that the blur callback does not get called
-            this.sandbox.dom.on(this.sandbox.dom.find(&#x27;.tt-dropdown-menu&#x27;, this.$el), &#x27;mousedown&#x27;, function() {
-                this.executeBlurHandler = false;
-            }.bind(this));
-
             this.sandbox.dom.on(this.sandbox.dom.find(&#x27;.tt-dropdown-menu&#x27;, this.$el), &#x27;click&#x27;, function() {
                 return false;
             }.bind(this), &#x27;.disabled&#x27;);
 
             this.sandbox.dom.on(this.$valueField, &#x27;blur&#x27;, function() {
-
                 //don&#x27;t do anything if the dropdown is clicked on
-                if (this.executeBlurHandler === true) {
-                    if (this.options.emptyOnBlur === false) {
-                        this.handleBlur();
-                    } else {
-                        this.clearValueFieldValue();
-                    }
+                if (this.options.emptyOnBlur === false) {
+                    this.handleBlur();
                 } else {
-                    this.executeBlurHandler = true;
+                    this.clearValueFieldValue();
                 }
-
             }.bind(this));
+
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
+                this.sandbox.dom.blur(this.$valueField);
+                this.clearValueFieldValue();
+                this.sandbox.emit(FOOTER_CLICKED.call(this));
+            }.bind(this), &#x27;.auto-complete-footer&#x27;);
 
             // clear data attribute when input is empty
             this.sandbox.dom.on(this.$valueField, &#x27;focusout&#x27;, function() {
