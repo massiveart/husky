@@ -48,7 +48,14 @@
                     if (!app.config.culture || !app.config.culture.name) {
                         return key;
                     }
-                    var translation = Globalize.localize(key, app.config.culture.name);
+
+                    try {
+                        var translation = Globalize.localize(key, app.config.culture.name);
+                    } catch (e) {
+                        app.logger.warn('Globalize threw an error when translating key "' + key + '", failling back to key. Error: ' + e);
+                        return key;
+                    }
+
                     return !!translation ? translation : key;
                 };
 
@@ -137,6 +144,17 @@
                  */
                 app.sandbox.numberFormat = function(number, types) {
                     return Globalize.format(number, types);
+                };
+
+                /**
+                 * Parses a float value according to the given culture
+                 * @param value
+                 * @param radix default 10
+                 * @param culture current culture if no culture given
+                 * @returns {*}
+                 */
+                app.sandbox.parseFloat = function(value, radix, culture) {
+                    return Globalize.parseFloat(value, radix, culture);
                 };
 
                 /**

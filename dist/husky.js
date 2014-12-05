@@ -15768,7 +15768,7 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
       app.sandbox.off = function (name, listener) {
         if(!this._events) { return; }
         this._events = _.reject(this._events, function (evt) {
-          var ret = (evt.name === name && evt.listener === listener);
+          var ret = (evt.name === name);
           if (ret) { mediator.off(name, evt.callback); }
           return ret;
         });
@@ -15861,14 +15861,14 @@ define('aura/ext/components', [],function() {
       var dfd = app.core.data.deferred();
       var before, after, args = [].slice.call(arguments, 2);
       before = invokeCallbacks("before", fnName, context, args);
-      var result;
 
       before.then(function() {
-        var result =  fn.apply(context, args);
-        return result;
-      }).then(function() {
-        invokeCallbacks("after", fnName, context, args).then(function() {
-          dfd.resolve(result);
+        return fn.apply(context, args);
+      }).then(function(result) {
+        return invokeCallbacks("after", fnName, context, args.concat(result)).then(function() {
+          core.data.when(result).then(function() {
+            dfd.resolve(result) 
+          });
         }, dfd.reject);
       }).fail(function(err) {
         app.logger.error("Error in Component " + context.options.name + " " + fnName + " callback", err);
@@ -15886,6 +15886,8 @@ define('aura/ext/components', [],function() {
      */
     function Component(options) {
       var opts = _.clone(options);
+      var dfd = core.data.deferred();
+      var self = this;
 
       /**
        * The Components' options Object, passed to its constructor.
@@ -15910,7 +15912,12 @@ define('aura/ext/components', [],function() {
        */
       this.$el        = core.dom.find(opts.el);
 
-      this.invokeWithCallbacks('initialize', this.options);
+      this.initialized = dfd.promise();
+
+      this.invokeWithCallbacks('initialize', this.options).then(function() {
+        dfd.resolve(self);
+      });
+
       return this;
     }
 
@@ -16063,7 +16070,7 @@ define('aura/ext/components', [],function() {
           // Sandbox owns its el and vice-versa
           newComponent.$el.data('__sandbox_ref__', sandbox.ref);
 
-          var initialized = core.data.when(newComponent);
+          var initialized = newComponent.initialized;
 
           initialized.then(function(ret) { dfd.resolve(ret); });
           initialized.fail(function(err) { dfd.reject(err); });
@@ -16224,7 +16231,7 @@ define('aura/ext/components', [],function() {
          * the component instance itself, as per the component method.
          *
          * @method components.before
-         * @param  {String}   methodName    eg. 'initialize', 'remove'
+         * @param  {String}   methodName    eg. 'initialize', 'destroy'
          * @param  {Function} fn            actual function to run
          */
         app.components.before = function(methodName, fn) {
@@ -16236,7 +16243,7 @@ define('aura/ext/components', [],function() {
          * Same as components.before, but executed after the method invocation.
          *
          * @method components.after
-         * @param  {[type]}   methodName eg. 'initialize', 'remove'
+         * @param  {[type]}   methodName eg. 'initialize', 'destroy'
          * @param  {Function} fn         actual function to run
          */
         app.components.after = function(methodName, fn) {
@@ -16298,7 +16305,7 @@ define('aura/ext/components', [],function() {
           }
           var self = this;
 
-          Component.startAll(list).done(function () {
+          return Component.startAll(list).done(function () {
             var components   = Array.prototype.slice.call(arguments);
             _.each(components, function (w) {
               w.sandbox._component = w;
@@ -16307,8 +16314,6 @@ define('aura/ext/components', [],function() {
             });
             self._children = children;
           });
-
-          return this;
         };
 
       },
@@ -27497,6 +27502,21 @@ define('bower_components/aura/lib/aura',[
      * @param  {undefined|String} DOM Selector
      */
     app.sandbox.stop = function(selector) {
+      // Stop sandbox directly if the selector is a ref and which _ref can be
+      // found
+      var sandbox = app.sandboxes.get(selector);
+      
+      if (sandbox) {
+        stopSandbox(sandbox);
+      }
+
+      // Return early if selector is invalid
+      try {
+        $.find(selector);
+      } catch (err) {
+        return err;
+      }
+
       if (selector) {
         app.core.dom.find(selector, this.el).each(function(i, el) {
           var ref = app.core.dom.find(el).data('__sandbox_ref__');
@@ -27516,7 +27536,9 @@ define('bower_components/aura/lib/aura',[
         _.invoke(sandbox._children, 'stop');
         app.core.mediator.emit(event, sandbox);
         if (sandbox._component) {
+          // remove is deprecated 
           sandbox._component.invokeWithCallbacks('remove');
+          sandbox._component.invokeWithCallbacks('destroy');
         }
         sandbox.stopped  = true;
         sandbox.el && app.core.dom.find(sandbox.el).remove();
@@ -35034,6 +35056,7 @@ define('__component__$toolbar@husky',[],function() {
  * @param {Function} [options.selectCallback] function which will be called when element is selected
  * @param {Array} [options.fields] A list of the fields to show inside the dropdown
  * @param {String} [options.dropdownSizeClass] The styling class for the dropdown. Defined inside the autocomplete stylesheet
+ * @param {String} [options.footerContent] Could be a template or just text
  */
 
 define('__component__$auto-complete@husky',[], function() {
@@ -35062,7 +35085,8 @@ define('__component__$auto-complete@husky',[], function() {
         excludes: [],
         selectCallback: null,
         fields: [],
-        dropdownSizeClass: ''
+        dropdownSizeClass: '',
+        footerContent: ''
     },
 
     templates = {
@@ -35153,6 +35177,14 @@ define('__component__$auto-complete@husky',[], function() {
         return createEventName.call(this, 'is-matched');
     },
 
+    /**
+     * raised after autocomplete footer was clicked
+     * @event husky.auto-complete.footer.clicked
+     */
+    FOOTER_CLICKED = function() {
+        return createEventName.call(this, 'footer.clicked');
+    },
+
     /** returns normalized event names */
     createEventName = function(postFix) {
         return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -35191,17 +35223,17 @@ define('__component__$auto-complete@husky',[], function() {
             // extend default options
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-            this._template = null;
+            this.suggestionTpl = null;
+            this.footerTpl = null;
             this.data = null;
             this.matched = true;
             this.matches = [];
-            this.executeBlurHandler = true;
             this.excludes = this.parseExcludes(this.options.excludes);
             this.localData = {};
             this.localData._embedded = {};
             this.localData._embedded[this.options.resultKey] = this.options.localData;
 
-            this.setTemplate();
+            this.setTemplates();
 
             this.render();
             this.bindDomEvents();
@@ -35211,16 +35243,17 @@ define('__component__$auto-complete@husky',[], function() {
         },
 
         /**
-         * Initializes the template for a suggestion element
+         * Initializes the templates
          */
-        setTemplate: function() {
+        setTemplates: function() {
             var iconHTML = '';
             if (this.options.suggestionIcon !== '') {
                 iconHTML = '<span class="fa-' + this.options.suggestionIcon + ' icon"></span>';
             }
 
+            // suggestions
             if (this.options.fields.length) {
-                this._template = this.sandbox.util.template('' +
+                this.suggestionTpl = this.sandbox.util.template('' +
                     '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
                     '   <div class="border">' +
                     '       <div class="text">' +
@@ -35231,7 +35264,7 @@ define('__component__$auto-complete@husky',[], function() {
                     '   </div>' +
                     '</div>');
             } else {
-                this._template = this.sandbox.util.template('' +
+                this.suggestionTpl = this.sandbox.util.template('' +
                     '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
                     '   <div class="border">' +
                             iconHTML +
@@ -35239,16 +35272,24 @@ define('__component__$auto-complete@husky',[], function() {
                     '   </div>' +
                     '</div>');
             }
+
+            if (!!this.options.footerContent) {
+                this.footerTpl = this.sandbox.util.template(
+                    '<div class="auto-complete-footer">' +
+                        this.options.footerContent +
+                    '</div>'
+                );
+            }
         },
 
         /**
          * @param context {object} context for template - id, name
          * @returns {String} html of suggestion element
          */
-        buildTemplate: function(context) {
+        buildSuggestionTemplate: function(context) {
             var domObj;
-            if (this._template !== null) {
-                domObj = this.sandbox.dom.createElement(this._template({ context: context, fields: this.options.fields }));
+            if (this.suggestionTpl !== null) {
+                domObj = this.sandbox.dom.createElement(this.suggestionTpl({ context: context, fields: this.options.fields }));
                 if (this.isExcluded(context)) {
                     this.sandbox.dom.addClass(domObj, 'disabled');
                 }
@@ -35313,7 +35354,14 @@ define('__component__$auto-complete@husky',[], function() {
                             //saves the fact that the current input has matches
                             this.matches.push(context);
                             this.matched = true;
-                            return this.buildTemplate(context);
+                            return this.buildSuggestionTemplate(context);
+                        }.bind(this),
+
+                        footer: function() {
+                            if (!!this.footerTpl) {
+                                return this.footerTpl();
+                            }
+                            return null;
                         }.bind(this)
                     }
                 };
@@ -35442,29 +35490,24 @@ define('__component__$auto-complete@husky',[], function() {
                 }
             }.bind(this));
 
-            //ensures that the blur callback does not get called
-            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function() {
-                this.executeBlurHandler = false;
-            }.bind(this));
-
             this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function() {
                 return false;
             }.bind(this), '.disabled');
 
             this.sandbox.dom.on(this.$valueField, 'blur', function() {
-
                 //don't do anything if the dropdown is clicked on
-                if (this.executeBlurHandler === true) {
-                    if (this.options.emptyOnBlur === false) {
-                        this.handleBlur();
-                    } else {
-                        this.clearValueFieldValue();
-                    }
+                if (this.options.emptyOnBlur === false) {
+                    this.handleBlur();
                 } else {
-                    this.executeBlurHandler = true;
+                    this.clearValueFieldValue();
                 }
-
             }.bind(this));
+
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.dom.blur(this.$valueField);
+                this.clearValueFieldValue();
+                this.sandbox.emit(FOOTER_CLICKED.call(this));
+            }.bind(this), '.auto-complete-footer');
 
             // clear data attribute when input is empty
             this.sandbox.dom.on(this.$valueField, 'focusout', function() {
@@ -35683,6 +35726,7 @@ define('__component__$auto-complete@husky',[], function() {
  * @param {String} [options.suggestionIcon] Icon Class-suffix for autocomplete-suggestion-icon
  * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
  * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
+ * @param {String} [options.footerContent] Could be a template or just text
  */
 define('__component__$auto-complete-list@husky',[], function() {
 
@@ -35968,7 +36012,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 getParameter: this.options.getParameter,
                                 suggestionIcon: this.options.suggestionIcon,
                                 autoCompleteIcon: this.options.autoCompleteIcon,
-                                resultKey: this.options.resultKey
+                                resultKey: this.options.resultKey,
+                                footerContent: this.options.footerContent
                             },
                             this.options.autocompleteOptions
                         )
@@ -46495,7 +46540,14 @@ define("datepicker-zh-TW", function(){});
                     if (!app.config.culture || !app.config.culture.name) {
                         return key;
                     }
-                    var translation = Globalize.localize(key, app.config.culture.name);
+
+                    try {
+                        var translation = Globalize.localize(key, app.config.culture.name);
+                    } catch (e) {
+                        app.logger.warn('Globalize threw an error when translating key "' + key + '", failling back to key. Error: ' + e);
+                        return key;
+                    }
+
                     return !!translation ? translation : key;
                 };
 
@@ -46584,6 +46636,17 @@ define("datepicker-zh-TW", function(){});
                  */
                 app.sandbox.numberFormat = function(number, types) {
                     return Globalize.format(number, types);
+                };
+
+                /**
+                 * Parses a float value according to the given culture
+                 * @param value
+                 * @param radix default 10
+                 * @param culture current culture if no culture given
+                 * @returns {*}
+                 */
+                app.sandbox.parseFloat = function(value, radix, culture) {
+                    return Globalize.parseFloat(value, radix, culture);
                 };
 
                 /**
@@ -47549,7 +47612,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
                 },
 
                 setValue: function(selector, value) {
-                    return app.core.dom.$(selector).typeahead('setQuery', value);
+                    return app.core.dom.$(selector).typeahead('val', value);
                 }
             };
         }

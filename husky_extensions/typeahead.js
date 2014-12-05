@@ -45,7 +45,7 @@
                 },
 
                 setValue: function(selector, value) {
-                    return app.core.dom.$(selector).typeahead('setQuery', value);
+                    return app.core.dom.$(selector).typeahead('val', value);
                 }
             };
         }

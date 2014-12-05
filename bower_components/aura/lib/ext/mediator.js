@@ -78,7 +78,7 @@ define('aura/ext/mediator', function () {
       app.sandbox.off = function (name, listener) {
         if(!this._events) { return; }
         this._events = _.reject(this._events, function (evt) {
-          var ret = (evt.name === name && evt.listener === listener);
+          var ret = (evt.name === name);
           if (ret) { mediator.off(name, evt.callback); }
           return ret;
         });

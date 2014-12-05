@@ -562,6 +562,12 @@
                             "description": "The styling class for the dropdown. Defined inside the autocomplete stylesheet",
                             "type": "String",
                             "optional": true
+                        },
+                        {
+                            "name": "footerContent",
+                            "description": "Could be a template or just text",
+                            "type": "String",
+                            "optional": true
                         }
                     ]
                 }
@@ -777,6 +783,12 @@
                             "name": "noNewTags",
                             "description": "If true only auto-completed tags are accepted",
                             "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "footerContent",
+                            "description": "Could be a template or just text",
+                            "type": "String",
                             "optional": true
                         }
                     ]
@@ -2941,6 +2953,30 @@
         {
             "file": "husky_extensions/globalize.js",
             "line": 142,
+            "description": "Parses a float value according to the given culture",
+            "params": [
+                {
+                    "name": "value",
+                    "description": ""
+                },
+                {
+                    "name": "radix",
+                    "description": "default 10"
+                },
+                {
+                    "name": "culture",
+                    "description": "current culture if no culture given"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "AutoComplete"
+        },
+        {
+            "file": "husky_extensions/globalize.js",
+            "line": 153,
             "params": [
                 {
                     "name": "cultureName",
@@ -2999,14 +3035,14 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 42,
+            "line": 43,
             "description": "Default values for options",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 80,
+            "line": 82,
             "description": "raised after initialization",
             "itemtype": "event",
             "name": "husky.auto-complete.initialized",
@@ -3015,7 +3051,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 88,
+            "line": 90,
             "description": "raised after prefetched data is retrieved",
             "itemtype": "event",
             "name": "husky.auto-complete.prefetch-data",
@@ -3024,7 +3060,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 96,
+            "line": 98,
             "description": "raised before remoted data is loaded",
             "itemtype": "event",
             "name": "husky.auto-complete.remote-data-load",
@@ -3033,7 +3069,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 104,
+            "line": 106,
             "description": "raised after remoted data is retrieved",
             "itemtype": "event",
             "name": "husky.auto-complete.remote-data",
@@ -3042,7 +3078,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 112,
+            "line": 114,
             "description": "raised before the component tries to request a match after blur",
             "itemtype": "event",
             "name": "husky.auto-complete.request-match",
@@ -3051,7 +3087,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 120,
+            "line": 122,
             "description": "raised after autocomplete suggestion is selected",
             "itemtype": "event",
             "name": "husky.auto-complete.select",
@@ -3067,7 +3103,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 129,
+            "line": 131,
             "description": "raised after selection has been removed",
             "itemtype": "event",
             "name": "husky.auto-complete.selection-removed",
@@ -3076,7 +3112,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 137,
+            "line": 139,
             "description": "raised after autocomplete suggestion is selected",
             "itemtype": "event",
             "name": "husky.auto-complete.set-excludes",
@@ -3092,7 +3128,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 146,
+            "line": 148,
             "description": "listens on and passes boolean to callback if input is matched exactly",
             "itemtype": "event",
             "name": "husky.auto-complete.is-matched",
@@ -3108,13 +3144,22 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 155,
+            "line": 157,
+            "description": "raised after autocomplete footer was clicked",
+            "itemtype": "event",
+            "name": "husky.auto-complete.footer.clicked",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 162,
+            "line": 165,
+            "class": "AutoComplete",
+            "module": "husky/components/auto-complete"
+        },
+        {
+            "file": "husky_components/auto-complete/main.js",
+            "line": 172,
             "description": "Returns the id of the options.value object",
             "return": {
                 "description": "",
@@ -3125,7 +3170,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 174,
+            "line": 184,
             "description": "Returns the value of the options.value object",
             "return": {
                 "description": "",
@@ -3136,14 +3181,14 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 212,
-            "description": "Initializes the template for a suggestion element",
+            "line": 222,
+            "description": "Initializes the templates",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 243,
+            "line": 262,
             "params": [
                 {
                     "name": "context",
@@ -3160,42 +3205,42 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 258,
+            "line": 277,
             "description": "the main-template gets rendered and displayed",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 268,
+            "line": 287,
             "description": "Initializes and appends the input, starts the typeahead-auto-complete plugin",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 279,
+            "line": 298,
             "description": "Assigns an input box to an object property",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 292,
+            "line": 311,
             "description": "Appends the input box to the component container",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 301,
+            "line": 320,
             "description": "Starts the typeahead auto-complete plugin",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 359,
+            "line": 385,
             "description": "Returns true if id or name of context is contained within the excluded array",
             "params": [
                 {
@@ -3213,14 +3258,14 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 376,
+            "line": 402,
             "description": "Binds custom events",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 397,
+            "line": 423,
             "description": "Brings an array of suggestions to exclude into the right format",
             "params": [
                 {
@@ -3233,21 +3278,21 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 419,
+            "line": 445,
             "description": "sets several events",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 481,
+            "line": 502,
             "description": "Gets called when the input box triggers the blur event",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 515,
+            "line": 536,
             "description": "Tries to request matches via the remoteUrl\nand emits an event if matches do exist",
             "params": [
                 {
@@ -3271,7 +3316,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 553,
+            "line": 574,
             "description": "Returns the closest match for an input",
             "return": {
                 "description": "closest match with id and name",
@@ -3282,7 +3327,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 564,
+            "line": 585,
             "description": "Returns the trimed value of the input field",
             "return": {
                 "description": "",
@@ -3293,7 +3338,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 572,
+            "line": 593,
             "description": "Sets the input box value",
             "params": [
                 {
@@ -3307,14 +3352,14 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 580,
+            "line": 601,
             "description": "Deletes the input box value",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 587,
+            "line": 608,
             "description": "Sets the data-id attribute on the input box",
             "params": [
                 {
@@ -3328,7 +3373,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 595,
+            "line": 616,
             "description": "returns the matched property (true if auto-complete suggestion exist)",
             "return": {
                 "description": "",
@@ -3339,7 +3384,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 603,
+            "line": 624,
             "description": "Returns true if input matches an auto-complete suggestion exactly\ncase-insensitive",
             "return": {
                 "description": "",
@@ -3350,7 +3395,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 617,
+            "line": 638,
             "description": "Assigns loaded data to properties",
             "params": [
                 {
@@ -3364,20 +3409,20 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 54,
+            "line": 55,
             "description": "Default values for options",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 112,
+            "line": 113,
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 118,
+            "line": 119,
             "description": "raised after initialization",
             "itemtype": "event",
             "name": "husky.auto-complete-list.initialized",
@@ -3386,7 +3431,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 126,
+            "line": 127,
             "description": "used for setting tags",
             "itemtype": "event",
             "name": "husky.auto-complete-list.set-tags",
@@ -3402,7 +3447,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 135,
+            "line": 136,
             "description": "used for receiving tags",
             "itemtype": "event",
             "name": "husky.auto-complete-list.get-tags",
@@ -3411,7 +3456,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 143,
+            "line": 144,
             "description": "raised after AJAX request for loading items is sent",
             "itemtype": "event",
             "name": "husky.auto-complete-list.items-request",
@@ -3420,7 +3465,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 151,
+            "line": 152,
             "description": "raised after AJAX request for loading suggestions is sent",
             "itemtype": "event",
             "name": "husky.auto-complete-list.sug-request",
@@ -3429,7 +3474,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 159,
+            "line": 160,
             "description": "raised after a suggestion element is clicked and added to the list",
             "itemtype": "event",
             "name": "husky.auto-complete-list.sug-added",
@@ -3445,7 +3490,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 168,
+            "line": 169,
             "description": "raised after an item is deleted",
             "itemtype": "event",
             "name": "husky.auto-complete-list.item-deleted",
@@ -3454,7 +3499,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 176,
+            "line": 177,
             "description": "raised after data was loaded",
             "itemtype": "event",
             "name": "husky.auto-complete-list.data-loaded",
@@ -3463,7 +3508,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 184,
+            "line": 185,
             "description": "raised after an item is added",
             "itemtype": "event",
             "name": "husky.auto-complete-list.item-added",
@@ -3479,7 +3524,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 193,
+            "line": 194,
             "description": "raised after all item were added",
             "itemtype": "event",
             "name": "husky.auto-complete-list.items-added",
@@ -3488,7 +3533,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 201,
+            "line": 202,
             "description": "raised when the suggestion container is closed",
             "itemtype": "event",
             "name": "husky.auto-complete-list.sug-closed",
@@ -3497,7 +3542,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 209,
+            "line": 210,
             "description": "raised when the suggestion container is opened",
             "itemtype": "event",
             "name": "husky.auto-complete-list.sug-opened",
@@ -3506,27 +3551,27 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 217,
+            "line": 218,
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 247,
+            "line": 248,
             "description": "object properties get initialized",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 259,
+            "line": 260,
             "description": "the main-template gets rendered and displayed",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 270,
+            "line": 271,
             "description": "the container for the input field gets assigned to a object property",
             "return": {
                 "description": "",
@@ -3537,56 +3582,56 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 283,
+            "line": 284,
             "description": "Autocomplete component and/or tagmanager plugin get started",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 300,
+            "line": 301,
             "description": "Input DOM-object gets assigned to an object property",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 307,
+            "line": 308,
             "description": "The input field gets inserted into the input-container",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 316,
+            "line": 317,
             "description": "husky-auto-complete component gets started",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 342,
+            "line": 344,
             "description": "Tagmanager plugin gets started",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 360,
+            "line": 362,
             "description": "Binds the start of the tagmanager plugin, to the initialize event of the auto-complete component\n(autocomplete-component needs to be running to start tagmanager)",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 372,
+            "line": 374,
             "description": "Bind several events",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 430,
+            "line": 432,
             "description": "Gets executed if the user presses a defined delimiter",
             "params": [
                 {
@@ -3605,7 +3650,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 451,
+            "line": 453,
             "description": "Binds the tags to the element",
             "params": [
                 {
@@ -3619,98 +3664,98 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 460,
+            "line": 462,
             "description": "items for the list get loaded and plugins get started",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 472,
+            "line": 474,
             "description": "request the items for the list, merge them with the options and start the pluins",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 492,
+            "line": 494,
             "description": "Load the suggestions, render them, initialize toggler",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 506,
+            "line": 508,
             "description": "load suggestions from url, render them, initialize toggler",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 527,
+            "line": 529,
             "description": "Converts the suggestion-strings to objects with name and DOM-object",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 542,
+            "line": 544,
             "description": "Renders the suggestion container and appends the suggestion elements",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 563,
+            "line": 565,
             "description": "Initializes the toggler object with position and DOM-element",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 576,
+            "line": 578,
             "description": "toggles the Toggler-icon",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 587,
+            "line": 589,
             "description": "toggles the suggestions-container",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 598,
+            "line": 600,
             "description": "hides the suggestions-container",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 606,
+            "line": 608,
             "description": "shows the suggestions-container",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 614,
+            "line": 616,
             "description": "Ensures the toggler is pointing down (sets CSS-classes)",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 623,
+            "line": 625,
             "description": "Ensures the toggler is pointing up (sets CSS-classes)",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 632,
+            "line": 634,
             "description": "Adds click event -> suggestion gets added to the list",
             "params": [
                 {
@@ -3724,14 +3769,14 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 646,
+            "line": 648,
             "description": "gets called if an item is deleted from the list",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 654,
+            "line": 656,
             "description": "Deactivated-CSS-class gets added to suggestion",
             "params": [
                 {
@@ -3745,7 +3790,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 662,
+            "line": 664,
             "description": "Activated-CSS-class gets added to suggestion",
             "params": [
                 {
@@ -3759,14 +3804,14 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 670,
+            "line": 672,
             "description": "Checks if suggestions are used in list and activates them if not",
             "class": "AutoCompleteList",
             "module": "husky/components/auto-complete-list"
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 683,
+            "line": 685,
             "description": "Checks if suggestion is used in list",
             "params": [
                 {
@@ -3784,7 +3829,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 698,
+            "line": 700,
             "description": "Pushes an Item to the list",
             "params": [
                 {
@@ -3802,7 +3847,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 712,
+            "line": 714,
             "description": "Pushes an array of items to the list",
             "params": [
                 {
@@ -3816,7 +3861,7 @@
         },
         {
             "file": "husky_components/auto-complete-list/main.js",
-            "line": 723,
+            "line": 725,
             "description": "Returns an array with all list items",
             "return": {
                 "description": "",
@@ -10892,55 +10937,59 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
+            "line": " husky_extensions/globalize.js:142"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
             "line": " husky_extensions/jquery.js:458"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:162"
+            "line": " husky_components/auto-complete/main.js:172"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:174"
+            "line": " husky_components/auto-complete/main.js:184"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:243"
+            "line": " husky_components/auto-complete/main.js:262"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:359"
+            "line": " husky_components/auto-complete/main.js:385"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:553"
+            "line": " husky_components/auto-complete/main.js:574"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:564"
+            "line": " husky_components/auto-complete/main.js:585"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:595"
+            "line": " husky_components/auto-complete/main.js:616"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:603"
+            "line": " husky_components/auto-complete/main.js:624"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete-list/main.js:270"
+            "line": " husky_components/auto-complete-list/main.js:271"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete-list/main.js:683"
+            "line": " husky_components/auto-complete-list/main.js:685"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete-list/main.js:698"
+            "line": " husky_components/auto-complete-list/main.js:700"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete-list/main.js:723"
+            "line": " husky_components/auto-complete-list/main.js:725"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -11591,8 +11640,12 @@
             "line": " husky_extensions/globalize.js:132"
         },
         {
-            "message": "Missing item type",
+            "message": "Missing item type\nParses a float value according to the given culture",
             "line": " husky_extensions/globalize.js:142"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_extensions/globalize.js:153"
         },
         {
             "message": "Missing item type\nsee https://github.com/farhadi/html5sortable for documentation",
@@ -11608,251 +11661,251 @@
         },
         {
             "message": "Missing item type\nDefault values for options",
-            "line": " husky_components/auto-complete/main.js:42"
+            "line": " husky_components/auto-complete/main.js:43"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/auto-complete/main.js:155"
+            "line": " husky_components/auto-complete/main.js:165"
         },
         {
             "message": "Missing item type\nReturns the id of the options.value object",
-            "line": " husky_components/auto-complete/main.js:162"
+            "line": " husky_components/auto-complete/main.js:172"
         },
         {
             "message": "Missing item type\nReturns the value of the options.value object",
-            "line": " husky_components/auto-complete/main.js:174"
+            "line": " husky_components/auto-complete/main.js:184"
         },
         {
-            "message": "Missing item type\nInitializes the template for a suggestion element",
-            "line": " husky_components/auto-complete/main.js:212"
+            "message": "Missing item type\nInitializes the templates",
+            "line": " husky_components/auto-complete/main.js:222"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/auto-complete/main.js:243"
+            "line": " husky_components/auto-complete/main.js:262"
         },
         {
             "message": "Missing item type\nthe main-template gets rendered and displayed",
-            "line": " husky_components/auto-complete/main.js:258"
+            "line": " husky_components/auto-complete/main.js:277"
         },
         {
             "message": "Missing item type\nInitializes and appends the input, starts the typeahead-auto-complete plugin",
-            "line": " husky_components/auto-complete/main.js:268"
+            "line": " husky_components/auto-complete/main.js:287"
         },
         {
             "message": "Missing item type\nAssigns an input box to an object property",
-            "line": " husky_components/auto-complete/main.js:279"
+            "line": " husky_components/auto-complete/main.js:298"
         },
         {
             "message": "Missing item type\nAppends the input box to the component container",
-            "line": " husky_components/auto-complete/main.js:292"
+            "line": " husky_components/auto-complete/main.js:311"
         },
         {
             "message": "Missing item type\nStarts the typeahead auto-complete plugin",
-            "line": " husky_components/auto-complete/main.js:301"
+            "line": " husky_components/auto-complete/main.js:320"
         },
         {
             "message": "Missing item type\nReturns true if id or name of context is contained within the excluded array",
-            "line": " husky_components/auto-complete/main.js:359"
+            "line": " husky_components/auto-complete/main.js:385"
         },
         {
             "message": "Missing item type\nBinds custom events",
-            "line": " husky_components/auto-complete/main.js:376"
+            "line": " husky_components/auto-complete/main.js:402"
         },
         {
             "message": "Missing item type\nBrings an array of suggestions to exclude into the right format",
-            "line": " husky_components/auto-complete/main.js:397"
+            "line": " husky_components/auto-complete/main.js:423"
         },
         {
             "message": "Missing item type\nsets several events",
-            "line": " husky_components/auto-complete/main.js:419"
+            "line": " husky_components/auto-complete/main.js:445"
         },
         {
             "message": "Missing item type\nGets called when the input box triggers the blur event",
-            "line": " husky_components/auto-complete/main.js:481"
+            "line": " husky_components/auto-complete/main.js:502"
         },
         {
             "message": "Missing item type\nTries to request matches via the remoteUrl\nand emits an event if matches do exist",
-            "line": " husky_components/auto-complete/main.js:515"
+            "line": " husky_components/auto-complete/main.js:536"
         },
         {
             "message": "Missing item type\nReturns the closest match for an input",
-            "line": " husky_components/auto-complete/main.js:553"
+            "line": " husky_components/auto-complete/main.js:574"
         },
         {
             "message": "Missing item type\nReturns the trimed value of the input field",
-            "line": " husky_components/auto-complete/main.js:564"
+            "line": " husky_components/auto-complete/main.js:585"
         },
         {
             "message": "Missing item type\nSets the input box value",
-            "line": " husky_components/auto-complete/main.js:572"
+            "line": " husky_components/auto-complete/main.js:593"
         },
         {
             "message": "Missing item type\nDeletes the input box value",
-            "line": " husky_components/auto-complete/main.js:580"
+            "line": " husky_components/auto-complete/main.js:601"
         },
         {
             "message": "Missing item type\nSets the data-id attribute on the input box",
-            "line": " husky_components/auto-complete/main.js:587"
+            "line": " husky_components/auto-complete/main.js:608"
         },
         {
             "message": "Missing item type\nreturns the matched property (true if auto-complete suggestion exist)",
-            "line": " husky_components/auto-complete/main.js:595"
+            "line": " husky_components/auto-complete/main.js:616"
         },
         {
             "message": "Missing item type\nReturns true if input matches an auto-complete suggestion exactly\ncase-insensitive",
-            "line": " husky_components/auto-complete/main.js:603"
+            "line": " husky_components/auto-complete/main.js:624"
         },
         {
             "message": "Missing item type\nAssigns loaded data to properties",
-            "line": " husky_components/auto-complete/main.js:617"
+            "line": " husky_components/auto-complete/main.js:638"
         },
         {
             "message": "Missing item type\nDefault values for options",
-            "line": " husky_components/auto-complete-list/main.js:54"
+            "line": " husky_components/auto-complete-list/main.js:55"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/auto-complete-list/main.js:112"
+            "line": " husky_components/auto-complete-list/main.js:113"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/auto-complete-list/main.js:217"
+            "line": " husky_components/auto-complete-list/main.js:218"
         },
         {
             "message": "Missing item type\nobject properties get initialized",
-            "line": " husky_components/auto-complete-list/main.js:247"
+            "line": " husky_components/auto-complete-list/main.js:248"
         },
         {
             "message": "Missing item type\nthe main-template gets rendered and displayed",
-            "line": " husky_components/auto-complete-list/main.js:259"
+            "line": " husky_components/auto-complete-list/main.js:260"
         },
         {
             "message": "Missing item type\nthe container for the input field gets assigned to a object property",
-            "line": " husky_components/auto-complete-list/main.js:270"
+            "line": " husky_components/auto-complete-list/main.js:271"
         },
         {
             "message": "Missing item type\nAutocomplete component and/or tagmanager plugin get started",
-            "line": " husky_components/auto-complete-list/main.js:283"
+            "line": " husky_components/auto-complete-list/main.js:284"
         },
         {
             "message": "Missing item type\nInput DOM-object gets assigned to an object property",
-            "line": " husky_components/auto-complete-list/main.js:300"
+            "line": " husky_components/auto-complete-list/main.js:301"
         },
         {
             "message": "Missing item type\nThe input field gets inserted into the input-container",
-            "line": " husky_components/auto-complete-list/main.js:307"
+            "line": " husky_components/auto-complete-list/main.js:308"
         },
         {
             "message": "Missing item type\nhusky-auto-complete component gets started",
-            "line": " husky_components/auto-complete-list/main.js:316"
+            "line": " husky_components/auto-complete-list/main.js:317"
         },
         {
             "message": "Missing item type\nTagmanager plugin gets started",
-            "line": " husky_components/auto-complete-list/main.js:342"
+            "line": " husky_components/auto-complete-list/main.js:344"
         },
         {
             "message": "Missing item type\nBinds the start of the tagmanager plugin, to the initialize event of the auto-complete component\n(autocomplete-component needs to be running to start tagmanager)",
-            "line": " husky_components/auto-complete-list/main.js:360"
+            "line": " husky_components/auto-complete-list/main.js:362"
         },
         {
             "message": "Missing item type\nBind several events",
-            "line": " husky_components/auto-complete-list/main.js:372"
+            "line": " husky_components/auto-complete-list/main.js:374"
         },
         {
             "message": "Missing item type\nGets executed if the user presses a defined delimiter",
-            "line": " husky_components/auto-complete-list/main.js:430"
+            "line": " husky_components/auto-complete-list/main.js:432"
         },
         {
             "message": "Missing item type\nBinds the tags to the element",
-            "line": " husky_components/auto-complete-list/main.js:451"
+            "line": " husky_components/auto-complete-list/main.js:453"
         },
         {
             "message": "Missing item type\nitems for the list get loaded and plugins get started",
-            "line": " husky_components/auto-complete-list/main.js:460"
+            "line": " husky_components/auto-complete-list/main.js:462"
         },
         {
             "message": "Missing item type\nrequest the items for the list, merge them with the options and start the pluins",
-            "line": " husky_components/auto-complete-list/main.js:472"
+            "line": " husky_components/auto-complete-list/main.js:474"
         },
         {
             "message": "Missing item type\nLoad the suggestions, render them, initialize toggler",
-            "line": " husky_components/auto-complete-list/main.js:492"
+            "line": " husky_components/auto-complete-list/main.js:494"
         },
         {
             "message": "Missing item type\nload suggestions from url, render them, initialize toggler",
-            "line": " husky_components/auto-complete-list/main.js:506"
+            "line": " husky_components/auto-complete-list/main.js:508"
         },
         {
             "message": "Missing item type\nConverts the suggestion-strings to objects with name and DOM-object",
-            "line": " husky_components/auto-complete-list/main.js:527"
+            "line": " husky_components/auto-complete-list/main.js:529"
         },
         {
             "message": "Missing item type\nRenders the suggestion container and appends the suggestion elements",
-            "line": " husky_components/auto-complete-list/main.js:542"
+            "line": " husky_components/auto-complete-list/main.js:544"
         },
         {
             "message": "Missing item type\nInitializes the toggler object with position and DOM-element",
-            "line": " husky_components/auto-complete-list/main.js:563"
+            "line": " husky_components/auto-complete-list/main.js:565"
         },
         {
             "message": "Missing item type\ntoggles the Toggler-icon",
-            "line": " husky_components/auto-complete-list/main.js:576"
+            "line": " husky_components/auto-complete-list/main.js:578"
         },
         {
             "message": "Missing item type\ntoggles the suggestions-container",
-            "line": " husky_components/auto-complete-list/main.js:587"
+            "line": " husky_components/auto-complete-list/main.js:589"
         },
         {
             "message": "Missing item type\nhides the suggestions-container",
-            "line": " husky_components/auto-complete-list/main.js:598"
+            "line": " husky_components/auto-complete-list/main.js:600"
         },
         {
             "message": "Missing item type\nshows the suggestions-container",
-            "line": " husky_components/auto-complete-list/main.js:606"
+            "line": " husky_components/auto-complete-list/main.js:608"
         },
         {
             "message": "Missing item type\nEnsures the toggler is pointing down (sets CSS-classes)",
-            "line": " husky_components/auto-complete-list/main.js:614"
+            "line": " husky_components/auto-complete-list/main.js:616"
         },
         {
             "message": "Missing item type\nEnsures the toggler is pointing up (sets CSS-classes)",
-            "line": " husky_components/auto-complete-list/main.js:623"
+            "line": " husky_components/auto-complete-list/main.js:625"
         },
         {
             "message": "Missing item type\nAdds click event -> suggestion gets added to the list",
-            "line": " husky_components/auto-complete-list/main.js:632"
+            "line": " husky_components/auto-complete-list/main.js:634"
         },
         {
             "message": "Missing item type\ngets called if an item is deleted from the list",
-            "line": " husky_components/auto-complete-list/main.js:646"
+            "line": " husky_components/auto-complete-list/main.js:648"
         },
         {
             "message": "Missing item type\nDeactivated-CSS-class gets added to suggestion",
-            "line": " husky_components/auto-complete-list/main.js:654"
+            "line": " husky_components/auto-complete-list/main.js:656"
         },
         {
             "message": "Missing item type\nActivated-CSS-class gets added to suggestion",
-            "line": " husky_components/auto-complete-list/main.js:662"
+            "line": " husky_components/auto-complete-list/main.js:664"
         },
         {
             "message": "Missing item type\nChecks if suggestions are used in list and activates them if not",
-            "line": " husky_components/auto-complete-list/main.js:670"
+            "line": " husky_components/auto-complete-list/main.js:672"
         },
         {
             "message": "Missing item type\nChecks if suggestion is used in list",
-            "line": " husky_components/auto-complete-list/main.js:683"
+            "line": " husky_components/auto-complete-list/main.js:685"
         },
         {
             "message": "Missing item type\nPushes an Item to the list",
-            "line": " husky_components/auto-complete-list/main.js:698"
+            "line": " husky_components/auto-complete-list/main.js:700"
         },
         {
             "message": "Missing item type\nPushes an array of items to the list",
-            "line": " husky_components/auto-complete-list/main.js:712"
+            "line": " husky_components/auto-complete-list/main.js:714"
         },
         {
             "message": "Missing item type\nReturns an array with all list items",
-            "line": " husky_components/auto-complete-list/main.js:723"
+            "line": " husky_components/auto-complete-list/main.js:725"
         },
         {
             "message": "Missing item type\nnamespace for events",
