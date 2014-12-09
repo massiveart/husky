@@ -71,6 +71,7 @@
 }
 
 .tt-dropdown-menu {
+    min-width: 100%;
     border: 1px solid $grayLighter;
     margin-top: -1px;
     border-radius: $borderRadius;
