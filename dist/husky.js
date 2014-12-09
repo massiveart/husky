@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -31600,6 +31599,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         },
 
         /**
+         * raised when limit of request changed
+         * @event husky.datagrid.page-size.changed
+         * @param {Integer} pageSize new size
+         */
+        PAGE_SIZE_CHANGED = function() {
+            return this.createEventName('page-size.changed');
+        },
+
+        /**
          * used to trigger an update of the data
          * @event husky.datagrid.update
          */
@@ -32710,6 +32718,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         // if no limit is passed keep current limit
                         if (!limit) {
                             limit = this.data.limit;
+                        } else if (this.data.limit !== limit) {
+                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit);
                         }
 
                         // generate uri for loading
@@ -47834,3 +47844,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
