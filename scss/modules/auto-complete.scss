@@ -46,12 +46,6 @@
         }
     }
 
-    &.is-large {
-        .tt-dropdown-menu {
-            width: 150%;
-        }
-    }
-
     .front {
         padding-left: 5px;
     }
@@ -77,7 +71,6 @@
 }
 
 .tt-dropdown-menu {
-    width: 100%;
     border: 1px solid $grayLighter;
     margin-top: -1px;
     border-radius: $borderRadius;
