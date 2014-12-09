@@ -171,7 +171,7 @@ define(function() {
 
      var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            limit: 10
+            limit: 20
         },
 
         constants = {
@@ -195,7 +195,7 @@ define(function() {
             ].join(&#x27;&#x27;),
 
             pageChanger: [
-                &#x27;&lt;div class=&quot;&#x27;, constants.nextClass , &#x27; pagination-prev pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div clahos=&quot;&#x27;, constants.nextClass , &#x27; pagination-prev pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;div class=&quot;&#x27;, constants.pageChangeClass , &#x27; pagination-main pull-right pointer&quot;&gt;&#x27;,
                     &#x27;&lt;span class=&quot;inline-block&quot;&gt;&lt;%= label %&gt;&lt;/span&gt;&#x27;,
                     &#x27;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
@@ -466,13 +466,20 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i &lt; length;) {
-                if (this.options.showElementsSteps[i] &gt; this.data.total) {
+                // break if current limit is equal than size
+                if (this.options.showElementsSteps[i] === this.data.total) {
                     break;
                 }
+
                 data.push({
                     id: this.options.showElementsSteps[i],
                     name: &#x27;&lt;strong&gt;&#x27; + this.options.showElementsSteps[i] + &#x27;&lt;/strong&gt; &#x27; + this.sandbox.translate(translations.elementsPerPage)
                 });
+
+                // next size also if size is bigger than current limit
+                if (this.options.showElementsSteps[i] &gt; this.data.total) {
+                    break;
+                }
             }
 
             this.sandbox.start([

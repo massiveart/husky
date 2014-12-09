@@ -17,7 +17,7 @@ define(function() {
 
      var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            limit: 10
+            limit: 20
         },
 
         constants = {
@@ -41,7 +41,7 @@ define(function() {
             ].join(''),
 
             pageChanger: [
-                '<div class="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
+                '<div clahos="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
                 '<div class="', constants.pageChangeClass , ' pagination-main pull-right pointer">',
                     '<span class="inline-block"><%= label %></span>',
                     '<span class="dropdown-toggle inline-block"></span>',
@@ -312,13 +312,20 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
-                if (this.options.showElementsSteps[i] > this.data.total) {
+                // break if current limit is equal than size
+                if (this.options.showElementsSteps[i] === this.data.total) {
                     break;
                 }
+
                 data.push({
                     id: this.options.showElementsSteps[i],
                     name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
                 });
+
+                // next size also if size is bigger than current limit
+                if (this.options.showElementsSteps[i] > this.data.total) {
+                    break;
+                }
             }
 
             this.sandbox.start([
