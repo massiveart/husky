@@ -202,7 +202,14 @@
                     if (!app.config.culture || !app.config.culture.name) {
                         return key;
                     }
-                    var translation = Globalize.localize(key, app.config.culture.name);
+
+                    try {
+                        var translation = Globalize.localize(key, app.config.culture.name);
+                    } catch (e) {
+                        app.logger.warn(&#x27;Globalize threw an error when translating key &quot;&#x27; + key + &#x27;&quot;, failling back to key. Error: &#x27; + e);
+                        return key;
+                    }
+
                     return !!translation ? translation : key;
                 };
 
