@@ -1088,6 +1088,7 @@ define(function() {
          * @param event {Object} the event object
          */
         iconClickHandler: function(event) {
+            event.stopPropagation();
             var icon = this.options.icons[this.sandbox.dom.data(event.currentTarget, &#x27;icon-index&#x27;)],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, &#x27;.&#x27; + constants.rowClass), &#x27;id&#x27;);
             if (typeof recordId !== &#x27;undefined&#x27; &amp;&amp; !!icon &amp;&amp; typeof icon.callback === &#x27;function&#x27;) {
