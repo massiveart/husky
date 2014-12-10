@@ -344,11 +344,6 @@
 
         namespace = &#x27;husky.datagrid.&#x27;,
 
-        /**
-         * Used to store the window resize handler and unbind it later
-         */
-        dataGridWindowResize = null,
-
         /* TRIGGERS EVENTS */
 
         /**
@@ -664,6 +659,8 @@
                 this.$element = this.sandbox.dom.$(&#x27;&lt;div class=&quot;husky-datagrid&quot;/&gt;&#x27;);
                 this.$el.append(this.$element);
 
+                this.dataGridWindowResize = null;
+
                 this.sort = {
                     attribute: null,
                     direction: null
@@ -680,7 +677,7 @@
             remove: function() {
                 this.unbindWindowResize();
                 this.gridViews[this.viewId].destroy();
-                
+
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].destroy();
                 }
@@ -1208,13 +1205,13 @@
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    dataGridWindowResize = this.windowResizeListener.bind(this);
-                    this.sandbox.dom.on(this.sandbox.dom.$window, &#x27;resize&#x27;, dataGridWindowResize);
+                    this.dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, &#x27;resize&#x27;, this.dataGridWindowResize);
                 }
             },
 
             unbindWindowResize: function() {
-                this.sandbox.dom.off(this.sandbox.dom.$window, &#x27;resize&#x27;, dataGridWindowResize);
+                this.sandbox.dom.off(this.sandbox.dom.$window, &#x27;resize&#x27;, this.dataGridWindowResize);
             },
 
             /**
