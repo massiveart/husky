@@ -246,8 +246,12 @@
                 }
             };
 
-            app.core.dom.off = function(selector, event, filter, handler) {
-                $(selector).off(event, filter, handler);
+            app.core.dom.off = function(selector, event, handler, filter) {
+                if (!!filter) {
+                    $(selector).off(event, filter, handler);
+                } else {
+                    $(selector).off(event, handler);
+                }
             };
 
             app.core.dom.trigger = function(selector, eventType, params) {

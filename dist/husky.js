@@ -31417,6 +31417,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
         namespace = 'husky.datagrid.',
 
+        /**
+         * Used to store the window resize handler and unbind it later
+         */
+        dataGridWindowResize = null,
+
         /* TRIGGERS EVENTS */
 
         /**
@@ -31531,7 +31536,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             return this.createEventName('data.changed');
         },
 
-    /* PROVIDED EVENTS */
+        /* PROVIDED EVENTS */
 
         /**
          * raised when husky.datagrid.data.get is triggered
@@ -31743,6 +31748,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.bindCustomEvents();
 
                 this.sandbox.emit(INITIALIZED.call(this));
+            },
+
+            remove: function() {
+                this.unbindWindowResize();
+                this.gridViews[this.viewId].destroy();
+                
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                }
             },
 
             /**
@@ -32267,8 +32281,13 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                    dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', dataGridWindowResize);
                 }
+            },
+
+            unbindWindowResize: function() {
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', dataGridWindowResize);
             },
 
             /**
@@ -47098,8 +47117,12 @@ define("datepicker-zh-TW", function(){});
                 }
             };
 
-            app.core.dom.off = function(selector, event, filter, handler) {
-                $(selector).off(event, filter, handler);
+            app.core.dom.off = function(selector, event, handler, filter) {
+                if (!!filter) {
+                    $(selector).off(event, filter, handler);
+                } else {
+                    $(selector).off(event, handler);
+                }
             };
 
             app.core.dom.trigger = function(selector, eventType, params) {

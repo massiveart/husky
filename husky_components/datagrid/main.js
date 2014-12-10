@@ -190,6 +190,11 @@
 
         namespace = 'husky.datagrid.',
 
+        /**
+         * Used to store the window resize handler and unbind it later
+         */
+        dataGridWindowResize = null,
+
         /* TRIGGERS EVENTS */
 
         /**
@@ -304,7 +309,7 @@
             return this.createEventName('data.changed');
         },
 
-    /* PROVIDED EVENTS */
+        /* PROVIDED EVENTS */
 
         /**
          * raised when husky.datagrid.data.get is triggered
@@ -516,6 +521,15 @@
                 this.bindCustomEvents();
 
                 this.sandbox.emit(INITIALIZED.call(this));
+            },
+
+            remove: function() {
+                this.unbindWindowResize();
+                this.gridViews[this.viewId].destroy();
+                
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                }
             },
 
             /**
@@ -1040,8 +1054,13 @@
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                    dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', dataGridWindowResize);
                 }
+            },
+
+            unbindWindowResize: function() {
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', dataGridWindowResize);
             },
 
             /**
