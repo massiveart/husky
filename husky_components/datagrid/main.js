@@ -190,11 +190,6 @@
 
         namespace = 'husky.datagrid.',
 
-        /**
-         * Used to store the window resize handler and unbind it later
-         */
-        dataGridWindowResize = null,
-
         /* TRIGGERS EVENTS */
 
         /**
@@ -509,6 +504,8 @@
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
                 this.$el.append(this.$element);
+
+                this.dataGridWindowResize = null;
 
                 this.sort = {
                     attribute: null,
@@ -1050,13 +1047,13 @@
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    dataGridWindowResize = this.windowResizeListener.bind(this);
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', dataGridWindowResize);
+                    this.dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
                 }
             },
 
             unbindWindowResize: function() {
-                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', dataGridWindowResize);
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
             },
 
             /**
