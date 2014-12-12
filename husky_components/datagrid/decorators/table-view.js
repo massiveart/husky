@@ -268,8 +268,8 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.remove(this.$el);
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
+            this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
 

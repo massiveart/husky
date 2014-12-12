@@ -422,8 +422,8 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.remove(this.$el);
             this.sandbox.stop(this.sandbox.dom.find(&#x27;*&#x27;, this.$el));
+            this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
 

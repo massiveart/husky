@@ -522,11 +522,7 @@
 
             remove: function() {
                 this.unbindWindowResize();
-                this.gridViews[this.viewId].destroy();
-
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].destroy();
-                }
+                this.destroy();
             },
 
             /**
@@ -711,7 +707,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId].rendered === true) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
