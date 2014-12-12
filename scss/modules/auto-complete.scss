@@ -8,6 +8,22 @@
     }
 }
 
+.auto-complete-footer {
+    position: relative;
+    z-index: 5;
+    padding: 5px;
+    font-size: 14px;
+    background-color: $grayLighter;
+    color: #000;
+    text-align: center;
+
+    &:hover {
+        color: #fff;
+        background-color: $highlightColor;
+        cursor: pointer;
+    }
+}
+
 .husky-auto-complete {
     @include input-decorations;
 
@@ -27,6 +43,12 @@
 
         &:focus {
             outline: 0 none;
+        }
+    }
+
+    &.is-large {
+        .tt-dropdown-menu {
+            width: 150%;
         }
     }
 
@@ -72,7 +94,7 @@
 }
 
 .suggestion:hover,
-.tt-is-under-cursor .suggestion {
+.tt-cursor .suggestion {
     background: $highlightColor;
     color: $white;
 
@@ -120,6 +142,12 @@
         color: $grayLight;
         cursor: default;
     }
+}
+
+.suggestion-column {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .husky-auto-complete-success {

@@ -9,7 +9,7 @@
     "husky-validation": "0.6.*",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
-    "typeahead.js": "~0.9.3",
+    "typeahead.js": "^0.10.5",
     "tagmanager": "3.0.*",
     "requirejs": "2.1.9",
     "dropzone": "3.9.*",

@@ -46,6 +46,7 @@
  * @param {String} [options.suggestionIcon] Icon Class-suffix for autocomplete-suggestion-icon
  * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
  * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
+ * @param {String} [options.footerContent] Could be a template or just text
  */
 define([], function() {
 
@@ -331,7 +332,8 @@ define([], function() {
                                 getParameter: this.options.getParameter,
                                 suggestionIcon: this.options.suggestionIcon,
                                 autoCompleteIcon: this.options.autoCompleteIcon,
-                                resultKey: this.options.resultKey
+                                resultKey: this.options.resultKey,
+                                footerContent: this.options.footerContent
                             },
                             this.options.autocompleteOptions
                         )

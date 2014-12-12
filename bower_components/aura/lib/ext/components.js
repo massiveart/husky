@@ -50,14 +50,14 @@ define('aura/ext/components', function() {
       var dfd = app.core.data.deferred();
       var before, after, args = [].slice.call(arguments, 2);
       before = invokeCallbacks("before", fnName, context, args);
-      var result;
 
       before.then(function() {
-        var result =  fn.apply(context, args);
-        return result;
-      }).then(function() {
-        invokeCallbacks("after", fnName, context, args).then(function() {
-          dfd.resolve(result);
+        return fn.apply(context, args);
+      }).then(function(result) {
+        return invokeCallbacks("after", fnName, context, args.concat(result)).then(function() {
+          core.data.when(result).then(function() {
+            dfd.resolve(result) 
+          });
         }, dfd.reject);
       }).fail(function(err) {
         app.logger.error("Error in Component " + context.options.name + " " + fnName + " callback", err);
@@ -75,6 +75,8 @@ define('aura/ext/components', function() {
      */
     function Component(options) {
       var opts = _.clone(options);
+      var dfd = core.data.deferred();
+      var self = this;
 
       /**
        * The Components' options Object, passed to its constructor.
@@ -99,7 +101,12 @@ define('aura/ext/components', function() {
        */
       this.$el        = core.dom.find(opts.el);
 
-      this.invokeWithCallbacks('initialize', this.options);
+      this.initialized = dfd.promise();
+
+      this.invokeWithCallbacks('initialize', this.options).then(function() {
+        dfd.resolve(self);
+      });
+
       return this;
     }
 
@@ -252,7 +259,7 @@ define('aura/ext/components', function() {
           // Sandbox owns its el and vice-versa
           newComponent.$el.data('__sandbox_ref__', sandbox.ref);
 
-          var initialized = core.data.when(newComponent);
+          var initialized = newComponent.initialized;
 
           initialized.then(function(ret) { dfd.resolve(ret); });
           initialized.fail(function(err) { dfd.reject(err); });
@@ -413,7 +420,7 @@ define('aura/ext/components', function() {
          * the component instance itself, as per the component method.
          *
          * @method components.before
-         * @param  {String}   methodName    eg. 'initialize', 'remove'
+         * @param  {String}   methodName    eg. 'initialize', 'destroy'
          * @param  {Function} fn            actual function to run
          */
         app.components.before = function(methodName, fn) {
@@ -425,7 +432,7 @@ define('aura/ext/components', function() {
          * Same as components.before, but executed after the method invocation.
          *
          * @method components.after
-         * @param  {[type]}   methodName eg. 'initialize', 'remove'
+         * @param  {[type]}   methodName eg. 'initialize', 'destroy'
          * @param  {Function} fn         actual function to run
          */
         app.components.after = function(methodName, fn) {
@@ -487,7 +494,7 @@ define('aura/ext/components', function() {
           }
           var self = this;
 
-          Component.startAll(list).done(function () {
+          return Component.startAll(list).done(function () {
             var components   = Array.prototype.slice.call(arguments);
             _.each(components, function (w) {
               w.sandbox._component = w;
@@ -496,8 +503,6 @@ define('aura/ext/components', function() {
             });
             self._children = children;
           });
-
-          return this;
         };
 
       },

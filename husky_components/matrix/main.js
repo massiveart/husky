@@ -67,21 +67,23 @@ define(function() {
             var $tr = sandbox.dom.parent(event.currentTarget),
                 $targets = sandbox.dom.find('span[class^="fa-"]', $tr),
                 $activeTargets = sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr),
-                $link = sandbox.dom.find('td:last-child span', $tr);
+                $link = sandbox.dom.find('td:last-child span', $tr), activated;
 
             if ($activeTargets.length < $targets.length) {
                 sandbox.dom.addClass($targets, activeClass);
                 sandbox.dom.html($link, this.options.captions.none);
+                activated = true;
             } else {
                 sandbox.dom.removeClass($targets, activeClass);
                 sandbox.dom.html($link, this.options.captions.all);
+                activated = false;
             }
 
             // emit events for communication with the outside
             sandbox.emit('husky.matrix.changed', {
                 section: sandbox.dom.data($targets, 'section'),
                 value: this.options.values.horizontal,
-                activated: true
+                activated: activated
             });
         },
 
@@ -171,9 +173,8 @@ define(function() {
         },
 
         prepareTableBody: function() {
-            var $tbody = sandbox.dom.createElement('<tbody/>'),
-                i, $tr, $tdHead, $tdAll,
-                j, $tdValue, $span, title;
+            var $tbody = sandbox.dom.createElement('<tbody/>'), allActive,
+                i, j, $tr, $tdHead, $tdAll, $tdValue, $span, title;
 
             for (i = 0; i < this.options.captions.vertical.length; i++) {
                 $tr = sandbox.dom.createElement('<tr/>');
@@ -189,6 +190,9 @@ define(function() {
                 sandbox.dom.html($tdHead, this.options.captions.vertical[i]);
                 sandbox.dom.data($tdHead, 'section', this.options.values.vertical[i]);
                 sandbox.dom.append($tr, $tdHead);
+
+                // flag for checking if every flag is true
+                allActive = true;
 
                 // insert values of matrix
                 for (j = 0; j < this.options.values.horizontal.length; j++) {
@@ -208,6 +212,9 @@ define(function() {
                     // set activated if set in delivered data
                     if (!!this.options.data[i][j]) {
                         sandbox.dom.addClass($span, activeClass);
+                    } else {
+                        // set the flag to false if there is one
+                        allActive = false;
                     }
 
                     sandbox.dom.append($tdValue, $span);
@@ -215,7 +222,14 @@ define(function() {
                 }
 
                 //add all link
-                sandbox.dom.html($tdAll, '<span class="pointer">' + this.options.captions.all + '</span>');
+                sandbox.dom.html(
+                    $tdAll,
+                    [
+                        '<span class="pointer">',
+                        (!!allActive) ? this.options.captions.none : this.options.captions.all,
+                        '</span>'
+                    ].join('')
+                );
                 sandbox.dom.append($tr, $tdAll);
 
                 sandbox.dom.append($tbody, $tr);

@@ -6,8 +6,8 @@
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
+ * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  * @param {Object} [options.viewOptions] Configuration Object for the view
  * @param {Boolean} [options.sortable] Defines if records are sortable
@@ -19,7 +19,9 @@
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
- * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column. If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types)
+ * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column.
+ *        If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types).
+ *        Passed will be (content, arguments, recordId).
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
  * @param {String} [options.matchings.width] width of column (used by the table view)
@@ -302,7 +304,7 @@
             return this.createEventName('data.changed');
         },
 
-    /* PROVIDED EVENTS */
+        /* PROVIDED EVENTS */
 
         /**
          * raised when husky.datagrid.data.get is triggered
@@ -481,6 +483,7 @@
 
                 this.matchings = [];
                 this.requestFields = [];
+                this.selectedItems = [];
 
                 // make a copy of the decorators for each datagrid instance
                 // if you directly access the decorators variable the datagrid-context in the decorators will be overwritten
@@ -496,11 +499,13 @@
 
                 this.$loader = null;
                 this.isLoading = false;
+                this.initialLoaded = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
-                this.elId = this.sandbox.dom.attr(this.$el, 'id');
                 this.$el.append(this.$element);
+
+                this.dataGridWindowResize = null;
 
                 this.sort = {
                     attribute: null,
@@ -513,6 +518,11 @@
                 this.bindCustomEvents();
 
                 this.sandbox.emit(INITIALIZED.call(this));
+            },
+
+            remove: function() {
+                this.unbindWindowResize();
+                this.destroy();
             },
 
             /**
@@ -533,11 +543,14 @@
                     this.load({
                         url: url
                     });
-
-                } else if (!!this.options.data.items) {
-
+                } else if (!!this.options.data) {
                     this.sandbox.logger.log('load data from array');
-                    this.data = this.options.data;
+                    this.data = {};
+                    if (!!this.options.resultKey && !!this.options.data[this.options.resultKey]) {
+                        this.data.embedded = this.options.data[this.options.resultKey];
+                    } else {
+                        this.data.embedded = this.options.data;
+                    }
 
                     this.renderView();
                     if (!!this.paginations[this.paginationId]) {
@@ -638,7 +651,10 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                this.preSelectItems();
+                if (!this.initialLoaded) {
+                    this.preSelectItems();
+                    this.initialLoaded = true;
+                }
 
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
@@ -691,7 +707,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId].rendered === true) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
@@ -1000,18 +1016,18 @@
              * @param {Number|String} [argument] argument to pass to the processor
              * @returns {String} the manipulated content
              */
-            processContentFilter: function(attributeName, content, type, argument) {
+            processContentFilter: function(attributeName, content, type, argument, recordId) {
                 // check if filter is set for current column
                 if (!!this.options.contentFilters && this.options.contentFilters.hasOwnProperty(attributeName)) {
                     // check if filter is function or string and call filter
                     if (typeof this.options.contentFilters[attributeName] === 'function') {
-                        return this.options.contentFilters[attributeName].call(this, content, argument);
+                        return this.options.contentFilters[attributeName].call(this, content, argument, recordId);
                     } else if (typeof this.options.contentFilters[attributeName] === 'string') {
                         type = this.options.contentFilters[attributeName];
                         return this.manipulateContent(content, type, argument, attributeName);
                     }
                 }
-                // if no filter was set, check if type is set and call
+                // if no filter was set, check if type is set and calls
                 else if (!!type) {
                     return this.manipulateContent(content, type, argument);
                 }
@@ -1031,8 +1047,13 @@
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                    this.dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
                 }
+            },
+
+            unbindWindowResize: function() {
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
             },
 
             /**
@@ -1236,9 +1257,7 @@
              * Sets all data records unselected
              */
             deselectAllItems: function() {
-                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    this.data.embedded[i].selected = false;
-                }
+                this.selectedItems = [];
                 // emit events with selected data
                 this.sandbox.emit(ALL_DESELECT.call(this));
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
@@ -1251,10 +1270,7 @@
             selectAllItems: function() {
                 var ids = [], i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.selectingAllowed(this.data.embedded[i].id)) {
-                        this.data.embedded[i].selected = true;
-                        ids.push(this.data.embedded[i].id);
-                    }
+                    this.setItemSelected(this.data.embedded[i].id);
                 }
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
@@ -1267,13 +1283,7 @@
              * @return {Array} array with all ids
              */
             getSelectedItemIds: function() {
-                var ids = [], i, length;
-                for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.data.embedded[i].selected === true) {
-                        ids.push(this.data.embedded[i].id);
-                    }
-                }
-                return ids;
+                return this.selectedItems;
             },
 
             /**
@@ -1282,13 +1292,13 @@
              * @param items {Array} array with all items that should be selected
              */
             setSelectedItems: function(items) {
-                var count = 0, i, length;
-                for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (items.indexOf(this.data.embedded[i].id) !== -1 && this.selectingAllowed(this.data.embedded[i].id)) {
-                        this.data.embedded[i].selected = true;
+                var count = 0, i, length, position;
+                for (i = -1, length = items.length; ++i < length;) {
+                    if (this.selectedItems.indexOf(items[i]) === -1 && this.selectingAllowed(items[i])) {
+                        this.selectedItems.push(items[i]);
                         count++;
-                    } else {
-                        this.data.embedded[i].selected = false;
+                    } else if ((position = this.selectedItems.indexOf(items[i])) !== -1) {
+                        this.selectedItems.splice(position, 1);
                     }
                 }
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), count);
@@ -1300,12 +1310,7 @@
              * @returns {Boolean} returns true if item is selected
              */
             itemIsSelected: function(id) {
-                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.data.embedded[i].id === id) {
-                        return this.data.embedded[i].selected;
-                    }
-                }
-                return false;
+                return this.selectedItems.indexOf(id) !== -1;
             },
 
             /**
@@ -1314,9 +1319,8 @@
              * @return {Boolean} true of operation was successfull
              */
             setItemSelected: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null && this.selectingAllowed(id)) {
-                    this.data.embedded[itemIndex].selected = true;
+                if (this.selectedItems.indexOf(id) === -1) {
+                    this.selectedItems.push(id);
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
@@ -1332,9 +1336,10 @@
              * @return {Boolean} true of operation was succesfull
              */
             setItemUnselected: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null) {
-                    this.data.embedded[itemIndex].selected = false;
+                var position;
+
+                if ((position = this.selectedItems.indexOf(id)) !== -1) {
+                    this.selectedItems.splice(position, 1);
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
@@ -1487,7 +1492,8 @@
                     this.load({url: url,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this), 'changed page');
-                        }.bind(this)});
+                        }.bind(this)
+                    });
                 }
             },
 

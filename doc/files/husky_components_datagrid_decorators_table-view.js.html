@@ -422,8 +422,8 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.remove(this.$el);
             this.sandbox.stop(this.sandbox.dom.find(&#x27;*&#x27;, this.$el));
+            this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
 
@@ -721,7 +721,7 @@ define(function() {
          * @param record {Object} the data of the record
          */
         executeRowPostRenderActions: function(record) {
-            if (record.selected === true) {
+            if (!!this.datagrid.itemIsSelected.call(this.datagrid, record.id)) {
                 this.toggleSelectRecord(record.id, true);
             } else {
                 this.toggleSelectAllItem(false);
@@ -823,7 +823,8 @@ define(function() {
                     column.attribute,
                     content,
                     column.type,
-                    Object.keys(this.table.rows).length
+                    Object.keys(this.table.rows).length,
+                    record.hasOwnProperty(&#x27;id&#x27;) ? record[&#x27;id&#x27;] : null
                 );
             }
             if (this.options.editable === true &amp;&amp; column.editable === true) {
@@ -1087,6 +1088,7 @@ define(function() {
          * @param event {Object} the event object
          */
         iconClickHandler: function(event) {
+            event.stopPropagation();
             var icon = this.options.icons[this.sandbox.dom.data(event.currentTarget, &#x27;icon-index&#x27;)],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, &#x27;.&#x27; + constants.rowClass), &#x27;id&#x27;);
             if (typeof recordId !== &#x27;undefined&#x27; &amp;&amp; !!icon &amp;&amp; typeof icon.callback === &#x27;function&#x27;) {
