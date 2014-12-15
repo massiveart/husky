@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.7.0</em>
+            <em>API Docs for: 0.9.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -317,15 +317,23 @@
                  * @param messages
                  */
                 app.setLanguage = function(cultureName, messages) {
-                    var setLanguage = function() {
-                        Globalize.culture(cultureName);
-                        app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    };
+                    var dfd = app.core.data.deferred(),
+                        setLanguage = function() {
+                            Globalize.culture(cultureName);
+                            app.sandbox.globalize.addCultureInfo(cultureName, messages);
+                        };
+
                     if (cultureName !== &#x27;en&#x27;) {
-                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
+                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], function() {
+                            setLanguage();
+                            dfd.resolve();
+                        });
                     } else {
                         setLanguage();
+                        dfd.resolve();
                     }
+
+                    return dfd.promise();
                 };
             },
 
@@ -334,7 +342,8 @@
                     if (!app.config.culture.messages) {
                         app.config.culture.messages = { };
                     }
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
+                    
+                    return app.setLanguage(app.config.culture.name, app.config.culture.messages);
                 }
             }
         };

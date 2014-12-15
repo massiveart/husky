@@ -268,8 +268,8 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.remove(this.$el);
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
+            this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
 
@@ -934,6 +934,7 @@ define(function() {
          * @param event {Object} the event object
          */
         iconClickHandler: function(event) {
+            event.stopPropagation();
             var icon = this.options.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
             if (typeof recordId !== 'undefined' && !!icon && typeof icon.callback === 'function') {
@@ -1117,7 +1118,7 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
             this.emitRowClickedEvent(event);
-            if (!!this.table.rows[recordId]) {
+            if (!!recordId && !!this.table.rows[recordId]) {
                 if (this.options.highlightSelected === true) {
                     this.uniqueHighlightRecord(recordId);
                 }

@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.7.0</em>
+            <em>API Docs for: 0.9.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -344,11 +344,6 @@
 
         namespace = &#x27;husky.datagrid.&#x27;,
 
-        /**
-         * Used to store the window resize handler and unbind it later
-         */
-        dataGridWindowResize = null,
-
         /* TRIGGERS EVENTS */
 
         /**
@@ -530,6 +525,15 @@
         },
 
         /**
+         * raised when limit of request changed
+         * @event husky.datagrid.page-size.changed
+         * @param {Integer} pageSize new size
+         */
+        PAGE_SIZE_CHANGED = function() {
+            return this.createEventName(&#x27;page-size.changed&#x27;);
+        },
+
+        /**
          * used to trigger an update of the data
          * @event husky.datagrid.update
          */
@@ -664,6 +668,8 @@
                 this.$element = this.sandbox.dom.$(&#x27;&lt;div class=&quot;husky-datagrid&quot;/&gt;&#x27;);
                 this.$el.append(this.$element);
 
+                this.dataGridWindowResize = null;
+
                 this.sort = {
                     attribute: null,
                     direction: null
@@ -679,11 +685,7 @@
 
             remove: function() {
                 this.unbindWindowResize();
-                this.gridViews[this.viewId].destroy();
-                
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].destroy();
-                }
+                this.destroy();
             },
 
             /**
@@ -868,7 +870,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId].rendered === true) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
@@ -1208,13 +1210,13 @@
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    dataGridWindowResize = this.windowResizeListener.bind(this);
-                    this.sandbox.dom.on(this.sandbox.dom.$window, &#x27;resize&#x27;, dataGridWindowResize);
+                    this.dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, &#x27;resize&#x27;, this.dataGridWindowResize);
                 }
             },
 
             unbindWindowResize: function() {
-                this.sandbox.dom.off(this.sandbox.dom.$window, &#x27;resize&#x27;, dataGridWindowResize);
+                this.sandbox.dom.off(this.sandbox.dom.$window, &#x27;resize&#x27;, this.dataGridWindowResize);
             },
 
             /**
@@ -1642,6 +1644,8 @@
                         // if no limit is passed keep current limit
                         if (!limit) {
                             limit = this.data.limit;
+                        } else if (this.data.limit !== limit) {
+                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit);
                         }
 
                         // generate uri for loading

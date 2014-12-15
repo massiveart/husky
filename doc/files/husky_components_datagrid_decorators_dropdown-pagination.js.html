@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.7.0</em>
+            <em>API Docs for: 0.9.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -169,9 +169,9 @@ define(function() {
 
     &#x27;use strict&#x27;;
 
-     var defaults = {
+    var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            limit: 10
+            limit: 20
         },
 
         constants = {
@@ -195,24 +195,24 @@ define(function() {
             ].join(&#x27;&#x27;),
 
             pageChanger: [
-                &#x27;&lt;div class=&quot;&#x27;, constants.nextClass , &#x27; pagination-prev pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;&lt;div class=&quot;&#x27;, constants.pageChangeClass , &#x27; pagination-main pull-right pointer&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;inline-block&quot;&gt;&lt;%= label %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;div class=&quot;&#x27;, constants.nextClass, &#x27; pagination-prev pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;&#x27;, constants.pageChangeClass, &#x27; pagination-main pull-right pointer&quot;&gt;&#x27;,
+                &#x27;&lt;span class=&quot;inline-block&quot;&gt;&lt;%= label %&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;div class=&quot;&#x27; + constants.prevClass + &#x27; pagination-next pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
 
             loader: [
-                &#x27;&lt;div class=&quot;&#x27;, constants.loaderClass ,&#x27;&quot;&gt;&lt;/div&gt;&#x27;
+                &#x27;&lt;div class=&quot;&#x27;, constants.loaderClass, &#x27;&quot;&gt;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
 
             showElements: [
                 &#x27;&lt;div class=&quot;show-elements&quot;&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;&#x27; + constants.sizeChangeClass + &#x27; dropdown-trigger&quot;&gt;&#x27;,
-                        &#x27;&lt;%= desc %&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;dropdown-toggle&quot;&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;&#x27; + constants.sizeChangeClass + &#x27; dropdown-trigger&quot;&gt;&#x27;,
+                &#x27;&lt;%= desc %&gt;&#x27;,
+                &#x27;&lt;span class=&quot;dropdown-toggle&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
         },
@@ -396,8 +396,8 @@ define(function() {
             // if first defined step is bigger than the number of all elements don&#x27;t display show-elements dropdown
             if (this.data.total &gt; this.options.showElementsSteps[0]) {
                 description = this.sandbox.translate(translations.show) +
-                    &#x27; &lt;strong&gt;&#x27; + this.data.embedded.length + &#x27;&lt;/strong&gt; &#x27; +
-                    this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.total;
+                &#x27; &lt;strong&gt;&#x27; + this.data.embedded.length + &#x27;&lt;/strong&gt; &#x27; +
+                this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.total;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     &#x27;desc&#x27;: description
                 }));
@@ -466,9 +466,6 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i &lt; length;) {
-                if (this.options.showElementsSteps[i] &gt; this.data.total) {
-                    break;
-                }
                 data.push({
                     id: this.options.showElementsSteps[i],
                     name: &#x27;&lt;strong&gt;&#x27; + this.options.showElementsSteps[i] + &#x27;&lt;/strong&gt; &#x27; + this.sandbox.translate(translations.elementsPerPage)
