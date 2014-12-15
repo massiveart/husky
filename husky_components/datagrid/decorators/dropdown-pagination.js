@@ -312,18 +312,13 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
-                // break if current limit is equal than size
-                if (this.options.showElementsSteps[i] === this.data.total) {
-                    break;
-                }
-
                 data.push({
                     id: this.options.showElementsSteps[i],
                     name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
                 });
 
-                // next size also if size is bigger than current limit
-                if (this.options.showElementsSteps[i] > this.data.total) {
+                // break for pagesizes bigger than current total size
+                if (this.options.showElementsSteps[i] >= this.data.total) {
                     break;
                 }
             }
