@@ -30905,9 +30905,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
     
 
-     var defaults = {
+    var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            limit: 10
+            limit: 20
         },
 
         constants = {
@@ -30931,24 +30931,24 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             ].join(''),
 
             pageChanger: [
-                '<div class="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
-                '<div class="', constants.pageChangeClass , ' pagination-main pull-right pointer">',
-                    '<span class="inline-block"><%= label %></span>',
-                    '<span class="dropdown-toggle inline-block"></span>',
+                '<div class="', constants.nextClass, ' pagination-prev pull-right pointer"></div>',
+                '<div class="', constants.pageChangeClass, ' pagination-main pull-right pointer">',
+                '<span class="inline-block"><%= label %></span>',
+                '<span class="dropdown-toggle inline-block"></span>',
                 '</div>',
                 '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
             ].join(''),
 
             loader: [
-                '<div class="', constants.loaderClass ,'"></div>'
+                '<div class="', constants.loaderClass, '"></div>'
             ].join(''),
 
             showElements: [
                 '<div class="show-elements">',
-                    '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
-                        '<%= desc %>',
-                        '<span class="dropdown-toggle"></span>',
-                    '</div>',
+                '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
+                '<%= desc %>',
+                '<span class="dropdown-toggle"></span>',
+                '</div>',
                 '</div>'
             ].join('')
         },
@@ -31132,8 +31132,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
                 description = this.sandbox.translate(translations.show) +
-                    ' <strong>' + this.data.embedded.length + '</strong> ' +
-                    this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
+                ' <strong>' + this.data.embedded.length + '</strong> ' +
+                this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
                 }));
@@ -31202,9 +31202,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
-                if (this.options.showElementsSteps[i] > this.data.total) {
-                    break;
-                }
                 data.push({
                     id: this.options.showElementsSteps[i],
                     name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
@@ -31597,6 +31594,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          */
         RECORDS_CHANGE = function() {
             return this.createEventName('records.change');
+        },
+
+        /**
+         * raised when limit of request changed
+         * @event husky.datagrid.page-size.changed
+         * @param {Integer} pageSize new size
+         */
+        PAGE_SIZE_CHANGED = function() {
+            return this.createEventName('page-size.changed');
         },
 
         /**
@@ -32710,6 +32716,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         // if no limit is passed keep current limit
                         if (!limit) {
                             limit = this.data.limit;
+                        } else if (this.data.limit !== limit) {
+                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit);
                         }
 
                         // generate uri for loading
