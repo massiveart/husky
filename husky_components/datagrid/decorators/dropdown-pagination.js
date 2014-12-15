@@ -41,7 +41,7 @@ define(function() {
             ].join(''),
 
             pageChanger: [
-                '<div clahos="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
+                '<div class="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
                 '<div class="', constants.pageChangeClass , ' pagination-main pull-right pointer">',
                     '<span class="inline-block"><%= label %></span>',
                     '<span class="dropdown-toggle inline-block"></span>',
