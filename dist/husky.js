@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -46578,14 +46579,16 @@ define("datepicker-zh-TW", function(){});
                      * @param {string|Date} date
                      * @returns {string}
                      */
-                    format: function(date) {
+                    format: function(date, returnDateOnly) {
                         var returnDate, returnTime;
                         if(typeof date === 'string'){
                             date = this.parse(date);
                         }
 
                         returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
-                        returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+                        if (returnDateOnly === true) {
+                            returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+                        }
 
                         return ( (!!returnDate) ? returnDate : '' ) +
                                ( (!!returnDate && !!returnTime) ? ' ': '' ) +
@@ -46701,7 +46704,7 @@ define("datepicker-zh-TW", function(){});
                     if (!app.config.culture.messages) {
                         app.config.culture.messages = { };
                     }
-                    
+
                     return app.setLanguage(app.config.culture.name, app.config.culture.messages);
                 }
             }
@@ -47841,4 +47844,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
