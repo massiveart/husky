@@ -15,7 +15,7 @@ define(function() {
 
     'use strict';
 
-     var defaults = {
+    var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
             limit: 20
         },
@@ -41,24 +41,24 @@ define(function() {
             ].join(''),
 
             pageChanger: [
-                '<div class="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
-                '<div class="', constants.pageChangeClass , ' pagination-main pull-right pointer">',
-                    '<span class="inline-block"><%= label %></span>',
-                    '<span class="dropdown-toggle inline-block"></span>',
+                '<div class="', constants.nextClass, ' pagination-prev pull-right pointer"></div>',
+                '<div class="', constants.pageChangeClass, ' pagination-main pull-right pointer">',
+                '<span class="inline-block"><%= label %></span>',
+                '<span class="dropdown-toggle inline-block"></span>',
                 '</div>',
                 '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
             ].join(''),
 
             loader: [
-                '<div class="', constants.loaderClass ,'"></div>'
+                '<div class="', constants.loaderClass, '"></div>'
             ].join(''),
 
             showElements: [
                 '<div class="show-elements">',
-                    '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
-                        '<%= desc %>',
-                        '<span class="dropdown-toggle"></span>',
-                    '</div>',
+                '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
+                '<%= desc %>',
+                '<span class="dropdown-toggle"></span>',
+                '</div>',
                 '</div>'
             ].join('')
         },
@@ -242,8 +242,8 @@ define(function() {
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
                 description = this.sandbox.translate(translations.show) +
-                    ' <strong>' + this.data.embedded.length + '</strong> ' +
-                    this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
+                ' <strong>' + this.data.embedded.length + '</strong> ' +
+                this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
                 }));
@@ -316,11 +316,6 @@ define(function() {
                     id: this.options.showElementsSteps[i],
                     name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
                 });
-
-                // break for pagesizes bigger than current total size
-                if (this.options.showElementsSteps[i] >= this.data.total) {
-                    break;
-                }
             }
 
             this.sandbox.start([
