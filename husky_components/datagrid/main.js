@@ -304,7 +304,7 @@
             return this.createEventName('data.changed');
         },
 
-    /* PROVIDED EVENTS */
+        /* PROVIDED EVENTS */
 
         /**
          * raised when husky.datagrid.data.get is triggered
@@ -368,6 +368,15 @@
          */
         RECORDS_CHANGE = function() {
             return this.createEventName('records.change');
+        },
+
+        /**
+         * raised when limit of request changed
+         * @event husky.datagrid.page-size.changed
+         * @param {Integer} pageSize new size
+         */
+        PAGE_SIZE_CHANGED = function() {
+            return this.createEventName('page-size.changed');
         },
 
         /**
@@ -505,6 +514,8 @@
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
                 this.$el.append(this.$element);
 
+                this.dataGridWindowResize = null;
+
                 this.sort = {
                     attribute: null,
                     direction: null
@@ -516,6 +527,11 @@
                 this.bindCustomEvents();
 
                 this.sandbox.emit(INITIALIZED.call(this));
+            },
+
+            remove: function() {
+                this.unbindWindowResize();
+                this.destroy();
             },
 
             /**
@@ -700,7 +716,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId].rendered === true) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
@@ -1040,8 +1056,13 @@
              */
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                    this.dataGridWindowResize = this.windowResizeListener.bind(this);
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
                 }
+            },
+
+            unbindWindowResize: function() {
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
             },
 
             /**
@@ -1469,6 +1490,8 @@
                         // if no limit is passed keep current limit
                         if (!limit) {
                             limit = this.data.limit;
+                        } else if (this.data.limit !== limit) {
+                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit);
                         }
 
                         // generate uri for loading

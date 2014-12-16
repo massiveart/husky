@@ -65,14 +65,16 @@
                      * @param {string|Date} date
                      * @returns {string}
                      */
-                    format: function(date) {
+                    format: function(date, returnDateOnly) {
                         var returnDate, returnTime;
                         if(typeof date === 'string'){
                             date = this.parse(date);
                         }
 
                         returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
-                        returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+                        if (returnDateOnly === true) {
+                            returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+                        }
 
                         return ( (!!returnDate) ? returnDate : '' ) +
                                ( (!!returnDate && !!returnTime) ? ' ': '' ) +
@@ -163,15 +165,23 @@
                  * @param messages
                  */
                 app.setLanguage = function(cultureName, messages) {
-                    var setLanguage = function() {
-                        Globalize.culture(cultureName);
-                        app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    };
+                    var dfd = app.core.data.deferred(),
+                        setLanguage = function() {
+                            Globalize.culture(cultureName);
+                            app.sandbox.globalize.addCultureInfo(cultureName, messages);
+                        };
+
                     if (cultureName !== 'en') {
-                        require(['cultures/globalize.culture.' + cultureName], setLanguage.bind(this));
+                        require(['cultures/globalize.culture.' + cultureName], function() {
+                            setLanguage();
+                            dfd.resolve();
+                        });
                     } else {
                         setLanguage();
+                        dfd.resolve();
                     }
+
+                    return dfd.promise();
                 };
             },
 
@@ -180,7 +190,8 @@
                     if (!app.config.culture.messages) {
                         app.config.culture.messages = { };
                     }
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
+
+                    return app.setLanguage(app.config.culture.name, app.config.culture.messages);
                 }
             }
         };

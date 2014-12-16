@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.7.0</em>
+            <em>API Docs for: 0.9.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -400,8 +400,12 @@
                 }
             };
 
-            app.core.dom.off = function(selector, event, filter, handler) {
-                $(selector).off(event, filter, handler);
+            app.core.dom.off = function(selector, event, handler, filter) {
+                if (!!filter) {
+                    $(selector).off(event, filter, handler);
+                } else {
+                    $(selector).off(event, handler);
+                }
             };
 
             app.core.dom.trigger = function(selector, eventType, params) {
