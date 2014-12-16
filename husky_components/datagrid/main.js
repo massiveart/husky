@@ -371,6 +371,15 @@
         },
 
         /**
+         * raised when limit of request changed
+         * @event husky.datagrid.page-size.changed
+         * @param {Integer} pageSize new size
+         */
+        PAGE_SIZE_CHANGED = function() {
+            return this.createEventName('page-size.changed');
+        },
+
+        /**
          * used to trigger an update of the data
          * @event husky.datagrid.update
          */
@@ -1481,6 +1490,8 @@
                         // if no limit is passed keep current limit
                         if (!limit) {
                             limit = this.data.limit;
+                        } else if (this.data.limit !== limit) {
+                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit);
                         }
 
                         // generate uri for loading
