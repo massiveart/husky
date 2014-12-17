@@ -89,6 +89,7 @@ define([], function() {
         slideDefaults = {
             index: -1,
             title: '',
+            subTitle: null,
             closeIcon: 'times',
             message: '',
             closeCallback: null,
@@ -194,8 +195,9 @@ define([], function() {
             ].join(''),
             slideSkeleton: [
                 '<div class="slide slide-<%= index %> <%= cssClass %>">',
-                '   <div class="overlay-header">',
+                '   <div class="overlay-header<% if(subTitle) { %> with-sub-title<% } %>">',
                 '       <span class="title"><%= title %></span>',
+                '       <% if(subTitle) { %><div class="sub-title"><%= subTitle %></div><% } %>',
                 '       <% if (!!closeIcon) { %><a class="fa-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '   </div>',
                 '   <div class="overlay-content"></div>',
@@ -671,10 +673,12 @@ define([], function() {
 
             var slide, $el;
             for (slide in this.slides) {
-                $el = this.initSlideSkeleton(slide);
-                this.initButtons(slide);
-                this.setContent(slide);
-                this.sandbox.dom.append(this.overlay.$slides, $el);
+                if (this.slides.hasOwnProperty(slide)) {
+                    $el = this.initSlideSkeleton(slide);
+                    this.initButtons(slide);
+                    this.setContent(slide);
+                    this.sandbox.dom.append(this.overlay.$slides, $el);
+                }
             }
         },
 
@@ -684,6 +688,7 @@ define([], function() {
             this.overlay.slides[slide].$el = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.slideSkeleton, {
                     title: this.sandbox.util.cropMiddle(this.slides[slide].title, 38),
+                    subTitle: !!this.slides[slide].subTitle ? this.slides[slide].subTitle : null,
                     closeIcon: this.slides[slide].closeIcon,
                     index: this.slides[slide].index,
                     cssClass: this.slides[slide].cssClass
