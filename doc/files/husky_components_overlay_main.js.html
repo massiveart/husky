@@ -189,6 +189,7 @@
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
+ * @params {String} [options.slides[].subTitle] the sub-title of the overlay
  * @params {String|Boolean} [options.slides[].closeIcon] icon class for the close button. If false no close icon will be displayed
  * @params {Function} [options.slides[].closeCallback] @deprecated Use &#x27;cancelCallback&#x27; instead
  * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
@@ -243,6 +244,7 @@ define([], function() {
         slideDefaults = {
             index: -1,
             title: &#x27;&#x27;,
+            subTitle: null,
             closeIcon: &#x27;times&#x27;,
             message: &#x27;&#x27;,
             closeCallback: null,
@@ -348,8 +350,9 @@ define([], function() {
             ].join(&#x27;&#x27;),
             slideSkeleton: [
                 &#x27;&lt;div class=&quot;slide slide-&lt;%= index %&gt; &lt;%= cssClass %&gt;&quot;&gt;&#x27;,
-                &#x27;   &lt;div class=&quot;overlay-header&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;overlay-header&lt;% if(subTitle) { %&gt; with-sub-title&lt;% } %&gt;&quot;&gt;&#x27;,
                 &#x27;       &lt;span class=&quot;title&quot;&gt;&lt;%= title %&gt;&lt;/span&gt;&#x27;,
+                &#x27;       &lt;% if(subTitle) { %&gt;&lt;div class=&quot;sub-title&quot;&gt;&lt;%= subTitle %&gt;&lt;/div&gt;&lt;% } %&gt;&#x27;,
                 &#x27;       &lt;% if (!!closeIcon) { %&gt;&lt;a class=&quot;fa-&lt;%= closeIcon %&gt; close-button&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&lt;% } %&gt;&#x27;,
                 &#x27;   &lt;/div&gt;&#x27;,
                 &#x27;   &lt;div class=&quot;overlay-content&quot;&gt;&lt;/div&gt;&#x27;,
@@ -825,10 +828,12 @@ define([], function() {
 
             var slide, $el;
             for (slide in this.slides) {
-                $el = this.initSlideSkeleton(slide);
-                this.initButtons(slide);
-                this.setContent(slide);
-                this.sandbox.dom.append(this.overlay.$slides, $el);
+                if (this.slides.hasOwnProperty(slide)) {
+                    $el = this.initSlideSkeleton(slide);
+                    this.initButtons(slide);
+                    this.setContent(slide);
+                    this.sandbox.dom.append(this.overlay.$slides, $el);
+                }
             }
         },
 
@@ -838,6 +843,7 @@ define([], function() {
             this.overlay.slides[slide].$el = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.slideSkeleton, {
                     title: this.sandbox.util.cropMiddle(this.slides[slide].title, 38),
+                    subTitle: !!this.slides[slide].subTitle ? this.slides[slide].subTitle : null,
                     closeIcon: this.slides[slide].closeIcon,
                     index: this.slides[slide].index,
                     cssClass: this.slides[slide].cssClass
