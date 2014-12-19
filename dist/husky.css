@@ -5821,12 +5821,11 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   height: 9px;
   border-radius: 50%;
   border: 3px solid white;
-  background: #666666;
   font-size: medium !important;
   margin-bottom: -1px;
 }
 
-/* line 48, ../scss/modules/custom-icons.scss */
+/* line 47, ../scss/modules/custom-icons.scss */
 .fa-husky-test::after {
   content: "";
   display: inline-block;
@@ -5839,12 +5838,12 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   margin-bottom: -1px;
 }
 
-/* line 61, ../scss/modules/custom-icons.scss */
+/* line 60, ../scss/modules/custom-icons.scss */
 .fa-shadow-node:before {
   content: "\f064";
 }
 
-/* line 62, ../scss/modules/custom-icons.scss */
+/* line 61, ../scss/modules/custom-icons.scss */
 .fa-internal-link:before {
   content: "\f0c1";
 }
