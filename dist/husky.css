@@ -5766,6 +5766,18 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
 }
 
 /* line 34, ../scss/modules/custom-icons.scss */
+.fa-husky-deactivated::after {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  font-size: medium !important;
+  margin-bottom: -1px;
+}
+
+/* line 47, ../scss/modules/custom-icons.scss */
 .fa-husky-test::after {
   content: "";
   display: inline-block;
@@ -5778,12 +5790,12 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   margin-bottom: -1px;
 }
 
-/* line 48, ../scss/modules/custom-icons.scss */
+/* line 60, ../scss/modules/custom-icons.scss */
 .fa-shadow-node:before {
   content: "";
 }
 
-/* line 49, ../scss/modules/custom-icons.scss */
+/* line 61, ../scss/modules/custom-icons.scss */
 .fa-internal-link:before {
   content: "";
 }
