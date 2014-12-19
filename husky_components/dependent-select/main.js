@@ -33,7 +33,9 @@ define(function() {
             preselect: null,
             defaultLabels: 'Please choose',
             selectOptions: [],
-            container: null
+            container: null,
+            isNative: false,
+            deselectField: false
         },
         constants = {
             childContainerClass: 'dependent-select-container',
@@ -106,6 +108,8 @@ define(function() {
                             singleSelect: true,
                             instanceName: i,
                             data: [],
+                            isNative: this.options.isNative,
+                            deselectField: this.options.deselectField,
                             defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
                         }
                     }
@@ -203,6 +207,7 @@ define(function() {
             if (!!this.options.selectOptions[depth]) {
                 options = this.options.selectOptions[depth];
             }
+
             options = this.sandbox.util.extend(true, {}, {
                 el: $child,
                 singleSelect: true,
@@ -210,7 +215,9 @@ define(function() {
                 data: data,
                 selectCallback: selectionCallback,
                 deselectCallback: deselectionCallback,
+                isNative: this.options.isNative,
                 preSelectedElements: !!preselect ? [preselect] : [],
+                deselectField: this.options.deselectField,
                 defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
             }, options);
 
@@ -221,9 +228,6 @@ define(function() {
                     options: options
                 }
             ]);
-        },
-
-        bindCustomEvents = function() {
         };
 
     return {
@@ -231,8 +235,6 @@ define(function() {
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-
-            bindCustomEvents.call(this);
 
             // load data and call render
             if (!!this.options.url) {

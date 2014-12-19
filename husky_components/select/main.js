@@ -37,6 +37,7 @@
  * @param {String} [options.direction] 'bottom', 'top', or 'auto' pop up direction of the drop down.
  * @param {String} [options.resultKey] key in result set - default is empty and the _embedded property of the result set will be taken
  * @param {String} [options.url] url to load data from
+ * @param {Boolean} [options.isNative] should use native select 
  */
 
 define([], function() {
@@ -70,7 +71,8 @@ define([], function() {
             editable: false,
             direction: 'auto',
             resultKey: '',
-            translations: translations
+            translations: translations,
+            isNative: false
         },
 
         constants = {
@@ -326,7 +328,12 @@ define([], function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(
-                    this.template.basicStructure.call(this, this.options.defaultLabel, this.options.icon)
+                    this.sandbox.util.template(
+                        this.template.basicStructure.call(this, this.options.defaultLabel, this.options.icon),
+                        {
+                            isNative: this.options.isNative
+                        }
+                    )
                 );
             this.sandbox.dom.append($originalElement, button);
 
@@ -414,33 +421,47 @@ define([], function() {
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
             checkboxVisible = checkboxVisible !== false;
             var $item,
+                template = (this.options.isNative) ? this.template.optionElement : this.template.menuElement,
                 idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(
-                    this,
-                    idString,
-                    value,
-                    'checked',
-                    updateLabel,
-                    true));
+                $item = this.sandbox.dom.createElement(this.sandbox.util.template(
+                    template.call(
+                        this,
+                        idString,
+                        value,
+                        'checked',
+                        updateLabel,
+                        true
+                    ),
+                    {
+                        checked: true
+                    }
+                ));
 
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
+
                 if (this.options.emitValues === true) {
                     this.triggerPreSelect(idString);
                 } else {
                     this.triggerPreSelect(value);
                 }
             } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(
-                        this,
-                        idString,
-                        value,
-                        '',
-                        updateLabel,
-                        checkboxVisible
+                $item = this.sandbox.dom.createElement(
+                    this.sandbox.util.template(
+                        template.call(
+                            this,
+                            idString,
+                            value,
+                            '',
+                            updateLabel,
+                            checkboxVisible
+                        ),
+                        {
+                            checked: false
+                        }
                     )
                 );
             }
@@ -452,6 +473,10 @@ define([], function() {
 
             if (!!disabled && disabled === true) {
                 this.sandbox.dom.addClass($item, 'disabled');
+
+                if (this.options.isNative) {
+                    this.sandbox.dom.attr($item, 'disabled', 'disabled');
+                }
             }
 
             this.sandbox.dom.append(this.$list, $item);
@@ -513,6 +538,9 @@ define([], function() {
 
             this.sandbox.dom.on(this.$el, EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
 
+            if (this.options.isNative) {
+                this.sandbox.dom.on(this.$list, 'change', this.onSelectChange.bind(this));
+            }
         },
 
         bindCustomEvents: function() {
@@ -524,6 +552,33 @@ define([], function() {
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
             this.sandbox.on(EVENT_REVERT.call(this), this.revert.bind(this));
+        },
+
+        onSelectChange: function(event) {
+            var selectedId = this.sandbox.dom.val(event.currentTarget),
+                $selectedOption = this.sandbox.dom.find('option[value="' + selectedId + '"]', this.$list),
+                callback = this.sandbox.dom.data($selectedOption, 'selectCallback'),
+                selectedValue = this.sandbox.dom.text($selectedOption);
+
+            this.selectedElements = [selectedId];
+            this.selectedElementsValues = [selectedValue];
+
+            if (selectedId === constants.deselectFieldKey) {
+                this.selectedElements = [];
+                this.selectedElementsValues = [];
+            }
+
+            // update data attribute
+            this.updateSelectionAttribute();
+
+            // change label
+            this.changeLabel();
+            
+            if (!this.selectedElements.length) {
+                this.triggerDeselect(selectedId);
+            } else {
+                this.triggerSelect(selectedId);
+            }
         },
 
         /**
@@ -566,7 +621,6 @@ define([], function() {
 
             this.changeLabel();
             this.updateSelectionAttribute();
-
         },
 
         /**
@@ -924,7 +978,6 @@ define([], function() {
 
         // trigger event with clicked item
         clickItem: function(event) {
-
             var key, value, $checkbox, index, callback, updateLabel;
 
             key = this.sandbox.dom.data(event.currentTarget, 'id').toString();
@@ -940,7 +993,6 @@ define([], function() {
             }
 
             if (updateLabel !== 'false') {
-
                 // if single select then uncheck all results
                 if (this.options.multipleSelect === false) {
                     // if deselect was selected
@@ -1081,6 +1133,10 @@ define([], function() {
 
         // make dropDown visible
         showDropDown: function() {
+            if (this.options.isNative) {
+                return;
+            }
+
             this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
             this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
@@ -1137,16 +1193,21 @@ define([], function() {
                 }
                 return [
                     '<div class="husky-select-container">',
-                    '    <div class="dropdown-label pointer">',
+                    '   <div class="dropdown-label pointer">',
+                    '       <% if (isNative) { %>',
+                    '           <select class="' + constants.listClass + '"></select>',
+                    '       <% } %>',
                     '       <div class="checkbox">',
-                    iconSpan,
-                        '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
+                                iconSpan,
+                    '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
                     '       </div>',
-                        '       <span class="fa-caret-down toggle-icon" style="' + dropdownStyle + '"></span>',
+                    '       <span class="fa-caret-down toggle-icon" style="' + dropdownStyle + '"></span>',
                     '   </div>',
-                        '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
-                        '       <ul class="' + constants.listClass + '"></ul>',
+                    '   <% if (!isNative) { %>',
+                    '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
+                    '       <ul class="' + constants.listClass + '"></ul>',
                     '   </div>',
+                    '   <% } %>',
                     '</div>'
                 ].join('');
             },
@@ -1174,6 +1235,13 @@ define([], function() {
                     '        <div class="item-value">', value, '</div>',
                     '    </div>',
                     '</li>'
+                ].join('');
+            },
+            optionElement: function(index, value, checked, updateLabel, checkboxVisible) {
+                return [
+                    '<option <% if (checked) { print("selected "); } %>value="' + index + '">',
+                        value,
+                    '</option>'
                 ].join('');
             }
         }
