@@ -2619,6 +2619,12 @@
                             "description": "url to load data from",
                             "type": "String",
                             "optional": true
+                        },
+                        {
+                            "name": "isNative",
+                            "description": "should use native select",
+                            "type": "Boolean",
+                            "optional": true
                         }
                     ]
                 }
@@ -7608,7 +7614,7 @@
         },
         {
             "file": "husky_components/dependent-select/main.js",
-            "line": 44,
+            "line": 46,
             "description": "triggered when component is completely initialized",
             "itemtype": "event",
             "name": "husky.dependent-select[.INSTANCE_NAME].initialized",
@@ -7617,7 +7623,7 @@
         },
         {
             "file": "husky_components/dependent-select/main.js",
-            "line": 52,
+            "line": 54,
             "description": "triggered when a select item is selected",
             "itemtype": "event",
             "name": "husky.dependent-select[.INSTANCE_NAME].item.selected",
@@ -7636,7 +7642,7 @@
         },
         {
             "file": "husky_components/dependent-select/main.js",
-            "line": 62,
+            "line": 64,
             "description": "triggered when a select item is deselected",
             "itemtype": "event",
             "name": "husky.dependent-select[.INSTANCE_NAME].item.deselected",
@@ -7655,7 +7661,7 @@
         },
         {
             "file": "husky_components/dependent-select/main.js",
-            "line": 72,
+            "line": 74,
             "description": "triggered when a not all items are selected anymore",
             "itemtype": "event",
             "name": "husky.dependent-select[.INSTANCE_NAME].all.items.deselected",
@@ -7670,7 +7676,7 @@
         },
         {
             "file": "husky_components/dependent-select/main.js",
-            "line": 81,
+            "line": 83,
             "description": "triggered when all selects have been set",
             "itemtype": "event",
             "name": "husky.dependent-select[.INSTANCE_NAME].all.items.selected",
@@ -7685,7 +7691,7 @@
         },
         {
             "file": "husky_components/dependent-select/main.js",
-            "line": 126,
+            "line": 130,
             "description": "creates a child element in a container",
             "params": [
                 {
@@ -9642,7 +9648,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 125,
+            "line": 127,
             "description": "triggered when component is completely initialized",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].initialized",
@@ -9651,7 +9657,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 133,
+            "line": 135,
             "description": "triggered when item has been deselected",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].deselected.item",
@@ -9667,7 +9673,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 141,
+            "line": 143,
             "description": "triggered when item has been selected",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].selected.item",
@@ -9683,7 +9689,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 150,
+            "line": 152,
             "description": "triggered when item has been preselected",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].preselected.item",
@@ -9699,7 +9705,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 159,
+            "line": 161,
             "description": "used for enabling select",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].enable",
@@ -9708,7 +9714,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 166,
+            "line": 168,
             "description": "used for disabling select",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].disable",
@@ -9717,7 +9723,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 174,
+            "line": 176,
             "description": "used for toggling enabled/disabled dropdown menu",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].toggle",
@@ -9726,7 +9732,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 181,
+            "line": 183,
             "description": "used to show dropdown selection",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].show",
@@ -9735,7 +9741,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 188,
+            "line": 190,
             "description": "used for hiding dropdown selection",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].hide",
@@ -9744,7 +9750,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 195,
+            "line": 197,
             "description": "used for receiving all checked elements",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].get-checked",
@@ -9753,7 +9759,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 202,
+            "line": 204,
             "description": "update the elements of the dropdown list",
             "itemtype": "event",
             "name": "husky.select[.INSTANCE_NAME].update",
@@ -9762,7 +9768,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 209,
+            "line": 211,
             "description": "update the elements of the dropdown list",
             "itemtype": "event",
             "name": "data-changed",
@@ -9771,7 +9777,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 216,
+            "line": 218,
             "description": "Save event for elements to save",
             "itemtype": "event",
             "name": "husky.select.[instanceName].save",
@@ -9780,7 +9786,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 224,
+            "line": 226,
             "description": "Deleted event for elements to delete",
             "itemtype": "event",
             "name": "husky.select.[instanceName].delete",
@@ -9789,7 +9795,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 232,
+            "line": 234,
             "description": "Revert event for elements to be removed from the select",
             "itemtype": "event",
             "name": "husky.select.[instanceName].revert",
@@ -9798,7 +9804,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 299,
+            "line": 301,
             "description": "Loads entries from url",
             "params": [
                 {
@@ -9811,7 +9817,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 405,
+            "line": 412,
             "description": "Adds a dropdown element to the dropdown list",
             "params": [
                 {
@@ -9844,14 +9850,14 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 460,
+            "line": 485,
             "description": "Adds a divider element to the dropdown list",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 468,
+            "line": 493,
             "description": "Generates the dropdown list with the given items",
             "params": [
                 {
@@ -9864,21 +9870,21 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 529,
+            "line": 584,
             "description": "Should be triggered when data attributes have changed",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 572,
+            "line": 626,
             "description": "Reverts the dropdown list",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 583,
+            "line": 637,
             "description": "Updates the dropdown list",
             "params": [
                 {
@@ -9899,21 +9905,21 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 656,
+            "line": 710,
             "description": "Opens the overlay for edditing.",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 688,
+            "line": 742,
             "description": "Callback for close of overlay with ok button",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 713,
+            "line": 767,
             "description": "Merges data",
             "params": [
                 {
@@ -9930,7 +9936,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 732,
+            "line": 786,
             "description": "Bind overlay specific events",
             "params": [
                 {
@@ -9943,7 +9949,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 747,
+            "line": 801,
             "description": "Adds new item to the list or removes existing",
             "params": [
                 {
@@ -9960,7 +9966,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 766,
+            "line": 820,
             "description": "delete elements",
             "params": [
                 {
@@ -9973,14 +9979,14 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 785,
+            "line": 839,
             "description": "Deletes removed items",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 807,
+            "line": 861,
             "description": "Extracts data from dom structure",
             "params": [
                 {
@@ -9997,42 +10003,42 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 846,
+            "line": 900,
             "description": "Compares original and new data",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 868,
+            "line": 922,
             "description": "Callback for close of overlay with cancel button",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 876,
+            "line": 930,
             "description": "Render content for the overlay",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 888,
+            "line": 942,
             "description": "Adds an element",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 903,
+            "line": 957,
             "description": "Marks an element for removal",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 917,
+            "line": 971,
             "description": "Marks a row as removed",
             "params": [
                 {
@@ -10045,7 +10051,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 1056,
+            "line": 1108,
             "description": "Handles the click on the dropdown label",
             "class": "Select",
             "module": "husky/components/toolbar"
@@ -11235,7 +11241,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/dependent-select/main.js:126"
+            "line": " husky_components/dependent-select/main.js:130"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -12903,7 +12909,7 @@
         },
         {
             "message": "Missing item type\ncreates a child element in a container",
-            "line": " husky_components/dependent-select/main.js:126"
+            "line": " husky_components/dependent-select/main.js:130"
         },
         {
             "message": "Missing item type",
@@ -13495,91 +13501,91 @@
         },
         {
             "message": "Missing item type\nLoads entries from url",
-            "line": " husky_components/select/main.js:299"
+            "line": " husky_components/select/main.js:301"
         },
         {
             "message": "Missing item type\nAdds a dropdown element to the dropdown list",
-            "line": " husky_components/select/main.js:405"
+            "line": " husky_components/select/main.js:412"
         },
         {
             "message": "Missing item type\nAdds a divider element to the dropdown list",
-            "line": " husky_components/select/main.js:460"
+            "line": " husky_components/select/main.js:485"
         },
         {
             "message": "Missing item type\nGenerates the dropdown list with the given items",
-            "line": " husky_components/select/main.js:468"
+            "line": " husky_components/select/main.js:493"
         },
         {
             "message": "Missing item type\nShould be triggered when data attributes have changed",
-            "line": " husky_components/select/main.js:529"
+            "line": " husky_components/select/main.js:584"
         },
         {
             "message": "Missing item type\nReverts the dropdown list",
-            "line": " husky_components/select/main.js:572"
+            "line": " husky_components/select/main.js:626"
         },
         {
             "message": "Missing item type\nUpdates the dropdown list",
-            "line": " husky_components/select/main.js:583"
+            "line": " husky_components/select/main.js:637"
         },
         {
             "message": "Missing item type\nOpens the overlay for edditing.",
-            "line": " husky_components/select/main.js:656"
+            "line": " husky_components/select/main.js:710"
         },
         {
             "message": "Missing item type\nCallback for close of overlay with ok button",
-            "line": " husky_components/select/main.js:688"
+            "line": " husky_components/select/main.js:742"
         },
         {
             "message": "Missing item type\nMerges data",
-            "line": " husky_components/select/main.js:713"
+            "line": " husky_components/select/main.js:767"
         },
         {
             "message": "Missing item type\nBind overlay specific events",
-            "line": " husky_components/select/main.js:732"
+            "line": " husky_components/select/main.js:786"
         },
         {
             "message": "Missing item type\nAdds new item to the list or removes existing",
-            "line": " husky_components/select/main.js:747"
+            "line": " husky_components/select/main.js:801"
         },
         {
             "message": "Missing item type\ndelete elements",
-            "line": " husky_components/select/main.js:766"
+            "line": " husky_components/select/main.js:820"
         },
         {
             "message": "Missing item type\nDeletes removed items",
-            "line": " husky_components/select/main.js:785"
+            "line": " husky_components/select/main.js:839"
         },
         {
             "message": "Missing item type\nExtracts data from dom structure",
-            "line": " husky_components/select/main.js:807"
+            "line": " husky_components/select/main.js:861"
         },
         {
             "message": "Missing item type\nCompares original and new data",
-            "line": " husky_components/select/main.js:846"
+            "line": " husky_components/select/main.js:900"
         },
         {
             "message": "Missing item type\nCallback for close of overlay with cancel button",
-            "line": " husky_components/select/main.js:868"
+            "line": " husky_components/select/main.js:922"
         },
         {
             "message": "Missing item type\nRender content for the overlay",
-            "line": " husky_components/select/main.js:876"
+            "line": " husky_components/select/main.js:930"
         },
         {
             "message": "Missing item type\nAdds an element",
-            "line": " husky_components/select/main.js:888"
+            "line": " husky_components/select/main.js:942"
         },
         {
             "message": "Missing item type\nMarks an element for removal",
-            "line": " husky_components/select/main.js:903"
+            "line": " husky_components/select/main.js:957"
         },
         {
             "message": "Missing item type\nMarks a row as removed",
-            "line": " husky_components/select/main.js:917"
+            "line": " husky_components/select/main.js:971"
         },
         {
             "message": "Missing item type\nHandles the click on the dropdown label",
-            "line": " husky_components/select/main.js:1056"
+            "line": " husky_components/select/main.js:1108"
         },
         {
             "message": "Missing item type\nTabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",
