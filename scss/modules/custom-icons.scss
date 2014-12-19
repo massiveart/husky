@@ -30,6 +30,20 @@
    }
  }
 
+.fa-husky-deactivated {
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 3px solid $white;
+        background: $gray;
+        font-size: medium!important;
+        margin-bottom: -1px;
+    }
+}
+
 .fa-husky-test {
   &::after {
     content: "";
@@ -43,7 +57,6 @@
     margin-bottom: -1px;
   }
 }
-
 
 .fa-shadow-node:before { content: $fa-var-share; }
 .fa-internal-link:before { content: $fa-var-link; }
