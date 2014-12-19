@@ -1277,13 +1277,13 @@
              * Sets all data records selected
              */
             selectAllItems: function() {
-                var ids = [], i, length;
+                var i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
                     this.setItemSelected(this.data.embedded[i].id);
                 }
                 // emit events with selected data
-                this.sandbox.emit(ALL_SELECT.call(this), ids);
-                this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
+                this.sandbox.emit(ALL_SELECT.call(this), this.selectedItems);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.selectedItems.length);
                 this.setSelectedItemsToData();
             },
 
