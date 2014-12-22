@@ -1216,6 +1216,9 @@
             removeRecordHandler: function(recordId) {
                 if (!!this.gridViews[this.viewId].removeRecord) {
                     this.gridViews[this.viewId].removeRecord(recordId);
+                    if (this.selectedItems.indexOf((recordId).toString()) > -1) {
+                        this.selectedItems.splice(this.selectedItems.indexOf((recordId).toString()), 1);
+                    }
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
