@@ -1214,12 +1214,20 @@
              * Handles the row remove event
              */
             removeRecordHandler: function(recordId) {
-                if (!!this.gridViews[this.viewId].removeRecord) {
+                if (!!this.gridViews[this.viewId].removeRecord && !!recordId) {
                     this.gridViews[this.viewId].removeRecord(recordId);
-                    if (this.selectedItems.indexOf(recordId) > -1) {
-                        this.selectedItems.splice(this.selectedItems.indexOf(recordId), 1);
-                    }
+                    this.removeRecordFromSelected(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                }
+            },
+
+            /**
+             * Removes a record from the selected items
+             * @param recordId
+             */
+            removeRecordFromSelected: function(recordId){
+                if (this.selectedItems.indexOf(recordId) > -1) {
+                    this.selectedItems.splice(this.selectedItems.indexOf(recordId), 1);
                 }
             },
 
@@ -1436,16 +1444,15 @@
              * @returns {boolean} true if record got successfully deleted
              */
             removeRecord: function(recordId) {
-                var i, length;
-                for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (recordId === this.data.embedded[i].id) {
-                        if(this.selectedItems.indexOf(recordId) > -1){
-                           this.selectedItems.splice(this.selectedItems.indexOf(recordId), 1);
+                if (!!recordId) {
+                    var i, length;
+                    for (i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (recordId === this.data.embedded[i].id) {
+                            this.removeRecordFromSelected(recordId);
+                            this.data.embedded.splice(i, 1);
+                            this.rerenderPagination();
+                            return true;
                         }
-
-                        this.data.embedded.splice(i, 1);
-                        this.rerenderPagination();
-                        return true;
                     }
                 }
                 return false;
