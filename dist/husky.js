@@ -32451,8 +32451,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * @param recordId
              */
             removeRecordFromSelected: function(recordId){
-                if (this.selectedItems.indexOf(recordId) > -1) {
-                    this.selectedItems.splice(this.selectedItems.indexOf(recordId), 1);
+                var index = this.selectedItems.indexOf(recordId);
+                if (index > -1) {
+                    this.selectedItems.splice(index, 1);
                 }
             },
 
