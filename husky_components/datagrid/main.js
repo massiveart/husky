@@ -638,7 +638,7 @@
                             } else if (key === 'name') {
                                 matchingObject.attribute = matching.name;
                             } else if (key === 'sortable') {
-                                matchingObject.sortable = matching.sortable
+                                matchingObject.sortable = matching.sortable;
                                 if (typeof matching.sortable === 'string') {
                                     matchingObject.sortable = JSON.parse(matching.sortable);
                                 }
@@ -716,7 +716,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (!!this.gridViews[this.viewId].rendered === true) {
+                if (this.gridViews[this.viewId].rendered === true) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
