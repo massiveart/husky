@@ -1216,8 +1216,8 @@
             removeRecordHandler: function(recordId) {
                 if (!!this.gridViews[this.viewId].removeRecord) {
                     this.gridViews[this.viewId].removeRecord(recordId);
-                    if (this.selectedItems.indexOf((recordId).toString()) > -1) {
-                        this.selectedItems.splice(this.selectedItems.indexOf((recordId).toString()), 1);
+                    if (this.selectedItems.indexOf(recordId) > -1) {
+                        this.selectedItems.splice(this.selectedItems.indexOf(recordId), 1);
                     }
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
@@ -1436,13 +1436,11 @@
              * @returns {boolean} true if record got successfully deleted
              */
             removeRecord: function(recordId) {
-                var stringId, i, length;
-
+                var i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
-                        stringId = (recordId).toString();
-                        if(this.selectedItems.indexOf(stringId) > -1){
-                           this.selectedItems.splice(this.selectedItems.indexOf(stringId), 1);
+                        if(this.selectedItems.indexOf(recordId) > -1){
+                           this.selectedItems.splice(this.selectedItems.indexOf(recordId), 1);
                         }
 
                         this.data.embedded.splice(i, 1);
