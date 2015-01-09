@@ -2898,7 +2898,7 @@
     "classitems": [
         {
             "file": "husky_extensions/globalize.js",
-            "line": 63,
+            "line": 51,
             "description": "returns formatted date string",
             "params": [
                 {
@@ -2915,7 +2915,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 84,
+            "line": 72,
             "description": "parse ISO8601 string : string -> Date\nParse an ISO-8601 date, including possible timezone,\ninto a Javascript Date object.\n(inspired by: http://stackoverflow.com/questions/439630/how-do-you-create-a-javascript-date-object-with-a-set-timezone-without-using-a-s)\n\nTest strings: parseISO8601String(x).toISOString()\n\"2013-01-31T12:34\"              -> \"2013-01-31T12:34:00.000Z\"\n\"2013-01-31T12:34:56\"           -> \"2013-01-31T12:34:56.000Z\"\n\"2013-01-31T12:34:56.78\"        -> \"2013-01-31T12:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0100\"   -> \"2013-01-31T11:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0530\"   -> \"2013-01-31T07:04:56.780Z\"\n\"2013-01-31T12:34:56.78-0330\"   -> \"2013-01-31T16:04:56.780Z\"\n\"2013-01-31T12:34:56-0330\"      -> \"2013-01-31T16:04:56.000Z\"\n\"2013-01-31T12:34:56Z\"          -> \"2013-01-31T12:34:56.000Z\"",
             "params": [
                 {
@@ -2932,7 +2932,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 128,
+            "line": 116,
             "description": "function calls this.sandbox.translate for an array of keys and returns an array of translations",
             "params": [
                 {
@@ -2948,7 +2948,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 141,
+            "line": 129,
             "description": "formats a number; calls Globalize.format (see globalize documentation for any details)\n https://github.com/jquery/globalize/tree/v0.1.1#numbers",
             "params": [
                 {
@@ -2964,7 +2964,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 151,
+            "line": 139,
             "description": "Parses a float value according to the given culture",
             "params": [
                 {
@@ -2988,7 +2988,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 162,
+            "line": 150,
             "params": [
                 {
                     "name": "cultureName",
@@ -10966,19 +10966,19 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:63"
+            "line": " husky_extensions/globalize.js:51"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:84"
+            "line": " husky_extensions/globalize.js:72"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:128"
+            "line": " husky_extensions/globalize.js:116"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:151"
+            "line": " husky_extensions/globalize.js:139"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -11670,27 +11670,27 @@
         },
         {
             "message": "Missing item type\nreturns formatted date string",
-            "line": " husky_extensions/globalize.js:63"
+            "line": " husky_extensions/globalize.js:51"
         },
         {
             "message": "Missing item type\nparse ISO8601 string : string -> Date\nParse an ISO-8601 date, including possible timezone,\ninto a Javascript Date object.\n(inspired by: http://stackoverflow.com/questions/439630/how-do-you-create-a-javascript-date-object-with-a-set-timezone-without-using-a-s)\n\nTest strings: parseISO8601String(x).toISOString()\n\"2013-01-31T12:34\"              -> \"2013-01-31T12:34:00.000Z\"\n\"2013-01-31T12:34:56\"           -> \"2013-01-31T12:34:56.000Z\"\n\"2013-01-31T12:34:56.78\"        -> \"2013-01-31T12:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0100\"   -> \"2013-01-31T11:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0530\"   -> \"2013-01-31T07:04:56.780Z\"\n\"2013-01-31T12:34:56.78-0330\"   -> \"2013-01-31T16:04:56.780Z\"\n\"2013-01-31T12:34:56-0330\"      -> \"2013-01-31T16:04:56.000Z\"\n\"2013-01-31T12:34:56Z\"          -> \"2013-01-31T12:34:56.000Z\"",
-            "line": " husky_extensions/globalize.js:84"
+            "line": " husky_extensions/globalize.js:72"
         },
         {
             "message": "Missing item type\nfunction calls this.sandbox.translate for an array of keys and returns an array of translations",
-            "line": " husky_extensions/globalize.js:128"
+            "line": " husky_extensions/globalize.js:116"
         },
         {
             "message": "Missing item type\nformats a number; calls Globalize.format (see globalize documentation for any details)\n https://github.com/jquery/globalize/tree/v0.1.1#numbers",
-            "line": " husky_extensions/globalize.js:141"
+            "line": " husky_extensions/globalize.js:129"
         },
         {
             "message": "Missing item type\nParses a float value according to the given culture",
-            "line": " husky_extensions/globalize.js:151"
+            "line": " husky_extensions/globalize.js:139"
         },
         {
             "message": "Missing item type",
-            "line": " husky_extensions/globalize.js:162"
+            "line": " husky_extensions/globalize.js:150"
         },
         {
             "message": "Missing item type\nsee https://github.com/farhadi/html5sortable for documentation",
