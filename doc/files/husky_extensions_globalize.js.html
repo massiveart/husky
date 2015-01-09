@@ -175,18 +175,6 @@
                         });
                     },
 
-                    culture: function(cultureName) {
-                        var setLanguage = function() {
-                            Globalize.culture(cultureName);
-                        };
-
-                        if (cultureName !== &#x27;en&#x27;) {
-                            require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                        } else {
-                            setLanguage();
-                        }
-                    },
-
                     getLocale: function() {
                         return Globalize.culture().name;
                     },
@@ -319,33 +307,22 @@
                  * @param messages
                  */
                 app.setLanguage = function(cultureName, messages) {
-                    var dfd = app.core.data.deferred(),
-                        setLanguage = function() {
-                            Globalize.culture(cultureName);
-                            app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                        };
-
-                    if (cultureName !== &#x27;en&#x27;) {
-                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], function() {
-                            setLanguage();
-                            dfd.resolve();
-                        });
-                    } else {
-                        setLanguage();
-                        dfd.resolve();
-                    }
-
-                    return dfd.promise();
+                    Globalize.culture(cultureName);
+                    app.sandbox.globalize.addCultureInfo(cultureName, messages);
                 };
+
+                if (app.config.culture.name !== &#x27;en&#x27;) {
+                    return require([&#x27;cultures/globalize.culture.&#x27; + app.config.culture.name]);
+                }
             },
 
             afterAppStart: function(app) {
                 if (!!app.config.culture &amp;&amp; !!app.config.culture) {
                     if (!app.config.culture.messages) {
-                        app.config.culture.messages = { };
+                        app.config.culture.messages = {};
                     }
 
-                    return app.setLanguage(app.config.culture.name, app.config.culture.messages);
+                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
                 }
             }
         };
