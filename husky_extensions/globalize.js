@@ -159,7 +159,7 @@
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
                 };
 
-                if (!!app.config.culture && app.config.culture.name !== 'en') {
+                if (!!app.config.culture && !!app.config.culture.name && app.config.culture.name !== 'en') {
                     return require(['cultures/globalize.culture.' + app.config.culture.name]);
                 }
             },
