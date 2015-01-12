@@ -33,12 +33,13 @@
                 };
 
                 app.sandbox.translate = function(key) {
+                    var translation;
                     if (!app.config.culture || !app.config.culture.name) {
                         return key;
                     }
 
                     try {
-                        var translation = Globalize.localize(key, app.config.culture.name);
+                        translation = Globalize.localize(key, app.config.culture.name);
                     } catch (e) {
                         app.logger.warn('Globalize threw an error when translating key "' + key + '", failling back to key. Error: ' + e);
                         return key;
@@ -51,6 +52,7 @@
                     /**
                      * returns formatted date string
                      * @param {string|Date} date
+                     * @param {Boolean} returnDateOnly
                      * @returns {string}
                      */
                     format: function(date, returnDateOnly) {
@@ -157,7 +159,7 @@
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
                 };
 
-                if (app.config.culture.name !== 'en') {
+                if (!!app.config.culture && app.config.culture.name !== 'en') {
                     return require(['cultures/globalize.culture.' + app.config.culture.name]);
                 }
             },
