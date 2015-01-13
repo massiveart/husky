@@ -2898,13 +2898,18 @@
     "classitems": [
         {
             "file": "husky_extensions/globalize.js",
-            "line": 51,
+            "line": 52,
             "description": "returns formatted date string",
             "params": [
                 {
                     "name": "date",
                     "description": "",
                     "type": "String|Date"
+                },
+                {
+                    "name": "returnDateOnly",
+                    "description": "",
+                    "type": "Boolean"
                 }
             ],
             "return": {
@@ -2915,7 +2920,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 72,
+            "line": 74,
             "description": "parse ISO8601 string : string -> Date\nParse an ISO-8601 date, including possible timezone,\ninto a Javascript Date object.\n(inspired by: http://stackoverflow.com/questions/439630/how-do-you-create-a-javascript-date-object-with-a-set-timezone-without-using-a-s)\n\nTest strings: parseISO8601String(x).toISOString()\n\"2013-01-31T12:34\"              -> \"2013-01-31T12:34:00.000Z\"\n\"2013-01-31T12:34:56\"           -> \"2013-01-31T12:34:56.000Z\"\n\"2013-01-31T12:34:56.78\"        -> \"2013-01-31T12:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0100\"   -> \"2013-01-31T11:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0530\"   -> \"2013-01-31T07:04:56.780Z\"\n\"2013-01-31T12:34:56.78-0330\"   -> \"2013-01-31T16:04:56.780Z\"\n\"2013-01-31T12:34:56-0330\"      -> \"2013-01-31T16:04:56.000Z\"\n\"2013-01-31T12:34:56Z\"          -> \"2013-01-31T12:34:56.000Z\"",
             "params": [
                 {
@@ -2932,7 +2937,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 116,
+            "line": 118,
             "description": "function calls this.sandbox.translate for an array of keys and returns an array of translations",
             "params": [
                 {
@@ -2948,7 +2953,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 129,
+            "line": 131,
             "description": "formats a number; calls Globalize.format (see globalize documentation for any details)\n https://github.com/jquery/globalize/tree/v0.1.1#numbers",
             "params": [
                 {
@@ -2964,7 +2969,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 139,
+            "line": 141,
             "description": "Parses a float value according to the given culture",
             "params": [
                 {
@@ -2988,7 +2993,7 @@
         },
         {
             "file": "husky_extensions/globalize.js",
-            "line": 150,
+            "line": 152,
             "params": [
                 {
                     "name": "cultureName",
@@ -9338,7 +9343,7 @@
         {
             "file": "husky_components/overlay/main.js",
             "line": 855,
-            "description": "Su",
+            "description": "Support for key down events",
             "params": [
                 {
                     "name": "event",
@@ -9350,35 +9355,35 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 868,
+            "line": 872,
             "description": "Binds overlay events",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 934,
+            "line": 938,
             "description": "Binds custom events used by the overlay",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 943,
+            "line": 947,
             "description": "Handles the click on an overlay tab",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 957,
+            "line": 961,
             "description": "Hides all tab elements",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 966,
+            "line": 970,
             "description": "Handles the click on ok-buttons",
             "params": [
                 {
@@ -9391,7 +9396,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 982,
+            "line": 986,
             "description": "Handles the click on cancel-buttons and close-icon",
             "params": [
                 {
@@ -9404,7 +9409,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 999,
+            "line": 1003,
             "description": "Handles the mousemove event for making the overlay draggable",
             "params": [
                 {
@@ -9423,28 +9428,28 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1013,
+            "line": 1017,
             "description": "Sets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1025,
+            "line": 1029,
             "description": "Handles the shrinking and enlarging of the overlay\nif the window gets smaller",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1057,
+            "line": 1061,
             "description": "Positions the overlay in the middle of the screen",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1075,
+            "line": 1079,
             "description": "Updates the coordinates of the overlay",
             "params": [
                 {
@@ -9463,7 +9468,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1085,
+            "line": 1089,
             "description": "Executes a passed callback",
             "params": [
                 {
@@ -10966,19 +10971,19 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:51"
+            "line": " husky_extensions/globalize.js:52"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:72"
+            "line": " husky_extensions/globalize.js:74"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:116"
+            "line": " husky_extensions/globalize.js:118"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/globalize.js:139"
+            "line": " husky_extensions/globalize.js:141"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -11670,27 +11675,27 @@
         },
         {
             "message": "Missing item type\nreturns formatted date string",
-            "line": " husky_extensions/globalize.js:51"
+            "line": " husky_extensions/globalize.js:52"
         },
         {
             "message": "Missing item type\nparse ISO8601 string : string -> Date\nParse an ISO-8601 date, including possible timezone,\ninto a Javascript Date object.\n(inspired by: http://stackoverflow.com/questions/439630/how-do-you-create-a-javascript-date-object-with-a-set-timezone-without-using-a-s)\n\nTest strings: parseISO8601String(x).toISOString()\n\"2013-01-31T12:34\"              -> \"2013-01-31T12:34:00.000Z\"\n\"2013-01-31T12:34:56\"           -> \"2013-01-31T12:34:56.000Z\"\n\"2013-01-31T12:34:56.78\"        -> \"2013-01-31T12:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0100\"   -> \"2013-01-31T11:34:56.780Z\"\n\"2013-01-31T12:34:56.78+0530\"   -> \"2013-01-31T07:04:56.780Z\"\n\"2013-01-31T12:34:56.78-0330\"   -> \"2013-01-31T16:04:56.780Z\"\n\"2013-01-31T12:34:56-0330\"      -> \"2013-01-31T16:04:56.000Z\"\n\"2013-01-31T12:34:56Z\"          -> \"2013-01-31T12:34:56.000Z\"",
-            "line": " husky_extensions/globalize.js:72"
+            "line": " husky_extensions/globalize.js:74"
         },
         {
             "message": "Missing item type\nfunction calls this.sandbox.translate for an array of keys and returns an array of translations",
-            "line": " husky_extensions/globalize.js:116"
+            "line": " husky_extensions/globalize.js:118"
         },
         {
             "message": "Missing item type\nformats a number; calls Globalize.format (see globalize documentation for any details)\n https://github.com/jquery/globalize/tree/v0.1.1#numbers",
-            "line": " husky_extensions/globalize.js:129"
+            "line": " husky_extensions/globalize.js:131"
         },
         {
             "message": "Missing item type\nParses a float value according to the given culture",
-            "line": " husky_extensions/globalize.js:139"
+            "line": " husky_extensions/globalize.js:141"
         },
         {
             "message": "Missing item type",
-            "line": " husky_extensions/globalize.js:150"
+            "line": " husky_extensions/globalize.js:152"
         },
         {
             "message": "Missing item type\nsee https://github.com/farhadi/html5sortable for documentation",
@@ -13417,56 +13422,56 @@
             "line": " husky_components/overlay/main.js:835"
         },
         {
-            "message": "Missing item type\nSu",
+            "message": "Missing item type\nSupport for key down events",
             "line": " husky_components/overlay/main.js:855"
         },
         {
             "message": "Missing item type\nBinds overlay events",
-            "line": " husky_components/overlay/main.js:868"
+            "line": " husky_components/overlay/main.js:872"
         },
         {
             "message": "Missing item type\nBinds custom events used by the overlay",
-            "line": " husky_components/overlay/main.js:934"
+            "line": " husky_components/overlay/main.js:938"
         },
         {
             "message": "Missing item type\nHandles the click on an overlay tab",
-            "line": " husky_components/overlay/main.js:943"
+            "line": " husky_components/overlay/main.js:947"
         },
         {
             "message": "Missing item type\nHides all tab elements",
-            "line": " husky_components/overlay/main.js:957"
+            "line": " husky_components/overlay/main.js:961"
         },
         {
             "message": "Missing item type\nHandles the click on ok-buttons",
-            "line": " husky_components/overlay/main.js:966"
+            "line": " husky_components/overlay/main.js:970"
         },
         {
             "message": "Missing item type\nHandles the click on cancel-buttons and close-icon",
-            "line": " husky_components/overlay/main.js:982"
+            "line": " husky_components/overlay/main.js:986"
         },
         {
             "message": "Missing item type\nHandles the mousemove event for making the overlay draggable",
-            "line": " husky_components/overlay/main.js:999"
+            "line": " husky_components/overlay/main.js:1003"
         },
         {
             "message": "Missing item type\nSets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
-            "line": " husky_components/overlay/main.js:1013"
+            "line": " husky_components/overlay/main.js:1017"
         },
         {
             "message": "Missing item type\nHandles the shrinking and enlarging of the overlay\nif the window gets smaller",
-            "line": " husky_components/overlay/main.js:1025"
+            "line": " husky_components/overlay/main.js:1029"
         },
         {
             "message": "Missing item type\nPositions the overlay in the middle of the screen",
-            "line": " husky_components/overlay/main.js:1057"
+            "line": " husky_components/overlay/main.js:1061"
         },
         {
             "message": "Missing item type\nUpdates the coordinates of the overlay",
-            "line": " husky_components/overlay/main.js:1075"
+            "line": " husky_components/overlay/main.js:1079"
         },
         {
             "message": "Missing item type\nExecutes a passed callback",
-            "line": " husky_components/overlay/main.js:1085"
+            "line": " husky_components/overlay/main.js:1089"
         },
         {
             "message": "Missing item type\nnamespace for events",

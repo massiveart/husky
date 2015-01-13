@@ -853,7 +853,7 @@ define([], function() {
         },
 
         /**
-         * Su
+         * Support for key down events
          * @param event
          */
         keyHandler: function(event) {
@@ -861,6 +861,10 @@ define([], function() {
             if (event.keyCode === 27) {
                 this.closeHandler();
             } else if (event.keyCode === 13) {
+                // when enter is pressed in textarea overlay should not be closed
+                if(event.target.tagName === 'TEXTAREA'){
+                   return;
+                }
                 this.okHandler();
             }
         },
