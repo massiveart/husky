@@ -32811,7 +32811,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         template = this.sandbox.uritemplate.parse(this.data.links.sortable.href);
                         url = this.sandbox.uritemplate.expand(template, {sortBy: attribute, sortOrder: direction});
 
-                        this.sandbox.emit(DATA_SORT.call(this));
+                        this.sandbox.emit(DATA_SORT.call(this), {attribute: attribute, direction: direction});
 
                         this.load({
                             url: url,
