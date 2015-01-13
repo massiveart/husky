@@ -321,9 +321,10 @@ require(['lib/husky'], function(Husky) {
                     pagination: false,
                     childrenPropertyName: 'children',
                     resultKey: 'categories',
-                    preselected: [1, {id: 5, name: 'Category 2.2'}, {id: 8, name: 'Category 2.2'}],
+                    preselected: [7,10],
                     viewOptions: {
                         table: {
+                            openPathToSelectedChildren: true,
                             showHead: false,
                             cssClass: 'white-box',
                             selectItem: {

@@ -178,6 +178,7 @@
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
  * @param {Boolean} [options.stickyHeader] true to make the table header sticky
+ * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -210,7 +211,8 @@ define(function() {
         stickyHeader: false,
         icons: [],
         removeIcon: &#x27;trash-o&#x27;,
-        croppedMaxLength: 35
+        croppedMaxLength: 35,
+        openPathToSelectedChildren: false
     },
 
     constants = {
@@ -386,6 +388,25 @@ define(function() {
         bindCustomEvents: function() {
             this.sandbox.on(UPDATE_TABLE.call(this), this.onResize.bind(this));
             this.sandbox.on(OPEN_PARENTS.call(this), this.openParents.bind(this));
+
+            if(!!this.options.openPathToSelectedChildren){
+                var eventName = &#x27;&#x27;;
+                if(!!this.datagrid.options.instanceName) {
+                    eventName = &#x27;husky.datagrid.&#x27;+this.datagrid.options.instanceName+&#x27;.view.rendered&#x27;;
+                } else {
+                    eventName = &#x27;husky.datagrid.view.rendered&#x27;;
+                }
+                this.sandbox.on(eventName, this.openPathToSelectedChildren.bind(this));
+            }
+        },
+
+        /**
+         * Opens path to all selected children
+         */
+        openPathToSelectedChildren: function(){
+            this.sandbox.util.each(this.datagrid.selectedItems, function(idx, id){
+                this.openParents(id);
+            }.bind(this));
         },
 
         /**
@@ -1502,7 +1523,7 @@ define(function() {
          * @param id {Number|String} the id of the record
          */
         openParents: function(recordId) {
-            if (!!this.table.rows[recordId]) {
+            if (!!this.table &amp;&amp; !!this.table.rows[recordId]) {
                 var parentId = this.table.rows[recordId].parent;
                 if (!!parentId) {
                     if (!!this.table.rows[parentId].parent) {

@@ -311,7 +311,7 @@
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
                 };
 
-                if (app.config.culture.name !== &#x27;en&#x27;) {
+                if (!!app.config.culture &amp;&amp; app.config.culture.name &amp;&amp; app.config.culture.name !== &#x27;en&#x27;) {
                     return require([&#x27;cultures/globalize.culture.&#x27; + app.config.culture.name]);
                 }
             },
