@@ -4,7 +4,7 @@
     "quiet": false,
     "port": "7878",
     "latency": 700,
-    "allowedDomains": ["http://husky.lo:9001"],
+    "allowedDomains": ["*"],
     "allowedHeaders": ["Content-Type", "Cache-Control", "X-Requested-With"],
     "webServices": {
 
@@ -51,6 +51,10 @@
         "admin/api/datagrid/children/all": {
             "verbs": ["GET"],
             "mockFile": "datagrid/children/all.json"
+        },
+        "admin/api/datagrid/children/all-sorted": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/all-sorted.json"
         },
         "admin/api/datagrid/actualchildren": {
             "verbs": ["GET"],
