@@ -1,0 +1,31 @@
+{
+    "total": 0, 
+    "_embedded": {
+        "current": {
+            "id": "root",
+            "name": "Root"
+        },
+        "items": [
+            {
+                "id": 1,
+                "name": "Long title is very longy long"
+            },
+            {
+                "id": 2,
+                "name": "Long title is long"
+            },
+            {
+                "id": 3,
+                "name": "Long title is long"
+            },
+            {
+                "id": 4,
+                "name": "Long title is long"
+            },
+            {
+                "id": 5,
+                "name": "Long title is long"
+            }
+        ]
+    }
+}

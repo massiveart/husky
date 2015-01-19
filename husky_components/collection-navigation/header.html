@@ -1,0 +1,10 @@
+<% if (!!data.parent) { %>
+<div class="collection-navigation-back" data-parent-id="<%= data.parent.id %>">
+    <span class="fa-chevron-left"></span>
+    <%= data.parent.name %>
+</div>
+<% } else { %>
+<div>
+    <%= data.current.name %>
+</div>
+<% } %>

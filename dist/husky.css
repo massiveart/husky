@@ -11006,3 +11006,167 @@ a.btn-black, a.btn-highlight {
   color: #999;
   line-height: 14px;
 }
+
+/* line 1, ../scss/modules/collection-navigation.scss */
+.collection-navigation-container {
+  width: 250px;
+  height: 100%;
+}
+
+/* line 6, ../scss/modules/collection-navigation.scss */
+.collection-navigation {
+  height: 100%;
+  padding-top: 100px;
+  background-color: #111417;
+  color: #fff;
+}
+
+/* line 13, ../scss/modules/collection-navigation.scss */
+.collection-navigation-header {
+  position: relative;
+  height: 50px;
+  padding: 0 10px;
+  border-bottom: 1px solid #21272E;
+  line-height: 50px;
+  font-size: 16px;
+  color: #999;
+}
+
+/* line 23, ../scss/modules/collection-navigation.scss */
+.collection-navigation-list-container {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* line 29, ../scss/modules/collection-navigation.scss */
+.collection-navigation-list {
+  width: 100%;
+  height: 100%;
+  background-color: #111417;
+}
+/* line 34, ../scss/modules/collection-navigation.scss */
+.collection-navigation-list.is-animated {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  z-index: 5;
+}
+
+/* line 42, ../scss/modules/collection-navigation.scss */
+.collection-navigation-list-footer {
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* line 47, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items {
+  height: calc(100% - 150px);
+  min-height: 150px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+}
+/* line 55, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items > li {
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 30px 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+/* line 65, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items > li:hover {
+  background-color: #21272E;
+}
+/* line 69, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items > li:focus {
+  outline: 0;
+}
+/* line 73, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items > li:last-child {
+  border-bottom: 1px solid #21272E;
+}
+/* line 77, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items > li.not-selectable {
+  cursor: default;
+}
+/* line 80, ../scss/modules/collection-navigation.scss */
+.collection-navigation-items > li.not-selectable:hover {
+  background-color: initial;
+}
+
+/* line 87, ../scss/modules/collection-navigation.scss */
+.collection-navigation-item-name {
+  display: inline-block;
+  width: calc(100% - 45px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+/* line 93, ../scss/modules/collection-navigation.scss */
+.collection-navigation-item-name .fa-chevron-right {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+  font-size: 14px;
+  color: #999;
+}
+
+/* line 102, ../scss/modules/collection-navigation.scss */
+.collection-navigation-item-thumb {
+  position: relative;
+  top: 6px;
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+  border-radius: 50%;
+  vertical-align: top;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* line 115, ../scss/modules/collection-navigation.scss */
+.collection-navigation-back {
+  padding-left: 20px;
+  cursor: pointer;
+}
+/* line 119, ../scss/modules/collection-navigation.scss */
+.collection-navigation-back:focus {
+  outline: 0;
+}
+/* line 123, ../scss/modules/collection-navigation.scss */
+.collection-navigation-back .fa-chevron-left {
+  position: absolute;
+  top: 18px;
+  left: 10px;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* line 133, ../scss/modules/collection-navigation.scss */
+.collection-navigation-add .fa-plus-circle {
+  margin-right: 5px;
+  float: left;
+  font-size: 16px;
+}
+
+/* line 140, ../scss/modules/collection-navigation.scss */
+.collection-navigation-loader-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  padding: 4px 0;
+}
+
+/* line 149, ../scss/modules/collection-navigation.scss */
+.collection-navigation-info {
+  text-align: center;
+  line-height: 50px;
+}

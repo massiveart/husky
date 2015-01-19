@@ -133,6 +133,21 @@
             "verbs": ["GET"],
             "mockFile": "itembox/default.json",
             "switch": "ids"
+        },
+
+        "admin/api/collections": {
+            "verbs": ["GET"],
+            "mockFile": "collection-navigation/collections.json"
+        },
+
+        "admin/api/collections": {
+            "verbs": ["GET"],
+            "mockFile": "collection-navigation/collections.json"
+        },
+
+        "admin/api/collections/1": {
+            "verbs": ["GET"],
+            "mockFile": "collection-navigation/collections-child.json"
         }
     }
 }

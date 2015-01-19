@@ -1,0 +1,34 @@
+<ul class="collection-navigation-items">
+    <% if (!!data.items && !!data.items.length) { %>
+    <% _.each(data.items, function(item) { %>
+    <li data-id="<%= item.id %>">
+        <div class="collection-navigation-item-thumb" style="background-image: url('http://lorempixel.com/35/35')"></div>
+        <div class="collection-navigation-item-name">
+            <%= item.name %>
+            <span class="fa-chevron-right"></span>
+        </div>
+    </li>
+    <% }) %>
+    <% } else if (!!data.items && data.items.length === 0) { %>
+    <li class="not-selectable">
+        <div class="collection-navigation-info">
+            No collections
+        </div>
+    </li>
+    <% } else { %>
+    <li class="not-selectable">
+        <div class="collection-navigation-loader-container">
+            <div class="spinner">
+                <div class="double-bounce1"></div>
+                <div class="double-bounce2"></div>
+            </div>
+        </div>
+    </li>
+    <% } %>
+</ul>
+<div class="collection-navigation-list-footer">
+    <button class="collection-navigation-add btn">
+        <span class="fa-plus-circle"></span>
+        Add collection
+    </button>
+</div>
