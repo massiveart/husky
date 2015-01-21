@@ -4,12 +4,12 @@
             "href": "http://husky.lo:7878/admin/api/datagrid/children/all"
         },
         "sortable": {
-            "href": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/all-sorted"
         }
     },
     "_embedded": {
         "categories": [
-            {  
+            {
                 "id":5,
                 "key":"first-parent-key",
                 "name":"first-parent",
@@ -19,7 +19,7 @@
                 "parent":null,
                 "children":true
             },
-            {  
+            {
                 "id":6,
                 "key":"first-child-key",
                 "name":"first-child",
@@ -29,7 +29,17 @@
                 "parent":5,
                 "children":true
             },
-            {  
+            {
+                "id":11,
+                "key":"second-child-key",
+                "name":"second-child",
+                "created":"2014-10-02T08:52:04+0200",
+                "changed":"2014-10-02T08:52:04+0200",
+                "depth":1,
+                "parent":5,
+                "children":false
+            },
+            {
                 "id":7,
                 "key":"first-child-of-child-key",
                 "name":"first-child-of-child",
@@ -39,7 +49,7 @@
                 "parent":6,
                 "children":false
             },
-            {  
+            {
                 "id":8,
                 "key":"second-parent-key",
                 "name":"second-parent",
@@ -49,7 +59,7 @@
                 "parent":null,
                 "children":true
             },
-            {  
+            {
                 "id":10,
                 "key":"second-child-key",
                 "name":"second-child-c",

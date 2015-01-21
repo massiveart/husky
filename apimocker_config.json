@@ -52,6 +52,10 @@
             "verbs": ["GET"],
             "mockFile": "datagrid/children/all.json"
         },
+        "admin/api/datagrid/children/all-sorted": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/all-sorted.json"
+        },
         "admin/api/datagrid/actualchildren": {
             "verbs": ["GET"],
             "mockFile": "datagrid/children/children.json",
