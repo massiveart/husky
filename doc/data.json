@@ -10096,7 +10096,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 54,
+            "line": 58,
             "description": "enable tabs",
             "itemtype": "event",
             "name": "husky.tabs.activate",
@@ -10105,7 +10105,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 62,
+            "line": 66,
             "description": "disable tabs",
             "itemtype": "event",
             "name": "husky.tabs.deactivate",
@@ -10114,7 +10114,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 70,
+            "line": 74,
             "description": "used to show a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.show",
@@ -10130,7 +10130,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 79,
+            "line": 83,
             "description": "used to hide a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.hide",
@@ -10146,7 +10146,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 88,
+            "line": 92,
             "description": "used to select a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.select",
@@ -10162,7 +10162,25 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 97,
+            "line": 101,
+            "description": "used before selecting a certain item",
+            "itemtype": "event",
+            "name": "husky.tabs.item.preselect",
+            "class": "Tabs",
+            "module": "husky/components/toolbar"
+        },
+        {
+            "file": "husky_components/tabs/main.js",
+            "line": 109,
+            "description": "used before selecting a certain item",
+            "itemtype": "event",
+            "name": "husky.tabs.item.clicked",
+            "class": "Tabs",
+            "module": "husky/components/toolbar"
+        },
+        {
+            "file": "husky_components/tabs/main.js",
+            "line": 117,
             "description": "used to get selected items",
             "itemtype": "event",
             "name": "husky.tabs.item.getSelected",
@@ -10171,7 +10189,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 105,
+            "line": 125,
             "description": "triggered when component was initialized",
             "itemtype": "event",
             "name": "husky.tabs.initialized",
@@ -10180,7 +10198,20 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 200,
+            "line": 133,
+            "description": "Triggered when a tab is clicked and it is enabled in the options\nLets you handle the click event before the tab gets changed\nWill trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "Tabs",
+            "module": "husky/components/toolbar"
+        },
+        {
+            "file": "husky_components/tabs/main.js",
+            "line": 240,
             "description": "Sets the min-width of an item to its width in selected state\n(to avoid bumping)",
             "params": [
                 {
@@ -13631,8 +13662,12 @@
             "line": " husky_components/tabs/main.js:9"
         },
         {
+            "message": "Missing item type\nTriggered when a tab is clicked and it is enabled in the options\nLets you handle the click event before the tab gets changed\nWill trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it",
+            "line": " husky_components/tabs/main.js:133"
+        },
+        {
             "message": "Missing item type\nSets the min-width of an item to its width in selected state\n(to avoid bumping)",
-            "line": " husky_components/tabs/main.js:200"
+            "line": " husky_components/tabs/main.js:240"
         },
         {
             "message": "Missing item type\nnamespace for events",

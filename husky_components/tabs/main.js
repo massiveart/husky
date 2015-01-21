@@ -48,7 +48,11 @@ define(function() {
             forceReload: false,
             callback: null,
             forceSelect: true,
-            skin: ''
+            skin: '',
+            preSelectItem: {
+                enabled: false,
+                triggerSelectItem: true
+            }
         },
 
         /**
@@ -95,6 +99,22 @@ define(function() {
         },
 
         /**
+         * used before selecting a certain item
+         * @event husky.tabs.item.preselect
+         */
+        ITEM_PRE_SELECT = function () {
+            return this.createEventName('item.preselect');
+        },
+
+        /**
+         * used before selecting a certain item
+         * @event husky.tabs.item.clicked
+         */
+        ITEM_CLICKED = function () {
+            return this.createEventName('item.clicked');
+        },
+
+        /**
          * used to get selected items
          * @event husky.tabs.item.getSelected
          */
@@ -108,6 +128,21 @@ define(function() {
          */
             INITIALIZED = function () {
             return this.createEventName('initialized');
+        },
+
+        /**
+         * Triggered when a tab is clicked and it is enabled in the options
+         * Lets you handle the click event before the tab gets changed
+         * Will trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it
+         * @param event
+         */
+        preSelectItem = function(event){
+            event.preventDefault();
+            this.sandbox.emit(ITEM_PRE_SELECT.call(this), event);
+
+            if(!!this.options.preSelectItem.triggerSelectItem) {
+                selectItem.call(this, event);
+            }
         },
 
         selectItem = function(event) {
@@ -132,7 +167,6 @@ define(function() {
         },
 
         triggerSelectEvent = function(item) {
-
             item.forceReload = (item.forceReload && typeof item.forceReload !== "undefined") ? item.forceReload : this.options.forceReload;
             this.sandbox.emit(ITEM_SELECT.call(this), item);
         },
@@ -146,7 +180,11 @@ define(function() {
         },
 
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
+            if(!!this.options.preSelectItem.enabled){
+                this.sandbox.dom.on(this.$el, 'click', preSelectItem.bind(this), 'li');
+            } else {
+                this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
+            }
         },
 
         bindCustomEvents = function() {
@@ -162,6 +200,8 @@ define(function() {
             this.sandbox.on(ITEM_SHOW.call(this), showItem.bind(this));
 
             this.sandbox.on(ITEM_HIDE.call(this), hideItem.bind(this));
+
+            this.sandbox.on(ITEM_CLICKED.call(this), selectItem.bind(this));
         };
 
     return {
