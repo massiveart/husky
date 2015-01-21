@@ -33715,6 +33715,8 @@ define('__component__$search@husky',[], function() {
  *          - title: compares items title against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
+ *      - preSelectItem.enabled - when enabled triggers the item pre select event
+ *      - preSelectItem.triggerSelectItem - when previous options and this options is enabled it triggers the item select event right after the preselect
  *  Provides Events
  *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
@@ -33799,8 +33801,9 @@ define('__component__$tabs@husky',[],function() {
         },
 
         /**
-         * used before selecting a certain item
+         * used to select a certain item manually
          * @event husky.tabs.item.clicked
+         * @param {Object} event object
          */
         ITEM_CLICKED = function () {
             return this.createEventName('item.clicked');

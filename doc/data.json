@@ -10090,13 +10090,13 @@
         {
             "file": "husky_components/tabs/main.js",
             "line": 9,
-            "description": "Tabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",
+            "description": "Tabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n      - preSelectItem.enabled - when enabled triggers the item pre select event\n      - preSelectItem.triggerSelectItem - when previous options and this options is enabled it triggers the item select event right after the preselect\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",
             "class": "Tabs",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 58,
+            "line": 60,
             "description": "enable tabs",
             "itemtype": "event",
             "name": "husky.tabs.activate",
@@ -10105,7 +10105,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 66,
+            "line": 68,
             "description": "disable tabs",
             "itemtype": "event",
             "name": "husky.tabs.deactivate",
@@ -10114,7 +10114,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 74,
+            "line": 76,
             "description": "used to show a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.show",
@@ -10130,7 +10130,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 83,
+            "line": 85,
             "description": "used to hide a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.hide",
@@ -10146,7 +10146,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 92,
+            "line": 94,
             "description": "used to select a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.select",
@@ -10162,7 +10162,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 101,
+            "line": 103,
             "description": "used before selecting a certain item",
             "itemtype": "event",
             "name": "husky.tabs.item.preselect",
@@ -10171,16 +10171,23 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 109,
-            "description": "used before selecting a certain item",
+            "line": 111,
+            "description": "used to select a certain item manually",
             "itemtype": "event",
             "name": "husky.tabs.item.clicked",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "object",
+                    "type": "Object"
+                }
+            ],
             "class": "Tabs",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 117,
+            "line": 120,
             "description": "used to get selected items",
             "itemtype": "event",
             "name": "husky.tabs.item.getSelected",
@@ -10189,7 +10196,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 125,
+            "line": 128,
             "description": "triggered when component was initialized",
             "itemtype": "event",
             "name": "husky.tabs.initialized",
@@ -10198,7 +10205,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 133,
+            "line": 136,
             "description": "Triggered when a tab is clicked and it is enabled in the options\nLets you handle the click event before the tab gets changed\nWill trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it",
             "params": [
                 {
@@ -10211,7 +10218,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 240,
+            "line": 243,
             "description": "Sets the min-width of an item to its width in selected state\n(to avoid bumping)",
             "params": [
                 {
@@ -13658,16 +13665,16 @@
             "line": " husky_components/select/main.js:1108"
         },
         {
-            "message": "Missing item type\nTabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",
+            "message": "Missing item type\nTabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n      - preSelectItem.enabled - when enabled triggers the item pre select event\n      - preSelectItem.triggerSelectItem - when previous options and this options is enabled it triggers the item select event right after the preselect\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",
             "line": " husky_components/tabs/main.js:9"
         },
         {
             "message": "Missing item type\nTriggered when a tab is clicked and it is enabled in the options\nLets you handle the click event before the tab gets changed\nWill trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it",
-            "line": " husky_components/tabs/main.js:133"
+            "line": " husky_components/tabs/main.js:136"
         },
         {
             "message": "Missing item type\nSets the min-width of an item to its width in selected state\n(to avoid bumping)",
-            "line": " husky_components/tabs/main.js:240"
+            "line": " husky_components/tabs/main.js:243"
         },
         {
             "message": "Missing item type\nnamespace for events",
