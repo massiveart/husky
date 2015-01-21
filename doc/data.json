@@ -10218,7 +10218,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 243,
+            "line": 245,
             "description": "Sets the min-width of an item to its width in selected state\n(to avoid bumping)",
             "params": [
                 {
@@ -13674,7 +13674,7 @@
         },
         {
             "message": "Missing item type\nSets the min-width of an item to its width in selected state\n(to avoid bumping)",
-            "line": " husky_components/tabs/main.js:243"
+            "line": " husky_components/tabs/main.js:245"
         },
         {
             "message": "Missing item type\nnamespace for events",

@@ -307,16 +307,18 @@ define(function() {
             if (this.active === true &amp;&amp; this.sandbox.dom.hasClass(event.currentTarget, &#x27;is-selected&#x27;) !== true) {
                 var item = this.items[this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;)];
 
-                this.sandbox.dom.removeClass(this.sandbox.dom.find(&#x27;.is-selected&#x27;, this.$el), &#x27;is-selected&#x27;);
-                this.sandbox.dom.addClass(event.currentTarget, &#x27;is-selected&#x27;);
+                if (!!item) {
+                    this.sandbox.dom.removeClass(this.sandbox.dom.find(&#x27;.is-selected&#x27;, this.$el), &#x27;is-selected&#x27;);
+                    this.sandbox.dom.addClass(event.currentTarget, &#x27;is-selected&#x27;);
 
-                // callback
-                if (item.hasOwnProperty(&#x27;callback&#x27;) &amp;&amp; typeof item.callback === &#x27;function&#x27;) {
-                    item.callback.call(this, item);
-                } else if (!!this.options.callback &amp;&amp; typeof this.options.callback === &#x27;function&#x27;) {
-                    this.options.callback.call(this, item);
-                } else {
-                    triggerSelectEvent.call(this, item);
+                    // callback
+                    if (item.hasOwnProperty(&#x27;callback&#x27;) &amp;&amp; typeof item.callback === &#x27;function&#x27;) {
+                        item.callback.call(this, item);
+                    } else if (!!this.options.callback &amp;&amp; typeof this.options.callback === &#x27;function&#x27;) {
+                        this.options.callback.call(this, item);
+                    } else {
+                        triggerSelectEvent.call(this, item);
+                    }
                 }
             } else {
                 return false;

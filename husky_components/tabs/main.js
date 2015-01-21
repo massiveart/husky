@@ -153,16 +153,18 @@ define(function() {
             if (this.active === true && this.sandbox.dom.hasClass(event.currentTarget, 'is-selected') !== true) {
                 var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
-                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-                this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
+                if (!!item) {
+                    this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+                    this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
 
-                // callback
-                if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
-                    item.callback.call(this, item);
-                } else if (!!this.options.callback && typeof this.options.callback === 'function') {
-                    this.options.callback.call(this, item);
-                } else {
-                    triggerSelectEvent.call(this, item);
+                    // callback
+                    if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
+                        item.callback.call(this, item);
+                    } else if (!!this.options.callback && typeof this.options.callback === 'function') {
+                        this.options.callback.call(this, item);
+                    } else {
+                        triggerSelectEvent.call(this, item);
+                    }
                 }
             } else {
                 return false;
