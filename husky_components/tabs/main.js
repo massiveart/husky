@@ -107,8 +107,9 @@ define(function() {
         },
 
         /**
-         * used before selecting a certain item
+         * used to select a certain item manually
          * @event husky.tabs.item.clicked
+         * @param {Object} event object
          */
         ITEM_CLICKED = function () {
             return this.createEventName('item.clicked');
