@@ -1303,7 +1303,7 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;);
             this.emitRowClickedEvent(event);
-            if (!!recordId &amp;&amp; !!this.table.rows[recordId]) {
+            if (!!recordId &amp;&amp; !!this.table.rows &amp;&amp; !!this.table.rows[recordId]) {
                 if (this.options.highlightSelected === true) {
                     this.uniqueHighlightRecord(recordId);
                 }
