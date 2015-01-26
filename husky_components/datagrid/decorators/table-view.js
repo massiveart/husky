@@ -808,7 +808,10 @@ define(function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
-            return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
+            if(!!this.sandbox.dom.get(this.table.$container, 0)){
+                return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
+            }
+            return false;
         },
 
         /**
