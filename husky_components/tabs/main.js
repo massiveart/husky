@@ -23,8 +23,8 @@
  *          - title: compares items title against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
- *      - preSelectItem.enabled - when enabled triggers the item pre select event
- *      - preSelectItem.triggerSelectItem - when previous options and this options is enabled it triggers the item select event right after the preselect
+ *      - preSelectEvent.enabled - when enabled triggers the item pre select event
+ *      - preSelectEvent.triggerSelectItem - when previous options and this options is enabled it triggers the item select event right after the preselect
  *  Provides Events
  *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
@@ -51,7 +51,7 @@ define(function() {
             callback: null,
             forceSelect: true,
             skin: '',
-            preSelectItem: {
+            preSelectEvent: {
                 enabled: false,
                 triggerSelectItem: true
             }
@@ -104,7 +104,7 @@ define(function() {
          * used before selecting a certain item
          * @event husky.tabs.item.preselect
          */
-        ITEM_PRE_SELECT = function () {
+            ITEM_PRE_SELECT = function () {
             return this.createEventName('item.preselect');
         },
 
@@ -139,11 +139,11 @@ define(function() {
          * Will trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it
          * @param event
          */
-        preSelectItem = function(event){
+        preSelectEvent = function(event){
             event.preventDefault();
             this.sandbox.emit(ITEM_PRE_SELECT.call(this), event);
 
-            if(!!this.options.preSelectItem.triggerSelectItem) {
+            if(!!this.options.preSelectEvent.triggerSelectItem) {
                 selectItem.call(this, event);
             }
         },
@@ -185,8 +185,8 @@ define(function() {
         },
 
         bindDOMEvents = function() {
-            if(!!this.options.preSelectItem.enabled){
-                this.sandbox.dom.on(this.$el, 'click', preSelectItem.bind(this), 'li');
+            if(!!this.options.preSelectEvent.enabled){
+                this.sandbox.dom.on(this.$el, 'click', preSelectEvent.bind(this), 'li');
             } else {
                 this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
             }
