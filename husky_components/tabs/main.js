@@ -61,7 +61,7 @@ define(function() {
          * enable tabs
          * @event husky.tabs.activate
          */
-            ACTIVATE = function () {
+        ACTIVATE = function() {
             return this.createEventName('activate');
         },
 
@@ -69,7 +69,7 @@ define(function() {
          * disable tabs
          * @event husky.tabs.deactivate
          */
-            DEACTIVATE = function () {
+        DEACTIVATE = function() {
             return this.createEventName('deactivate');
         },
 
@@ -78,7 +78,7 @@ define(function() {
          * @event husky.tabs.item.show
          * @param {String} id Id of item to show
          */
-            ITEM_SHOW = function () {
+        ITEM_SHOW = function() {
             return this.createEventName('item.show');
         },
 
@@ -87,7 +87,7 @@ define(function() {
          * @event husky.tabs.item.hide
          * @param {String} id Id of item to hide
          */
-            ITEM_HIDE = function () {
+        ITEM_HIDE = function() {
             return this.createEventName('item.hide');
         },
 
@@ -96,7 +96,7 @@ define(function() {
          * @event husky.tabs.item.select
          * @param {String} id Id of item to enable
          */
-            ITEM_SELECT = function () {
+        ITEM_SELECT = function() {
             return this.createEventName('item.select');
         },
 
@@ -104,7 +104,7 @@ define(function() {
          * used before selecting a certain item
          * @event husky.tabs.item.preselect
          */
-            ITEM_PRE_SELECT = function () {
+        ITEM_PRE_SELECT = function() {
             return this.createEventName('item.preselect');
         },
 
@@ -113,7 +113,7 @@ define(function() {
          * @event husky.tabs.item.clicked
          * @param {Object} event object
          */
-        ITEM_CLICKED = function () {
+        ITEM_CLICKED = function() {
             return this.createEventName('item.clicked');
         },
 
@@ -121,7 +121,7 @@ define(function() {
          * used to get selected items
          * @event husky.tabs.item.getSelected
          */
-            GET_SELECTED = function () {
+        GET_SELECTED = function() {
             return this.createEventName('getSelected');
         },
 
@@ -129,7 +129,7 @@ define(function() {
          * triggered when component was initialized
          * @event husky.tabs.initialized
          */
-            INITIALIZED = function () {
+        INITIALIZED = function() {
             return this.createEventName('initialized');
         },
 
@@ -139,11 +139,11 @@ define(function() {
          * Will trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it
          * @param event
          */
-        preSelectEvent = function(event){
+        preSelectEvent = function(event) {
             event.preventDefault();
             this.sandbox.emit(ITEM_PRE_SELECT.call(this), event);
 
-            if(!!this.options.preSelectEvent.triggerSelectItem) {
+            if (!!this.options.preSelectEvent.triggerSelectItem) {
                 selectItem.call(this, event);
             }
         },
@@ -185,7 +185,7 @@ define(function() {
         },
 
         bindDOMEvents = function() {
-            if(!!this.options.preSelectEvent.enabled){
+            if (!!this.options.preSelectEvent.enabled) {
                 this.sandbox.dom.on(this.$el, 'click', preSelectEvent.bind(this), 'li');
             } else {
                 this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
@@ -278,7 +278,7 @@ define(function() {
         },
 
         getRandId: function() {
-            return Math.floor((Math.random()*1677721500000000)).toString(16);
+            return Math.floor((Math.random() * 1677721500000000)).toString(16);
         },
 
         render: function(data) {
@@ -315,9 +315,8 @@ define(function() {
                 // check if item got selected
                 if (!!this.options.preselect) {
                     if ((this.options.preselector === 'url' && !!data.url && data.url === item.action) ||
-                        (this.options.preselector === 'position' && (index+1).toString() === this.options.preselect.toString()) ||
-                        (this.options.preselector === 'title' && item.title === this.options.preselect))
-                    {
+                        (this.options.preselector === 'position' && (index + 1).toString() === this.options.preselect.toString()) ||
+                        (this.options.preselector === 'title' && item.title === this.options.preselect)) {
                         this.sandbox.dom.addClass($item, 'is-selected');
                         selectedItem = item;
                     }
@@ -329,7 +328,7 @@ define(function() {
             // force selection of first element
             if (!selectedItem && this.options.forceSelect) {
                 selectedItem = this.options.data[0];
-                this.sandbox.dom.addClass(this.sandbox.dom.find('li',$list).eq(0),'is-selected');
+                this.sandbox.dom.addClass(this.sandbox.dom.find('li', $list).eq(0), 'is-selected');
             }
 
             // initialization finished
