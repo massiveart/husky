@@ -5978,7 +5978,7 @@
             "description": "Opens all parents of a record",
             "params": [
                 {
-                    "name": "id",
+                    "name": "recordId",
                     "description": "the id of the record",
                     "type": "Number|String"
                 }
@@ -7538,14 +7538,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1527,
+            "line": 1528,
             "description": "Updates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1545,
+            "line": 1546,
             "description": "Filters fields out of the data passed to the view\nSo its possible to hide fields/columns\nNote that the also the arrangement of fields/columns can be changed and the view can react to it",
             "params": [
                 {
@@ -7559,7 +7559,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1571,
+            "line": 1572,
             "description": "Constructs the url to get sorted data and sets the request for it",
             "params": [
                 {
@@ -7578,7 +7578,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1601,
+            "line": 1602,
             "description": "Loads the children of a record",
             "params": [
                 {
@@ -7592,7 +7592,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1620,
+            "line": 1621,
             "description": "triggers an api search",
             "params": [
                 {
@@ -7611,7 +7611,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1648,
+            "line": 1655,
             "description": "Takes a data-record and sends it to a url",
             "params": [
                 {
@@ -12962,27 +12962,27 @@
         },
         {
             "message": "Missing item type\nUpdates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1527"
+            "line": " husky_components/datagrid/main.js:1528"
         },
         {
             "message": "Missing item type\nFilters fields out of the data passed to the view\nSo its possible to hide fields/columns\nNote that the also the arrangement of fields/columns can be changed and the view can react to it",
-            "line": " husky_components/datagrid/main.js:1545"
+            "line": " husky_components/datagrid/main.js:1546"
         },
         {
             "message": "Missing item type\nConstructs the url to get sorted data and sets the request for it",
-            "line": " husky_components/datagrid/main.js:1571"
+            "line": " husky_components/datagrid/main.js:1572"
         },
         {
             "message": "Missing item type\nLoads the children of a record",
-            "line": " husky_components/datagrid/main.js:1601"
+            "line": " husky_components/datagrid/main.js:1602"
         },
         {
             "message": "Missing item type\ntriggers an api search",
-            "line": " husky_components/datagrid/main.js:1620"
+            "line": " husky_components/datagrid/main.js:1621"
         },
         {
             "message": "Missing item type\nTakes a data-record and sends it to a url",
-            "line": " husky_components/datagrid/main.js:1648"
+            "line": " husky_components/datagrid/main.js:1655"
         },
         {
             "message": "Missing item type\ncreates a child element in a container",

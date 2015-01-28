@@ -883,7 +883,7 @@ define([], function() {
             var $element = this.sandbox.dom.createElement(&#x27;&lt;div/&gt;&#x27;);
 
             this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
-                    &#x27;&lt;div class=&quot;&#x27; + constants.languageChangerClass + &#x27;&quot;/&gt;&#x27;
+                &#x27;&lt;div class=&quot;&#x27; + constants.languageChangerClass + &#x27;&quot;/&gt;&#x27;
             );
             this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$languageChanger);
             this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
@@ -1016,8 +1016,8 @@ define([], function() {
                 this.closeHandler();
             } else if (event.keyCode === 13) {
                 // when enter is pressed in textarea overlay should not be closed
-                if(event.target.tagName === &#x27;TEXTAREA&#x27;){
-                   return;
+                if (event.target.tagName === &#x27;TEXTAREA&#x27;) {
+                    return;
                 }
                 this.okHandler();
             }
