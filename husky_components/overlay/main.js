@@ -729,7 +729,7 @@ define([], function() {
             var $element = this.sandbox.dom.createElement('<div/>');
 
             this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
-                    '<div class="' + constants.languageChangerClass + '"/>'
+                '<div class="' + constants.languageChangerClass + '"/>'
             );
             this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$languageChanger);
             this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
@@ -862,8 +862,8 @@ define([], function() {
                 this.closeHandler();
             } else if (event.keyCode === 13) {
                 // when enter is pressed in textarea overlay should not be closed
-                if(event.target.tagName === 'TEXTAREA'){
-                   return;
+                if (event.target.tagName === 'TEXTAREA') {
+                    return;
                 }
                 this.okHandler();
             }
@@ -995,7 +995,7 @@ define([], function() {
                 this.sandbox.dom.preventDefault(event);
                 this.sandbox.dom.stopPropagation(event);
             }
-            if (this.executeCallback(cancelCallback) !== false) {
+            if (this.executeCallback(cancelCallback, event.currentTarget) !== false) {
                 this.closeOverlay();
             }
         },

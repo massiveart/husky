@@ -23,6 +23,8 @@
  *          - title: compares items title against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
+ *      - preSelectEvent.enabled - when enabled triggers the item pre select event
+ *      - preSelectEvent.triggerSelectItem - when previous options and this options is enabled it triggers the item select event right after the preselect
  *  Provides Events
  *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
@@ -48,14 +50,18 @@ define(function() {
             forceReload: false,
             callback: null,
             forceSelect: true,
-            skin: ''
+            skin: '',
+            preSelectEvent: {
+                enabled: false,
+                triggerSelectItem: true
+            }
         },
 
         /**
          * enable tabs
          * @event husky.tabs.activate
          */
-            ACTIVATE = function () {
+        ACTIVATE = function() {
             return this.createEventName('activate');
         },
 
@@ -63,7 +69,7 @@ define(function() {
          * disable tabs
          * @event husky.tabs.deactivate
          */
-            DEACTIVATE = function () {
+        DEACTIVATE = function() {
             return this.createEventName('deactivate');
         },
 
@@ -72,7 +78,7 @@ define(function() {
          * @event husky.tabs.item.show
          * @param {String} id Id of item to show
          */
-            ITEM_SHOW = function () {
+        ITEM_SHOW = function() {
             return this.createEventName('item.show');
         },
 
@@ -81,7 +87,7 @@ define(function() {
          * @event husky.tabs.item.hide
          * @param {String} id Id of item to hide
          */
-            ITEM_HIDE = function () {
+        ITEM_HIDE = function() {
             return this.createEventName('item.hide');
         },
 
@@ -90,15 +96,32 @@ define(function() {
          * @event husky.tabs.item.select
          * @param {String} id Id of item to enable
          */
-            ITEM_SELECT = function () {
+        ITEM_SELECT = function() {
             return this.createEventName('item.select');
+        },
+
+        /**
+         * used before selecting a certain item
+         * @event husky.tabs.item.preselect
+         */
+        ITEM_PRE_SELECT = function() {
+            return this.createEventName('item.preselect');
+        },
+
+        /**
+         * used to select a certain item manually
+         * @event husky.tabs.item.clicked
+         * @param {Object} event object
+         */
+        ITEM_CLICKED = function() {
+            return this.createEventName('item.clicked');
         },
 
         /**
          * used to get selected items
          * @event husky.tabs.item.getSelected
          */
-            GET_SELECTED = function () {
+        GET_SELECTED = function() {
             return this.createEventName('getSelected');
         },
 
@@ -106,8 +129,23 @@ define(function() {
          * triggered when component was initialized
          * @event husky.tabs.initialized
          */
-            INITIALIZED = function () {
+        INITIALIZED = function() {
             return this.createEventName('initialized');
+        },
+
+        /**
+         * Triggered when a tab is clicked and it is enabled in the options
+         * Lets you handle the click event before the tab gets changed
+         * Will trigger selectItem when enabled otherwise you have to trigger ITEM_CLICKED to trigger it
+         * @param event
+         */
+        preSelectEvent = function(event) {
+            event.preventDefault();
+            this.sandbox.emit(ITEM_PRE_SELECT.call(this), event);
+
+            if (!!this.options.preSelectEvent.triggerSelectItem) {
+                selectItem.call(this, event);
+            }
         },
 
         selectItem = function(event) {
@@ -115,16 +153,18 @@ define(function() {
             if (this.active === true && this.sandbox.dom.hasClass(event.currentTarget, 'is-selected') !== true) {
                 var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
-                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-                this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
+                if (!!item) {
+                    this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+                    this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
 
-                // callback
-                if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
-                    item.callback.call(this, item);
-                } else if (!!this.options.callback && typeof this.options.callback === 'function') {
-                    this.options.callback.call(this, item);
-                } else {
-                    triggerSelectEvent.call(this, item);
+                    // callback
+                    if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
+                        item.callback.call(this, item);
+                    } else if (!!this.options.callback && typeof this.options.callback === 'function') {
+                        this.options.callback.call(this, item);
+                    } else {
+                        triggerSelectEvent.call(this, item);
+                    }
                 }
             } else {
                 return false;
@@ -132,7 +172,6 @@ define(function() {
         },
 
         triggerSelectEvent = function(item) {
-
             item.forceReload = (item.forceReload && typeof item.forceReload !== "undefined") ? item.forceReload : this.options.forceReload;
             this.sandbox.emit(ITEM_SELECT.call(this), item);
         },
@@ -146,7 +185,11 @@ define(function() {
         },
 
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
+            if (!!this.options.preSelectEvent.enabled) {
+                this.sandbox.dom.on(this.$el, 'click', preSelectEvent.bind(this), 'li');
+            } else {
+                this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
+            }
         },
 
         bindCustomEvents = function() {
@@ -162,6 +205,8 @@ define(function() {
             this.sandbox.on(ITEM_SHOW.call(this), showItem.bind(this));
 
             this.sandbox.on(ITEM_HIDE.call(this), hideItem.bind(this));
+
+            this.sandbox.on(ITEM_CLICKED.call(this), selectItem.bind(this));
         };
 
     return {
@@ -233,7 +278,7 @@ define(function() {
         },
 
         getRandId: function() {
-            return Math.floor((Math.random()*1677721500000000)).toString(16);
+            return Math.floor((Math.random() * 1677721500000000)).toString(16);
         },
 
         render: function(data) {
@@ -270,9 +315,8 @@ define(function() {
                 // check if item got selected
                 if (!!this.options.preselect) {
                     if ((this.options.preselector === 'url' && !!data.url && data.url === item.action) ||
-                        (this.options.preselector === 'position' && (index+1).toString() === this.options.preselect.toString()) ||
-                        (this.options.preselector === 'title' && item.title === this.options.preselect))
-                    {
+                        (this.options.preselector === 'position' && (index + 1).toString() === this.options.preselect.toString()) ||
+                        (this.options.preselector === 'title' && item.title === this.options.preselect)) {
                         this.sandbox.dom.addClass($item, 'is-selected');
                         selectedItem = item;
                     }
@@ -284,7 +328,7 @@ define(function() {
             // force selection of first element
             if (!selectedItem && this.options.forceSelect) {
                 selectedItem = this.options.data[0];
-                this.sandbox.dom.addClass(this.sandbox.dom.find('li',$list).eq(0),'is-selected');
+                this.sandbox.dom.addClass(this.sandbox.dom.find('li', $list).eq(0), 'is-selected');
             }
 
             // initialization finished

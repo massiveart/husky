@@ -192,170 +192,170 @@ define(function() {
     &#x27;use strict&#x27;;
 
     var defaults = {
-        editable: false,
-        fullWidth: false,
-        removeRow: false,
-        selectItem: {
-            type: &#x27;checkbox&#x27;,
-            inFirstCell: false
+            editable: false,
+            fullWidth: false,
+            removeRow: false,
+            selectItem: {
+                type: &#x27;checkbox&#x27;,
+                inFirstCell: false
+            },
+            noItemsText: &#x27;This list is empty&#x27;,
+            addRowTop: true,
+            excludeFields: [&#x27;&#x27;],
+            cssClass: &#x27;&#x27;,
+            thumbnailFormat: &#x27;50x50&#x27;,
+            showHead: true,
+            hideChildrenAtBeginning: true,
+            openChildId: null,
+            highlightSelected: false,
+            stickyHeader: false,
+            icons: [],
+            removeIcon: &#x27;trash-o&#x27;,
+            croppedMaxLength: 35,
+            openPathToSelectedChildren: false
         },
-        noItemsText: &#x27;This list is empty&#x27;,
-        addRowTop: true,
-        excludeFields: [&#x27;&#x27;],
-        cssClass: &#x27;&#x27;,
-        thumbnailFormat: &#x27;50x50&#x27;,
-        showHead: true,
-        hideChildrenAtBeginning: true,
-        openChildId: null,
-        highlightSelected: false,
-        stickyHeader: false,
-        icons: [],
-        removeIcon: &#x27;trash-o&#x27;,
-        croppedMaxLength: 35,
-        openPathToSelectedChildren: false
-    },
 
-    constants = {
-        fullWidthClass: &#x27;fullwidth&#x27;,
-        stickyHeaderClass: &#x27;sticky-header&#x27;,
-        selectedRowClass: &#x27;selected&#x27;,
-        isSelectableClass: &#x27;is-selectable&#x27;,
-        sortableClass: &#x27;is-sortable&#x27;,
-        skeletonClass: &#x27;husky-table&#x27;,
-        containerClass: &#x27;table-container&#x27;,
-        overflowClass: &#x27;overflow&#x27;,
-        emptyListElementClass: &#x27;empty-list&#x27;,
-        rowRemoverClass: &#x27;row-remover&#x27;,
-        checkboxClass: &#x27;checkbox&#x27;,
-        radioClass: &#x27;radio&#x27;,
-        cellFitClass: &#x27;fit&#x27;,
-        tableClass: &#x27;table&#x27;,
-        rowClass: &#x27;row&#x27;,
-        thumbSrcKey: &#x27;url&#x27;,
-        thumbAltKey: &#x27;alt&#x27;,
-        headerCellClass: &#x27;header-cell&#x27;,
-        ascSortedClass: &#x27;sorted-asc&#x27;,
-        descSortedClass: &#x27;sorted-desc&#x27;,
-        headerCellLoaderClass: &#x27;header-loader&#x27;,
-        headerLoadingClass: &#x27;is-loading&#x27;,
-        editableItemClass: &#x27;editable&#x27;,
-        editableInputClass: &#x27;editable-input&#x27;,
-        inputWrapperClass: &#x27;input-wrapper&#x27;,
-        editedErrorClass: &#x27;server-validation-error&#x27;,
-        newRecordId: &#x27;newrecord&#x27;,
-        gridIconClass: &#x27;grid-icon&#x27;,
-        childWrapperClass: &#x27;child-wrapper&#x27;,
-        parentClass: &#x27;children-toggler&#x27;,
-        noChildrenClass: &#x27;no-children&#x27;,
-        toggleIconClass: &#x27;toggle-icon&#x27;,
-        collapsedIcon: &#x27;fa-caret-right&#x27;,
-        expandedIcon: &#x27;fa-caret-down&#x27;,
-        checkboxCellClass: &#x27;checkbox-cell&#x27;,
-        textContainerClass: &#x27;cell-content&#x27;,
-        renderingClass: &#x27;rendering&#x27;,
-        headerCloneClass: &#x27;header-clone&#x27;,
-        childIndent: 25 //px
-    },
+        constants = {
+            fullWidthClass: &#x27;fullwidth&#x27;,
+            stickyHeaderClass: &#x27;sticky-header&#x27;,
+            selectedRowClass: &#x27;selected&#x27;,
+            isSelectableClass: &#x27;is-selectable&#x27;,
+            sortableClass: &#x27;is-sortable&#x27;,
+            skeletonClass: &#x27;husky-table&#x27;,
+            containerClass: &#x27;table-container&#x27;,
+            overflowClass: &#x27;overflow&#x27;,
+            emptyListElementClass: &#x27;empty-list&#x27;,
+            rowRemoverClass: &#x27;row-remover&#x27;,
+            checkboxClass: &#x27;checkbox&#x27;,
+            radioClass: &#x27;radio&#x27;,
+            cellFitClass: &#x27;fit&#x27;,
+            tableClass: &#x27;table&#x27;,
+            rowClass: &#x27;row&#x27;,
+            thumbSrcKey: &#x27;url&#x27;,
+            thumbAltKey: &#x27;alt&#x27;,
+            headerCellClass: &#x27;header-cell&#x27;,
+            ascSortedClass: &#x27;sorted-asc&#x27;,
+            descSortedClass: &#x27;sorted-desc&#x27;,
+            headerCellLoaderClass: &#x27;header-loader&#x27;,
+            headerLoadingClass: &#x27;is-loading&#x27;,
+            editableItemClass: &#x27;editable&#x27;,
+            editableInputClass: &#x27;editable-input&#x27;,
+            inputWrapperClass: &#x27;input-wrapper&#x27;,
+            editedErrorClass: &#x27;server-validation-error&#x27;,
+            newRecordId: &#x27;newrecord&#x27;,
+            gridIconClass: &#x27;grid-icon&#x27;,
+            childWrapperClass: &#x27;child-wrapper&#x27;,
+            parentClass: &#x27;children-toggler&#x27;,
+            noChildrenClass: &#x27;no-children&#x27;,
+            toggleIconClass: &#x27;toggle-icon&#x27;,
+            collapsedIcon: &#x27;fa-caret-right&#x27;,
+            expandedIcon: &#x27;fa-caret-down&#x27;,
+            checkboxCellClass: &#x27;checkbox-cell&#x27;,
+            textContainerClass: &#x27;cell-content&#x27;,
+            renderingClass: &#x27;rendering&#x27;,
+            headerCloneClass: &#x27;header-clone&#x27;,
+            childIndent: 25 //px
+        },
 
-    selectItems = {
-        CHECKBOX: &#x27;checkbox&#x27;,
-        RADIO: &#x27;radio&#x27;
-    },
+        selectItems = {
+            CHECKBOX: &#x27;checkbox&#x27;,
+            RADIO: &#x27;radio&#x27;
+        },
 
-    /**
-     * Templates used by this class
-     */
-    templates = {
-        skeleton: [
-            &#x27;&lt;div class=&quot;&#x27;+ constants.skeletonClass +&#x27;&quot;&gt;&#x27;,
-            &#x27;   &lt;div class=&quot;&#x27;+ constants.containerClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-            &#x27;&lt;/div&gt;&#x27;
-        ].join(&#x27;&#x27;),
-        table: &#x27;&lt;table class=&quot;&#x27;+ constants.tableClass +&#x27;&quot;&gt;&lt;/table&gt;&#x27;,
-        header: &#x27;&lt;thead&gt;&lt;/thead&gt;&#x27;,
-        body: &#x27;&lt;tbody&gt;&lt;/tbody&gt;&#x27;,
-        row: &#x27;&lt;tr class=&quot;&#x27; + constants.rowClass + &#x27;&quot;&gt;&lt;/tr&gt;&#x27;,
-        headerCell: &#x27;&lt;th class=&quot;&#x27;+ constants.headerCellClass +&#x27;&quot;&gt;&lt;/th&gt;&#x27;,
-        cell: &#x27;&lt;td&gt;&lt;/td&gt;&#x27;,
-        textContainer: &#x27;&lt;span class=&quot;&#x27;+ constants.textContainerClass +&#x27;&quot;&gt;&lt;%= content %&gt;&lt;/span&gt;&#x27;,
-        headerCellLoader: &#x27;&lt;div class=&quot;&#x27;+ constants.headerCellLoaderClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-        removeCellContent: &#x27;&lt;span class=&quot;fa-&lt;%= icon %&gt; &#x27;+ constants.rowRemoverClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
-        editableCellContent: [
-            &#x27;&lt;span class=&quot;&#x27;+ constants.editableItemClass +&#x27;&quot;&gt;&lt;%= value %&gt;&lt;/span&gt;&#x27;,
-            &#x27;&lt;div class=&quot;&#x27;+ constants.inputWrapperClass +&#x27;&quot;&gt;&#x27;,
-            &#x27;   &lt;input type=&quot;text&quot; class=&quot;form-element husky-validate &#x27;+ constants.editableInputClass +&#x27;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x27;,
-            &#x27;&lt;/div&gt;&#x27;
-        ].join(&#x27;&#x27;),
-        img: &#x27;&lt;img alt=&quot;&lt;%= alt %&gt;&quot; src=&quot;&lt;%= src %&gt;&quot;/&gt;&#x27;,
-        childWrapper: &#x27;&lt;div class=&quot;&#x27;+ constants.childWrapperClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-        toggleIcon: &#x27;&lt;span class=&quot;&#x27;+ constants.toggleIconClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
-        icon: [
-            &#x27;&lt;span class=&quot;&#x27;+ constants.gridIconClass +&#x27; &lt;%= align %&gt;&quot; data-icon-index=&quot;&lt;%= index %&gt;&quot;&gt;&#x27;,
-            &#x27;   &lt;span class=&quot;fa-&lt;%= icon %&gt;&quot;&gt;&lt;/span&gt;&#x27;,
-            &#x27;&lt;/span&gt;&#x27;
-        ].join(&#x27;&#x27;),
-        checkbox: [
-            &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
-            &#x27;   &lt;input class=&quot;&#x27; + constants.checkboxClass + &#x27;&quot; type=&quot;checkbox&quot; data-form=&quot;false&quot;/&gt;&#x27;,
-            &#x27;   &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-            &#x27;&lt;/div&gt;&#x27;
-        ].join(&#x27;&#x27;),
-        radio: [
-            &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
-            &#x27;    &lt;input class=&quot;&#x27; + constants.radioClass + &#x27;&quot; name=&quot;&lt;%= name %&gt;&quot; type=&quot;radio&quot; data-form=&quot;false&quot;/&gt;&#x27;,
-            &#x27;    &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-            &#x27;&lt;/div&gt;&#x27;
-        ].join(&#x27;&#x27;),
-        empty: [
-            &#x27;&lt;div class=&quot;&#x27;+ constants.emptyListElementClass +&#x27;&quot;&gt;&#x27;,
-            &#x27;   &lt;div class=&quot;fa-coffee icon&quot;&gt;&lt;/div&gt;&#x27;,
-            &#x27;   &lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&#x27;,
-            &#x27;&lt;/div&gt;&#x27;
-        ].join(&#x27;&#x27;)
-    },
+        /**
+         * Templates used by this class
+         */
+        templates = {
+            skeleton: [
+                &#x27;&lt;div class=&quot;&#x27; + constants.skeletonClass + &#x27;&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;&#x27; + constants.containerClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            table: &#x27;&lt;table class=&quot;&#x27; + constants.tableClass + &#x27;&quot;&gt;&lt;/table&gt;&#x27;,
+            header: &#x27;&lt;thead&gt;&lt;/thead&gt;&#x27;,
+            body: &#x27;&lt;tbody&gt;&lt;/tbody&gt;&#x27;,
+            row: &#x27;&lt;tr class=&quot;&#x27; + constants.rowClass + &#x27;&quot;&gt;&lt;/tr&gt;&#x27;,
+            headerCell: &#x27;&lt;th class=&quot;&#x27; + constants.headerCellClass + &#x27;&quot;&gt;&lt;/th&gt;&#x27;,
+            cell: &#x27;&lt;td&gt;&lt;/td&gt;&#x27;,
+            textContainer: &#x27;&lt;span class=&quot;&#x27; + constants.textContainerClass + &#x27;&quot;&gt;&lt;%= content %&gt;&lt;/span&gt;&#x27;,
+            headerCellLoader: &#x27;&lt;div class=&quot;&#x27; + constants.headerCellLoaderClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+            removeCellContent: &#x27;&lt;span class=&quot;fa-&lt;%= icon %&gt; &#x27; + constants.rowRemoverClass + &#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+            editableCellContent: [
+                &#x27;&lt;span class=&quot;&#x27; + constants.editableItemClass + &#x27;&quot;&gt;&lt;%= value %&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;div class=&quot;&#x27; + constants.inputWrapperClass + &#x27;&quot;&gt;&#x27;,
+                &#x27;   &lt;input type=&quot;text&quot; class=&quot;form-element husky-validate &#x27; + constants.editableInputClass + &#x27;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            img: &#x27;&lt;img alt=&quot;&lt;%= alt %&gt;&quot; src=&quot;&lt;%= src %&gt;&quot;/&gt;&#x27;,
+            childWrapper: &#x27;&lt;div class=&quot;&#x27; + constants.childWrapperClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+            toggleIcon: &#x27;&lt;span class=&quot;&#x27; + constants.toggleIconClass + &#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+            icon: [
+                &#x27;&lt;span class=&quot;&#x27; + constants.gridIconClass + &#x27; &lt;%= align %&gt;&quot; data-icon-index=&quot;&lt;%= index %&gt;&quot;&gt;&#x27;,
+                &#x27;   &lt;span class=&quot;fa-&lt;%= icon %&gt;&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/span&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            checkbox: [
+                &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
+                &#x27;   &lt;input class=&quot;&#x27; + constants.checkboxClass + &#x27;&quot; type=&quot;checkbox&quot; data-form=&quot;false&quot;/&gt;&#x27;,
+                &#x27;   &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            radio: [
+                &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
+                &#x27;    &lt;input class=&quot;&#x27; + constants.radioClass + &#x27;&quot; name=&quot;&lt;%= name %&gt;&quot; type=&quot;radio&quot; data-form=&quot;false&quot;/&gt;&#x27;,
+                &#x27;    &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            empty: [
+                &#x27;&lt;div class=&quot;&#x27; + constants.emptyListElementClass + &#x27;&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;fa-coffee icon&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;   &lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;)
+        },
 
-    /**
-     * used to update the table width and its containers due to responsiveness
-     * @event husky.datagrid.update.table
-     */
-    UPDATE_TABLE = function() {
-        return this.datagrid.createEventName.call(this.datagrid, &#x27;update.table&#x27;);
-    },
+        /**
+         * used to update the table width and its containers due to responsiveness
+         * @event husky.datagrid.update.table
+         */
+        UPDATE_TABLE = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;update.table&#x27;);
+        },
 
-    /**
-     * used to update the table width and its containers due to responsiveness
-     * @event husky.datagrid.table.open-child
-     * @param {Number|String} id The id of the data-record to open the parents for
-     */
-    OPEN_PARENTS = function() {
-        return this.datagrid.createEventName.call(this.datagrid, &#x27;table.open-parents&#x27;);
-    },
+        /**
+         * used to update the table width and its containers due to responsiveness
+         * @event husky.datagrid.table.open-child
+         * @param {Number|String} id The id of the data-record to open the parents for
+         */
+        OPEN_PARENTS = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;table.open-parents&#x27;);
+        },
 
-    /**
-     * triggered when a radio button inside the datagrid is clicked
-     * @event husky.datagrid.table.open-child
-     * @param {Number|String} id The id of the data-record to open the parents for
-     * @param {String} columnName column name
-     */
-    RADIO_SELECTED = function() {
-        return this.datagrid.createEventName.call(this.datagrid, &#x27;radio.selected&#x27;);
-    },
+        /**
+         * triggered when a radio button inside the datagrid is clicked
+         * @event husky.datagrid.table.open-child
+         * @param {Number|String} id The id of the data-record to open the parents for
+         * @param {String} columnName column name
+         */
+        RADIO_SELECTED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;radio.selected&#x27;);
+        },
 
-    /**
-     * triggered when children were collapsed
-     * @event husky.datagrid.table.children.collapsed
-     */
-    CHILDREN_COLLAPSED = function() {
-        return this.datagrid.createEventName.call(this.datagrid, &#x27;children.collapsed&#x27;);
-    },
+        /**
+         * triggered when children were collapsed
+         * @event husky.datagrid.table.children.collapsed
+         */
+        CHILDREN_COLLAPSED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;children.collapsed&#x27;);
+        },
 
-    /**
-     * triggered when children were expanded
-     * @event husky.datagrid.table.children.expanded
-     */
-    CHILDREN_EXPANDED = function() {
-        return this.datagrid.createEventName.call(this.datagrid, &#x27;children.expanded&#x27;);
-    };
+        /**
+         * triggered when children were expanded
+         * @event husky.datagrid.table.children.expanded
+         */
+        CHILDREN_EXPANDED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;children.expanded&#x27;);
+        };
 
     return {
 
@@ -389,10 +389,10 @@ define(function() {
             this.sandbox.on(UPDATE_TABLE.call(this), this.onResize.bind(this));
             this.sandbox.on(OPEN_PARENTS.call(this), this.openParents.bind(this));
 
-            if(!!this.options.openPathToSelectedChildren){
+            if (!!this.options.openPathToSelectedChildren) {
                 var eventName = &#x27;&#x27;;
-                if(!!this.datagrid.options.instanceName) {
-                    eventName = &#x27;husky.datagrid.&#x27;+this.datagrid.options.instanceName+&#x27;.view.rendered&#x27;;
+                if (!!this.datagrid.options.instanceName) {
+                    eventName = &#x27;husky.datagrid.&#x27; + this.datagrid.options.instanceName + &#x27;.view.rendered&#x27;;
                 } else {
                     eventName = &#x27;husky.datagrid.view.rendered&#x27;;
                 }
@@ -403,8 +403,8 @@ define(function() {
         /**
          * Opens path to all selected children
          */
-        openPathToSelectedChildren: function(){
-            this.sandbox.util.each(this.datagrid.selectedItems, function(idx, id){
+        openPathToSelectedChildren: function() {
+            this.sandbox.util.each(this.datagrid.selectedItems, function(idx, id) {
                 this.openParents(id);
             }.bind(this));
         },
@@ -452,7 +452,7 @@ define(function() {
          * Adds a row to the datagrid
          * @param record {Object} the new record to add
          */
-        addRecord: function (record) {
+        addRecord: function(record) {
             this.removeEmptyIndicator();
             this.renderBodyRow(record, this.options.addRowTop);
         },
@@ -508,7 +508,7 @@ define(function() {
         /**
          * Adds css classes to the view element
          */
-        addViewClasses: function () {
+        addViewClasses: function() {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
             if (this.options.stickyHeader === true) {
@@ -622,7 +622,7 @@ define(function() {
         /**
          * Renderes an empty remove-row cell into the header
          */
-        renderHeaderRemoveItem: function () {
+        renderHeaderRemoveItem: function() {
             if (this.options.removeRow === true) {
                 var $cell = this.sandbox.dom.createElement(templates.headerCell);
                 this.sandbox.dom.addClass($cell, constants.cellFitClass);
@@ -777,7 +777,7 @@ define(function() {
          * Renders the remove item for a row in the tbody
          * @param id {Number|String} the id of the row to add the select-item for
          */
-        renderRowRemoveItem: function (id) {
+        renderRowRemoveItem: function(id) {
             if (this.options.removeRow === true) {
                 var $cell = this.sandbox.dom.createElement(templates.cell);
                 this.sandbox.dom.html($cell, this.sandbox.util.template(templates.removeCellContent)({
@@ -843,8 +843,8 @@ define(function() {
             if (!!column.type &amp;&amp; column.type === this.datagrid.types.THUMBNAILS) {
                 content = this.datagrid.manipulateContent(content, column.type, this.options.thumbnailFormat);
                 content = this.sandbox.util.template(templates.img)({
-                   alt: content[constants.thumbAltKey],
-                   src: content[constants.thumbSrcKey]
+                    alt: content[constants.thumbAltKey],
+                    src: content[constants.thumbSrcKey]
                 });
             } else {
                 content = this.datagrid.processContentFilter(
@@ -920,9 +920,9 @@ define(function() {
             this.sandbox.util.foreach(this.options.icons, function(icon, index) {
                 if (icon.column === column.attribute) {
                     iconStr = this.sandbox.util.template(templates.icon)({
-                       icon: icon.icon,
-                       align: icon.align,
-                       index: index
+                        icon: icon.icon,
+                        align: icon.align,
+                        index: index
                     });
                     if (typeof content === &#x27;object&#x27;) {
                         this.sandbox.dom.append(content, iconStr);
@@ -962,7 +962,10 @@ define(function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
-            return this.sandbox.dom.get(this.table.$container, 0).scrollWidth &gt; this.sandbox.dom.width(this.table.$container);
+            if (!!this.sandbox.dom.get(this.table.$container, 0)) {
+                return this.sandbox.dom.get(this.table.$container, 0).scrollWidth &gt; this.sandbox.dom.width(this.table.$container);
+            }
+            return false;
         },
 
         /**
@@ -1027,7 +1030,7 @@ define(function() {
         /**
          * Bindes dom related events
          */
-        bindDomEvents: function () {
+        bindDomEvents: function() {
             // select or deselect items if the body recognizes a change event
             this.sandbox.dom.on(
                 this.table.$body, &#x27;click&#x27;, this.selectItemChangeHandler.bind(this),
@@ -1072,7 +1075,7 @@ define(function() {
                 var cloneThs = this.sandbox.dom.find(&#x27;th&#x27;, this.table.header.$clone),
                     originalThs = this.sandbox.dom.find(&#x27;th&#x27;, this.table.header.$el);
                 this.sandbox.dom.width(this.table.header.$row, this.sandbox.dom.width(
-                   this.sandbox.dom.find(&#x27;tr&#x27;, this.table.header.$clone)
+                    this.sandbox.dom.find(&#x27;tr&#x27;, this.table.header.$clone)
                 ));
                 this.sandbox.util.foreach(cloneThs, function(cloneTh, index) {
                     // min- and max-width because for table-cells normal width has no effect
@@ -1186,7 +1189,7 @@ define(function() {
          * Handles the focusout of an editable input
          * @param event {Object} the event object
          */
-        editableInputFocusoutHandler: function (event) {
+        editableInputFocusoutHandler: function(event) {
             if (!!this.isFocusoutHandlerEnabled) {
                 this.sandbox.dom.stopPropagation(event);
                 var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, &#x27;.&#x27; + constants.rowClass), &#x27;id&#x27;);
@@ -1201,7 +1204,7 @@ define(function() {
         editRow: function(recordId) {
             var modifiedRecord = {};
             // build new record object out of the inputs in the row
-            this.sandbox.util.each(this.table.rows[recordId].cells, function (attribute, cell) {
+            this.sandbox.util.each(this.table.rows[recordId].cells, function(attribute, cell) {
                 if (!!this.sandbox.dom.find(&#x27;.&#x27; + constants.editableInputClass, cell.$el).length) {
                     modifiedRecord[attribute] = this.sandbox.dom.val(
                         this.sandbox.dom.find(&#x27;.&#x27; + constants.editableInputClass, cell.$el)
@@ -1215,7 +1218,7 @@ define(function() {
          * Clears everything up after a row was edited. (hides the input and updates the values)
          * @param record {Object} the changed data record
          */
-        editedSuccessCallback: function (record) {
+        editedSuccessCallback: function(record) {
             var $row;
             if (!!record.id &amp;&amp; !!this.table.rows[record.id]) {
                 $row = this.table.rows[record.id].$el;
@@ -1232,7 +1235,7 @@ define(function() {
          * Adds a css class to all inputs in a row, if the editing request returned with an error
          * @param recordId
          */
-        editedErrorCallback: function (recordId) {
+        editedErrorCallback: function(recordId) {
             var $row = this.table.rows[recordId].$el;
             this.sandbox.dom.addClass(
                 this.sandbox.dom.find(&#x27;.&#x27; + constants.inputWrapperClass, $row),
@@ -1247,10 +1250,10 @@ define(function() {
          * @param successCallback {Function} gets executed after success
          * @param errorCallback {Function} gets executed after error
          */
-        saveRow: function (recordId, newRecordData, successCallback, errorCallback) {
+        saveRow: function(recordId, newRecordData, successCallback, errorCallback) {
             var hasChanged = false,
                 record;
-            this.sandbox.util.each(this.table.rows[recordId].cells, function (attribute, cell) {
+            this.sandbox.util.each(this.table.rows[recordId].cells, function(attribute, cell) {
                 if (cell.editable === true &amp;&amp; cell.originalData !== newRecordData[attribute]) {
                     hasChanged = true;
                 }
@@ -1296,11 +1299,11 @@ define(function() {
          * Handles the click on a body row
          * @param event {Object} the event object
          */
-        bodyRowClickHandler: function (event) {
+        bodyRowClickHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;);
             this.emitRowClickedEvent(event);
-            if (!!recordId &amp;&amp; !!this.table.rows[recordId]) {
+            if (!!recordId &amp;&amp; !!this.table.rows &amp;&amp; !!this.table.rows[recordId]) {
                 if (this.options.highlightSelected === true) {
                     this.uniqueHighlightRecord(recordId);
                 }
@@ -1314,14 +1317,14 @@ define(function() {
          * Emits the row clicked event
          * @param event {Object} the original click event
          */
-        emitRowClickedEvent: function (event) {
+        emitRowClickedEvent: function(event) {
             if (this.rowClicked === false) {
                 this.rowClicked = true;
                 var recordId = this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;),
                     parameter = recordId || event;
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, parameter);
                 // delay to prevent multiple emits on double click
-                this.sandbox.util.delay(function () {
+                this.sandbox.util.delay(function() {
                     this.rowClicked = false;
                 }.bind(this), 500);
             }
@@ -1341,7 +1344,7 @@ define(function() {
          * Handles the change event of the select items
          * @param event {Object} the event object
          */
-        selectItemChangeHandler: function (event) {
+        selectItemChangeHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.target, &#x27;.&#x27; + constants.rowClass), &#x27;id&#x27;),
                 isChecked = this.sandbox.dom.is(event.target, &#x27;:checked&#x27;);
@@ -1356,7 +1359,7 @@ define(function() {
          * Handles the change event of a select item in the header
          * @param event {Object} the event object
          */
-        allSelectItemChangeHandler: function (event) {
+        allSelectItemChangeHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
             var isChecked = this.sandbox.dom.is(event.target, &#x27;:checked&#x27;);
             if (isChecked === true) {
@@ -1370,7 +1373,7 @@ define(function() {
          * Highlights a record an unhighlights all other rows
          * @param id {Number|String} the id of the record to highlight
          */
-        uniqueHighlightRecord: function (id) {
+        uniqueHighlightRecord: function(id) {
             this.sandbox.dom.removeClass(
                 this.sandbox.dom.find(&#x27;.&#x27; + constants.rowClass + &#x27;.&#x27; + constants.selectedRowClass, this.table.$body),
                 constants.selectedRowClass
@@ -1381,7 +1384,7 @@ define(function() {
         /**
          * Selejcts all records
          */
-        selectAllRecords: function () {
+        selectAllRecords: function() {
             this.datagrid.selectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find(&#x27;.&#x27; + constants.checkboxClass, this.table.$body), &#x27;checked&#x27;, true);
         },
@@ -1389,7 +1392,7 @@ define(function() {
         /**
          * Deselects all records
          */
-        deselectAllRecords: function () {
+        deselectAllRecords: function() {
             this.datagrid.deselectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find(&#x27;.&#x27; + constants.checkboxClass, this.table.$body), &#x27;checked&#x27;, false);
         },
@@ -1399,7 +1402,7 @@ define(function() {
          * @param id {Number|String} the id of the record to select or deselect
          * @param select {Boolean} true to select false to deselect
          */
-        toggleSelectRecord: function (id, select) {
+        toggleSelectRecord: function(id, select) {
             var areAllSelected;
             if (select === true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
@@ -1425,7 +1428,7 @@ define(function() {
          * Selects or deselects the select all item
          * @param select {Boolean} true to select false to deselect the select all item
          */
-        toggleSelectAllItem: function (select) {
+        toggleSelectAllItem: function(select) {
             if (!!this.table.header) {
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find(&#x27;.&#x27; + constants.checkboxClass, this.table.header.$el), &#x27;checked&#x27;, select
@@ -1437,7 +1440,7 @@ define(function() {
          * Selects a record and deselects all other records
          * @param id {Number|String} the id of the record to select
          */
-        uniqueSelectRecord: function (id) {
+        uniqueSelectRecord: function(id) {
             this.datagrid.deselectAllItems.call(this.datagrid);
             this.datagrid.setItemSelected.call(this.datagrid, id);
         },
@@ -1527,7 +1530,7 @@ define(function() {
 
         /**
          * Opens all parents of a record
-         * @param id {Number|String} the id of the record
+         * @param recordId {Number|String} the id of the record
          */
         openParents: function(recordId) {
             if (!!this.table &amp;&amp; !!this.table.rows[recordId]) {
@@ -1540,7 +1543,7 @@ define(function() {
                 }
             }
         }
-     };
+    };
 });
 
     </pre>
