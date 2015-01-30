@@ -34,6 +34,7 @@
  * @param {Array} [options.fields] A list of the fields to show inside the dropdown
  * @param {String} [options.dropdownSizeClass] The styling class for the dropdown. Defined inside the autocomplete stylesheet
  * @param {String} [options.footerContent] Could be a template or just text
+ * @param {Integer} [options.limit] Max number of items displayed in the list. Defaults to 5.
  */
 
 define([], function() {
@@ -63,7 +64,8 @@ define([], function() {
         selectCallback: null,
         fields: [],
         dropdownSizeClass: '',
-        footerContent: ''
+        footerContent: '',
+        limit: 5
     },
 
     templates = {
@@ -325,6 +327,7 @@ define([], function() {
                 configs = {
                     name: this.options.instanceName,
                     local: this.handleData(this.localData),
+                    limit: this.options.limit,
                     displayKey: this.options.valueKey,
                     templates: {
                         suggestion: function(context) {

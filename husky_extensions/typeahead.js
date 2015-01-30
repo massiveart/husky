@@ -21,7 +21,7 @@
 
                 init: function(selector, configs) {
                     var engine = this.createEngine(configs);
-                    
+
                     engine.initialize();
 
                     return app.core.dom.$(selector).typeahead({
