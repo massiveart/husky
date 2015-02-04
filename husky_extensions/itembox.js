@@ -56,8 +56,8 @@ define(function() {
                     '<div class="white-box form-element" id="', this.ids.container, '">',
                     '    <div class="header">',
                     '        <span class="fa-plus-circle icon left action" id="', this.ids.addButton, '"></span>',
-                    '            <div class="position', !!this.options.hidePositionElement ? ' hidden' : '', '">',
-                    '                <div class="husky-position" id="', this.ids.displayOption, '">',
+                    '        <div class="position', !!this.options.hidePositionElement ? ' hidden' : '', '">',
+                    '            <div class="husky-position" id="', this.ids.displayOption, '">',
                     '                <div class="top left ', (!this.options.displayOptions.leftTop ? 'inactive' : ''), '" data-position="leftTop"></div>',
                     '                <div class="top middle ', (!this.options.displayOptions.top ? 'inactive' : ''), '" data-position="top"></div>',
                     '                <div class="top right ', (!this.options.displayOptions.rightTop ? 'inactive' : ''), '" data-position="rightTop"></div>',
@@ -107,6 +107,33 @@ define(function() {
             }
         },
 
+        initSortable = function() {
+            var $sortable = this.sandbox.dom.find('.sortable', this.$el),
+                sortable;
+
+            this.sandbox.dom.sortable($sortable, 'destroy');
+
+            sortable = this.sandbox.dom.sortable('.sortable', {
+                handle: '.move',
+                forcePlaceholderSize: true
+            });
+
+            this.sandbox.dom.unbind(sortable, 'unbind');
+
+            sortable.bind('sortupdate', function() {
+                var $elements = this.sandbox.dom.find('li', $sortable),
+                    ids = [];
+
+                this.sandbox.util.foreach($elements, function($element, index) {
+                    var $number = this.sandbox.dom.find('.num', $element);
+                    $number.html(index + 1);
+                    ids.push(this.sandbox.dom.data($element, 'id'));
+                }.bind(this));
+
+                this.updateOrder(ids);
+            }.bind(this));
+        },
+
         itembox = {
             DATA_CHANGED: function() {
                 return createEventName.call(this, 'data-changed');
@@ -144,7 +171,6 @@ define(function() {
 
                 this.sandbox.dom.html(this.$el, templates.skeleton.call(this));
 
-                // TODO init container
                 this.$container = this.sandbox.dom.find(this.getId('container'), this.$el);
                 this.$content = this.sandbox.dom.find(this.getId('content'), this.$el);
                 this.$footer = this.sandbox.dom.find(this.getId('footer'), this.$el);
@@ -190,11 +216,16 @@ define(function() {
                 this.sandbox.dom.remove(this.$footer);
             },
 
-            setData: function(data) {
+            setData: function(data, reload) {
                 var oldData = this.sandbox.dom.data(this.$el, this.options.dataAttribute);
+                reload = typeof(reload) === 'undefined' ? true : reload;
+
                 if (!this.sandbox.util.isEqual(oldData, data)) {
                     this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
-                    this.sandbox.emit(this.DATA_CHANGED(), data, this.$el);
+
+                    if (reload) {
+                        this.sandbox.emit(this.DATA_CHANGED(), data, this.$el);
+                    }
                 }
             },
 
@@ -239,6 +270,7 @@ define(function() {
                     }
 
                     this.sandbox.dom.html(this.$content, $list);
+                    initSortable.call(this);
                     this.renderFooter(data);
                 } else {
                     this.renderNoContent();
