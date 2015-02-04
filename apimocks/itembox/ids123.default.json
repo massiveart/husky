@@ -1,0 +1,48 @@
+{
+    "_links": {
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/itembox?pageSize=4"
+        },
+        "first": {
+            "href": "http://husky.lo:7878/admin/api/itembox?page=1&pageSize=4"
+        },
+        "last": {
+            "href": "http://husky.lo:7878/admin/api/itembox?page=3&pageSize=4"
+        },
+        "next": {
+            "href": "http://husky.lo:7878/admin/api/itembox?page=2&pageSize=4"
+        },
+        "filter": {
+            "href": "http://husky.lo:7878/admin/api/itembox?fields={fieldsList}"
+        },
+        "pagination": {
+            "href": "http://husky.lo:7878/admin/api/itembox?page={page}&pageSize={pageSize}"
+        },
+        "find": {
+            "href": "http://husky.lo:7878/admin/api/itembox/search?pageSize=4&search={searchString}{&searchFields}"
+        },
+        "sortable": {
+            "href": "http://husky.lo:7878/admin/api/itembox/sort?page=1&pageSize=4&sortBy={sortBy}&sortOrder={sortOrder}"
+        }
+    },
+    "_embedded": {
+        "items": [
+            {
+                "id": "1",
+                "title": "Title 1"
+            },
+            {
+                "id": "2",
+                "title": "Title 2"
+            },
+            {
+                "id": "3",
+                "title": "Title 3"
+            }
+        ]
+    },
+    "total": 4,
+    "pages": 1,
+    "page": 1,
+    "limit": 10
+}

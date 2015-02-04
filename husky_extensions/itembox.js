@@ -15,7 +15,16 @@ define(function() {
 
     var defaults = {
             instanceName: null,
+            url: null,
+            eventNamespace: 'husky.listbox',
+            idsParameter: 'ids',
+            resultKey: null,
+            idKey: 'id',
             visibleItems: 6,
+            dataAttribute: '',
+            sortable: true,
+            removable: true,
+            hidePositionElement: false,
             displayOptions: {
                 leftTop: true,
                 top: true,
@@ -30,18 +39,25 @@ define(function() {
             translations: {
                 noContentSelected: 'listbox.nocontent-selected',
                 viewAll: 'public.view-all',
-                viewLess: 'public.view-less'
+                viewLess: 'public.view-less',
+                of: 'public.of',
+                visible: 'public.visible'
             }
+        },
+
+        createEventName = function(eventName) {
+            // TODO extract to extension?
+            return this.options.eventNamespace + '.' + eventName;
         },
 
         templates = {
             skeleton: function() {
                 return [
-                    '<div class="white-box form-element" id="', this.options.ids.container, '">',
+                    '<div class="white-box form-element" id="', this.ids.container, '">',
                     '    <div class="header">',
-                    '        <span class="fa-plus-circle icon left action" id="', this.options.ids.addButton, '"></span>',
+                    '        <span class="fa-plus-circle icon left action" id="', this.ids.addButton, '"></span>',
                     '            <div class="position', !!this.options.hidePositionElement ? ' hidden' : '', '">',
-                    '                <div class="husky-position" id="', this.options.ids.displayOption, '">',
+                    '                <div class="husky-position" id="', this.ids.displayOption, '">',
                     '                <div class="top left ', (!this.options.displayOptions.leftTop ? 'inactive' : ''), '" data-position="leftTop"></div>',
                     '                <div class="top middle ', (!this.options.displayOptions.top ? 'inactive' : ''), '" data-position="top"></div>',
                     '                <div class="top right ', (!this.options.displayOptions.rightTop ? 'inactive' : ''), '" data-position="rightTop"></div>',
@@ -53,10 +69,10 @@ define(function() {
                     '                <div class="bottom right ', (!this.options.displayOptions.rightBottom ? 'inactive' : ''), '" data-position="rightBottom"></div>',
                     '            </div>',
                     '        </div>',
-                    '        <span class="fa-cog icon right border" id="', this.options.ids.configButton, '" style="display:none"></span>',
+                    '        <span class="fa-cog icon right border" id="', this.ids.configButton, '" style="display:none"></span>',
                     '    </div>',
-                    '    <div class="content" id="', this.options.ids.content, '"></div>',
-                    '    <div id="', this.options.ids.footer, '"></div>',
+                    '    <div class="content" id="', this.ids.content, '"></div>',
+                    '    <div class="footer" id="', this.ids.footer, '"></div>',
                     '</div>'
                 ].join('');
             },
@@ -70,21 +86,46 @@ define(function() {
                 ].join('');
             },
 
-            footer: function() {
-                [
+            footer: function(length) {
+                return [
                     '<span>',
                     '    <strong>' + this.itemsVisible + ' </strong>', this.sandbox.translate(this.options.translations.of), ' ',
-                    '    <strong>' + this.items.length + ' </strong>', this.sandbox.translate(this.options.translations.visible),
+                    '    <strong>' + length + ' </strong>', this.sandbox.translate(this.options.translations.visible),
                     '</span>'
                 ].join('')
+            },
+
+            item: function(id, number, content) {
+                return [
+                    '<li data-id="', id, '">',
+                    !!this.options.sortable ? '    <span class="fa-ellipsis-v icon move"></span>' : '',
+                    '    <span class="num">', number, '</span>',
+                    content,
+                    !!this.options.removable ? '    <span class="fa-times remove"></span>' : '',
+                    '</li>'
+                ].join('');
             }
         },
 
         itembox = {
+            DATA_CHANGED: function() {
+                return createEventName.call(this, 'data-changed');
+            },
+
+            DATA_RETRIEVED: function() {
+                return createEventName.call(this, 'data-retrieved');
+            },
+
+            bindCustomEvents: function() {
+                this.sandbox.on(this.DATA_CHANGED(), this.loadContent.bind(this));
+                this.sandbox.on(this.DATA_RETRIEVED(), this.renderContent.bind(this));
+            },
+
             render: function() {
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
+                this.viewAll = false;
 
-                this.options.ids = {
+                this.ids = {
                     container: 'listbox-' + this.options.instanceName + '-container',
                     addButton: 'listbox-' + this.options.instanceName + '-add',
                     configButton: 'listbox-' + this.options.instanceName + '-config',
@@ -104,6 +145,7 @@ define(function() {
                 this.sandbox.dom.html(this.$el, templates.skeleton.call(this));
 
                 // TODO init container
+                this.$container = this.sandbox.dom.find(this.getId('container'), this.$el);
                 this.$content = this.sandbox.dom.find(this.getId('content'), this.$el);
                 this.$footer = this.sandbox.dom.find(this.getId('footer'), this.$el);
 
@@ -112,19 +154,24 @@ define(function() {
                 // TODO set preselected values
 
                 this.renderNoContent();
+
+                this.bindCustomEvents();
             },
 
             renderNoContent: function() {
                 this.sandbox.dom.html(this.$content, templates.noContent.call(this));
+                this.detachFooter();
             },
 
             /**
              * renders the footer and calls a method to bind the events for itself
              */
-            renderFooter: function() {
-                this.sandbox.dom.html(this.$footer, templates.footer.call(this));
+            renderFooter: function(data) {
+                var length = data.length;
 
-                if (this.itemsVisible < this.items.length) {
+                this.sandbox.dom.html(this.$footer, templates.footer.call(this, length));
+
+                if (this.itemsVisible <= length) {
                     this.sandbox.dom.append(
                         this.sandbox.dom.find('span', this.$footer),
                         '<strong class="view-all pointer"> (' + this.sandbox.translate(this.options.translations.viewAll) + ')</strong>'
@@ -143,8 +190,81 @@ define(function() {
                 this.sandbox.dom.remove(this.$footer);
             },
 
+            setData: function(data) {
+                var oldData = this.sandbox.dom.data(this.$el, this.options.dataAttribute);
+                if (!this.sandbox.util.isEqual(oldData, data)) {
+                    this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
+                    this.sandbox.emit(this.DATA_CHANGED(), data, this.$el);
+                }
+            },
+
+            loadContent: function(data) {
+                this.startLoader();
+
+                // reset items visible when new content is loaded
+                this.viewAll = false;
+
+                if (!!data) {
+                    this.sandbox.util.load(this.getUrl(data))
+                        .then(function(data) {
+                            this.sandbox.emit(this.DATA_RETRIEVED(), data._embedded[this.options.resultKey]);
+                        }.bind(this))
+                        .fail(function(error) {
+                            this.sandbox.logger.error(error);
+                        }.bind(this));
+                } else {
+                    this.sandbox.emit(this.DATA_RETRIEVED(), []);
+                }
+            },
+
+            renderContent: function(data) {
+                if (!!this.viewAll) {
+                    this.itemsVisible = data.length;
+                } else {
+                    this.itemsVisible = (data.length < this.options.visibleItems)
+                        ? data.length : this.options.visibleItems;
+                }
+
+                if (data.length > 0) {
+                    var $list = this.sandbox.dom.createElement('<ul class="items-list sortable"/>'),
+                        i = -1,
+                        length = data.length;
+
+                    // loop stops if no more items are left or if number of rendered items matches itemsVisible
+                    while (++i < length && i < this.itemsVisible) {
+                        this.sandbox.dom.append(
+                            $list,
+                            templates.item.call(this, data[i][this.options.idKey], i + 1, this.getItemContent(data[i]))
+                        );
+                    }
+
+                    this.sandbox.dom.html(this.$content, $list);
+                    this.renderFooter(data);
+                } else {
+                    this.renderNoContent();
+                }
+            },
+
+            startLoader: function() {
+                this.detachFooter();
+
+                var $loader = this.sandbox.dom.createElement('<div class="loader"/>');
+                this.sandbox.dom.html(this.$content, $loader);
+
+                this.sandbox.start([
+                    {
+                        name: 'loader@husky',
+                        options: {
+                            el: $loader,
+                            size: '100px',
+                            color: '#e4e4e4'
+                        }
+                    }
+                ]);
+            },
+
             getId: function(type) {
-                return ['#', this.options.ids[type]].join('');
+                return ['#', this.ids[type]].join('');
             }
         };
 

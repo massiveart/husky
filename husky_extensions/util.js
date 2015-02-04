@@ -29,6 +29,8 @@ define(function() {
                 return s;
             };
 
+            app.core.util.isEqual = _.isEqual;
+
             /**
              * cool guy loop implementation of foreach: http://jsperf.com/loops3/2
              * returns -> callback(value, index)

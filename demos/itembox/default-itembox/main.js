@@ -10,12 +10,32 @@
  */
 
 define([], function() {
+    var templates = {
+        itemContent: function(title) {
+            return ['<span class="title">', title, '</span>'].join('');
+        }
+    };
 
     return {
         type: 'itembox',
 
+        getUrl: function(data) {
+            var delimiter = (this.options.url.indexOf('?') === -1) ? '?' : '&',
+                url = [
+                    this.options.url, delimiter, this.options.idsParameter, '=', (data || []).join('')
+                ].join('');
+
+            return url;
+        },
+
+        getItemContent: function(item) {
+            return templates.itemContent(item.title);
+        },
+
         initialize: function() {
             this.render();
+
+            this.setData([1, 2, 3]);
         }
     }
 });
