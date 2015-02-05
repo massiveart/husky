@@ -14,10 +14,6 @@ define([], function() {
             itemContent: function(title) {
                 return ['<span class="title">', title, '</span>'].join('');
             }
-        },
-
-        bindCustomEvents = function() {
-            this.sandbox.on(this.DISPLAY_OPTION_CHANGED, this.updateDisplayOption.bind(this));
         };
 
     return {
@@ -42,8 +38,6 @@ define([], function() {
 
         initialize: function() {
             this.render();
-
-            bindCustomEvents.call(this);
 
             this.setData([1, 2, 3]);
         }

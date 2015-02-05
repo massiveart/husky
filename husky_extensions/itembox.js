@@ -47,6 +47,7 @@ define(function() {
 
         constants = {
             displayOptionSelectedClass: 'selected',
+            itemInvisibleClass: 'invisible-item'
         },
 
         createEventName = function(eventName) {
@@ -99,9 +100,9 @@ define(function() {
                 ].join('')
             },
 
-            item: function(id, number, content) {
+            item: function(id, number, content, visible) {
                 return [
-                    '<li data-id="', id, '">',
+                    '<li class="', !!visible ? '' : constants.itemInvisibleClass, '" data-id="', id, '">',
                     !!this.options.sortable ? '    <span class="fa-ellipsis-v icon move"></span>' : '',
                     '    <span class="num">', number, '</span>',
                     content,
@@ -123,6 +124,8 @@ define(function() {
                 'click',
                 this.changeDisplayOptions.bind(this)
             );
+
+            this.sandbox.dom.on(this.$el, 'click', this.toggleInvisibleItems.bind(this), this.getId('footerView'));
         },
 
         initSortable = function() {
@@ -167,7 +170,7 @@ define(function() {
 
             render: function() {
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
-                this.viewAll = false;
+                this.viewAll = true;
 
                 this.ids = {
                     container: 'listbox-' + this.options.instanceName + '-container',
@@ -176,6 +179,7 @@ define(function() {
                     displayOption: 'listbox-' + this.options.instanceName + '-display-option',
                     content: 'listbox-' + this.options.instanceName + '-content',
                     footer: 'listbox-' + this.options.instanceName + '-footer',
+                    footerView: 'listbox-' + this.options.instanceName + '-footer-view',
                     chooseTab: 'listbox-' + this.options.instanceName + '-choose-tab',
                     uploadTab: 'listbox-' + this.options.instanceName + '-upload-tab',
                     gridGroup: 'listbox-' + this.options.instanceName + '-grid-group',
@@ -211,23 +215,25 @@ define(function() {
              * renders the footer and calls a method to bind the events for itself
              */
             renderFooter: function(data) {
-                var length = data.length;
+                var length = data.length,
+                    translation = (this.itemsVisible <= length)
+                        ? this.sandbox.translate(this.options.translations.viewAll)
+                        : this.sandbox.translate(this.options.translations.viewLess);
 
                 this.sandbox.dom.html(this.$footer, templates.footer.call(this, length));
 
-                if (this.itemsVisible <= length) {
-                    this.sandbox.dom.append(
-                        this.sandbox.dom.find('span', this.$footer),
-                        '<strong class="view-all pointer"> (' + this.sandbox.translate(this.options.translations.viewAll) + ')</strong>'
-                    );
-                } else if (this.itemsVisible > this.options.visibleItems) {
-                    this.sandbox.dom.append(
-                        this.sandbox.dom.find('span', this.$footer),
-                        '<strong class="view-less pointer"> (' + this.sandbox.translate(this.options.translations.viewLess) + ')</strong>'
-                    );
-                }
+                this.sandbox.dom.append(
+                    this.sandbox.dom.find('span', this.$footer),
+                    [
+                        '<strong class="pointer"> (<span id="', this.ids.footerView, '">',
+                        translation,
+                        '</span>)</strong>'
+                    ].join('')
+                );
 
                 this.sandbox.dom.append(this.$container, this.$footer);
+
+                this.$footerView = this.sandbox.dom.find(this.getId('footerView'), this.$el);
             },
 
             detachFooter: function() {
@@ -251,7 +257,7 @@ define(function() {
                 this.startLoader();
 
                 // reset items visible when new content is loaded
-                this.viewAll = false;
+                this.viewAll = true;
 
                 if (!!data) {
                     this.sandbox.util.load(this.getUrl(data))
@@ -267,29 +273,31 @@ define(function() {
             },
 
             renderContent: function(data) {
-                if (!!this.viewAll) {
-                    this.itemsVisible = data.length;
-                } else {
-                    this.itemsVisible = (data.length < this.options.visibleItems)
-                        ? data.length : this.options.visibleItems;
-                }
-
                 if (data.length > 0) {
                     var $list = this.sandbox.dom.createElement('<ul class="items-list sortable"/>'),
-                        i = -1,
                         length = data.length;
 
-                    // loop stops if no more items are left or if number of rendered items matches itemsVisible
-                    while (++i < length && i < this.itemsVisible) {
+                    for (var i = -1; ++i < length;) {
                         this.sandbox.dom.append(
                             $list,
-                            templates.item.call(this, data[i][this.options.idKey], i + 1, this.getItemContent(data[i]))
+                            templates.item.call(
+                                this,
+                                data[i][this.options.idKey],
+                                i + 1,
+                                this.getItemContent(data[i]),
+                                i < this.options.visibleItems
+                            )
                         );
                     }
 
                     this.sandbox.dom.html(this.$content, $list);
+
+                    // cache the invisible items for easy toggle later
+                    this.$invisibleItems = this.sandbox.dom.find('.' + constants.itemInvisibleClass, this.$el);
+
                     initSortable.call(this);
                     this.renderFooter(data);
+                    this.toggleInvisibleItems();
                 } else {
                     this.renderNoContent();
                 }
@@ -328,6 +336,16 @@ define(function() {
                 this.sandbox.emit(
                     this.DISPLAY_OPTION_CHANGED(),
                     this.sandbox.dom.data(event.currentTarget, 'position')
+                );
+            },
+
+            toggleInvisibleItems: function() {
+                this.viewAll = !this.viewAll;
+                this.$invisibleItems.toggle();
+                this.sandbox.dom.html(this.$footerView,
+                    !!this.viewAll
+                        ? this.sandbox.translate(this.options.translations.viewLess)
+                        : this.sandbox.translate(this.options.translations.viewAll)
                 );
             },
 
