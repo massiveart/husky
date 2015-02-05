@@ -24,7 +24,9 @@ define(function() {
             dataAttribute: '',
             sortable: true,
             removable: true,
+            hideAddButton: false,
             hidePositionElement: false,
+            hideConfigButton: false,
             displayOptions: {
                 leftTop: true,
                 top: true,
@@ -60,7 +62,7 @@ define(function() {
                 return [
                     '<div class="white-box form-element" id="', this.ids.container, '">',
                     '    <div class="header">',
-                    '        <span class="fa-plus-circle icon left action" id="', this.ids.addButton, '"></span>',
+                    '        <span class="fa-plus-circle icon left action', !!this.options.hideAddButton ? ' hidden' : '', '" id="', this.ids.addButton, '"></span>',
                     '        <div class="position', !!this.options.hidePositionElement ? ' hidden' : '', '">',
                     '            <div class="husky-position" id="', this.ids.displayOption, '">',
                     '                <div class="top left ', (!this.options.displayOptions.leftTop ? 'inactive' : ''), '" data-position="leftTop"></div>',
@@ -74,7 +76,7 @@ define(function() {
                     '                <div class="bottom right ', (!this.options.displayOptions.rightBottom ? 'inactive' : ''), '" data-position="rightBottom"></div>',
                     '            </div>',
                     '        </div>',
-                    '        <span class="fa-cog icon right border" id="', this.ids.configButton, '" style="display:none"></span>',
+                    '        <span class="fa-cog icon right border', !!this.options.hideConfigButton ? ' hidden' : '', '" id="', this.ids.configButton, '"></span>',
                     '    </div>',
                     '    <div class="content" id="', this.ids.content, '"></div>',
                     '    <div class="footer" id="', this.ids.footer, '"></div>',
@@ -126,6 +128,14 @@ define(function() {
             );
 
             this.sandbox.dom.on(this.$el, 'click', this.toggleInvisibleItems.bind(this), this.getId('footerView'));
+
+            this.sandbox.dom.on(this.$addButton, 'click', function() {
+                this.sandbox.emit(this.ADD_BUTTON_CLICKED());
+            }.bind(this));
+
+            this.sandbox.dom.on(this.$configButton, 'click', function() {
+                this.sandbox.emit(this.CONFIG_BUTTON_CLICKED());
+            }.bind(this));
         },
 
         initSortable = function() {
@@ -168,6 +178,14 @@ define(function() {
                 return createEventName.call(this, 'display-position-changed');
             },
 
+            ADD_BUTTON_CLICKED: function() {
+                return createEventName.call(this, 'add-button-clicked');
+            },
+
+            CONFIG_BUTTON_CLICKED: function() {
+                return createEventName.call(this, 'config-button-clicked');
+            },
+
             render: function() {
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
                 this.viewAll = true;
@@ -179,13 +197,7 @@ define(function() {
                     displayOption: 'listbox-' + this.options.instanceName + '-display-option',
                     content: 'listbox-' + this.options.instanceName + '-content',
                     footer: 'listbox-' + this.options.instanceName + '-footer',
-                    footerView: 'listbox-' + this.options.instanceName + '-footer-view',
-                    chooseTab: 'listbox-' + this.options.instanceName + '-choose-tab',
-                    uploadTab: 'listbox-' + this.options.instanceName + '-upload-tab',
-                    gridGroup: 'listbox-' + this.options.instanceName + '-grid-group',
-                    loader: 'listbox-' + this.options.instanceName + '-loader',
-                    collectionSelect: 'listbox-' + this.options.instanceName + '-collection-select',
-                    dropzone: 'listbox-' + this.options.instanceName + '-dropzone'
+                    footerView: 'listbox-' + this.options.instanceName + '-footer-view'
                 };
 
                 this.itemsVisible = this.options.visibleItems;
@@ -193,6 +205,8 @@ define(function() {
                 this.sandbox.dom.html(this.$el, templates.skeleton.call(this));
 
                 this.$container = this.sandbox.dom.find(this.getId('container'), this.$el);
+                this.$addButton = this.sandbox.dom.find(this.getId('addButton'), this.$el);
+                this.$configButton = this.sandbox.dom.find(this.getId('configButton'), this.$el);
                 this.$content = this.sandbox.dom.find(this.getId('content'), this.$el);
                 this.$footer = this.sandbox.dom.find(this.getId('footer'), this.$el);
 

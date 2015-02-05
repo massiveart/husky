@@ -20,12 +20,11 @@ define([], function() {
         type: 'itembox',
 
         getUrl: function(data) {
-            var delimiter = (this.options.url.indexOf('?') === -1) ? '?' : '&',
-                url = [
-                    this.options.url, delimiter, this.options.idsParameter, '=', (data || []).join('')
-                ].join('');
+            var delimiter = (this.options.url.indexOf('?') === -1) ? '?' : '&';
 
-            return url;
+            return [
+                this.options.url, delimiter, this.options.idsParameter, '=', (data || []).join('')
+            ].join('');
         },
 
         getItemContent: function(item) {
