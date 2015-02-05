@@ -11,10 +11,14 @@
 
 define([], function() {
     var templates = {
-        itemContent: function(title) {
-            return ['<span class="title">', title, '</span>'].join('');
-        }
-    };
+            itemContent: function(title) {
+                return ['<span class="title">', title, '</span>'].join('');
+            }
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on(this.DISPLAY_OPTION_CHANGED, this.updateDisplayOption.bind(this));
+        };
 
     return {
         type: 'itembox',
@@ -38,6 +42,8 @@ define([], function() {
 
         initialize: function() {
             this.render();
+
+            bindCustomEvents.call(this);
 
             this.setData([1, 2, 3]);
         }

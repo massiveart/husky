@@ -45,6 +45,10 @@ define(function() {
             }
         },
 
+        constants = {
+            displayOptionSelectedClass: 'selected',
+        },
+
         createEventName = function(eventName) {
             // TODO extract to extension?
             return this.options.eventNamespace + '.' + eventName;
@@ -107,6 +111,20 @@ define(function() {
             }
         },
 
+        bindCustomEvents = function() {
+            this.sandbox.on(this.DATA_CHANGED(), this.loadContent.bind(this));
+            this.sandbox.on(this.DATA_RETRIEVED(), this.renderContent.bind(this));
+        },
+
+        bindDomEvents = function() {
+            // change display options on click on a positon square
+            this.sandbox.dom.on(
+                this.getId('displayOption') + ' > div:not(.inactive)',
+                'click',
+                this.changeDisplayOptions.bind(this)
+            );
+        },
+
         initSortable = function() {
             var $sortable = this.sandbox.dom.find('.sortable', this.$el),
                 sortable;
@@ -143,9 +161,8 @@ define(function() {
                 return createEventName.call(this, 'data-retrieved');
             },
 
-            bindCustomEvents: function() {
-                this.sandbox.on(this.DATA_CHANGED(), this.loadContent.bind(this));
-                this.sandbox.on(this.DATA_RETRIEVED(), this.renderContent.bind(this));
+            DISPLAY_OPTION_CHANGED: function() {
+                return createEventName.call(this, 'display-position-changed');
             },
 
             render: function() {
@@ -181,7 +198,8 @@ define(function() {
 
                 this.renderNoContent();
 
-                this.bindCustomEvents();
+                bindCustomEvents.call(this);
+                bindDomEvents.call(this);
             },
 
             renderNoContent: function() {
@@ -293,6 +311,24 @@ define(function() {
                         }
                     }
                 ]);
+            },
+
+            changeDisplayOptions: function() {
+                // TODO move display options to own component?
+
+                // deselect the current positon element
+                this.sandbox.dom.removeClass(
+                    this.sandbox.dom.find('.' + constants.displayOptionSelectedClass, this.getId('displayOption')),
+                    constants.displayOptionSelectedClass
+                );
+
+                // select clicked on
+                this.sandbox.dom.addClass(event.currentTarget, constants.displayOptionSelectedClass);
+
+                this.sandbox.emit(
+                    this.DISPLAY_OPTION_CHANGED(),
+                    this.sandbox.dom.data(event.currentTarget, 'position')
+                );
             },
 
             getId: function(type) {
