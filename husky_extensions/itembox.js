@@ -503,7 +503,7 @@ define(function() {
              * Updates the visibility of all items based on the current state
              */
             updateVisibility: function() {
-                var $items = this.sandbox.dom.find('li', this.$content),
+                var $items = this.sandbox.dom.find('li', this.$list),
                     length = $items.size(),
                     itemCount = 0;
 
