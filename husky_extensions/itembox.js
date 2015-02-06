@@ -362,6 +362,7 @@ define(function() {
                 if (!this.$list) {
                     this.$list = createItemList.call(this);
                     this.sandbox.dom.html(this.$content, this.$list);
+                    this.renderFooter([]);
                 }
 
                 this.sandbox.dom.append(
@@ -371,7 +372,7 @@ define(function() {
                         item[this.options.idKey],
                         this.getItemContent(item)
                     )
-                )
+                );
 
                 this.updateOrder();
                 this.updateVisibility();
