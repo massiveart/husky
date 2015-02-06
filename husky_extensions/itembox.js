@@ -9,6 +9,9 @@
  * @module husky/components/listbox
  */
 
+/**
+ * Introduces functionality used by multiple components, which are displaying some items in a list
+ */
 define(function() {
 
     'use strict';
@@ -16,7 +19,7 @@ define(function() {
     var defaults = {
             instanceName: null,
             url: null,
-            eventNamespace: 'husky.listbox',
+            eventNamespace: 'husky.itembox',
             idsParameter: 'ids',
             resultKey: null,
             idKey: 'id',
@@ -52,6 +55,11 @@ define(function() {
             itemInvisibleClass: 'invisible-item'
         },
 
+        /**
+         * returns the normalized event names
+         * @param eventName {string} The name of the concrete event without prefix
+         * @returns {string} Returns the prefixed event name
+         */
         createEventName = function(eventName) {
             // TODO extract to extension?
             return this.options.eventNamespace + '.' + eventName;
@@ -124,7 +132,7 @@ define(function() {
             this.sandbox.dom.on(
                 this.getId('displayOption') + ' > div:not(.inactive)',
                 'click',
-                this.changeDisplayOptions.bind(this)
+                this.changeDisplayOption.bind(this)
             );
 
             // toggle between view all and view less
@@ -169,26 +177,54 @@ define(function() {
         },
 
         itembox = {
+            /**
+             * raised when the data changed and the list should be reloaded
+             * @event husky.itembox.data-changed
+             * @return {string}
+             */
             DATA_CHANGED: function() {
                 return createEventName.call(this, 'data-changed');
             },
 
+            /**
+             * raised when data has returned from the ajax request
+             * @event husky.itembox.data-retrieved
+             * @return {string}
+             */
             DATA_RETRIEVED: function() {
                 return createEventName.call(this, 'data-retrieved');
             },
 
+            /**
+             * raised when the display option has changed
+             * @event husky.itembox.display-position-changed
+             * @return {string}
+             */
             DISPLAY_OPTION_CHANGED: function() {
                 return createEventName.call(this, 'display-position-changed');
             },
 
+            /**
+             * raised when the add button was clicked
+             * @event husky.itembox.add-button-clicked
+             * @return {string}
+             */
             ADD_BUTTON_CLICKED: function() {
                 return createEventName.call(this, 'add-button-clicked');
             },
 
+            /**
+             * raised when the config button was clicked
+             * @event husky.itembox.config-button-clicked
+             * @return {string}
+             */
             CONFIG_BUTTON_CLICKED: function() {
                 return createEventName.call(this, 'config-button-clicked');
             },
 
+            /**
+             * render the itembox
+             */
             render: function() {
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
                 this.viewAll = true;
@@ -216,20 +252,25 @@ define(function() {
 
                 this.detachFooter();
 
-                // TODO set preselected values
-
                 this.renderNoContent();
 
                 bindCustomEvents.call(this);
                 bindDomEvents.call(this);
             },
 
+            /**
+             * render the empty presentation into the content area
+             */
             renderNoContent: function() {
                 this.$list = null;
                 this.sandbox.dom.html(this.$content, templates.noContent.call(this));
                 this.detachFooter();
             },
 
+            /**
+             * Render the footer for the given data
+             * @param data {object} the data for which the footer should be generated
+             */
             renderFooter: function(data) {
                 var length = data.length,
                     translation = (data.length <= length)
@@ -252,10 +293,27 @@ define(function() {
                 this.$footerView = this.sandbox.dom.find(this.getId('footerView'), this.$el);
             },
 
+            /**
+             * Removes the footer from the DOM
+             */
             detachFooter: function() {
                 this.sandbox.dom.remove(this.$footer);
             },
 
+            /**
+             * Returns the data currently stored in this component
+             * @returns {object}
+             */
+            getData: function()
+            {
+                return this.sandbox.dom.data(this.$el, this.options.dataAttribute);
+            },
+
+            /**
+             * Set the given data to the elements data attribute
+             * @param data {object} The data to set
+             * @param reload {boolean} True if the itembox list should be reloaded afterwards
+             */
             setData: function(data, reload) {
                 var oldData = this.sandbox.dom.data(this.$el, this.options.dataAttribute);
                 reload = typeof(reload) === 'undefined' ? true : reload;
@@ -269,6 +327,10 @@ define(function() {
                 }
             },
 
+            /**
+             * Loads the content based on the given data
+             * @param data {object}
+             */
             loadContent: function(data) {
                 this.startLoader();
 
@@ -288,6 +350,10 @@ define(function() {
                 }
             },
 
+            /**
+             * Renders the data into the list
+             * @param data {object} The data to render
+             */
             renderContent: function(data) {
                 if (data.length > 0) {
                     var length = data.length;
@@ -309,6 +375,9 @@ define(function() {
                 }
             },
 
+            /**
+             * Starts the loader for the content
+             */
             startLoader: function() {
                 this.detachFooter();
 
@@ -327,8 +396,12 @@ define(function() {
                 ]);
             },
 
-            changeDisplayOptions: function() {
-                // TODO move display options to own component?
+            /**
+             * Set the display option
+             * @param displayOption {string} The string representation of the display option
+             */
+            setDisplayOption: function(displayOption) {
+                var $element = this.sandbox.dom.find('[data-position="' + displayOption + '"]', this.$container);
 
                 // deselect the current positon element
                 this.sandbox.dom.removeClass(
@@ -337,14 +410,29 @@ define(function() {
                 );
 
                 // select clicked on
-                this.sandbox.dom.addClass(event.currentTarget, constants.displayOptionSelectedClass);
+                this.sandbox.dom.addClass($element, constants.displayOptionSelectedClass);
+            },
+
+            /**
+             * DOM event handler for clicking on the display option
+             * @param event
+             */
+            changeDisplayOption: function(event) {
+                // TODO move display options to own component?
+                var position = this.sandbox.dom.data(event.currentTarget, 'position');
+
+                this.setDisplayOption(position);
 
                 this.sandbox.emit(
                     this.DISPLAY_OPTION_CHANGED(),
-                    this.sandbox.dom.data(event.currentTarget, 'position')
+                    position
                 );
             },
 
+            /**
+             * Updates the order of the number in the list
+             * @returns {Array}
+             */
             updateOrder: function() {
                 var $elements = this.sandbox.dom.find('li', this.$content),
                     ids = [];
@@ -358,6 +446,10 @@ define(function() {
                 return ids;
             },
 
+            /**
+             * Adds an item to the list
+             * @param item
+             */
             addItem: function(item) {
                 if (!this.$list) {
                     this.$list = createItemList.call(this);
@@ -378,6 +470,10 @@ define(function() {
                 this.updateVisibility();
             },
 
+            /**
+             * DOM event handler for removing an item from the list
+             * @param event
+             */
             removeItem: function(event) {
                 var $removeItem = this.sandbox.dom.parents(event.currentTarget, 'li'),
                     itemId = this.sandbox.dom.data($removeItem, 'id');
@@ -389,6 +485,9 @@ define(function() {
                 this.updateVisibility();
             },
 
+            /**
+             * Toggles between listing all and just a limited number of items
+             */
             toggleInvisibleItems: function() {
                 this.viewAll = !this.viewAll;
                 this.sandbox.dom.html(this.$footerView,
@@ -400,6 +499,9 @@ define(function() {
                 this.updateVisibility();
             },
 
+            /**
+             * Updates the visibility of all items based on the current state
+             */
             updateVisibility: function() {
                 var $items = this.sandbox.dom.find('li', this.$content),
                     length = $items.size(),
@@ -437,6 +539,11 @@ define(function() {
                 this.sandbox.dom.html(this.getId('footerMaxCount'), length);
             },
 
+            /**
+             * Returns the selector for the given id
+             * @param type {string} The type of the element, for which the id should be returned
+             * @returns {string} The id of the element
+             */
             getId: function(type) {
                 return ['#', this.ids[type]].join('');
             }

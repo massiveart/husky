@@ -18,7 +18,13 @@ define([], function() {
 
         bindCustomEvents = function() {
             this.sandbox.on('husky.demo.add-button-clicked', function() {
-                this.addItem({id: Math.ceil(Math.random() * 1000000), title: 'added'})
+                var id = Math.ceil(Math.random() * 1000000),
+                    data = this.getData();
+
+                this.addItem({id: id, title: 'added'});
+
+                data.push(id);
+                this.setData(data);
             }, this);
         };
 
@@ -48,6 +54,7 @@ define([], function() {
         initialize: function() {
             this.render();
 
+            this.setDisplayOption('left');
             this.setData([1, 2, 3]);
 
             bindCustomEvents.call(this);
