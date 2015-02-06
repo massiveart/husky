@@ -31,8 +31,12 @@ define([], function() {
             return templates.itemContent(item.title);
         },
 
-        updateOrder: function(ids) {
+        sortHandler: function(ids) {
             this.setData(ids, false);
+        },
+
+        removeItem: function(data, id) {
+
         },
 
         initialize: function() {

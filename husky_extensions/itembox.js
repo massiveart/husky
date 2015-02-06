@@ -96,8 +96,8 @@ define(function() {
             footer: function(length) {
                 return [
                     '<span>',
-                    '    <strong>' + this.itemsVisible + ' </strong>', this.sandbox.translate(this.options.translations.of), ' ',
-                    '    <strong>' + length + ' </strong>', this.sandbox.translate(this.options.translations.visible),
+                    '    <strong id="', this.ids.footerCount, '">', (length < this.options.visibleItems) ? length :this.options.visibleItems, '</strong> ', this.sandbox.translate(this.options.translations.of), ' ',
+                    '    <strong id="', this.ids.footerMaxCount, '">', length, '</strong> ', this.sandbox.translate(this.options.translations.visible),
                     '</span>'
                 ].join('')
             },
@@ -127,15 +127,21 @@ define(function() {
                 this.changeDisplayOptions.bind(this)
             );
 
+            // toggle between view all and view less
             this.sandbox.dom.on(this.$el, 'click', this.toggleInvisibleItems.bind(this), this.getId('footerView'));
 
+            // click on the add button
             this.sandbox.dom.on(this.$addButton, 'click', function() {
                 this.sandbox.emit(this.ADD_BUTTON_CLICKED());
             }.bind(this));
 
+            // click on the config button
             this.sandbox.dom.on(this.$configButton, 'click', function() {
                 this.sandbox.emit(this.CONFIG_BUTTON_CLICKED());
             }.bind(this));
+
+            // remove a row from the itembox
+            this.sandbox.dom.on(this.getId('content'), 'click', this.removeRow.bind(this), 'li .remove');
         },
 
         initSortable = function() {
@@ -152,16 +158,9 @@ define(function() {
             this.sandbox.dom.unbind(sortable, 'unbind');
 
             sortable.bind('sortupdate', function() {
-                var $elements = this.sandbox.dom.find('li', $sortable),
-                    ids = [];
+                var ids = this.updateOrder($elements);
 
-                this.sandbox.util.foreach($elements, function($element, index) {
-                    var $number = this.sandbox.dom.find('.num', $element);
-                    $number.html(index + 1);
-                    ids.push(this.sandbox.dom.data($element, 'id'));
-                }.bind(this));
-
-                this.updateOrder(ids);
+                this.sortHandler(ids);
             }.bind(this));
         },
 
@@ -197,10 +196,10 @@ define(function() {
                     displayOption: 'listbox-' + this.options.instanceName + '-display-option',
                     content: 'listbox-' + this.options.instanceName + '-content',
                     footer: 'listbox-' + this.options.instanceName + '-footer',
-                    footerView: 'listbox-' + this.options.instanceName + '-footer-view'
+                    footerView: 'listbox-' + this.options.instanceName + '-footer-view',
+                    footerCount: 'listbox-' + this.options.instanceName + '-footer-count',
+                    footerMaxCount: 'listbox-' + this.options.instanceName + '-footer-max-count'
                 };
-
-                this.itemsVisible = this.options.visibleItems;
 
                 this.sandbox.dom.html(this.$el, templates.skeleton.call(this));
 
@@ -230,7 +229,7 @@ define(function() {
              */
             renderFooter: function(data) {
                 var length = data.length,
-                    translation = (this.itemsVisible <= length)
+                    translation = (data.length <= length)
                         ? this.sandbox.translate(this.options.translations.viewAll)
                         : this.sandbox.translate(this.options.translations.viewLess);
 
@@ -353,14 +352,76 @@ define(function() {
                 );
             },
 
+            updateOrder: function() {
+                var $elements = this.sandbox.dom.find('li', this.$content),
+                    ids = [];
+
+                this.sandbox.util.foreach($elements, function($element, index) {
+                    var $number = this.sandbox.dom.find('.num', $element);
+                    $number.html(index + 1);
+                    ids.push(this.sandbox.dom.data($element, 'id'));
+                }.bind(this));
+
+                return ids;
+            },
+
+            removeRow: function(event) {
+                var $removeItem = this.sandbox.dom.parents(event.currentTarget, 'li'),
+                    itemId = this.sandbox.dom.data($removeItem, 'id');
+
+                this.sandbox.dom.remove($removeItem);
+                this.removeItem(itemId);
+
+                this.updateOrder();
+                this.updateVisibility();
+            },
+
             toggleInvisibleItems: function() {
                 this.viewAll = !this.viewAll;
-                this.$invisibleItems.toggle();
                 this.sandbox.dom.html(this.$footerView,
                     !!this.viewAll
                         ? this.sandbox.translate(this.options.translations.viewLess)
                         : this.sandbox.translate(this.options.translations.viewAll)
                 );
+
+                this.updateVisibility();
+            },
+
+            updateVisibility: function() {
+                var $items = this.sandbox.dom.find('li', this.$content),
+                    length = $items.size(),
+                    itemCount = 0;
+
+                if (!length) {
+                    this.renderNoContent();
+                } else {
+                    // mark the correct amount of items invisible
+                    this.sandbox.util.foreach($items, function($item) {
+                        if (itemCount < this.options.visibleItems) {
+                            this.sandbox.dom.removeClass($item, constants.itemInvisibleClass);
+                        } else {
+                            this.sandbox.dom.addClass($item, constants.itemInvisibleClass);
+                        }
+
+                        itemCount++;
+                    }.bind(this));
+                }
+
+                // correct the display property of every item and the footer values
+                if (!!this.viewAll) {
+                    this.sandbox.dom.show($items);
+                    this.sandbox.dom.html(this.getId('footerCount'), length);
+                } else {
+                    this.sandbox.dom.show(this.sandbox.dom.find(':not(.' + constants.itemInvisibleClass + ')'));
+                    this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.itemInvisibleClass));
+
+                    this.sandbox.dom.html(
+                        this.getId('footerCount'),
+                        (this.options.visibleItems < length) ? this.options.visibleItems : length
+                    );
+                }
+
+                this.sandbox.dom.html(this.getId('footerMaxCount'), length);
             },
 
             getId: function(type) {
