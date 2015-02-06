@@ -14,6 +14,12 @@ define([], function() {
             itemContent: function(title) {
                 return ['<span class="title">', title, '</span>'].join('');
             }
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on('husky.demo.add-button-clicked', function() {
+                this.addItem({id: Math.ceil(Math.random() * 1000000), title: 'added'})
+            }, this);
         };
 
     return {
@@ -35,14 +41,16 @@ define([], function() {
             this.setData(ids, false);
         },
 
-        removeItem: function(data, id) {
-
+        removeHandler: function(data, id) {
+            data.splice(data.indexOf(id), 1);
         },
 
         initialize: function() {
             this.render();
 
             this.setData([1, 2, 3]);
+
+            bindCustomEvents.call(this);
         }
     }
 });

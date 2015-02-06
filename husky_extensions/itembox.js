@@ -96,17 +96,17 @@ define(function() {
             footer: function(length) {
                 return [
                     '<span>',
-                    '    <strong id="', this.ids.footerCount, '">', (length < this.options.visibleItems) ? length :this.options.visibleItems, '</strong> ', this.sandbox.translate(this.options.translations.of), ' ',
+                    '    <strong id="', this.ids.footerCount, '">', (length < this.options.visibleItems) ? length : this.options.visibleItems, '</strong> ', this.sandbox.translate(this.options.translations.of), ' ',
                     '    <strong id="', this.ids.footerMaxCount, '">', length, '</strong> ', this.sandbox.translate(this.options.translations.visible),
                     '</span>'
                 ].join('')
             },
 
-            item: function(id, number, content, visible) {
+            item: function(id, content) {
                 return [
-                    '<li class="', !!visible ? '' : constants.itemInvisibleClass, '" data-id="', id, '">',
+                    '<li data-id="', id, '">',
                     !!this.options.sortable ? '    <span class="fa-ellipsis-v icon move"></span>' : '',
-                    '    <span class="num">', number, '</span>',
+                    '    <span class="num"></span>',
                     content,
                     !!this.options.removable ? '    <span class="fa-times remove"></span>' : '',
                     '</li>'
@@ -141,7 +141,7 @@ define(function() {
             }.bind(this));
 
             // remove a row from the itembox
-            this.sandbox.dom.on(this.getId('content'), 'click', this.removeRow.bind(this), 'li .remove');
+            this.sandbox.dom.on(this.getId('content'), 'click', this.removeItem.bind(this), 'li .remove');
         },
 
         initSortable = function() {
@@ -158,10 +158,14 @@ define(function() {
             this.sandbox.dom.unbind(sortable, 'unbind');
 
             sortable.bind('sortupdate', function() {
-                var ids = this.updateOrder($elements);
+                var ids = this.updateOrder();
 
                 this.sortHandler(ids);
             }.bind(this));
+        },
+
+        createItemList = function() {
+            return this.sandbox.dom.createElement('<ul class="items-list sortable"/>');
         },
 
         itembox = {
@@ -208,6 +212,7 @@ define(function() {
                 this.$configButton = this.sandbox.dom.find(this.getId('configButton'), this.$el);
                 this.$content = this.sandbox.dom.find(this.getId('content'), this.$el);
                 this.$footer = this.sandbox.dom.find(this.getId('footer'), this.$el);
+                this.$list = null;
 
                 this.detachFooter();
 
@@ -220,13 +225,11 @@ define(function() {
             },
 
             renderNoContent: function() {
+                this.$list = null;
                 this.sandbox.dom.html(this.$content, templates.noContent.call(this));
                 this.detachFooter();
             },
 
-            /**
-             * renders the footer and calls a method to bind the events for itself
-             */
             renderFooter: function(data) {
                 var length = data.length,
                     translation = (data.length <= length)
@@ -270,7 +273,7 @@ define(function() {
                 this.startLoader();
 
                 // reset items visible when new content is loaded
-                this.viewAll = true;
+                this.viewAll = false;
 
                 if (!!data) {
                     this.sandbox.util.load(this.getUrl(data))
@@ -287,30 +290,20 @@ define(function() {
 
             renderContent: function(data) {
                 if (data.length > 0) {
-                    var $list = this.sandbox.dom.createElement('<ul class="items-list sortable"/>'),
-                        length = data.length;
+                    var length = data.length;
+
+                    this.$list = createItemList.call(this);
 
                     for (var i = -1; ++i < length;) {
-                        this.sandbox.dom.append(
-                            $list,
-                            templates.item.call(
-                                this,
-                                data[i][this.options.idKey],
-                                i + 1,
-                                this.getItemContent(data[i]),
-                                i < this.options.visibleItems
-                            )
-                        );
+                        this.addItem(data[i]);
                     }
 
-                    this.sandbox.dom.html(this.$content, $list);
-
-                    // cache the invisible items for easy toggle later
-                    this.$invisibleItems = this.sandbox.dom.find('.' + constants.itemInvisibleClass, this.$el);
+                    this.sandbox.dom.html(this.$content, this.$list);
 
                     initSortable.call(this);
                     this.renderFooter(data);
-                    this.toggleInvisibleItems();
+                    this.updateOrder();
+                    this.updateVisibility();
                 } else {
                     this.renderNoContent();
                 }
@@ -365,12 +358,31 @@ define(function() {
                 return ids;
             },
 
-            removeRow: function(event) {
+            addItem: function(item) {
+                if (!this.$list) {
+                    this.$list = createItemList.call(this);
+                    this.sandbox.dom.html(this.$content, this.$list);
+                }
+
+                this.sandbox.dom.append(
+                    this.$list,
+                    templates.item.call(
+                        this,
+                        item[this.options.idKey],
+                        this.getItemContent(item)
+                    )
+                )
+
+                this.updateOrder();
+                this.updateVisibility();
+            },
+
+            removeItem: function(event) {
                 var $removeItem = this.sandbox.dom.parents(event.currentTarget, 'li'),
                     itemId = this.sandbox.dom.data($removeItem, 'id');
 
                 this.sandbox.dom.remove($removeItem);
-                this.removeItem(itemId);
+                this.removeHandler(this.sandbox.dom.data(this.$el, this.options.dataAttribute), itemId);
 
                 this.updateOrder();
                 this.updateVisibility();
