@@ -38212,7 +38212,7 @@ define('__component__$password-fields@husky',[], function() {
  * @params {String} [options.noPageDescription] translation key for the "No-Page"-description
  * @params {String} [options.resultKey] The name of the array in the responded _embedded
  * @params {Boolean} [options.responsive] If true the resize listener gets initialized. Otherwise the column navigation just takes up 100 % of the height and width
- * @params {Boolean} [options.showEdit] hide or display edit elements
+ * @params {Boolean} [options.showOptions] hide or display edit elements
  * @params {Boolean} [options.showStatus] hide or display status of elements
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
@@ -38239,7 +38239,7 @@ define('__component__$column-navigation@husky',[], function () {
             skin: '',
             resultKey: 'nodes',
             responsive: true,
-            showEdit: true,
+            showOptions: true,
             showStatus: true,
             premarkedIds: [],
             markable: false
@@ -38253,7 +38253,14 @@ define('__component__$column-navigation@husky',[], function () {
             displayedcolumns: 2, // number of displayed columns with content
             wrapperClass: 'column-navigation-wrapper',
             columnClass: 'column',
-            optionsClass: 'options'
+            optionsClass: 'options',
+            componentClass: 'husky-column-navigation',
+            nodeLoaderClass: 'husky-column-navigation-loader',
+            bigLoaderClass: 'column-navigation-loader',
+            columnItemClass: 'column-item',
+            iconsLeftClass: 'icons-left',
+            iconsRightClass: 'icons-right',
+            itemTextClass: 'item-text'
         },
 
         templates = {
@@ -38271,13 +38278,19 @@ define('__component__$column-navigation@husky',[], function () {
 
             optionsContainer: ['<div class="'+ constants.optionsClass +' grid-row"></div>'].join(''),
 
-            optionsAdd: ['<div id="<%= id %>" class="align-center add pointer">',
+            optionsAdd: ['<div class="align-center add pointer">',
                             '<span class="fa-plus-circle"></span>',
                          '</div>'].join(''),
 
-            optionsSettings: ['<div id="<%= id %>" class="align-center settings pointer drop-down-trigger">',
+            optionsSettings: ['<div class="align-center settings pointer drop-down-trigger">',
                               '   <span class="fa-gear inline-block"></span><span class="dropdown-toggle inline-block"></span>',
-                              '</div>'].join('')
+                              '</div>'].join(''),
+
+            item: ['<li data-id="<%= id %>" class="'+ constants.columnItemClass +'">',
+                   '    <span class="'+ constants.iconsLeftClass +'"></span>',
+                   '    <span title="<%= title %>" class="'+ constants.itemTextClass +'"><%= title%></span>',
+                   '    <span class="'+ constants.iconsRightClass +'"></span>',
+                   '</li>'].join('')
         },
 
         /**
@@ -38402,8 +38415,14 @@ define('__component__$column-navigation@husky',[], function () {
             this.$selectedElement = null;
             this.filledColumns = 0;
             this.columnLoadStarted = false;
-            this.$loader = null;
-            this.$bigLoader = null;
+            this.dom = {
+                $wrapper: null,
+                $container: null,
+                $add: null,
+                $settings: null,
+                $bigLoader: null,
+                $loader: null
+            };
 
             this.columns = [];
             this.selected = [];
@@ -38415,78 +38434,76 @@ define('__component__$column-navigation@husky',[], function () {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function () {
-            var $add, $settings, $wrapper;
+            this.renderWrapper();
+            if (!!this.options.showOptions) { // Options-toolbar with "add" and "settings"
+                this.renderOptions();
+            }
+            if (!!this.options.data) {
+                this.initSettingsDropdown();
+            }
+            if (this.options.responsive === true) {
+                this.setContainerHeight();
+            }
+        },
 
-            this.sandbox.dom.addClass(this.$el, 'husky-column-navigation');
+        /**
+         * Renders the options-buttons. "Add" and "Settings"
+         */
+        renderOptions: function() {
+            this.$optionsContainer = this.sandbox.dom.createElement(templates.optionsContainer);
+            this.dom.$add = this.sandbox.dom.createElement(templates.optionsAdd);
+            this.dom.$settings = this.sandbox.dom.createElement(templates.optionsSettings);
+            this.sandbox.dom.append(this.$optionsContainer, this.dom.$add);
+            this.sandbox.dom.append(this.$optionsContainer, this.dom.$settings);
+            this.hideOptions();
+            this.sandbox.dom.append(this.dom.$wrapper, this.$optionsContainer);
+        },
+
+        /**
+         * Renders the component wrapper and an additional container
+         */
+        renderWrapper: function() {
+            this.sandbox.dom.addClass(this.$el, constants.componentClass);
             if (!!this.options.skin) {
                 this.sandbox.dom.addClass(this.$el, this.options.skin);
             }
 
-            $wrapper = this.sandbox.dom.createElement(templates.wrapper);
-            this.sandbox.dom.append(this.$el, $wrapper);
+            this.dom.$wrapper = this.sandbox.dom.createElement(templates.wrapper);
+            this.sandbox.dom.append(this.$el, this.dom.$wrapper);
 
             // navigation container
-
-            this.$container = this.sandbox.dom.createElement(templates.container);
-            this.sandbox.dom.append($wrapper, this.$container);
-
-            // options container - add and settings button
-            this.addId = this.options.instanceName + "-column-navigation-add";
-            this.settingsId = this.options.instanceName + "-column-navigation-settings";
-
-            if (!!this.options.showEdit) {
-                this.$optionsContainer = this.sandbox.dom.createElement(templates.optionsContainer);
-                $add = this.sandbox.dom.createElement(this.sandbox.util.template(templates.optionsAdd)({
-                    id: this.addId
-                }));
-                $settings = this.sandbox.dom.createElement(this.sandbox.util.template(templates.optionsSettings)({
-                    id: this.settingsId
-                }));
-                this.sandbox.dom.append(this.$optionsContainer, $add);
-                this.sandbox.dom.append(this.$optionsContainer, $settings);
-                this.hideOptions();
-                this.sandbox.dom.append($wrapper, this.$optionsContainer);
-            }
-
-            if (this.options.responsive === true) {
-                this.setContainerHeight();
-            }
-
-            //init dropdown for settings in options container
-            if (!!this.options.data) {
-                this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
-            }
-
+            this.dom.$container = this.sandbox.dom.createElement(templates.container);
+            this.sandbox.dom.append(this.dom.$wrapper, this.dom.$container);
         },
 
         /**
          * Starts the big loader, before loading content during the initialization
          */
         startBigLoader: function () {
-            if (this.$bigLoader === null) {
-                this.$bigLoader = this.sandbox.dom.createElement('<div class="column-navigation-loader"/>');
-                this.sandbox.dom.hide(this.$bigLoader);
-                this.sandbox.dom.html(this.$container, this.$bigLoader);
+            if (this.dom.$bigLoader === null) {
+                this.dom.$bigLoader = this.sandbox.dom.createElement('<div class="'+ constants.bigLoaderClass +'"/>');
+                this.sandbox.dom.hide(this.dom.$bigLoader);
+                this.sandbox.dom.html(this.dom.$container, this.dom.$bigLoader);
 
                 this.sandbox.start([
                     {
                         name: 'loader@husky',
                         options: {
-                            el: this.$bigLoader,
+                            el: this.dom.$bigLoader,
                             size: '100px',
                             color: '#e4e4e4'
                         }
                     }
                 ]);
             }
-            this.sandbox.dom.show(this.$bigLoader);
+            this.sandbox.dom.show(this.dom.$bigLoader);
         },
 
         /**
          * Detatches the big loader from the column-navigation
          */
         removeBigLoader: function () {
-            this.sandbox.dom.hide(this.$find('.column-navigation-loader'));
+            this.sandbox.dom.hide(this.dom.$bigLoader);
         },
 
         /**
@@ -38494,19 +38511,15 @@ define('__component__$column-navigation@husky',[], function () {
          */
         setContainerHeight: function () {
             var height = this.sandbox.dom.height(this.sandbox.dom.$window),
-                top = this.sandbox.dom.offset(this.$el).top - (this.sandbox.dom.$window !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.sandbox.dom.$window).top : 0);
-            top = top < 0 ? 0 : top;
-
-            this.sandbox.dom.height(
-                this.$container, (height - top) * constants.responsiveHeightRation
-            );
+                top = this.sandbox.dom.offset(this.$el).top;
+            this.sandbox.dom.height(this.dom.$container, (height - top) * constants.responsiveHeightRation);
         },
 
         /**
          * Instantiats the dropdown component
          * @param containerId dom id for element to start dropdown
          */
-        initSettingsDropdown: function (containerId) {
+        initSettingsDropdown: function () {
 
             // TODO show dropdown only if item is selected and enable/disable certain elements of the dropdown depending on the selected element
 
@@ -38514,7 +38527,7 @@ define('__component__$column-navigation@husky',[], function () {
                 {
                     name: 'dropdown@husky',
                     options: {
-                        el: '#' + containerId,
+                        el: this.dom.$settings,
                         setParentDropDown: true,
                         instanceName: this.options.instanceName + '.settings.dropdown',
                         alignment: 'left',
@@ -38537,7 +38550,6 @@ define('__component__$column-navigation@husky',[], function () {
                         this.removeBigLoader();
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
-                        this.handleLastEmptyColumn();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
                         this.showOptionsAtLast();
@@ -38574,54 +38586,142 @@ define('__component__$column-navigation@husky',[], function () {
          * @param {Number} columnNumber
          */
         parseData: function (data, columnNumber) {
-            var $column, $list, newColumn, nodeWithSubNodes = null, lastSelected = null;
-
-            if (columnNumber === 0) {  // case 1: no elements in container
+            // if there is nothing loaded yet, create a "root"-column
+            if (columnNumber === 0) {
                 this.columns[0] = [];
                 this.columns[0][data[this.options.idName]] = data;
-                newColumn = 1;
-            } else { // case 2: columns in container replace level after clicked column and clear following levels
-                newColumn = columnNumber + 1;
             }
+            var newColNumber = columnNumber + 1;
 
-            $column = this.sandbox.dom.createElement(this.sandbox.util.template(templates.column)({
-                columnNumber: newColumn,
-                id: 'column' + this.options.instanceName + '-' + newColumn
+            this.renderColumn(newColNumber, data);
+            this.removeLoadingIconForSelected();
+        },
+
+        /**
+         * Renderes a column
+         * @param number - the number of the new column
+         * @param data - the data for the column
+         */
+        renderColumn: function(number,  data) {
+            var $column = this.sandbox.dom.createElement(this.sandbox.util.template(templates.column)({
+                columnNumber: number,
+                id: 'column' + this.options.instanceName + '-' + number
             }));
-            this.sandbox.dom.append(this.$container, $column);
+            this.sandbox.dom.append(this.dom.$container, $column);
+            this.filledColumns = number;
+            this.renderItems($column, number, data);
+        },
 
-            $list = this.sandbox.dom.find('ul', $column);
-
+        /**
+         * Renderes the items for a column
+         * @param $column - the dom-object of the column
+         * @param number - the number of the column to add the items to
+         * @param data - the columns data object
+         */
+        renderItems: function($column, number, data) {
+            var $list = this.sandbox.dom.find('ul', $column), nodeWithSubNodes, lastSelected;
             this.sandbox.util.each(data._embedded[this.options.resultKey], function (index, value) {
-                this.storeDataItem(newColumn, value);
-                var $element = this.sandbox.dom.$(this.template.item.call(this, value));
-                this.sandbox.dom.append($list, $element);
+                this.storeDataItem(number, value);
+                var $item = this.renderItem(value);
+                this.sandbox.dom.append($list, $item);
+                this.setItemsTextWidth($item);
 
-                this.setItemsTextWidth($element);
-
-                // remember which item has subitems to display a whole tree when column navigation should be restored
+                // if there are sub-nodes for this node loaded (need to be rendered later, so we save a reference)
                 if (!!value[this.options.hasSubName] && !!value._embedded[this.options.resultKey] && value._embedded[this.options.resultKey].length > 0) {
                     nodeWithSubNodes = value;
-                    this.setElementSelected($element);
-                    this.selected[newColumn] = value;
+                    this.setElementSelected($item);
+                    this.selected[number] = value;
                 }
 
-                // needed to select node in last level of nodes
+                // if this node is the specified as selected in the options, we select it
                 if (!!this.options.selected && (this.options.selected === value[this.options.idName] || this.options.selected === value[this.options.pathName])) {
-                    this.setElementSelected($element);
-                    this.selected[newColumn] = value;
+                    this.setElementSelected($item);
+                    this.selected[number] = value;
                     lastSelected = value;
                 }
             }.bind(this));
 
-            this.removeLoadingIconForSelected();
+            // here we come back the the node with the sub-nodes and recursively parse the sub-nodes-column
+            if (!!nodeWithSubNodes) {
+                this.parseData(nodeWithSubNodes, number);
+            // otherwise, if there are no sub-nodes and we have a selected node - we display the "No-Pages"-column
+            } else if (!!lastSelected && !lastSelected[this.options.hasSubName]) {
+                this.insertAddColumn(lastSelected, number);
+            }
+        },
 
-            this.filledColumns = newColumn;
+        /**
+         * Takes the data object and returns a column-item
+         * @param data
+         * @returns the items dom-object
+         */
+        renderItem: function(data) {
+            var $item = this.sandbox.dom.createElement(this.sandbox.util.template(templates.item)({
+                title: data[this.options.titleName],
+                id: data[this.options.idName]
+            }));
+            if (this.marked.indexOf(data[this.options.idName]) !== -1) { // if is marked
+                this.sandbox.dom.addClass($item, constants.markedClass)
+            }
+            this.renderLeftInfo($item, data);
+            this.renderItemText($item, data);
+            this.renderRightInfo($item, data);
+            return $item;
+        },
 
-            if (!!nodeWithSubNodes) { // parse next column if data exists
-                this.parseData(nodeWithSubNodes, newColumn);
-            } else if (!!lastSelected && !lastSelected[this.options.hasSubName]) { // append add column if no children
-                this.addColumn(lastSelected, newColumn);
+        /**
+         * Renders the left buttons and icons for an item
+         * @param $item - dom object of the item
+         * @param data - the data for the item
+         */
+        renderLeftInfo: function($item, data) {
+            var $container = this.sandbox.dom.find('.' + constants.iconsLeftClass, $item);
+            if (!!this.options.showStatus) {
+                // link
+                if (!!data[this.options.linkedName]) {
+                    if (data[this.options.linkedName] === 'internal') {
+                        this.sandbox.dom.append($container, '<span class="fa-internal-link col-icon"></span>');
+                    } else if (data[this.options.linkedName] === 'external') {
+                        this.sandbox.dom.append($container, '<span class="fa-external-link col-icon"></span>');
+                    }
+                }
+                // type (ghost, shadow)
+                if (!!data[this.options.typeName]) {
+                    if (data[this.options.typeName].name === 'ghost') {
+                        this.sandbox.dom.append($container, '<span class="ghost col-icon">'+ data[this.options.typeName].value +'</span>');
+                    } else if (data[this.options.typeName].name === 'shadow') {
+                        this.sandbox.dom.append($container, '<span class="fa-shadow-node col-icon"></span>');
+                    }
+                }
+                // published
+                if (!data[this.options.publishedName]) {
+                    this.sandbox.dom.append($container, '<span class="not-published col-icon">&bull;</span>');
+                }
+            }
+        },
+
+        /**
+         * Renderes the text element of a column-item
+         * @param $item - dom object of the item
+         * @param data - the data for the item
+         */
+        renderItemText: function($item, data) {
+            var $container = this.sandbox.dom.find('.' + constants.itemTextClass, $item);
+            if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
+                this.sandbox.dom.addClass($container, 'inactive');
+            }
+        },
+
+        /**
+         * Renders the right buttons and icons for an item
+         * @param $item - dom object of the item
+         * @param data - the data for the item
+         */
+        renderRightInfo: function($item, data) {
+            var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item);
+            this.sandbox.dom.append($container, '<span class="' + this.options.editIcon + ' edit col-icon"></span>');
+            if (!!data[this.options.hasSubName]) {
+                this.sandbox.dom.append($container, '<span class="fa-chevron-right arrow inactive col-icon"></span>');
             }
         },
 
@@ -38682,25 +38782,25 @@ define('__component__$column-navigation@husky',[], function () {
         addLoadingIcon: function ($container) {
             this.sandbox.dom.removeClass($container, 'fa-chevron-right inactive');
 
-            if (this.$loader === null) {
-                this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
-                this.sandbox.dom.hide(this.$loader);
+            if (this.dom.$loader === null) {
+                this.dom.$loader = this.sandbox.dom.createElement('<div class="'+ constants.nodeLoaderClass +'"/>');
+                this.sandbox.dom.hide(this.dom.$loader);
             }
-            if (this.sandbox.dom.is(this.$loader, ':empty')) {
+            if (this.sandbox.dom.is(this.dom.$loader, ':empty')) {
                 this.sandbox.start([
                     {
                         name: 'loader@husky',
                         options: {
-                            el: this.$loader,
+                            el: this.dom.$loader,
                             size: '16px',
                             color: '#666666'
                         }
                     }
                 ]);
             }
-            this.sandbox.dom.detach(this.$loader);
-            this.sandbox.dom.html($container, this.$loader);
-            this.sandbox.dom.show(this.$loader);
+            this.sandbox.dom.detach(this.dom.$loader);
+            this.sandbox.dom.html($container, this.dom.$loader);
+            this.sandbox.dom.show(this.dom.$loader);
         },
 
         /**
@@ -38709,7 +38809,7 @@ define('__component__$column-navigation@husky',[], function () {
         removeLoadingIconForSelected: function () {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.hide(this.$loader);
+                this.sandbox.dom.hide(this.dom.$loader);
                 this.sandbox.dom.prependClass($arrow, 'fa-chevron-right');
             }
         },
@@ -38735,7 +38835,7 @@ define('__component__$column-navigation@husky',[], function () {
             this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), '.column-navigation li');
 
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
-            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#' + this.addId);
+            this.sandbox.dom.on(this.dom.$add, 'click', this.addNode.bind(this));
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
             this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
 
@@ -38760,24 +38860,6 @@ define('__component__$column-navigation@husky',[], function () {
                 this.sandbox.dom.addClass($navigation, 'overflow');
             } else {
                 this.sandbox.dom.removeClass($navigation, 'overflow');
-            }
-        },
-
-        /**
-         * Inserts some markup into the last column if column is empty
-         */
-        handleLastEmptyColumn: function () {
-            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$container));
-
-            this.sandbox.dom.remove(this.sandbox.dom.find('.no-page', this.$container));
-
-            // if last column is empty insert markup
-            if (this.sandbox.dom.find('li', $lastColumn).length === 0) {
-                this.sandbox.dom.append($lastColumn, this.sandbox.dom.createElement(
-                    this.sandbox.util.template(templates.noPage)({
-                        description: this.sandbox.translate(this.options.noPageDescription)
-                    })
-                ));
             }
         },
 
@@ -38865,7 +38947,7 @@ define('__component__$column-navigation@husky',[], function () {
          * Shows the options at the last available column
          */
         showOptionsAtLast: function () {
-            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$container));
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.dom.$container));
             this.showOptions({
                 currentTarget: $lastColumn
             });
@@ -38880,8 +38962,8 @@ define('__component__$column-navigation@husky',[], function () {
 
             this.displayOptions($currentTarget);
 
-            this.sandbox.dom.off(this.$container, 'scroll.column-navigation.' + this.options.instanceName);
-            this.sandbox.dom.on(this.$container, 'scroll.column-navigation.' + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
+            this.sandbox.dom.off(this.dom.$container, 'scroll.column-navigation.' + this.options.instanceName);
+            this.sandbox.dom.on(this.dom.$container, 'scroll.column-navigation.' + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
         },
 
         /**
@@ -38894,8 +38976,8 @@ define('__component__$column-navigation@husky',[], function () {
             this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, 'column');
 
             // calculate the ratio of how much of the hovered column is visible
-            if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) > this.sandbox.dom.width(this.$container)) {
-                visibleRatio = (this.sandbox.dom.width(this.$container) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
+            if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) > this.sandbox.dom.width(this.dom.$container)) {
+                visibleRatio = (this.sandbox.dom.width(this.dom.$container) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
             } else {
                 visibleRatio = (this.sandbox.dom.width($activeColumn) + this.sandbox.dom.position($activeColumn).left) / this.sandbox.dom.width($activeColumn);
             }
@@ -38974,23 +39056,25 @@ define('__component__$column-navigation@husky',[], function () {
 
                 // scroll for add column
                 if (!selectedItem.hasSub) {
-                    this.addColumn(selectedItem, column);
-                    this.handleLastEmptyColumn();
+                    this.insertAddColumn(selectedItem, column);
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
                 }
             }
         },
 
-        addColumn: function (selectedItem, column) {
-            this.sandbox.dom.append(
-                this.$container,
-                this.sandbox.dom.createElement(this.sandbox.util.template(templates.column)({
-                    columnNumber: column + 1,
-                    id: 'column' + this.options.instanceName + '-' + column + 1
-                }))
-            );
-
+        insertAddColumn: function (selectedItem, column) {
+            var $addColumn = this.sandbox.dom.createElement(this.sandbox.util.template(templates.column)({
+                columnNumber: column + 1,
+                id: 'column' + this.options.instanceName + '-' + (column + 1)
+            }));
+            // fill it with the "No Page"-content
+            this.sandbox.dom.append($addColumn, this.sandbox.dom.createElement(
+                this.sandbox.util.template(templates.noPage)({
+                    description: this.sandbox.translate(this.options.noPageDescription)
+                })
+            ));
+            this.sandbox.dom.append(this.dom.$container, $addColumn);
             this.filledColumns++;
         },
 
@@ -39000,7 +39084,7 @@ define('__component__$column-navigation@husky',[], function () {
          */
         scrollIfNeeded: function (column) {
             if (column > constants.displayedcolumns) {
-                this.sandbox.dom.scrollLeft(this.$container, (column - constants.displayedcolumns) * constants.columnWidth);
+                this.sandbox.dom.scrollLeft(this.dom.$container, (column - constants.displayedcolumns) * constants.columnWidth);
             }
         },
 
@@ -39050,63 +39134,6 @@ define('__component__$column-navigation@husky',[], function () {
 
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.emit(EDIT.call(this), item);
-        },
-
-        /**
-         * Templates for various parts
-         */
-        template: {
-
-            item: function (data) {
-
-                var isMarked = (this.marked.indexOf(data[this.options.idName]) !== -1),
-                    item = ['<li data-id="', data[this.options.idName], '" class="pointer' + ((isMarked === true) ? ' ' + this.options.markedClass : '' ) + '">'];
-
-                // icons left
-                item.push('<span class="icons-left">');
-
-                item.push('<span class="fa-check pull-left markedIcon"></span>');
-
-                if (!!this.options.showStatus) {
-                    // link
-                    if (!!data[this.options.linkedName]) {
-                        if (data[this.options.linkedName] === 'internal') {
-                            item.push('<span class="fa-internal-link pull-left m-right-5"></span>');
-                        } else if (data[this.options.linkedName] === 'external') {
-                            item.push('<span class="fa-external-link pull-left m-right-5"></span>');
-                        }
-                    }
-
-                    // type (ghost, shadow)
-                    if (!!data[this.options.typeName]) {
-                        if (data[this.options.typeName].name === 'ghost') {
-                            item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
-                        } else if (data[this.options.typeName].name === 'shadow') {
-                            item.push('<span class="fa-shadow-node pull-left m-right-5"></span>');
-                        }
-                    }
-
-                    // published
-                    if (!data[this.options.publishedName]) {
-                        item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
-                    }
-                }
-                item.push('</span>');
-
-                // text center
-                if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
-                    item.push('<span title="' + data[this.options.titleName] + '" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
-                } else {
-                    item.push('<span title="' + data[this.options.titleName] + '" class="item-text pull-left">', data[this.options.titleName], '</span>');
-                }
-
-                // icons right (subpage, edit)
-                item.push('<span class="icons-right">');
-                item.push('<span class="' + this.options.editIcon + ' edit pull-left"></span>');
-                !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
-                item.push('</span></li>');
-                return item.join('');
-            }
         }
     };
 });

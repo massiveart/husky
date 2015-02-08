@@ -136,6 +136,11 @@
             display: block;
             overflow: hidden;
             word-wrap: break-word;
+            float: left;
+        }
+
+        .col-icon {
+            float: left;
         }
 
         .item-text.ghost {
@@ -175,6 +180,9 @@
             & > * {
               line-height: 20px;
             }
+            .col-icon {
+                margin-right: 5px;
+            }
             .ghost {
               line-height: 15px;
             }
@@ -208,6 +216,10 @@
             text-align: right;
             color: $black;
             margin: 0;
+        }
+
+        .column-item {
+            cursor: pointer;
         }
     }
 
