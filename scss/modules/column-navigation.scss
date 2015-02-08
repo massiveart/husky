@@ -1,3 +1,7 @@
+//
+// Column-Navigation
+// --------------------------------------------------
+
 .husky-column-navigation {
   height: 100%;
 
@@ -55,6 +59,7 @@
             position: relative;
             top: 0px;
             left: 0px;
+            width: 250px;
 
             .no-page {
                 position: absolute;
@@ -204,6 +209,10 @@
             color: $black;
             margin: 0;
         }
+    }
+
+    .options {
+      width: 251px;
     }
 
     .add {
