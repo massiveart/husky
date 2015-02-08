@@ -169,9 +169,6 @@
  * @constructor
  *
  * @params {Object} [options] Configuration object
- * @params {Number} [options.wrapper.height] height of container in percentage
- * @params {Number} [options.column.width] width of a column in within the navigation in pixels
- * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
  * @params {String} [options.editIcon] icon class of edit button
@@ -179,19 +176,17 @@
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
  * @params {String} [options.idName] name of id-key
+ * @params {String} [options.pathName] name of path-key
  * @params {String} [options.linkedName] name of linked-key
  * @params {String} [options.publishedName] name of published-key
- * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
+ * @params {String} [options.noPageDescription] translation key for the &quot;No-Page&quot;-description
  * @params {String} [options.resultKey] The name of the array in the responded _embedded
- * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  * @params {Boolean} [options.responsive] If true the resize listener gets initialized. Otherwise the column navigation just takes up 100 % of the height and width
  * @params {Boolean} [options.showEdit] hide or display edit elements
- * @params {Boolean} [options.showEditIcon] hide or display edit icon element
  * @params {Boolean} [options.showStatus] hide or display status of elements
  * @params {String} [options.skin] css class which gets added to the components element. Available: &#x27;&#x27;, &#x27;fixed-height-small&#x27;
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
- * @params {String} [options.markedClass] The css-class which gets set on the node if node gets marked
  * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
  */
 define([], function () {
@@ -199,13 +194,6 @@ define([], function () {
     &#x27;use strict&#x27;;
 
     var defaults = {
-            wrapper: {
-                height: 70
-            },
-            column: {
-                width: 250
-            },
-            paddingLeft: 50,
             url: null,
             selected: null,
             data: null,
@@ -218,20 +206,50 @@ define([], function () {
             publishedName: &#x27;publishedState&#x27;,
             titleName: &#x27;title&#x27;,
             typeName: &#x27;type&#x27;,
-            minVisibleRatio: 1 / 2,
             noPageDescription: &#x27;public.no-pages&#x27;,
             skin: &#x27;&#x27;,
             resultKey: &#x27;nodes&#x27;,
             responsive: true,
             showEdit: true,
-            showEditIcon: true,
             showStatus: true,
             premarkedIds: [],
-            markedClass: &#x27;marked&#x27;,
             markable: false
         },
 
-        DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
+        constants = {
+            responsiveHeightRation: 7/10,
+            columnWidth: 250,
+            minVisibleRatio: 1/2,
+            markedClass: &#x27;marked&#x27;,
+            displayedcolumns: 2, // number of displayed columns with content
+            wrapperClass: &#x27;column-navigation-wrapper&#x27;,
+            columnClass: &#x27;column&#x27;,
+            optionsClass: &#x27;options&#x27;
+        },
+
+        templates = {
+            wrapper: [&#x27;&lt;div class=&quot;&#x27;+ constants.wrapperClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+            container: [&#x27;&lt;div class=&quot;column-navigation&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+
+            column: [&#x27;&lt;div data-column=&quot;&lt;%= columnNumber %&gt;&quot; class=&quot;&#x27;+ constants.columnClass +&#x27;&quot; id=&quot;&lt;%= id %&gt;&quot;&gt;&#x27;,
+                     &#x27;    &lt;ul&gt;&lt;/ul&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+
+            noPage: [&#x27;&lt;div class=&quot;no-page&quot;&gt;&#x27;,
+                     &#x27;    &lt;span class=&quot;fa-coffee icon&quot;&gt;&lt;/span&gt;&#x27;,
+                     &#x27;    &lt;div class=&quot;text&quot;&gt;&lt;%= description %&gt;&lt;/div&gt;&#x27;,
+                     &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+
+            optionsContainer: [&#x27;&lt;div class=&quot;&#x27;+ constants.optionsClass +&#x27; grid-row&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+
+            optionsAdd: [&#x27;&lt;div id=&quot;&lt;%= id %&gt;&quot; class=&quot;align-center add pointer&quot;&gt;&#x27;,
+                            &#x27;&lt;span class=&quot;fa-plus-circle&quot;&gt;&lt;/span&gt;&#x27;,
+                         &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+
+            optionsSettings: [&#x27;&lt;div id=&quot;&lt;%= id %&gt;&quot; class=&quot;align-center settings pointer drop-down-trigger&quot;&gt;&#x27;,
+                              &#x27;   &lt;span class=&quot;fa-gear inline-block&quot;&gt;&lt;/span&gt;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
+                              &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;)
+        },
 
         /**
          * namespace for events
@@ -338,7 +356,20 @@ define([], function () {
         initialize: function () {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-            this.$element = this.sandbox.dom.$(this.options.el);
+            this.setProperties();
+            this.render();
+            this.startBigLoader();
+            this.load(this.options.url, 0);
+            this.bindDOMEvents();
+            this.bindCustomEvents();
+
+            this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Initializes the class properties with their default-values
+         */
+        setProperties: function() {
             this.$selectedElement = null;
             this.filledColumns = 0;
             this.columnLoadStarted = false;
@@ -349,14 +380,6 @@ define([], function () {
             this.selected = [];
             // array with all marked ids
             this.marked = this.options.premarkedIds || [];
-
-            this.render();
-            this.startBigLoader();
-            this.load(this.options.url, 0);
-            this.bindDOMEvents();
-            this.bindCustomEvents();
-
-            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
@@ -370,22 +393,26 @@ define([], function () {
                 this.sandbox.dom.addClass(this.$el, this.options.skin);
             }
 
-            $wrapper = this.sandbox.dom.$(this.template.wrapper.call(this));
-            this.sandbox.dom.append(this.$element, $wrapper);
+            $wrapper = this.sandbox.dom.createElement(templates.wrapper);
+            this.sandbox.dom.append(this.$el, $wrapper);
 
             // navigation container
 
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this));
-            this.sandbox.dom.append($wrapper, this.$columnContainer);
+            this.$container = this.sandbox.dom.createElement(templates.container);
+            this.sandbox.dom.append($wrapper, this.$container);
 
             // options container - add and settings button
             this.addId = this.options.instanceName + &quot;-column-navigation-add&quot;;
             this.settingsId = this.options.instanceName + &quot;-column-navigation-settings&quot;;
 
             if (!!this.options.showEdit) {
-                this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
-                $add = this.sandbox.dom.$(this.template.options.add(this.addId));
-                $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
+                this.$optionsContainer = this.sandbox.dom.createElement(templates.optionsContainer);
+                $add = this.sandbox.dom.createElement(this.sandbox.util.template(templates.optionsAdd)({
+                    id: this.addId
+                }));
+                $settings = this.sandbox.dom.createElement(this.sandbox.util.template(templates.optionsSettings)({
+                    id: this.settingsId
+                }));
                 this.sandbox.dom.append(this.$optionsContainer, $add);
                 this.sandbox.dom.append(this.$optionsContainer, $settings);
                 this.hideOptions();
@@ -410,7 +437,7 @@ define([], function () {
             if (this.$bigLoader === null) {
                 this.$bigLoader = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;column-navigation-loader&quot;/&gt;&#x27;);
                 this.sandbox.dom.hide(this.$bigLoader);
-                this.sandbox.dom.html(this.$columnContainer, this.$bigLoader);
+                this.sandbox.dom.html(this.$container, this.$bigLoader);
 
                 this.sandbox.start([
                     {
@@ -442,7 +469,7 @@ define([], function () {
             top = top &lt; 0 ? 0 : top;
 
             this.sandbox.dom.height(
-                this.$columnContainer, (height - top) * this.options.wrapper.height / 100
+                this.$container, (height - top) * constants.responsiveHeightRation
             );
         },
 
@@ -528,14 +555,17 @@ define([], function () {
                 newColumn = columnNumber + 1;
             }
 
-            $column = this.sandbox.dom.$(this.template.column.call(this, newColumn, this.options.column.width));
-            this.sandbox.dom.append(this.$columnContainer, $column);
+            $column = this.sandbox.dom.createElement(this.sandbox.util.template(templates.column)({
+                columnNumber: newColumn,
+                id: &#x27;column&#x27; + this.options.instanceName + &#x27;-&#x27; + newColumn
+            }));
+            this.sandbox.dom.append(this.$container, $column);
 
             $list = this.sandbox.dom.find(&#x27;ul&#x27;, $column);
 
             this.sandbox.util.each(data._embedded[this.options.resultKey], function (index, value) {
                 this.storeDataItem(newColumn, value);
-                var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
+                var $element = this.sandbox.dom.$(this.template.item.call(this, value));
                 this.sandbox.dom.append($list, $element);
 
                 this.setItemsTextWidth($element);
@@ -574,7 +604,7 @@ define([], function () {
             var width, $itemText;
 
             $itemText = this.sandbox.dom.find(&#x27;.item-text&#x27;, $item);
-            width = this.options.column.width - this.sandbox.dom.outerWidth(this.sandbox.dom.find(&#x27;.icons-left&#x27;, $item));
+            width = constants.columnWidth - this.sandbox.dom.outerWidth(this.sandbox.dom.find(&#x27;.icons-left&#x27;, $item));
             width = width - parseInt(this.sandbox.dom.css($item, &#x27;padding-right&#x27;).replace(&#x27;px&#x27;, &#x27;&#x27;)) - 2;
             width = width - parseInt(this.sandbox.dom.css($item, &#x27;padding-left&#x27;).replace(&#x27;px&#x27;, &#x27;&#x27;));
             width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find(&#x27;.icons-right&#x27;, $item));
@@ -708,13 +738,17 @@ define([], function () {
          * Inserts some markup into the last column if column is empty
          */
         handleLastEmptyColumn: function () {
-            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$columnContainer));
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$container));
 
-            this.sandbox.dom.remove(this.sandbox.dom.find(&#x27;.no-page&#x27;, this.$columnContainer));
+            this.sandbox.dom.remove(this.sandbox.dom.find(&#x27;.no-page&#x27;, this.$container));
 
             // if last column is empty insert markup
             if (this.sandbox.dom.find(&#x27;li&#x27;, $lastColumn).length === 0) {
-                this.sandbox.dom.append($lastColumn, this.template.noPage.call(this, this.sandbox.translate(this.options.noPageDescription)));
+                this.sandbox.dom.append($lastColumn, this.sandbox.dom.createElement(
+                    this.sandbox.util.template(templates.noPage)({
+                        description: this.sandbox.translate(this.options.noPageDescription)
+                    })
+                ));
             }
         },
 
@@ -750,7 +784,7 @@ define([], function () {
         unmark: function (id) {
             var $element = this.$find(&#x27;li[data-id=&quot;&#x27; + id + &#x27;&quot;]&#x27;);
             if (!!$element.length) {
-                this.sandbox.dom.removeClass($element, this.options.markedClass);
+                this.sandbox.dom.removeClass($element, constants.markedClass);
                 this.marked.splice(this.marked.indexOf(id), 1);
             }
         },
@@ -802,7 +836,7 @@ define([], function () {
          * Shows the options at the last available column
          */
         showOptionsAtLast: function () {
-            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$columnContainer));
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$container));
             this.showOptions({
                 currentTarget: $lastColumn
             });
@@ -817,8 +851,8 @@ define([], function () {
 
             this.displayOptions($currentTarget);
 
-            this.sandbox.dom.off(this.$columnContainer, &#x27;scroll.column-navigation.&#x27; + this.options.instanceName);
-            this.sandbox.dom.on(this.$columnContainer, &#x27;scroll.column-navigation.&#x27; + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
+            this.sandbox.dom.off(this.$container, &#x27;scroll.column-navigation.&#x27; + this.options.instanceName);
+            this.sandbox.dom.on(this.$container, &#x27;scroll.column-navigation.&#x27; + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
         },
 
         /**
@@ -831,14 +865,14 @@ define([], function () {
             this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, &#x27;column&#x27;);
 
             // calculate the ratio of how much of the hovered column is visible
-            if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) &gt; this.sandbox.dom.width(this.$columnContainer)) {
-                visibleRatio = (this.sandbox.dom.width(this.$columnContainer) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
+            if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) &gt; this.sandbox.dom.width(this.$container)) {
+                visibleRatio = (this.sandbox.dom.width(this.$container) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
             } else {
                 visibleRatio = (this.sandbox.dom.width($activeColumn) + this.sandbox.dom.position($activeColumn).left) / this.sandbox.dom.width($activeColumn);
             }
 
             // display the option only if the column is visible enough
-            if (visibleRatio &gt;= this.options.minVisibleRatio) {
+            if (visibleRatio &gt;= constants.minVisibleRatio) {
                 this.sandbox.dom.css(this.$optionsContainer, {&#x27;visibility&#x27;: &#x27;visible&#x27;});
                 this.updateOptionsMargin($activeColumn);
             } else {
@@ -921,8 +955,11 @@ define([], function () {
 
         addColumn: function (selectedItem, column) {
             this.sandbox.dom.append(
-                this.$columnContainer,
-                this.sandbox.dom.createElement(this.template.column.call(this, column + 1, this.options.column.width))
+                this.$container,
+                this.sandbox.dom.createElement(this.sandbox.util.template(templates.column)({
+                    columnNumber: column + 1,
+                    id: &#x27;column&#x27; + this.options.instanceName + &#x27;-&#x27; + column + 1
+                }))
             );
 
             this.filledColumns++;
@@ -933,8 +970,8 @@ define([], function () {
          * @param column
          */
         scrollIfNeeded: function (column) {
-            if (column &gt; DISPLAYEDCOLUMNS) {
-                this.sandbox.dom.scrollLeft(this.$columnContainer, (column - DISPLAYEDCOLUMNS) * this.options.column.width);
+            if (column &gt; constants.displayedcolumns) {
+                this.sandbox.dom.scrollLeft(this.$container, (column - constants.displayedcolumns) * constants.columnWidth);
             }
         },
 
@@ -991,26 +1028,7 @@ define([], function () {
          */
         template: {
 
-            wrapper: function () {
-                return &#x27;&lt;div class=&quot;column-navigation-wrapper&quot;&gt;&lt;/div&gt;&#x27;;
-            },
-
-            columnContainer: function () {
-                return [&#x27;&lt;div class=&quot;column-navigation&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
-            },
-
-            column: function (columnNumber, width) {
-                return [&#x27;&lt;div data-column=&quot;&#x27;, columnNumber, &#x27;&quot; class=&quot;column&quot; id=&quot;column&#x27; + this.options.instanceName + &#x27;-&#x27;, columnNumber, &#x27;&quot; style=&quot;width: &#x27;, width, &#x27;px&quot;&gt;&lt;ul&gt;&lt;/ul&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
-            },
-
-            noPage: function (description) {
-                return [&#x27;&lt;div class=&quot;no-page&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;fa-coffee icon&quot;&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;text&quot;&gt;&#x27;, description , &#x27;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
-            },
-
-            item: function (width, data) {
+            item: function (data) {
 
                 var isMarked = (this.marked.indexOf(data[this.options.idName]) !== -1),
                     item = [&#x27;&lt;li data-id=&quot;&#x27;, data[this.options.idName], &#x27;&quot; class=&quot;pointer&#x27; + ((isMarked === true) ? &#x27; &#x27; + this.options.markedClass : &#x27;&#x27; ) + &#x27;&quot;&gt;&#x27;];
@@ -1055,30 +1073,10 @@ define([], function () {
 
                 // icons right (subpage, edit)
                 item.push(&#x27;&lt;span class=&quot;icons-right&quot;&gt;&#x27;);
-                if (!!this.options.showEditIcon) {
-                    item.push(&#x27;&lt;span class=&quot;&#x27; + this.options.editIcon + &#x27; edit pull-left&quot;&gt;&lt;/span&gt;&#x27;);
-                }
+                item.push(&#x27;&lt;span class=&quot;&#x27; + this.options.editIcon + &#x27; edit pull-left&quot;&gt;&lt;/span&gt;&#x27;);
                 !!data[this.options.hasSubName] ? item.push(&#x27;&lt;span class=&quot;fa-chevron-right arrow inactive pull-left&quot;&gt;&lt;/span&gt;&#x27;) : &#x27;&#x27;;
                 item.push(&#x27;&lt;/span&gt;&lt;/li&gt;&#x27;);
                 return item.join(&#x27;&#x27;);
-            },
-
-            optionsContainer: function (width) {
-                return [&#x27;&lt;div class=&quot;options grid-row&quot; style=&quot;width:&#x27;, width + 1, &#x27;px&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
-            },
-
-            options: {
-                add: function (id) {
-                    return [&#x27;&lt;div id=&quot;&#x27;, id, &#x27;&quot; class=&quot;align-center add pointer&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;fa-plus-circle&quot;&gt;&lt;/span&gt;&#x27;,
-                        &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
-                },
-
-                settings: function (id) {
-                    return [&#x27;&lt;div id=&quot;&#x27;, id, &#x27;&quot; class=&quot;align-center settings pointer drop-down-trigger&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;fa-gear inline-block&quot;&gt;&lt;/span&gt;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
-                        &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
-                }
             }
         }
     };
