@@ -90,6 +90,11 @@
                     app.sandbox.on('husky.column-navigation.selected', function (item) {
                         app.logger.log('husky.column-navigation.selected item selected');
                     });
+
+                    app.sandbox.on('husky.column-navigation.order', function(item, position) {
+                        app.logger.log('Item positioned', item, position);
+                        app.sandbox.emit('husky.column-navigation.highlight', item); //TODO delay
+                    })
                 });
             });
         </script>

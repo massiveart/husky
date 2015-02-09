@@ -38267,7 +38267,8 @@ define('__component__$column-navigation@husky',[], function () {
             iconsRightClass: 'icons-right',
             itemTextClass: 'item-text',
             sortInputClass: 'sorter',
-            sortErrorClass: 'husky-validate-error'
+            sortErrorClass: 'husky-validate-error',
+            highlightClass: 'highlight-animation'
         },
 
         templates = {
@@ -38373,12 +38374,31 @@ define('__component__$column-navigation@husky',[], function () {
         },
 
         /**
+         * @event husky.column-navigation.order
+         * @description emited when the position of an item gets changed
+         * @param {String} uuid of the reposition item
+         * @param {Number} the new position of the item
+         */
+        ORDER = function () {
+            return createEventName.call(this, 'order');
+        },
+
+        /**
          * @event husky.column-navigation.unmark
          * @description listens on and unmarks a node with a given id
          * @param {Number|String} the id of the node to unmark
          */
         UNMARK = function () {
             return createEventName.call(this, 'unmark');
+        },
+
+        /**
+         * @event husky.column-navigation.highlight
+         * @description listens on and highlights an item with a given uuid
+         * @param {Number|String} the id of the item to highlight
+         */
+        HIGHLIGHT = function () {
+            return createEventName.call(this, 'highlight');
         },
 
         /**
@@ -38426,6 +38446,7 @@ define('__component__$column-navigation@husky',[], function () {
             this.$selectedElement = null;
             this.filledColumns = 0;
             this.columnLoadStarted = false;
+            this.isSorting = false; // flag (only one item at a time can be sorted)
             this.dom = {
                 $wrapper: null,
                 $container: null,
@@ -38455,6 +38476,20 @@ define('__component__$column-navigation@husky',[], function () {
             if (this.options.responsive === true) {
                 this.setContainerHeight();
             }
+        },
+
+        /**
+         * Returns the index of a column which contains an item with a given id
+         * @param item - the id of the item
+         * @returns {number} the index of the column if found, a value below 0 otherwise
+         */
+        getColumnForItem: function(item) {
+            for (var i = -1, length = this.columns.length; ++i < length;) {
+                if (!!this.columns[i] && !!this.columns[i][item]) {
+                    return i;
+                }
+            }
+            return -1;
         },
 
         /**
@@ -38621,7 +38656,6 @@ define('__component__$column-navigation@husky',[], function () {
             this.sandbox.dom.append(this.dom.$container, $column);
             this.filledColumns = number;
             this.renderItems($column, number, data);
-            this.columns[number].$el = $column;
         },
 
         /**
@@ -38844,10 +38878,8 @@ define('__component__$column-navigation@husky',[], function () {
 
             if (!this.columns[columnNumber]) {
                 this.columns[columnNumber] = {};
-                this.columns[columnNumber].countItems = 0;
             }
             this.columns[columnNumber][item[this.options.idName]] = item;
-            this.columns[columnNumber].countItems++;
         },
 
         bindDOMEvents: function () {
@@ -38875,9 +38907,23 @@ define('__component__$column-navigation@husky',[], function () {
             if (this.options.sortable) {
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
-                }.bind(this), '.' + constants.sortInputClass),
+                }.bind(this), '.' + constants.sortInputClass);
 
-                this.sandbox.dom.on(this.$el, 'blur', this.sortBlurHandler.bind(this), '.' + constants.sortInputClass);
+                this.sandbox.dom.on(this.$el, 'focus', function(event) {
+                    if (this.isSorting === true) {
+                        this.sandbox.dom.blur(event.currentTarget);
+                        return false;
+                    }
+                    this.sandbox.dom.select(event.currentTarget);
+                }.bind(this), '.' + constants.sortInputClass + ' input');
+
+                this.sandbox.dom.on(this.$el, 'keydown', function(event) {
+                    if (event.keyCode === 13) { // blur on enter
+                        this.sandbox.dom.blur(event.currentTarget);
+                    }
+                }.bind(this), '.' + constants.sortInputClass + ' input');
+
+                this.sandbox.dom.on(this.$el, 'focusout', this.sortBlurHandler.bind(this), '.' + constants.sortInputClass);
             }
         },
 
@@ -38886,35 +38932,109 @@ define('__component__$column-navigation@husky',[], function () {
          * @param event
          */
         sortBlurHandler: function(event) {
-            var column = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnClass), 'column'),
-                item = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnItemClass), 'id'),
-                $input = this.sandbox.dom.find('input', event.currentTarget), position;
-            // if is an integer
-            if (this.sandbox.dom.isNumeric(this.sandbox.dom.val($input)) &&
-                Math.floor(this.sandbox.dom.val($input)) == this.sandbox.dom.val($input)) {
-                position = this.normalizeSortPosition(column, parseInt(this.sandbox.dom.val($input), 10));
-                this.sandbox.dom.val($input, position);
-                this.sort(column, item, position);
-            } else {
-                this.sortError(column, item);
+            if (this.isSorting == false) {
+                var column = this.sandbox.dom.attr(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnClass), 'data-column'),
+                    item = this.sandbox.dom.attr(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnItemClass), 'data-id'),
+                    $input = this.sandbox.dom.find('input', this.columns[column][item].$el);
+                // if is an integer
+                if (this.sandbox.dom.isNumeric(this.sandbox.dom.val($input)) &&
+                    Math.floor(this.sandbox.dom.val($input)) == this.sandbox.dom.val($input)) {
+                    this.sortPrepare(column, item);
+                } else {
+                    this.sortError(column, item);
+                }
             }
         },
 
         /**
-         * Puts an item on a new position
+         * Looks if the position changes and executes the sort or resets the inputs
          * @param column - column in which the item is
          * @param item - the id of the item
-         * @param position - the new position to put the item to
          */
-        sort: function(column, item, position) {
+        sortPrepare: function(column, item) {
+            var $input = this.sandbox.dom.find('input', this.columns[column][item].$el),
+            position = this.normalizeSortPosition(column, parseInt(this.sandbox.dom.val($input), 10));
+            this.sandbox.dom.val($input, position);
             this.sandbox.dom.removeClass(this.columns[column][item].$el, constants.sortErrorClass);
             if (position !== this.columns[column][item].sortOrder) {
-                this.confirmSort(function() {
-                    console.log('do something! NOW!!');
-                }, function() {
-                    console.log('do nothing!!!!!');
-                });
+                this.isSorting = true;
+                this.confirmSort(
+                    function() { // ok callback
+                        this.sort(column, item, position);
+                        this.isSorting = false;
+                    }.bind(this),
+                    function() { // cancel callback
+                        this.resetSortInput(column, item);
+                        this.isSorting = false;
+                    }.bind(this)
+                );
             }
+        },
+
+        /**
+         * Changes the position of an item and updates the positions of the other items in the column
+         * @param column - the index of the column in which the item is
+         * @param item - the id of the item
+         * @param newPosition - the new position of the item
+         */
+        sort: function(column, item, newPosition) {
+            var oldPosition = this.columns[column][item].sortOrder;
+            this.sandbox.util.each(this.columns[column], function (itemId) {
+                this.repositionItem(column, itemId, oldPosition, newPosition);
+                this.resetSortInput(column, itemId);
+            }.bind(this));
+            this.updateItemDomPosition(column, item);
+            this.sandbox.emit(ORDER.call(this), item, newPosition);
+            this.isSorting = false;
+        },
+
+        /**
+         * Determines and resets the position of a single item, given a position-change
+         * @param column - the column in which the item is
+         * @param item - the id of the item
+         * @param oldPosition - the old position of the position-change
+         * @param newPosition - the new position of the position-change
+         */
+        repositionItem: function(column, item, oldPosition, newPosition) {
+            if (this.columns[column][item].sortOrder === oldPosition) { // update property to new position
+                this.columns[column][item].sortOrder = newPosition;
+            } else { // update the sort order of the other items
+                if (this.columns[column][item].sortOrder > oldPosition &&
+                    this.columns[column][item].sortOrder <= newPosition) {
+                    this.columns[column][item].sortOrder--;
+                } else if (this.columns[column][item].sortOrder < oldPosition &&
+                    this.columns[column][item].sortOrder >= newPosition) {
+                    this.columns[column][item].sortOrder++;
+                }
+            }
+        },
+
+        /**
+         * Brings an item to the position set in the sort-order-property
+         * @param column - the column of the item
+         * @param item - the id of the item
+         */
+        updateItemDomPosition: function(column, item) {
+            var $list = this.sandbox.dom.parent(this.columns[column][item].$el);
+            this.sandbox.dom.detach(this.columns[column][item].$el);
+            this.sandbox.dom.insertAt(
+                this.columns[column][item].sortOrder - 1, '.' + constants.columnItemClass,
+                $list, this.columns[column][item].$el
+            );
+            this.sandbox.dom.scrollAnimate(
+                this.sandbox.dom.position(this.columns[column][item].$el).top,
+                this.sandbox.dom.parents(this.columns[column][item].$el, '.' + constants.columnClass)
+            );
+        },
+
+        /**
+         * Resets the position input of an item
+         * @param column
+         * @param item
+         */
+        resetSortInput: function(column, item) {
+            var $input = this.sandbox.dom.find('input', this.columns[column][item].$el);
+            this.sandbox.dom.val($input, this.columns[column][item].sortOrder);
         },
 
         /**
@@ -38925,8 +39045,8 @@ define('__component__$column-navigation@husky',[], function () {
          */
         normalizeSortPosition: function(column, position) {
             position = (position < 1) ? 1 : position;
-            position = (position > (this.columns[column].countItems)) ?  this.columns[column].countItems : position;
-            return position;
+            return (position > (Object.keys(this.columns[column])).length)
+                    ?  Object.keys(this.columns[column]).length : position;
         },
 
         /**
@@ -38965,6 +39085,7 @@ define('__component__$column-navigation@husky',[], function () {
             this.sandbox.on(BREADCRUMB.call(this), this.getBreadCrumb.bind(this));
             this.sandbox.on(GET_SELECTED.call(this), this.getSelected.bind(this));
             this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
+            this.sandbox.on(HIGHLIGHT.call(this), this.highlight.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
@@ -38972,6 +39093,22 @@ define('__component__$column-navigation@husky',[], function () {
                 this.sandbox.on(RESIZE.call(this), function () {
                     this.setContainerHeight();
                     this.setOverflowClass();
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Highlights an item
+         * @param item - the id of the item
+         */
+        highlight: function(item) {
+            var column = this.getColumnForItem(item);
+            if (column >= 0) {
+                this.sandbox.dom.addClass(this.columns[column][item].$el, constants.highlightClass);
+
+                // remove class after effect has finished
+                this.sandbox.dom.on(this.columns[column][item].$el,'animationend webkitAnimationEnd oanimationend MSAnimationEnd', function() {
+                    this.sandbox.dom.removeClass(this.columns[column][item].$el, constants.highlightClass);
                 }.bind(this));
             }
         },
