@@ -9428,7 +9428,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1003,
+            "line": 1006,
             "description": "Handles the mousemove event for making the overlay draggable",
             "params": [
                 {
@@ -9447,28 +9447,28 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1017,
+            "line": 1020,
             "description": "Sets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1029,
+            "line": 1032,
             "description": "Handles the shrinking and enlarging of the overlay\nif the window gets smaller",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1061,
+            "line": 1064,
             "description": "Positions the overlay in the middle of the screen",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1079,
+            "line": 1082,
             "description": "Updates the coordinates of the overlay",
             "params": [
                 {
@@ -9487,7 +9487,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1089,
+            "line": 1092,
             "description": "Executes a passed callback",
             "params": [
                 {
@@ -13512,27 +13512,27 @@
         },
         {
             "message": "Missing item type\nHandles the mousemove event for making the overlay draggable",
-            "line": " husky_components/overlay/main.js:1003"
+            "line": " husky_components/overlay/main.js:1006"
         },
         {
             "message": "Missing item type\nSets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
-            "line": " husky_components/overlay/main.js:1017"
+            "line": " husky_components/overlay/main.js:1020"
         },
         {
             "message": "Missing item type\nHandles the shrinking and enlarging of the overlay\nif the window gets smaller",
-            "line": " husky_components/overlay/main.js:1029"
+            "line": " husky_components/overlay/main.js:1032"
         },
         {
             "message": "Missing item type\nPositions the overlay in the middle of the screen",
-            "line": " husky_components/overlay/main.js:1061"
+            "line": " husky_components/overlay/main.js:1064"
         },
         {
             "message": "Missing item type\nUpdates the coordinates of the overlay",
-            "line": " husky_components/overlay/main.js:1079"
+            "line": " husky_components/overlay/main.js:1082"
         },
         {
             "message": "Missing item type\nExecutes a passed callback",
-            "line": " husky_components/overlay/main.js:1089"
+            "line": " husky_components/overlay/main.js:1092"
         },
         {
             "message": "Missing item type\nnamespace for events",
