@@ -994,8 +994,11 @@ define([], function() {
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
                 this.sandbox.dom.stopPropagation(event);
-            }
-            if (this.executeCallback(cancelCallback, event.currentTarget) !== false) {
+
+                if (this.executeCallback(cancelCallback, event.currentTarget) !== false) {
+                    this.closeOverlay();
+                }
+            } else {
                 this.closeOverlay();
             }
         },
