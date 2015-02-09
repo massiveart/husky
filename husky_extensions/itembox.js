@@ -250,7 +250,7 @@ define(function() {
                 this.$footer = this.sandbox.dom.find(this.getId('footer'), this.$el);
                 this.$list = null;
 
-                this.detachFooter();
+                this.removeFooter();
 
                 this.renderNoContent();
 
@@ -264,7 +264,7 @@ define(function() {
             renderNoContent: function() {
                 this.$list = null;
                 this.sandbox.dom.html(this.$content, templates.noContent.call(this));
-                this.detachFooter();
+                this.removeFooter();
             },
 
             /**
@@ -296,7 +296,7 @@ define(function() {
             /**
              * Removes the footer from the DOM
              */
-            detachFooter: function() {
+            removeFooter: function() {
                 this.sandbox.dom.remove(this.$footer);
             },
 
@@ -304,8 +304,7 @@ define(function() {
              * Returns the data currently stored in this component
              * @returns {object}
              */
-            getData: function()
-            {
+            getData: function() {
                 return this.sandbox.dom.data(this.$el, this.options.dataAttribute);
             },
 
@@ -361,7 +360,7 @@ define(function() {
                     this.$list = createItemList.call(this);
 
                     for (var i = -1; ++i < length;) {
-                        this.addItem(data[i]);
+                        this.addItem(data[i], false);
                     }
 
                     this.sandbox.dom.html(this.$content, this.$list);
@@ -379,7 +378,7 @@ define(function() {
              * Starts the loader for the content
              */
             startLoader: function() {
-                this.detachFooter();
+                this.removeFooter();
 
                 var $loader = this.sandbox.dom.createElement('<div class="loader"/>');
                 this.sandbox.dom.html(this.$content, $loader);
@@ -448,9 +447,14 @@ define(function() {
 
             /**
              * Adds an item to the list
-             * @param item
+             * @param item {object} The item to display in the list
+             * @param reinitialize {boolean} Defines if the sorting, order and visibility list should be reinitialized
              */
-            addItem: function(item) {
+            addItem: function(item, reinitialize) {
+                if (typeof(reinitialize) === 'undefined') {
+                    reinitialize = true;
+                }
+
                 if (!this.$list) {
                     this.$list = createItemList.call(this);
                     this.sandbox.dom.html(this.$content, this.$list);
@@ -466,8 +470,14 @@ define(function() {
                     )
                 );
 
-                this.updateOrder();
-                this.updateVisibility();
+                if (!!reinitialize) {
+                    if (this.options.sortable) {
+                        initSortable.call(this);
+                    }
+
+                    this.updateOrder();
+                    this.updateVisibility();
+                }
             },
 
             /**
@@ -479,7 +489,7 @@ define(function() {
                     itemId = this.sandbox.dom.data($removeItem, 'id');
 
                 this.sandbox.dom.remove($removeItem);
-                this.removeHandler(this.sandbox.dom.data(this.$el, this.options.dataAttribute), itemId);
+                this.removeHandler(itemId);
 
                 this.updateOrder();
                 this.updateVisibility();
@@ -546,6 +556,38 @@ define(function() {
              */
             getId: function(type) {
                 return ['#', this.ids[type]].join('');
+            },
+
+            /**
+             * Returns the URL for the list based on the data
+             * @param data {object} The data for which the URL should be generated
+             */
+            getUrl: function(data) {
+                throw new Error('Not implemented');
+            },
+
+            /**
+             * Returns the HTML for an item in the list
+             * @param item
+             */
+            getItemContent: function(item) {
+                throw new Error('Not implemented');
+            },
+
+            /**
+             * This function is called when the sorting has been updated
+             * @param ids {array} The new order of the ids
+             */
+            sortHandler: function(ids) {
+                throw new Error('Not implemented');
+            },
+
+            /**
+             * Handler, which is called when a row is removed
+             * @param id {number} The id of the item to remove
+             */
+            removeHandler: function(id) {
+                throw new Error('Not implemented');
             }
         };
 

@@ -47,7 +47,8 @@ define([], function() {
             this.setData(ids, false);
         },
 
-        removeHandler: function(data, id) {
+        removeHandler: function(id) {
+            var data = this.getData();
             data.splice(data.indexOf(id), 1);
         },
 
