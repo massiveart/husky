@@ -10385,10 +10385,6 @@ a.btn-black, a.btn-highlight {
   color: #999;
   font-size: 12px;
 }
-/* line 297, ../scss/modules/content-types.scss */
-.white-box .footer span {
-  padding-right: 5px;
-}
 
 /* line 5, ../scss/modules/dropzone.scss */
 .husky-dropzone {

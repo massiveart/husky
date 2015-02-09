@@ -31,6 +31,8 @@ define(function() {
 
             app.core.util.isEqual = _.isEqual;
 
+            app.core.util.isEmpty = _.isEmpty;
+
             /**
              * cool guy loop implementation of foreach: http://jsperf.com/loops3/2
              * returns -> callback(value, index)
@@ -149,6 +151,15 @@ define(function() {
             app.core.util.union = function() {
                 return _.union.apply(this, arguments);
             };
+
+            app.core.util.deepCopy = function(object) {
+                var parent = {};
+
+                if ($.isArray(object)) {
+                    parent = [];
+                }
+                return $.extend(true, parent, object);
+            }
 
 			app.core.util.template = _.template;
 

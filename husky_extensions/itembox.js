@@ -25,11 +25,13 @@ define(function() {
             idKey: 'id',
             visibleItems: 6,
             dataAttribute: '',
+            dataDefault: {},
             sortable: true,
             removable: true,
             hideAddButton: false,
             hidePositionElement: false,
             hideConfigButton: false,
+            defaultDisplayOption: 'top',
             displayOptions: {
                 leftTop: true,
                 top: true,
@@ -226,7 +228,9 @@ define(function() {
              * render the itembox
              */
             render: function() {
-                this.options = this.sandbox.util.extend({}, defaults, this.options);
+                var data = this.getData();
+
+                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
                 this.viewAll = true;
 
                 this.ids = {
@@ -253,6 +257,15 @@ define(function() {
                 this.removeFooter();
 
                 this.renderNoContent();
+
+
+                if (!this.sandbox.util.isEmpty(data)) {
+                    this.loadContent(data);
+                } else {
+                    this.setData(this.options.dataDefault, false);
+                }
+
+                this.setDisplayOption(this.options.defaultDisplayOption);
 
                 bindCustomEvents.call(this);
                 bindDomEvents.call(this);
@@ -302,10 +315,11 @@ define(function() {
 
             /**
              * Returns the data currently stored in this component
+             * @param deepCopy {boolean} True if deep cop should be returned, otherwise false
              * @returns {object}
              */
             getData: function() {
-                return this.sandbox.dom.data(this.$el, this.options.dataAttribute);
+                return this.sandbox.util.deepCopy(this.sandbox.dom.data(this.$el, this.options.dataAttribute));
             },
 
             /**
@@ -537,8 +551,12 @@ define(function() {
                     this.sandbox.dom.show($items);
                     this.sandbox.dom.html(this.getId('footerCount'), length);
                 } else {
-                    this.sandbox.dom.show(this.sandbox.dom.find(':not(.' + constants.itemInvisibleClass + ')'));
-                    this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.itemInvisibleClass));
+                    if (!!this.$list) {
+                        this.sandbox.dom.show(
+                            this.sandbox.dom.find(':not(.' + constants.itemInvisibleClass + ')', this.$list)
+                        );
+                        this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.itemInvisibleClass, this.$list));
+                    }
 
                     this.sandbox.dom.html(
                         this.getId('footerCount'),
@@ -563,7 +581,7 @@ define(function() {
              * @param data {object} The data for which the URL should be generated
              */
             getUrl: function(data) {
-                throw new Error('Not implemented');
+                throw new Error('"getUrl" not implemented');
             },
 
             /**
@@ -571,7 +589,7 @@ define(function() {
              * @param item
              */
             getItemContent: function(item) {
-                throw new Error('Not implemented');
+                throw new Error('"getItemContent" not implemented');
             },
 
             /**
@@ -579,7 +597,7 @@ define(function() {
              * @param ids {array} The new order of the ids
              */
             sortHandler: function(ids) {
-                throw new Error('Not implemented');
+                throw new Error('"sortHandler" not implemented');
             },
 
             /**
@@ -587,7 +605,7 @@ define(function() {
              * @param id {number} The id of the item to remove
              */
             removeHandler: function(id) {
-                throw new Error('Not implemented');
+                throw new Error('"removeHandler" not implemented');
             }
         };
 

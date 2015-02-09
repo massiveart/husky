@@ -24,7 +24,7 @@ define([], function() {
                 this.addItem({id: id, title: 'added'});
 
                 data.push(id);
-                this.setData(data);
+                this.setData(data, false);
             }, this);
         };
 
@@ -50,12 +50,12 @@ define([], function() {
         removeHandler: function(id) {
             var data = this.getData();
             data.splice(data.indexOf(id), 1);
+            this.setData(data, false);
         },
 
         initialize: function() {
             this.render();
 
-            this.setDisplayOption('left');
             this.setData([1, 2, 3]);
 
             bindCustomEvents.call(this);

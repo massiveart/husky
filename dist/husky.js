@@ -47060,11 +47060,13 @@ define('husky_extensions/itembox',[],function() {
             idKey: 'id',
             visibleItems: 6,
             dataAttribute: '',
+            dataDefault: {},
             sortable: true,
             removable: true,
             hideAddButton: false,
             hidePositionElement: false,
             hideConfigButton: false,
+            defaultDisplayOption: 'top',
             displayOptions: {
                 leftTop: true,
                 top: true,
@@ -47261,7 +47263,9 @@ define('husky_extensions/itembox',[],function() {
              * render the itembox
              */
             render: function() {
-                this.options = this.sandbox.util.extend({}, defaults, this.options);
+                var data = this.getData();
+
+                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
                 this.viewAll = true;
 
                 this.ids = {
@@ -47288,6 +47292,15 @@ define('husky_extensions/itembox',[],function() {
                 this.removeFooter();
 
                 this.renderNoContent();
+
+
+                if (!this.sandbox.util.isEmpty(data)) {
+                    this.loadContent(data);
+                } else {
+                    this.setData(this.options.dataDefault, false);
+                }
+
+                this.setDisplayOption(this.options.defaultDisplayOption);
 
                 bindCustomEvents.call(this);
                 bindDomEvents.call(this);
@@ -47337,10 +47350,11 @@ define('husky_extensions/itembox',[],function() {
 
             /**
              * Returns the data currently stored in this component
+             * @param deepCopy {boolean} True if deep cop should be returned, otherwise false
              * @returns {object}
              */
             getData: function() {
-                return this.sandbox.dom.data(this.$el, this.options.dataAttribute);
+                return this.sandbox.util.deepCopy(this.sandbox.dom.data(this.$el, this.options.dataAttribute));
             },
 
             /**
@@ -47572,8 +47586,12 @@ define('husky_extensions/itembox',[],function() {
                     this.sandbox.dom.show($items);
                     this.sandbox.dom.html(this.getId('footerCount'), length);
                 } else {
-                    this.sandbox.dom.show(this.sandbox.dom.find(':not(.' + constants.itemInvisibleClass + ')'));
-                    this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.itemInvisibleClass));
+                    if (!!this.$list) {
+                        this.sandbox.dom.show(
+                            this.sandbox.dom.find(':not(.' + constants.itemInvisibleClass + ')', this.$list)
+                        );
+                        this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.itemInvisibleClass, this.$list));
+                    }
 
                     this.sandbox.dom.html(
                         this.getId('footerCount'),
@@ -47598,7 +47616,7 @@ define('husky_extensions/itembox',[],function() {
              * @param data {object} The data for which the URL should be generated
              */
             getUrl: function(data) {
-                throw new Error('Not implemented');
+                throw new Error('"getUrl" not implemented');
             },
 
             /**
@@ -47606,7 +47624,7 @@ define('husky_extensions/itembox',[],function() {
              * @param item
              */
             getItemContent: function(item) {
-                throw new Error('Not implemented');
+                throw new Error('"getItemContent" not implemented');
             },
 
             /**
@@ -47614,7 +47632,7 @@ define('husky_extensions/itembox',[],function() {
              * @param ids {array} The new order of the ids
              */
             sortHandler: function(ids) {
-                throw new Error('Not implemented');
+                throw new Error('"sortHandler" not implemented');
             },
 
             /**
@@ -47622,7 +47640,7 @@ define('husky_extensions/itembox',[],function() {
              * @param id {number} The id of the item to remove
              */
             removeHandler: function(id) {
-                throw new Error('Not implemented');
+                throw new Error('"removeHandler" not implemented');
             }
         };
 
@@ -48474,6 +48492,8 @@ define('husky_extensions/util',[],function() {
 
             app.core.util.isEqual = _.isEqual;
 
+            app.core.util.isEmpty = _.isEmpty;
+
             /**
              * cool guy loop implementation of foreach: http://jsperf.com/loops3/2
              * returns -> callback(value, index)
@@ -48592,6 +48612,15 @@ define('husky_extensions/util',[],function() {
             app.core.util.union = function() {
                 return _.union.apply(this, arguments);
             };
+
+            app.core.util.deepCopy = function(object) {
+                var parent = {};
+
+                if ($.isArray(object)) {
+                    parent = [];
+                }
+                return $.extend(true, parent, object);
+            }
 
 			app.core.util.template = _.template;
 
