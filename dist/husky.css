@@ -8772,18 +8772,19 @@ a.btn-black, a.btn-highlight {
 /* line 183, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left .col-icon {
   margin-right: 5px;
+  display: none;
 }
-/* line 186, ../scss/modules/column-navigation.scss */
+/* line 187, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left .ghost {
   line-height: 15px;
 }
-/* line 189, ../scss/modules/column-navigation.scss */
+/* line 190, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left .custom-checkbox {
   line-height: 15px;
   margin-right: 8px;
   margin-top: 2px;
 }
-/* line 195, ../scss/modules/column-navigation.scss */
+/* line 196, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .edit {
   background-color: #52B6CA;
   padding: 0px 10px;
@@ -8793,14 +8794,14 @@ a.btn-black, a.btn-highlight {
   display: none;
   margin-right: 0;
 }
-/* line 204, ../scss/modules/column-navigation.scss */
+/* line 205, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .husky-column-navigation-loader {
   position: relative;
   top: 2px;
   left: -2px;
   padding-left: 2px;
 }
-/* line 211, ../scss/modules/column-navigation.scss */
+/* line 212, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .arrow {
   display: inline-block;
   width: 11px;
@@ -8810,15 +8811,28 @@ a.btn-black, a.btn-highlight {
   color: #000;
   margin: 0;
 }
-/* line 221, ../scss/modules/column-navigation.scss */
+/* line 222, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column-item {
   cursor: pointer;
 }
 /* line 226, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .sorter {
+  display: block;
+  float: left;
+  width: 40px;
+  padding: 2px 10px 0 0;
+}
+/* line 231, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .sorter .form-element, .column-navigation-wrapper .column-navigation .sorter .husky-input {
+  height: 20px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+/* line 239, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .options {
   width: 251px;
 }
-/* line 230, ../scss/modules/column-navigation.scss */
+/* line 243, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   display: inline-block;
   width: 50%;
@@ -8830,7 +8844,7 @@ a.btn-black, a.btn-highlight {
   -moz-border-radius-bottomleft: 5px;
   font-size: 16px;
 }
-/* line 242, ../scss/modules/column-navigation.scss */
+/* line 255, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
   display: inline-block;
   width: 50%;

@@ -989,13 +989,15 @@ define([], function() {
          */
         closeHandler: function(event) {
             var cancelCallback = this.slides[this.activeSlide].closeCallback ||
-                this.slides[this.activeSlide].cancelCallback;
+                this.slides[this.activeSlide].cancelCallback,
+                element = null;
 
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
                 this.sandbox.dom.stopPropagation(event);
+                element = event.currentTarget;
             }
-            if (this.executeCallback(cancelCallback, event.currentTarget) !== false) {
+            if (this.executeCallback(cancelCallback, element) !== false) {
                 this.closeOverlay();
             }
         },

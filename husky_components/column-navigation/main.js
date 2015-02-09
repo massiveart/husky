@@ -34,6 +34,7 @@
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
  * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
+ * @params {Boolean} [options.sortable] if true component-items can be sorted
  */
 define([], function () {
 
@@ -59,7 +60,10 @@ define([], function () {
             showOptions: true,
             showStatus: true,
             premarkedIds: [],
-            markable: false
+            markable: false,
+            sortable: true,
+            sortConfirmTitle: 'Be careful',
+            sortConfirmMessage: 'Are you sure you want to move this item?'
         },
 
         constants = {
@@ -77,7 +81,9 @@ define([], function () {
             columnItemClass: 'column-item',
             iconsLeftClass: 'icons-left',
             iconsRightClass: 'icons-right',
-            itemTextClass: 'item-text'
+            itemTextClass: 'item-text',
+            sortInputClass: 'sorter',
+            sortErrorClass: 'husky-validate-error'
         },
 
         templates = {
@@ -107,7 +113,11 @@ define([], function () {
                    '    <span class="'+ constants.iconsLeftClass +'"></span>',
                    '    <span title="<%= title %>" class="'+ constants.itemTextClass +'"><%= title%></span>',
                    '    <span class="'+ constants.iconsRightClass +'"></span>',
-                   '</li>'].join('')
+                   '</li>'].join(''),
+
+            sortInput: ['<span class="'+ constants.sortInputClass +'">',
+                        '   <input type="text" class="form-element husky-validate" value="<%= value %>" />',
+                        '</span>'].join('')
         },
 
         /**
@@ -405,7 +415,7 @@ define([], function () {
         parseData: function (data, columnNumber) {
             // if there is nothing loaded yet, create a "root"-column
             if (columnNumber === 0) {
-                this.columns[0] = [];
+                this.columns[0] = {};
                 this.columns[0][data[this.options.idName]] = data;
             }
             var newColNumber = columnNumber + 1;
@@ -427,6 +437,7 @@ define([], function () {
             this.sandbox.dom.append(this.dom.$container, $column);
             this.filledColumns = number;
             this.renderItems($column, number, data);
+            this.columns[number].$el = $column;
         },
 
         /**
@@ -437,24 +448,26 @@ define([], function () {
          */
         renderItems: function($column, number, data) {
             var $list = this.sandbox.dom.find('ul', $column), nodeWithSubNodes, lastSelected;
-            this.sandbox.util.each(data._embedded[this.options.resultKey], function (index, value) {
-                this.storeDataItem(number, value);
-                var $item = this.renderItem(value);
+            this.sandbox.util.each(data._embedded[this.options.resultKey], function (index, itemData) {
+                itemData.sortOrder = (index + 1);
+                var $item = this.renderItem(itemData);
+                itemData.$el = $item;
+                this.storeDataItem(number, itemData);
                 this.sandbox.dom.append($list, $item);
                 this.setItemsTextWidth($item);
 
                 // if there are sub-nodes for this node loaded (need to be rendered later, so we save a reference)
-                if (!!value[this.options.hasSubName] && !!value._embedded[this.options.resultKey] && value._embedded[this.options.resultKey].length > 0) {
-                    nodeWithSubNodes = value;
+                if (!!itemData[this.options.hasSubName] && !!itemData._embedded[this.options.resultKey] && itemData._embedded[this.options.resultKey].length > 0) {
+                    nodeWithSubNodes = itemData;
                     this.setElementSelected($item);
-                    this.selected[number] = value;
+                    this.selected[number] = itemData;
                 }
 
                 // if this node is the specified as selected in the options, we select it
-                if (!!this.options.selected && (this.options.selected === value[this.options.idName] || this.options.selected === value[this.options.pathName])) {
+                if (!!this.options.selected && (this.options.selected === itemData[this.options.idName] || this.options.selected === itemData[this.options.pathName])) {
                     this.setElementSelected($item);
-                    this.selected[number] = value;
-                    lastSelected = value;
+                    this.selected[number] = itemData;
+                    lastSelected = itemData;
                 }
             }.bind(this));
 
@@ -469,7 +482,7 @@ define([], function () {
 
         /**
          * Takes the data object and returns a column-item
-         * @param data
+         * @param data - the item's data
          * @returns the items dom-object
          */
         renderItem: function(data) {
@@ -489,7 +502,7 @@ define([], function () {
         /**
          * Renders the left buttons and icons for an item
          * @param $item - dom object of the item
-         * @param data - the data for the item
+         * @param data - the item's data
          */
         renderLeftInfo: function($item, data) {
             var $container = this.sandbox.dom.find('.' + constants.iconsLeftClass, $item);
@@ -514,6 +527,11 @@ define([], function () {
                 if (!data[this.options.publishedName]) {
                     this.sandbox.dom.append($container, '<span class="not-published col-icon">&bull;</span>');
                 }
+            }
+            if (!!this.options.sortable) {
+                this.sandbox.dom.append($container, this.sandbox.util.template(templates.sortInput)({
+                    value: data.sortOrder
+                }));
             }
         },
 
@@ -551,10 +569,10 @@ define([], function () {
 
             $itemText = this.sandbox.dom.find('.item-text', $item);
             width = constants.columnWidth - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-left', $item));
-            width = width - parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', '')) - 2;
-            width = width - parseInt(this.sandbox.dom.css($item, 'padding-left').replace('px', ''));
-            width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-right', $item));
-
+            width -= parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', ''));
+            width -= parseInt(this.sandbox.dom.css($item, 'padding-left').replace('px', ''));
+            width -= this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-right', $item));
+            width -= 17; // FIXME: Better solution? (For potential scrollbar)
             this.sandbox.dom.width($itemText, width);
             this.cropItemsText($itemText);
         },
@@ -571,15 +589,17 @@ define([], function () {
 
             //set the item text to the original title
             this.sandbox.dom.html($itemText, title);
+            this.sandbox.dom.css($itemText, 'font-weight', 'bold');
 
             overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth > this.sandbox.dom.width($itemText));
 
             while (overflow === true) {
-                maxLength = maxLength - 1;
+                maxLength--;
                 croppedTitle = this.sandbox.util.cropMiddle(title, maxLength);
                 this.sandbox.dom.html($itemText, croppedTitle);
                 overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth > this.sandbox.dom.width($itemText));
             }
+            this.sandbox.dom.css($itemText, 'font-weight', '');
         },
 
         /**
@@ -639,10 +659,11 @@ define([], function () {
         storeDataItem: function (columnNumber, item) {
 
             if (!this.columns[columnNumber]) {
-                this.columns[columnNumber] = [];
+                this.columns[columnNumber] = {};
+                this.columns[columnNumber].countItems = 0;
             }
             this.columns[columnNumber][item[this.options.idName]] = item;
-
+            this.columns[columnNumber].countItems++;
         },
 
         bindDOMEvents: function () {
@@ -666,6 +687,82 @@ define([], function () {
                     this.setOverflowClass();
                 }.bind(this));
             }
+
+            if (this.options.sortable) {
+                this.sandbox.dom.on(this.$el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this), '.' + constants.sortInputClass),
+
+                this.sandbox.dom.on(this.$el, 'blur', this.sortBlurHandler.bind(this), '.' + constants.sortInputClass);
+            }
+        },
+
+        /**
+         * Handles the blur event of a sort-input
+         * @param event
+         */
+        sortBlurHandler: function(event) {
+            var column = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnClass), 'column'),
+                item = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnItemClass), 'id'),
+                $input = this.sandbox.dom.find('input', event.currentTarget), position;
+            // if is an integer
+            if (this.sandbox.dom.isNumeric(this.sandbox.dom.val($input)) &&
+                Math.floor(this.sandbox.dom.val($input)) == this.sandbox.dom.val($input)) {
+                position = this.normalizeSortPosition(column, parseInt(this.sandbox.dom.val($input), 10));
+                this.sandbox.dom.val($input, position);
+                this.sort(column, item, position);
+            } else {
+                this.sortError(column, item);
+            }
+        },
+
+        /**
+         * Puts an item on a new position
+         * @param column - column in which the item is
+         * @param item - the id of the item
+         * @param position - the new position to put the item to
+         */
+        sort: function(column, item, position) {
+            this.sandbox.dom.removeClass(this.columns[column][item].$el, constants.sortErrorClass);
+            if (position !== this.columns[column][item].sortOrder) {
+                this.confirmSort(function() {
+                    console.log('do something! NOW!!');
+                }, function() {
+                    console.log('do nothing!!!!!');
+                });
+            }
+        },
+
+        /**
+         * Normalizes a position used for sorting
+         * @param column - the column for which the position gets normalized
+         * @param position (int) - the position to normalize
+         * @returns int - the normalized position
+         */
+        normalizeSortPosition: function(column, position) {
+            position = (position < 1) ? 1 : position;
+            position = (position > (this.columns[column].countItems)) ?  this.columns[column].countItems : position;
+            return position;
+        },
+
+        /**
+         * Sets css-classes on an item, through which an input error get signalized
+         * @param column - the column in which the item is
+         * @param item - the id of the item
+         */
+        sortError: function(column, item) {
+            this.sandbox.dom.addClass(this.columns[column][item].$el, constants.sortErrorClass);
+        },
+
+        /**
+         * Shows a confirmation-overlay
+         * @param okCallback - callback to execute if clicked on ok
+         * @param closeCallback - callback to execute if clicked on ok
+         */
+        confirmSort: function(okCallback, closeCallback) {
+            this.sandbox.confirm.warning(this,
+                this.options.sortConfirmTitle, this.options.sortConfirmMessage,
+                okCallback, closeCallback);
         },
 
         /**

@@ -182,6 +182,7 @@
             }
             .col-icon {
                 margin-right: 5px;
+                display: none;
             }
             .ghost {
               line-height: 15px;
@@ -220,6 +221,18 @@
 
         .column-item {
             cursor: pointer;
+        }
+
+        .sorter {
+            display: block;
+            float: left;
+            width: 40px;
+            padding: 2px 10px 0 0;
+            .form-element {
+                height: 20px;
+                padding-left: 3px;
+                padding-right: 3px;
+            }
         }
     }
 
