@@ -91,9 +91,11 @@
                         app.logger.log('husky.column-navigation.selected item selected');
                     });
 
-                    app.sandbox.on('husky.column-navigation.order', function(item, position) {
+                    app.sandbox.on('husky.column-navigation.ordered', function(item, position) {
                         app.logger.log('Item positioned', item, position);
-                        app.sandbox.emit('husky.column-navigation.highlight', item); //TODO delay
+                        _.delay(function() {
+                            app.sandbox.emit('husky.column-navigation.highlight', item);
+                        }, 600);
                     })
                 });
             });

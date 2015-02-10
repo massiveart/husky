@@ -84,7 +84,8 @@ define([], function () {
             itemTextClass: 'item-text',
             sortInputClass: 'sorter',
             sortErrorClass: 'husky-validate-error',
-            highlightClass: 'highlight-animation'
+            highlightClass: 'highlight-animation',
+            orderModeClass: 'order-mode'
         },
 
         templates = {
@@ -109,6 +110,10 @@ define([], function () {
             optionsSettings: ['<div class="align-center settings pointer drop-down-trigger">',
                               '   <span class="fa-gear inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                               '</div>'].join(''),
+
+            optionsOk: ['<div class="align-center ok pointer">',
+                        '   <span class="fa-check"></span>',
+                        '</div>'].join(''),
 
             item: ['<li data-id="<%= id %>" class="'+ constants.columnItemClass +'">',
                    '    <span class="'+ constants.iconsLeftClass +'"></span>',
@@ -190,10 +195,19 @@ define([], function () {
         },
 
         /**
-         * @event husky.column-navigation.order
+         * @event husky.column-navigation.ordered
          * @description emited when the position of an item gets changed
          * @param {String} uuid of the reposition item
          * @param {Number} the new position of the item
+         */
+        ORDERED = function () {
+            return createEventName.call(this, 'ordered');
+        },
+
+        /**
+         * @event husky.column-navigation.order
+         * @description listens on and sets the column containing an item with a given id in order-mode
+         * @param {String} uuid of the item
          */
         ORDER = function () {
             return createEventName.call(this, 'order');
@@ -263,13 +277,16 @@ define([], function () {
             this.filledColumns = 0;
             this.columnLoadStarted = false;
             this.isSorting = false; // flag (only one item at a time can be sorted)
+            this.optionsLocked = false;
             this.dom = {
                 $wrapper: null,
                 $container: null,
                 $add: null,
                 $settings: null,
                 $bigLoader: null,
-                $loader: null
+                $loader: null,
+                $ok: null,
+                $lastClicked: null
             };
 
             this.columns = [];
@@ -315,8 +332,11 @@ define([], function () {
             this.$optionsContainer = this.sandbox.dom.createElement(templates.optionsContainer);
             this.dom.$add = this.sandbox.dom.createElement(templates.optionsAdd);
             this.dom.$settings = this.sandbox.dom.createElement(templates.optionsSettings);
+            this.dom.$ok = this.sandbox.dom.createElement(templates.optionsOk);
+            this.sandbox.dom.hide(this.dom.$ok);
             this.sandbox.dom.append(this.$optionsContainer, this.dom.$add);
             this.sandbox.dom.append(this.$optionsContainer, this.dom.$settings);
+            this.sandbox.dom.append(this.$optionsContainer, this.dom.$ok);
             this.hideOptions();
             this.sandbox.dom.append(this.dom.$wrapper, this.$optionsContainer);
         },
@@ -612,6 +632,16 @@ define([], function () {
         },
 
         /**
+         * Sets the text width of all items in a column
+         * @param column
+         */
+        setColumnTextWidth: function(column) {
+            this.sandbox.util.each(this.columns[column], function (id, item) {
+                this.setItemsTextWidth(item.$el);
+            }.bind(this));
+        },
+
+        /**
          * Crops the item text of an item depending on its width
          * @param $itemText {Object}
          */
@@ -733,13 +763,32 @@ define([], function () {
                     this.sandbox.dom.select(event.currentTarget);
                 }.bind(this), '.' + constants.sortInputClass + ' input');
 
-                this.sandbox.dom.on(this.$el, 'keydown', function(event) {
-                    if (event.keyCode === 13) { // blur on enter
-                        this.sandbox.dom.blur(event.currentTarget);
-                    }
-                }.bind(this), '.' + constants.sortInputClass + ' input');
+                // save last clicked element -> used to trigger the default action after the sorting has finished
+                this.sandbox.dom.on(this.dom.$wrapper, 'mousedown', function(event) {
+                    this.lastClicked = this.sandbox.dom.$(event.target);
+                }.bind(this));
 
+                this.sandbox.dom.on(this.dom.$ok, 'click', this.closeOrderMode.bind(this));
+                this.sandbox.dom.on(this.$el, 'keydown', this.sortKeyHandler.bind(this), '.' + constants.sortInputClass + ' input');
                 this.sandbox.dom.on(this.$el, 'focusout', this.sortBlurHandler.bind(this), '.' + constants.sortInputClass);
+            }
+        },
+
+        /**
+         * Handles the key-down event of a sort-input
+         * @param event
+         */
+        sortKeyHandler: function(event) {
+            if (event.keyCode === 13) { // blur on enter
+                this.sandbox.dom.blur(event.currentTarget);
+            }
+            if (event.keyCode === 27) { // cancel on esc
+                var column = this.sandbox.dom.attr(this.sandbox.dom.parents(
+                        event.currentTarget, '.' + constants.columnClass), 'data-column'),
+                    item = this.sandbox.dom.attr(this.sandbox.dom.parents(
+                        event.currentTarget, '.' + constants.columnItemClass), 'data-id');
+                this.resetSortInput(column, item);
+                this.sandbox.dom.blur(event.currentTarget);
             }
         },
 
@@ -778,10 +827,12 @@ define([], function () {
                     function() { // ok callback
                         this.sort(column, item, position);
                         this.isSorting = false;
+                        this.sandbox.dom.click(this.lastClicked);
                     }.bind(this),
                     function() { // cancel callback
                         this.resetSortInput(column, item);
                         this.isSorting = false;
+                        this.sandbox.dom.click(this.lastClicked);
                     }.bind(this)
                 );
             }
@@ -800,7 +851,7 @@ define([], function () {
                 this.resetSortInput(column, itemId);
             }.bind(this));
             this.updateItemDomPosition(column, item);
-            this.sandbox.emit(ORDER.call(this), item, newPosition);
+            this.sandbox.emit(ORDERED.call(this), item, newPosition);
             this.isSorting = false;
         },
 
@@ -902,6 +953,7 @@ define([], function () {
             this.sandbox.on(GET_SELECTED.call(this), this.getSelected.bind(this));
             this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
             this.sandbox.on(HIGHLIGHT.call(this), this.highlight.bind(this));
+            this.sandbox.on(ORDER.call(this), this.startOrderModeItem.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
@@ -911,6 +963,46 @@ define([], function () {
                     this.setOverflowClass();
                 }.bind(this));
             }
+        },
+
+        /**
+         * Sets a column containing an item with a given id in order-mode
+         * @param itemId - the id of the item
+         */
+        startOrderModeItem: function(itemId) {
+            var column = this.getColumnForItem(itemId);
+            if (column > 0) {
+                this.startOrderModeColumn(column);
+            }
+        },
+
+
+        /**
+         * Sets a column in order-mode
+         * @param column - the index of the column
+         */
+        startOrderModeColumn: function(column) {
+            var $column = this.$find('.'+ constants.columnClass +'[data-column="' + column + '"]');
+            this.lockOptions(column);
+            this.sandbox.dom.addClass($column, constants.orderModeClass);
+            this.sandbox.dom.hide(this.dom.$settings);
+            this.sandbox.dom.hide(this.dom.$add);
+            this.sandbox.dom.show(this.dom.$ok);
+            this.setColumnTextWidth(column);
+        },
+
+        /**
+         * Closes the order mode
+         */
+        closeOrderMode: function() {
+            var $column = this.$find('.' + constants.columnClass + '.' + constants.orderModeClass),
+                column = this.sandbox.dom.data($column, 'column');
+            this.unlockOptions();
+            this.sandbox.dom.removeClass($column, constants.orderModeClass);
+            this.sandbox.dom.hide(this.dom.$ok);
+            this.sandbox.dom.show(this.dom.$settings);
+            this.sandbox.dom.show(this.dom.$add);
+            this.setColumnTextWidth(column);
         },
 
         /**
@@ -1009,12 +1101,33 @@ define([], function () {
          * @param {Object} event
          */
         showOptions: function (event) {
-            var $currentTarget = this.sandbox.dom.$(event.currentTarget);
+            if (this.optionsLocked === false) {
+                var $currentTarget = this.sandbox.dom.$(event.currentTarget);
 
-            this.displayOptions($currentTarget);
+                this.displayOptions($currentTarget);
 
-            this.sandbox.dom.off(this.dom.$container, 'scroll.column-navigation.' + this.options.instanceName);
-            this.sandbox.dom.on(this.dom.$container, 'scroll.column-navigation.' + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
+                this.sandbox.dom.off(this.dom.$container, 'scroll.column-navigation.' + this.options.instanceName);
+                this.sandbox.dom.on(this.dom.$container, 'scroll.column-navigation.' + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
+            }
+        },
+
+        /**
+         * Shows the options below the passed column and locks them
+         * @param column - the index of the column
+         */
+        lockOptions: function(column) {
+            var $column = this.$find('.'+ constants.columnClass +'[data-column="' + column + '"]');
+            if (!!$column.length) {
+                this.showOptions({currentTarget: $column});
+                this.optionsLocked = true;
+            }
+        },
+
+        /**
+         * Unlocks the options
+         */
+        unlockOptions: function() {
+            this.optionsLocked = false;
         },
 
         /**

@@ -128,6 +128,19 @@
                     margin-top: 2px;
                     font-size: 40px;
                 }
+
+                .sorter {
+                    display: none;
+                }
+            }
+
+            &.order-mode {
+                .sorter {
+                    display: block;
+                }
+                .icons-left .col-icon {
+                    display: none;
+                }
             }
         }
 
@@ -182,7 +195,6 @@
             }
             .col-icon {
                 margin-right: 5px;
-                display: none;
             }
             .ghost {
               line-height: 15px;
@@ -246,10 +258,18 @@
         background-color: $accentColor;
         padding: 5px 0;
         color: $white;
-        border-bottom-left-radius: 5px;
-        -webkit-border-bottom-left-radius: 5px;
-        -moz-border-radius-bottomleft: 5px;
+        border-radius: 0 0 0 3px;
         font-size: 16px;
+    }
+
+    .ok {
+      display: block;
+      width: 100%;
+      background-color: $accentColor;
+      padding: 5px 0;
+      color: $white;
+      border-radius: 0 0 3px 3px;
+      font-size: 16px;
     }
 
     .settings {
@@ -257,9 +277,7 @@
         width: 50%;
         background-color: $grayLighter;
         padding: 5px 0;
-        border-bottom-right-radius: 5px;
-        -webkit-border-bottom-right-radius: 5px;
-        -moz-border-radius-bottomright: 5px;
+        border-radius: 0 0 3px 0;
         font-size: 16px;
     }
 }
