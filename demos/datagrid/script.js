@@ -32,7 +32,7 @@ require(['lib/husky'], function(Husky) {
                                 type: 'checkbox'
                             },
                             className: "myClass",
-                            removeRow: true,
+                            removeItem: true,
                             editable: true,
                             validation: true,
                             addRowTop: true,

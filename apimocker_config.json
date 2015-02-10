@@ -127,6 +127,12 @@
         "admin/api/dropzone": {
             "verbs": ["POST"],
             "mockFile": "dropzone/uploaded.json"
+        },
+
+        "admin/api/items": {
+            "verbs": ["GET"],
+            "mockFile": "itembox/default.json",
+            "switch": "ids"
         }
     }
 }
