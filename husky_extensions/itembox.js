@@ -64,7 +64,12 @@ define(function() {
          */
         createEventName = function(eventName) {
             // TODO extract to extension?
-            return this.options.eventNamespace + '.' + eventName;
+            return [
+                this.options.eventNamespace,
+                '.',
+                (this.options.instanceName ? this.options.instanceName + '.' : ''),
+                eventName
+            ].join('');
         },
 
         templates = {
@@ -125,7 +130,7 @@ define(function() {
         },
 
         bindCustomEvents = function() {
-            this.sandbox.on(this.DATA_CHANGED(), this.loadContent.bind(this));
+            this.sandbox.on(this.DATA_CHANGED(), this.changeData.bind(this));
             this.sandbox.on(this.DATA_RETRIEVED(), this.renderContent.bind(this));
         },
 
@@ -228,9 +233,10 @@ define(function() {
              * render the itembox
              */
             render: function() {
+                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
                 var data = this.getData();
 
-                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
                 this.viewAll = true;
 
                 this.ids = {
@@ -331,11 +337,15 @@ define(function() {
                 reload = typeof(reload) === 'undefined' ? true : reload;
 
                 if (!this.sandbox.util.isEqual(oldData, data)) {
-                    this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
+                    this.sandbox.emit(this.DATA_CHANGED(), data, this.$el, reload);
+                }
+            },
 
-                    if (reload) {
-                        this.sandbox.emit(this.DATA_CHANGED(), data, this.$el);
-                    }
+            changeData: function (data, $el, reload) {
+                this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
+
+                if (!!reload) {
+                    this.loadContent(data);
                 }
             },
 
