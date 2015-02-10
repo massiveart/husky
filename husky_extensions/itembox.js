@@ -258,7 +258,6 @@ define(function() {
 
                 this.renderNoContent();
 
-
                 if (!this.sandbox.util.isEmpty(data)) {
                     this.loadContent(data);
                 } else {
