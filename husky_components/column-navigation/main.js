@@ -35,7 +35,7 @@
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
  * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
- * @params {Boolean} [options.sortable] if true component-items can be sorted
+ * @params {Boolean} [options.orderable] if true component-items can be ordered
  */
 define([], function () {
 
@@ -62,16 +62,16 @@ define([], function () {
             showStatus: true,
             premarkedIds: [],
             markable: false,
-            sortable: true,
+            orderable: true,
             showActionIcon: true,
-            sortConfirmTitle: 'Be careful',
-            sortConfirmMessage: 'Are you sure you want to move this item?'
+            orderConfirmTitle: 'Be careful',
+            orderConfirmMessage: 'Are you sure you want to move this item?'
         },
 
         constants = {
-            responsiveHeightRation: 7/10,
+            responsiveHeightRation: 7 / 10,
             columnWidth: 250,
-            minVisibleRatio: 1/2,
+            minVisibleRatio: 1 / 2,
             markedClass: 'marked',
             displayedcolumns: 2, // number of displayed columns with content
             wrapperClass: 'column-navigation-wrapper',
@@ -84,17 +84,17 @@ define([], function () {
             iconsLeftClass: 'icons-left',
             iconsRightClass: 'icons-right',
             itemTextClass: 'item-text',
-            sortInputClass: 'sorter',
-            sortErrorClass: 'husky-validate-error',
+            orderInputClass: 'orderer',
+            orderErrorClass: 'husky-validate-error',
             highlightClass: 'highlight-animation',
             orderModeClass: 'order-mode'
         },
 
         templates = {
-            wrapper: ['<div class="'+ constants.wrapperClass +'"></div>'].join(''),
+            wrapper: ['<div class="' + constants.wrapperClass + '"></div>'].join(''),
             container: ['<div class="column-navigation"></div>'].join(''),
 
-            column: ['<div data-column="<%= columnNumber %>" class="'+ constants.columnClass +'" id="<%= id %>">',
+            column: ['<div data-column="<%= columnNumber %>" class="' + constants.columnClass + '" id="<%= id %>">',
                      '    <ul></ul>',
                     '</div>'].join(''),
 
@@ -103,7 +103,7 @@ define([], function () {
                      '    <div class="text"><%= description %></div>',
                      '</div>'].join(''),
 
-            optionsContainer: ['<div class="'+ constants.optionsClass +' grid-row"></div>'].join(''),
+            optionsContainer: ['<div class="' + constants.optionsClass + ' grid-row"></div>'].join(''),
 
             optionsAdd: ['<div class="align-center add pointer">',
                             '<span class="fa-plus-circle"></span>',
@@ -117,13 +117,13 @@ define([], function () {
                         '   <span class="fa-check"></span>',
                         '</div>'].join(''),
 
-            item: ['<li data-id="<%= id %>" class="'+ constants.columnItemClass +'">',
-                   '    <span class="'+ constants.iconsLeftClass +'"></span>',
-                   '    <span title="<%= title %>" class="'+ constants.itemTextClass +'"><%= title%></span>',
-                   '    <span class="'+ constants.iconsRightClass +'"></span>',
+            item: ['<li data-id="<%= id %>" class="' + constants.columnItemClass + '">',
+                   '    <span class="' + constants.iconsLeftClass + '"></span>',
+                   '    <span title="<%= title %>" class="' + constants.itemTextClass + '"><%= title%></span>',
+                   '    <span class="' + constants.iconsRightClass + '"></span>',
                    '</li>'].join(''),
 
-            sortInput: ['<span class="'+ constants.sortInputClass +'">',
+            orderInput: ['<span class="' + constants.orderInputClass + '">',
                         '   <input type="text" class="form-element husky-validate" value="<%= value %>" />',
                         '</span>'].join('')
         },
@@ -207,6 +207,22 @@ define([], function () {
         },
 
         /**
+         * @event husky.column-navigation.order-start
+         * @description emited if a column is set in order-mode
+         */
+        ORDER_START = function () {
+            return createEventName.call(this, 'order-start');
+        },
+
+        /**
+         * @event husky.column-navigation.order-start
+         * @description emited if a column is set in order-mode
+         */
+        ORDER_END = function () {
+            return createEventName.call(this, 'order-end');
+        },
+
+        /**
          * @event husky.column-navigation.unmark
          * @description listens on and unmarks a node with a given id
          * @param {Number|String} the id of the node to unmark
@@ -269,7 +285,8 @@ define([], function () {
             this.$selectedElement = null;
             this.filledColumns = 0;
             this.columnLoadStarted = false;
-            this.isSorting = false; // flag (only one item at a time can be sorted)
+            this.isOrdering = false; // flag (only one item at a time can be ordered)
+            this.inOrderMode = false; // flag (only one column at a time can be in order-mode)
             this.optionsLocked = false;
             this.dom = {
                 $wrapper: null,
@@ -291,7 +308,7 @@ define([], function () {
         /**
          * Renders basic structure (wrapper) of column navigation
          */
-        render: function () {
+        render: function() {
             this.renderWrapper();
             if (!!this.options.showOptions) { // Options-toolbar with "add" and "settings"
                 this.renderOptions();
@@ -309,7 +326,7 @@ define([], function () {
          * @param item - the id of the item
          * @returns {number} the index of the column if found, a value below 0 otherwise
          */
-        getColumnForItem: function(item) {
+        getColumnForItem: function (item) {
             for (var i = -1, length = this.columns.length; ++i < length;) {
                 if (!!this.columns[i] && !!this.columns[i][item]) {
                     return i;
@@ -392,7 +409,6 @@ define([], function () {
 
         /**
          * Instantiats the dropdown component
-         * @param containerId dom id for element to start dropdown
          */
         initSettingsDropdown: function () {
 
@@ -496,7 +512,7 @@ define([], function () {
         renderItems: function($column, number, data) {
             var $list = this.sandbox.dom.find('ul', $column), nodeWithSubNodes, lastSelected;
             this.sandbox.util.each(data._embedded[this.options.resultKey], function (index, itemData) {
-                itemData.sortOrder = (index + 1);
+                itemData.order = (index + 1);
                 var $item = this.renderItem(itemData);
                 itemData.$el = $item;
                 this.storeDataItem(number, itemData);
@@ -538,7 +554,7 @@ define([], function () {
                 id: data[this.options.idName]
             }));
             if (this.marked.indexOf(data[this.options.idName]) !== -1) { // if is marked
-                this.sandbox.dom.addClass($item, constants.markedClass)
+                this.sandbox.dom.addClass($item, constants.markedClass);
             }
             this.renderLeftInfo($item, data);
             this.renderItemText($item, data);
@@ -576,9 +592,9 @@ define([], function () {
                     this.sandbox.dom.append($container, '<span class="not-published col-icon">&bull;</span>');
                 }
             }
-            if (!!this.options.sortable) {
-                this.sandbox.dom.append($container, this.sandbox.util.template(templates.sortInput)({
-                    value: data.sortOrder
+            if (!!this.options.orderable) {
+                this.sandbox.dom.append($container, this.sandbox.util.template(templates.orderInput)({
+                    value: data.order
                 }));
             }
         },
@@ -746,35 +762,35 @@ define([], function () {
                 }.bind(this));
             }
 
-            if (this.options.sortable) {
+            if (this.options.orderable) {
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
-                }.bind(this), '.' + constants.sortInputClass);
+                }.bind(this), '.' + constants.orderInputClass);
 
                 this.sandbox.dom.on(this.$el, 'focus', function(event) {
-                    if (this.isSorting === true) {
+                    if (this.isOrdering === true) {
                         this.sandbox.dom.blur(event.currentTarget);
                         return false;
                     }
                     this.sandbox.dom.select(event.currentTarget);
-                }.bind(this), '.' + constants.sortInputClass + ' input');
+                }.bind(this), '.' + constants.orderInputClass + ' input');
 
-                // save last clicked element -> used to trigger the default action after the sorting has finished
+                // save last clicked element -> used to trigger the default action after the ordering has finished
                 this.sandbox.dom.on(this.dom.$wrapper, 'mousedown', function(event) {
                     this.lastClicked = this.sandbox.dom.$(event.target);
                 }.bind(this));
 
                 this.sandbox.dom.on(this.dom.$ok, 'click', this.closeOrderMode.bind(this));
-                this.sandbox.dom.on(this.$el, 'keydown', this.sortKeyHandler.bind(this), '.' + constants.sortInputClass + ' input');
-                this.sandbox.dom.on(this.$el, 'focusout', this.sortBlurHandler.bind(this), '.' + constants.sortInputClass);
+                this.sandbox.dom.on(this.$el, 'keydown', this.orderKeyHandler.bind(this), '.' + constants.orderInputClass + ' input');
+                this.sandbox.dom.on(this.$el, 'focusout', this.orderBlurHandler.bind(this), '.' + constants.orderInputClass);
             }
         },
 
         /**
-         * Handles the key-down event of a sort-input
+         * Handles the key-down event of a order-input
          * @param event
          */
-        sortKeyHandler: function(event) {
+        orderKeyHandler: function(event) {
             if (event.keyCode === 13) { // blur on enter
                 this.sandbox.dom.blur(event.currentTarget);
             }
@@ -783,51 +799,51 @@ define([], function () {
                         event.currentTarget, '.' + constants.columnClass), 'data-column'),
                     item = this.sandbox.dom.attr(this.sandbox.dom.parents(
                         event.currentTarget, '.' + constants.columnItemClass), 'data-id');
-                this.resetSortInput(column, item);
+                this.resetOrderInput(column, item);
                 this.sandbox.dom.blur(event.currentTarget);
             }
         },
 
         /**
-         * Handles the blur event of a sort-input
+         * Handles the blur event of a order-input
          * @param event
          */
-        sortBlurHandler: function(event) {
-            if (this.isSorting == false) {
+        orderBlurHandler: function(event) {
+            if (this.isOrdering === false) {
                 var column = this.sandbox.dom.attr(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnClass), 'data-column'),
                     item = this.sandbox.dom.attr(this.sandbox.dom.parents(event.currentTarget, '.' + constants.columnItemClass), 'data-id'),
                     $input = this.sandbox.dom.find('input', this.columns[column][item].$el);
                 // if is an integer
                 if (this.sandbox.dom.isNumeric(this.sandbox.dom.val($input)) &&
                     Math.floor(this.sandbox.dom.val($input)) == this.sandbox.dom.val($input)) {
-                    this.sortPrepare(column, item);
+                    this.orderPrepare(column, item);
                 } else {
-                    this.sortError(column, item);
+                    this.orderError(column, item);
                 }
             }
         },
 
         /**
-         * Looks if the position changes and executes the sort or resets the inputs
+         * Looks if the position changes and executes the order or resets the inputs
          * @param column - column in which the item is
          * @param item - the id of the item
          */
-        sortPrepare: function(column, item) {
+        orderPrepare: function(column, item) {
             var $input = this.sandbox.dom.find('input', this.columns[column][item].$el),
-            position = this.normalizeSortPosition(column, parseInt(this.sandbox.dom.val($input), 10));
+            position = this.normalizeOrderPosition(column, parseInt(this.sandbox.dom.val($input), 10));
             this.sandbox.dom.val($input, position);
-            this.sandbox.dom.removeClass(this.columns[column][item].$el, constants.sortErrorClass);
-            if (position !== this.columns[column][item].sortOrder) {
-                this.isSorting = true;
-                this.confirmSort(
+            this.sandbox.dom.removeClass(this.columns[column][item].$el, constants.orderErrorClass);
+            if (position !== this.columns[column][item].order) {
+                this.isOrdering = true;
+                this.confirmOrder(
                     function() { // ok callback
-                        this.sort(column, item, position);
-                        this.isSorting = false;
+                        this.order(column, item, position);
+                        this.isOrdering = false;
                         this.sandbox.dom.click(this.lastClicked);
                     }.bind(this),
                     function() { // cancel callback
-                        this.resetSortInput(column, item);
-                        this.isSorting = false;
+                        this.resetOrderInput(column, item);
+                        this.isOrdering = false;
                         this.sandbox.dom.click(this.lastClicked);
                     }.bind(this)
                 );
@@ -840,15 +856,16 @@ define([], function () {
          * @param item - the id of the item
          * @param newPosition - the new position of the item
          */
-        sort: function(column, item, newPosition) {
-            var oldPosition = this.columns[column][item].sortOrder;
+        order: function(column, item, newPosition) {
+            var oldPosition = this.columns[column][item].order;
             this.sandbox.util.each(this.columns[column], function (itemId) {
                 this.repositionItem(column, itemId, oldPosition, newPosition);
-                this.resetSortInput(column, itemId);
+                this.resetOrderInput(column, itemId);
             }.bind(this));
             this.updateItemDomPosition(column, item);
+            this.sandbox.util.delay(this.highlight.bind(this, item), 550);
             this.sandbox.emit(ORDERED.call(this), item, newPosition);
-            this.isSorting = false;
+            this.isOrdering = false;
         },
 
         /**
@@ -859,21 +876,21 @@ define([], function () {
          * @param newPosition - the new position of the position-change
          */
         repositionItem: function(column, item, oldPosition, newPosition) {
-            if (this.columns[column][item].sortOrder === oldPosition) { // update property to new position
-                this.columns[column][item].sortOrder = newPosition;
-            } else { // update the sort order of the other items
-                if (this.columns[column][item].sortOrder > oldPosition &&
-                    this.columns[column][item].sortOrder <= newPosition) {
-                    this.columns[column][item].sortOrder--;
-                } else if (this.columns[column][item].sortOrder < oldPosition &&
-                    this.columns[column][item].sortOrder >= newPosition) {
-                    this.columns[column][item].sortOrder++;
+            if (this.columns[column][item].order === oldPosition) { // update property to new position
+                this.columns[column][item].order = newPosition;
+            } else { // update the order-position of the other items
+                if (this.columns[column][item].order > oldPosition &&
+                    this.columns[column][item].order <= newPosition) {
+                    this.columns[column][item].order--;
+                } else if (this.columns[column][item].order < oldPosition &&
+                    this.columns[column][item].order >= newPosition) {
+                    this.columns[column][item].order++;
                 }
             }
         },
 
         /**
-         * Brings an item to the position set in the sort-order-property
+         * Brings an item to the position set in the order-position-property
          * @param column - the column of the item
          * @param item - the id of the item
          */
@@ -881,7 +898,7 @@ define([], function () {
             var $list = this.sandbox.dom.parent(this.columns[column][item].$el);
             this.sandbox.dom.detach(this.columns[column][item].$el);
             this.sandbox.dom.insertAt(
-                this.columns[column][item].sortOrder - 1, '.' + constants.columnItemClass,
+                this.columns[column][item].order - 1, '.' + constants.columnItemClass,
                 $list, this.columns[column][item].$el
             );
             this.sandbox.dom.scrollAnimate(
@@ -895,21 +912,21 @@ define([], function () {
          * @param column
          * @param item
          */
-        resetSortInput: function(column, item) {
+        resetOrderInput: function(column, item) {
             var $input = this.sandbox.dom.find('input', this.columns[column][item].$el);
-            this.sandbox.dom.val($input, this.columns[column][item].sortOrder);
+            this.sandbox.dom.val($input, this.columns[column][item].order);
         },
 
         /**
-         * Normalizes a position used for sorting
+         * Normalizes a position used for ordering
          * @param column - the column for which the position gets normalized
          * @param position (int) - the position to normalize
          * @returns int - the normalized position
          */
-        normalizeSortPosition: function(column, position) {
+        normalizeOrderPosition: function(column, position) {
             position = (position < 1) ? 1 : position;
-            return (position > (Object.keys(this.columns[column])).length)
-                    ?  Object.keys(this.columns[column]).length : position;
+            return (position > (Object.keys(this.columns[column])).length) ?
+                        Object.keys(this.columns[column]).length : position;
         },
 
         /**
@@ -917,8 +934,8 @@ define([], function () {
          * @param column - the column in which the item is
          * @param item - the id of the item
          */
-        sortError: function(column, item) {
-            this.sandbox.dom.addClass(this.columns[column][item].$el, constants.sortErrorClass);
+        orderError: function(column, item) {
+            this.sandbox.dom.addClass(this.columns[column][item].$el, constants.orderErrorClass);
         },
 
         /**
@@ -926,9 +943,9 @@ define([], function () {
          * @param okCallback - callback to execute if clicked on ok
          * @param closeCallback - callback to execute if clicked on ok
          */
-        confirmSort: function(okCallback, closeCallback) {
+        confirmOrder: function(okCallback, closeCallback) {
             this.sandbox.confirm.warning(this,
-                this.options.sortConfirmTitle, this.options.sortConfirmMessage,
+                this.options.orderConfirmTitle, this.options.orderConfirmMessage,
                 okCallback, closeCallback);
         },
 
@@ -977,27 +994,35 @@ define([], function () {
          * @param column - the index of the column
          */
         startOrderModeColumn: function(column) {
-            var $column = this.$find('.'+ constants.columnClass +'[data-column="' + column + '"]');
-            this.lockOptions(column);
-            this.sandbox.dom.addClass($column, constants.orderModeClass);
-            this.sandbox.dom.hide(this.dom.$settings);
-            this.sandbox.dom.hide(this.dom.$add);
-            this.sandbox.dom.show(this.dom.$ok);
-            this.setColumnTextWidth(column);
+            if (this.inOrderMode === false) {
+                this.inOrderMode = true;
+                var $column = this.$find('.' + constants.columnClass + '[data-column="' + column + '"]');
+                this.lockOptions(column);
+                this.sandbox.dom.addClass($column, constants.orderModeClass);
+                this.sandbox.dom.hide(this.dom.$settings);
+                this.sandbox.dom.hide(this.dom.$add);
+                this.sandbox.dom.show(this.dom.$ok);
+                this.setColumnTextWidth(column);
+                this.sandbox.emit(ORDER_START.call(this));
+            }
         },
 
         /**
          * Closes the order mode
          */
         closeOrderMode: function() {
-            var $column = this.$find('.' + constants.columnClass + '.' + constants.orderModeClass),
-                column = this.sandbox.dom.data($column, 'column');
-            this.unlockOptions();
-            this.sandbox.dom.removeClass($column, constants.orderModeClass);
-            this.sandbox.dom.hide(this.dom.$ok);
-            this.sandbox.dom.show(this.dom.$settings);
-            this.sandbox.dom.show(this.dom.$add);
-            this.setColumnTextWidth(column);
+            if (this.inOrderMode === true) {
+                var $column = this.$find('.' + constants.columnClass + '.' + constants.orderModeClass),
+                    column = this.sandbox.dom.data($column, 'column');
+                this.unlockOptions();
+                this.sandbox.dom.removeClass($column, constants.orderModeClass);
+                this.sandbox.dom.hide(this.dom.$ok);
+                this.sandbox.dom.show(this.dom.$settings);
+                this.sandbox.dom.show(this.dom.$add);
+                this.setColumnTextWidth(column);
+                this.inOrderMode = false;
+                this.sandbox.emit(ORDER_END.call(this));
+            }
         },
 
         /**
@@ -1022,7 +1047,7 @@ define([], function () {
          */
         dropdownItemClicked: function (dropdownItem) {
             if (!!this.selected[this.lastHoveredColumn]) {
-                if (!!dropdownItem.mode && dropdownItem.mode === 'sort') {
+                if (!!dropdownItem.mode && dropdownItem.mode === 'order') {
                     this.startOrderModeColumn(this.lastHoveredColumn);
                 }
                 if (!!dropdownItem.callback) {
@@ -1165,6 +1190,7 @@ define([], function () {
         itemSelected: function (event) {
             //only do something if no column is loading
             if (this.columnLoadStarted === false) {
+                this.closeOrderMode(); // force closing of possible order mode
                 this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
                 var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
                     column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),

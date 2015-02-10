@@ -13,7 +13,7 @@
                 "linked": false,
                 "type": false,
                 "_links": {
-                    "self": "http://husky.lo:7878/admin/api/columnnavigation/1.2.3.1",
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation1.2.3.1",
                     "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=1.2.3.1&depth=1"
                 },
                 "_embedded": {
@@ -28,7 +28,7 @@
                 "linked": false,
                 "type": false,
                 "_links": {
-                    "self": "http://husky.lo:7878/admin/api/columnnavigation/222.4",
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation222.4",
                     "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=1.2.3.2&depth=1"
                 },
                 "_embedded": {
@@ -43,15 +43,16 @@
                 "linked": false,
                 "type": false,
                 "_links": {
-                    "self": "http://husky.lo:7878/admin/api/columnnavigation/1.2.3.3",
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation1.2.3.3",
                     "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=1.2.3.3&depth=1"
                 },
                 "_embedded": {
                     "nodes": []
                 }
             }
-        ],
-        "title": "Page 1.2.3",
-        "id": "1.2.3",
-        "hasSub": true
-    }
+        ]
+    },
+    "title": "Page 1.2.3",
+    "id": "8",
+    "hasSub": true
+}

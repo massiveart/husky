@@ -8713,11 +8713,11 @@ a.btn-black, a.btn-highlight {
   font-size: 40px;
 }
 /* line 131, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation .column ul .sorter {
+.column-navigation-wrapper .column-navigation .column ul .orderer {
   display: none;
 }
 /* line 137, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation .column.order-mode .sorter {
+.column-navigation-wrapper .column-navigation .column.order-mode .orderer {
   display: block;
 }
 /* line 140, ../scss/modules/column-navigation.scss */
@@ -8826,14 +8826,14 @@ a.btn-black, a.btn-highlight {
   cursor: pointer;
 }
 /* line 237, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation .sorter {
+.column-navigation-wrapper .column-navigation .orderer {
   display: block;
   float: left;
   width: 40px;
   padding: 2px 10px 0 0;
 }
 /* line 242, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation .sorter .form-element, .column-navigation-wrapper .column-navigation .sorter .husky-input {
+.column-navigation-wrapper .column-navigation .orderer .form-element, .column-navigation-wrapper .column-navigation .orderer .husky-input {
   height: 20px;
   padding-left: 3px;
   padding-right: 3px;

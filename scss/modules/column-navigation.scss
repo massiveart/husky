@@ -128,13 +128,13 @@
                     font-size: 40px;
                 }
 
-                .sorter {
+                .orderer {
                     display: none;
                 }
             }
 
             &.order-mode {
-                .sorter {
+                .orderer {
                     display: block;
                 }
                 .icons-left .col-icon {
@@ -234,7 +234,7 @@
             cursor: pointer;
         }
 
-        .sorter {
+        .orderer {
             display: block;
             float: left;
             width: 40px;

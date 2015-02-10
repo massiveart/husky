@@ -89,7 +89,7 @@
                                         {
                                             id: 1,
                                             name: 'Order this column',
-                                            mode: 'sort'
+                                            mode: 'order'
                                         },
                                         {
                                             id: 2,
@@ -147,9 +147,6 @@
 
                     app.sandbox.on('husky.column-navigation.responsive.ordered', function(item, position) {
                         app.logger.log('Item positioned (responsive)', item, position);
-                        _.delay(function() {
-                            app.sandbox.emit('husky.column-navigation.responsive.highlight', item);
-                        }, 600);
                     });
 
                     $("#order").on('click', function() {
