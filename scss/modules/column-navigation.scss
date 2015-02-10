@@ -15,7 +15,6 @@
 }
 
 .column-navigation-wrapper {
-     overflow: hidden;
      position: relative;
      top: 0px;
      left: 0px;
@@ -99,7 +98,7 @@
 
                 li:hover {
                     background-color: $baseBackgroundColor;
-                    .edit {
+                    .action {
                       display: block;
                     }
                 }
@@ -111,10 +110,10 @@
                     }
                 }
                 li.marked {
-                  .markedIcon {
+                  .marked-icon {
                     display: block;
                   }
-                  .edit {
+                  .action {
                     display: none;
                   }
                 }
@@ -169,7 +168,7 @@
             border-radius: $borderRadius;
             font-size: $reallySmallFontSize;
         }
-        .markedIcon {
+        .marked-icon {
             width: 14px;
             margin-right: 5px;
             margin-top: 1px;
@@ -205,7 +204,7 @@
               margin-top: 2px;
             }
         }
-        .edit {
+        .action {
             background-color: $accentColor;
             padding: 0px 10px;
             font-size: 12px;

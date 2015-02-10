@@ -17,7 +17,7 @@
  * @params {Object} [options] Configuration object
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
- * @params {String} [options.editIcon] icon class of edit button
+ * @params {String} [options.actionIcon] icon class of action button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
@@ -29,7 +29,8 @@
  * @params {String} [options.noPageDescription] translation key for the "No-Page"-description
  * @params {String} [options.resultKey] The name of the array in the responded _embedded
  * @params {Boolean} [options.responsive] If true the resize listener gets initialized. Otherwise the column navigation just takes up 100 % of the height and width
- * @params {Boolean} [options.showOptions] hide or display edit elements
+ * @params {Boolean} [options.showOptions] hide or shows the options
+ * @params {Boolean} [options.showActionIcon] if true the action icon is shown, not shown otherwise
  * @params {Boolean} [options.showStatus] hide or display status of elements
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
@@ -46,7 +47,7 @@ define([], function () {
             data: null,
             instanceName: '',
             hasSubName: 'hasSub',
-            editIcon: 'fa-pencil',
+            actionIcon: 'fa-pencil',
             idName: 'id',
             pathName: 'path',
             linkedName: 'linked',
@@ -62,6 +63,7 @@ define([], function () {
             premarkedIds: [],
             markable: false,
             sortable: true,
+            showActionIcon: true,
             sortConfirmTitle: 'Be careful',
             sortConfirmMessage: 'Are you sure you want to move this item?'
         },
@@ -158,15 +160,6 @@ define([], function () {
         },
 
         /**
-         * @event husky.column-navigation.get-selected
-         * @description listens on and passes the selected nodes to a given callback
-         * @param {Function} callback to pass the ids to
-         */
-        GET_SELECTED = function () {
-            return createEventName.call(this, 'get-selected');
-        },
-
-        /**
          * @event husky.column-navigation.settings
          * @description an navigation element has been selected and a item from selected dropdown clicked
          * @param {Object} selected column navigation object
@@ -186,12 +179,12 @@ define([], function () {
         },
 
         /**
-         * @event husky.column-navigation.edit
-         * @description the edit icon has been clicked
-         * @param {Object} clicked object
+         * @event husky.column-navigation.action
+         * @description emitted if the action-icon of an item gets clicked
+         * @param {Object} clicked item
          */
-        EDIT = function () {
-            return createEventName.call(this, 'edit');
+        ACTION = function () {
+            return createEventName.call(this, 'action');
         },
 
         /**
@@ -560,6 +553,7 @@ define([], function () {
          */
         renderLeftInfo: function($item, data) {
             var $container = this.sandbox.dom.find('.' + constants.iconsLeftClass, $item);
+            this.sandbox.dom.append($container, '<span class="fa-check pull-left marked-icon"></span>');
             if (!!this.options.showStatus) {
                 // link
                 if (!!data[this.options.linkedName]) {
@@ -608,7 +602,9 @@ define([], function () {
          */
         renderRightInfo: function($item, data) {
             var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item);
-            this.sandbox.dom.append($container, '<span class="' + this.options.editIcon + ' edit col-icon"></span>');
+            if (this.options.showActionIcon === true) {
+                this.sandbox.dom.append($container, '<span class="' + this.options.actionIcon + ' action col-icon"></span>');
+            }
             if (!!data[this.options.hasSubName]) {
                 this.sandbox.dom.append($container, '<span class="fa-chevron-right arrow inactive col-icon"></span>');
             }
@@ -736,8 +732,8 @@ define([], function () {
 
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.dom.$add, 'click', this.addNode.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
-            this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'click', this.actionClickHandler.bind(this), '.action');
+            this.sandbox.dom.on(this.$el, 'dblclick', this.actionClickHandler.bind(this), 'li');
 
             this.sandbox.dom.on(this.$el, 'click', function (event) {
                 this.sandbox.dom.stopPropagation(event);
@@ -950,7 +946,6 @@ define([], function () {
 
         bindCustomEvents: function () {
             this.sandbox.on(BREADCRUMB.call(this), this.getBreadCrumb.bind(this));
-            this.sandbox.on(GET_SELECTED.call(this), this.getSelected.bind(this));
             this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
             this.sandbox.on(HIGHLIGHT.call(this), this.highlight.bind(this));
             this.sandbox.on(ORDER.call(this), this.startOrderModeItem.bind(this));
@@ -1021,12 +1016,19 @@ define([], function () {
             }
         },
 
-        dropdownItemClicked: function (item) {
+        /**
+         * Gets execute after an item in the settings-dropdown has been clicked
+         * @param dropdownItem - the dropdown-item
+         */
+        dropdownItemClicked: function (dropdownItem) {
             if (!!this.selected[this.lastHoveredColumn]) {
-                if (!!item.callback) {
-                    item.callback(item, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
+                if (!!dropdownItem.mode && dropdownItem.mode === 'sort') {
+                    this.startOrderModeColumn(this.lastHoveredColumn);
+                }
+                if (!!dropdownItem.callback) {
+                    dropdownItem.callback(dropdownItem, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
                 } else {
-                    this.sandbox.emit(SETTINGS.call(this), item, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
+                    this.sandbox.emit(SETTINGS.call(this), dropdownItem, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
                 }
             }
         },
@@ -1040,21 +1042,6 @@ define([], function () {
             if (!!$element.length) {
                 this.sandbox.dom.removeClass($element, constants.markedClass);
                 this.marked.splice(this.marked.indexOf(id), 1);
-            }
-        },
-
-        /**
-         * Passes all selected nodes to a callback
-         * @param callback {Function} the callback to pass the selected nodes to
-         */
-        getSelected: function (callback) {
-            var $checkboxes = this.$find('input[type="checkbox"]:checked'),
-                checkedNodes = [],
-                $column, $node;
-            if ($checkboxes.length !== 0) {
-                this.sandbox.util.foreach($checkboxes, function ($checkbox) {
-                    //TODO: foreach checkbox get the node object and create the checked Nodes array
-                }.bind(this));
             }
         },
 
@@ -1275,13 +1262,13 @@ define([], function () {
         },
 
         /**
-         * Emits an edit event
+         * Handles the click on action-icons as well as the double click on items
          * @param {Object} event
          */
-        editNode: function (event) {
+        actionClickHandler: function (event) {
             var $listItem, id, item, column;
 
-            if (this.sandbox.dom.hasClass(event.currentTarget, 'edit') === true) {
+            if (this.sandbox.dom.hasClass(event.currentTarget, 'action') === true) {
                 $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
             } else {
                 $listItem = this.sandbox.dom.$(event.currentTarget);
@@ -1291,13 +1278,13 @@ define([], function () {
             item = this.columns[column][id];
 
             if (this.options.markable === true) {
-                this.sandbox.dom.addClass($listItem, this.options.markedClass);
+                this.sandbox.dom.addClass($listItem, constants.markedClass);
                 this.marked.push(id);
                 this.setItemsTextWidth($listItem);
             }
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit(EDIT.call(this), item);
+            this.sandbox.emit(ACTION.call(this), item);
         }
     };
 });
