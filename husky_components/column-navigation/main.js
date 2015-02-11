@@ -70,8 +70,8 @@ define([], function () {
             markable: false,
             orderable: true,
             showActionIcon: true,
-            orderConfirmTitle: 'Be careful',
-            orderConfirmMessage: 'Are you sure you want to move this item?',
+            orderConfirmTitle: 'column-navigation.order-title',
+            orderConfirmMessage: 'column-navigation.order-message',
             tooltipTranslations: {
                 ghost: 'column-navigation.ghost',
                 shadow: 'column-navigation.shadow',
