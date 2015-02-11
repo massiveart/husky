@@ -124,7 +124,6 @@
 
                 .not-published {
                     color: $infoColor;
-                    margin-top: 2px;
                     font-size: 40px;
                 }
 
@@ -144,7 +143,6 @@
         }
 
         .item-text {
-            padding-top: 2px;
             display: block;
             overflow: hidden;
             word-wrap: break-word;
@@ -238,12 +236,16 @@
             display: block;
             float: left;
             width: 40px;
-            padding: 2px 10px 0 0;
+            padding: 0 10px 0 0;
             .form-element {
                 height: 20px;
                 padding-left: 3px;
                 padding-right: 3px;
             }
+        }
+
+        .fa-external-link {
+          margin-top: 1px;
         }
     }
 

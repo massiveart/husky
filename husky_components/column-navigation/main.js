@@ -65,7 +65,14 @@ define([], function () {
             orderable: true,
             showActionIcon: true,
             orderConfirmTitle: 'Be careful',
-            orderConfirmMessage: 'Are you sure you want to move this item?'
+            orderConfirmMessage: 'Are you sure you want to move this item?',
+            tooltipTranslations: {
+                ghost: 'column-navigation.ghost',
+                shadow: 'column-navigation.shadow',
+                unpublished: 'public.unpublished',
+                internalLink: 'public.internal-link',
+                externalLink: 'public.external-link'
+            }
         },
 
         constants = {
@@ -574,22 +581,27 @@ define([], function () {
                 // link
                 if (!!data[this.options.linkedName]) {
                     if (data[this.options.linkedName] === 'internal') {
-                        this.sandbox.dom.append($container, '<span class="fa-internal-link col-icon"></span>');
+                        this.sandbox.dom.append($container,
+                            '<span class="fa-internal-link col-icon" title="'+ this.sandbox.translate(this.options.tooltipTranslations.internalLink) +'"></span>');
                     } else if (data[this.options.linkedName] === 'external') {
-                        this.sandbox.dom.append($container, '<span class="fa-external-link col-icon"></span>');
+                        this.sandbox.dom.append($container,
+                            '<span class="fa-external-link col-icon"  title="'+ this.sandbox.translate(this.options.tooltipTranslations.externalLink) +'"></span>');
                     }
                 }
                 // type (ghost, shadow)
                 if (!!data[this.options.typeName]) {
                     if (data[this.options.typeName].name === 'ghost') {
-                        this.sandbox.dom.append($container, '<span class="ghost col-icon">'+ data[this.options.typeName].value +'</span>');
+                        this.sandbox.dom.append($container,
+                                '<span class="ghost col-icon"  title="'+ this.sandbox.translate(this.options.tooltipTranslations.ghost) +'">'+ data[this.options.typeName].value +'</span>');
                     } else if (data[this.options.typeName].name === 'shadow') {
-                        this.sandbox.dom.append($container, '<span class="fa-shadow-node col-icon"></span>');
+                        this.sandbox.dom.append($container,
+                            '<span class="fa-shadow-node col-icon"  title="'+ this.sandbox.translate(this.options.tooltipTranslations.shadow) +'"></span>');
                     }
                 }
-                // published
+                // unpublished
                 if (!data[this.options.publishedName]) {
-                    this.sandbox.dom.append($container, '<span class="not-published col-icon">&bull;</span>');
+                    this.sandbox.dom.append($container,
+                        '<span class="not-published col-icon"  title="'+ this.sandbox.translate(this.options.tooltipTranslations.unpublished) +'">&bull;</span>');
                 }
             }
             if (!!this.options.orderable) {
