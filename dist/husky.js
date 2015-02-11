@@ -47302,7 +47302,7 @@ define('husky_extensions/itembox',[],function() {
                 if (!this.sandbox.util.isEmpty(data)) {
                     this.loadContent(data);
                 } else {
-                    this.setData(this.options.dataDefault, false);
+                    this.sandbox.dom.data(this.$el, this.options.dataAttribute, this.options.dataDefault);
                 }
 
                 this.setDisplayOption(this.options.defaultDisplayOption);
