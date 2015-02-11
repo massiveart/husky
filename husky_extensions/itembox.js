@@ -328,7 +328,7 @@ define(function() {
             },
 
             /**
-             * Set the given data to the elements data attribute
+             * Throws a data-changed event if the data actually has changed
              * @param data {object} The data to set
              * @param reload {boolean} True if the itembox list should be reloaded afterwards
              */
@@ -341,6 +341,12 @@ define(function() {
                 }
             },
 
+            /**
+             * Event handler for the changed data event, sets data to element and reloads the list if specified
+             * @param data {object} The data to set
+             * @param $el {object} The element to which the data should be bound
+             * @param reload {boolean} True if the list should be reloaded, otherwise false
+             */
             changeData: function (data, $el, reload) {
                 this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
 
