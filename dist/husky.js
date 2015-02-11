@@ -39186,7 +39186,7 @@ define('__component__$column-navigation@husky',[], function () {
          * @param column - the index of the column
          */
         startOrderModeColumn: function(column) {
-            if (this.inOrderMode === false) {
+            if (this.inOrderMode === false && this.columns[column].length > 1) {
                 this.inOrderMode = true;
                 var $column = this.$find('.' + constants.columnClass + '[data-column="' + column + '"]');
                 this.lockOptions(column);
@@ -39238,10 +39238,10 @@ define('__component__$column-navigation@husky',[], function () {
          * @param dropdownItem - the dropdown-item
          */
         dropdownItemClicked: function (dropdownItem) {
+            if (!!this.lastHoveredColumn && !!dropdownItem.mode && dropdownItem.mode === 'order') {
+                this.startOrderModeColumn(this.lastHoveredColumn);
+            }
             if (!!this.selected[this.lastHoveredColumn]) {
-                if (!!dropdownItem.mode && dropdownItem.mode === 'order') {
-                    this.startOrderModeColumn(this.lastHoveredColumn);
-                }
                 if (!!dropdownItem.callback) {
                     dropdownItem.callback(dropdownItem, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
                 } else {

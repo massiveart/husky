@@ -1168,7 +1168,7 @@ define([], function () {
          * @param column - the index of the column
          */
         startOrderModeColumn: function(column) {
-            if (this.inOrderMode === false) {
+            if (this.inOrderMode === false &amp;&amp; this.columns[column].length &gt; 1) {
                 this.inOrderMode = true;
                 var $column = this.$find(&#x27;.&#x27; + constants.columnClass + &#x27;[data-column=&quot;&#x27; + column + &#x27;&quot;]&#x27;);
                 this.lockOptions(column);
@@ -1220,10 +1220,10 @@ define([], function () {
          * @param dropdownItem - the dropdown-item
          */
         dropdownItemClicked: function (dropdownItem) {
+            if (!!this.lastHoveredColumn &amp;&amp; !!dropdownItem.mode &amp;&amp; dropdownItem.mode === &#x27;order&#x27;) {
+                this.startOrderModeColumn(this.lastHoveredColumn);
+            }
             if (!!this.selected[this.lastHoveredColumn]) {
-                if (!!dropdownItem.mode &amp;&amp; dropdownItem.mode === &#x27;order&#x27;) {
-                    this.startOrderModeColumn(this.lastHoveredColumn);
-                }
                 if (!!dropdownItem.callback) {
                     dropdownItem.callback(dropdownItem, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
                 } else {
