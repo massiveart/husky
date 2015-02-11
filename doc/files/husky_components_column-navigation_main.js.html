@@ -1168,7 +1168,7 @@ define([], function () {
          * @param column - the index of the column
          */
         startOrderModeColumn: function(column) {
-            if (this.inOrderMode === false &amp;&amp; Object.keys(this.columns[column]).length &gt; 1) {
+            if (this.inOrderMode === false &amp;&amp; !!this.columns[column] &amp;&amp; Object.keys(this.columns[column]).length &gt; 1) {
                 this.inOrderMode = true;
                 var $column = this.$find(&#x27;.&#x27; + constants.columnClass + &#x27;[data-column=&quot;&#x27; + column + &#x27;&quot;]&#x27;);
                 this.lockOptions(column);
