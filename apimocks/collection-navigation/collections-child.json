@@ -1,34 +1,66 @@
 {
     "total": 0, 
+    "id": "1",
+    "name": "Collection 1",
+    "_links" : {
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/collections/1"
+        }
+    },
     "_embedded": {
         "parent": {
-            "id": "root",
-            "name": "Parent"
-        },
-        "current": {
-            "id": "1",
-            "name": "Collection 1"
+            "name": "Parent",
+            "_links" : {
+                "self": {
+                    "href": "http://husky.lo:7878/admin/api/collections"
+                }
+            }
         },
         "items": [
             {
                 "id": 1,
-                "name": "Long title is very longy long"
+                "name": "Long title is very longy long",
+                "_links" : {
+                    "self": {
+                        "href": "http://husky.lo:7878/admin/api/collections/1"
+                    }
+                }
             },
             {
                 "id": 2,
-                "name": "Long title is long"
+                "name": "Long title is long",
+                "_links" : {
+                    "self": {
+                        "href": "http://husky.lo:7878/admin/api/collections/2"
+                    }
+                }
             },
             {
                 "id": 3,
-                "name": "Long title is long"
+                "name": "Long title is long",
+                "_links" : {
+                    "self": {
+                        "href": "http://husky.lo:7878/admin/api/collections/3"
+                    }
+                }
             },
             {
                 "id": 4,
-                "name": "Long title is long"
+                "name": "Long title is long",
+                "_links" : {
+                    "self": {
+                        "href": "http://husky.lo:7878/admin/api/collections/4"
+                    }
+                }
             },
             {
                 "id": 5,
-                "name": "Long title is long"
+                "name": "Long title is long",
+                "_links" : {
+                    "self": {
+                        "href": "http://husky.lo:7878/admin/api/collections/5"
+                    }
+                }
             }
         ]
     }

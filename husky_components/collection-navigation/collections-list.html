@@ -1,15 +1,15 @@
 <ul class="collection-navigation-items">
-    <% if (!!data.items && !!data.items.length) { %>
-    <% _.each(data.items, function(item) { %>
-    <li data-id="<%= item.id %>">
+    <% if (!!data.children && !!data.children.length) { %>
+    <% _.each(data.children, function(child) { %>
+    <li data-id="<%= child.id %>">
         <div class="collection-navigation-item-thumb" style="background-image: url('http://lorempixel.com/35/35')"></div>
         <div class="collection-navigation-item-name">
-            <%= item.name %>
+            <%= child.name %>
             <span class="fa-chevron-right"></span>
         </div>
     </li>
     <% }) %>
-    <% } else if (!!data.items && data.items.length === 0) { %>
+    <% } else if (!!data.children && data.children.length === 0) { %>
     <li class="not-selectable">
         <div class="collection-navigation-info">
             No collections

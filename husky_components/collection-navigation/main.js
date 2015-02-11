@@ -14,7 +14,6 @@
  * @constructor
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
- * @param {Number} [options.collectionId] The collection which should be loaded initially
  * @param {Object} [options.translations] Holds the translations
  */
 define([
@@ -31,6 +30,10 @@ define([
         translates: {
             noCollections: ''
         }
+    },
+
+    consts = {
+        ROOT_ID: 'root'
     },
 
     namespace = 'husky.collection-navigation.',
@@ -79,9 +82,9 @@ define([
             this.headerTpl = this.sandbox.util.template(headerTpl);
             this.render();
 
-            this.sandbox.emit(INITIALIZED);
+            return this.load().then(function(data) {
+                this.sandbox.emit(INITIALIZED);
 
-            return this.load(this.options.collectionId).then(function(data) {
                 this.collectionView = this.createCollectionView(data);
                 this.updateHeader(data);
                 this.storeData(data);
@@ -121,14 +124,10 @@ define([
         /**
          * Fetch the data from the server
          * @method load
-         * @param {Mixed} id The collection id
+         * @param {String} url
          */
-        load: function(id) {
-            var url = this.options.url;
-
-            if (!!id && id !== 'root') {
-                url = url + '/' + id;
-            }
+        load: function(url) {
+            url = url || this.options.url;
 
             return this.sandbox.util.load(url)
                         .then(this.parse.bind(this));
@@ -139,13 +138,29 @@ define([
          * @param {Object} response Response
          */
         parse: function(response) {
-            return response._embedded;
+            var current = {},
+                parent = response._embedded.parent;
+
+            current.id = response.id || consts.ROOT_ID;
+            current.name = response.name;
+
+            if (!!parent) {
+                parent.id = parent.id || consts.ROOT_ID;
+            }
+
+            this.data = {
+                children: response._embedded.items || null,
+                parent: parent,
+                current: current
+            };
+
+            return this.data;
         },
 
         /**
          * caches the data inside a cache object
          * @method storeData
-         * @param  {Object}  data [description]
+         * @param  {Object} data
          */
         storeData: function(data) {
             var current = data.current;
@@ -166,10 +181,19 @@ define([
          */
         getCollectionItems: function(id) {
             var dfd = $.Deferred(),
-                data = this.cache.get(id);
+                data = this.cache.get(id),
+                item, url;
 
             if (!data) {
-                return this.load(id).then(this.storeData.bind(this));
+                if (id === consts.ROOT_ID) {
+                    url = this.data.parent._links.self.href;
+                } else {
+                    // underscores where returns a list but we only want the first item 
+                    item = _.where(this.data.children, { id: id })[0];
+                    url = item._links.self.href;
+                }
+
+                return this.load(url).then(this.storeData.bind(this));
             } else {
                 dfd.resolve(data);
             }
@@ -179,6 +203,7 @@ define([
 
         /**
          * @method openChildCollectionHandler
+         * @param {Object} event
          */
         openChildCollectionHandler: function(event) {
             var $item = $(event.currentTarget).closest('li'),
