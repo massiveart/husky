@@ -29,7 +29,7 @@
     }
 
     .text-block {
-        .move {
+        & > .move {
             position: relative;
 
             &::before {
