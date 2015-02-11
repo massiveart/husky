@@ -1012,7 +1012,7 @@ define([], function () {
          * @param column - the index of the column
          */
         startOrderModeColumn: function(column) {
-            if (this.inOrderMode === false && Object.keys(this.columns[column]).length > 1) {
+            if (this.inOrderMode === false && !!this.columns[column] && Object.keys(this.columns[column]).length > 1) {
                 this.inOrderMode = true;
                 var $column = this.$find('.' + constants.columnClass + '[data-column="' + column + '"]');
                 this.lockOptions(column);
@@ -1049,7 +1049,7 @@ define([], function () {
          */
         highlight: function(item) {
             var column = this.getColumnForItem(item);
-            if (column >= 0) {
+            if (column > 0) {
                 this.sandbox.dom.addClass(this.columns[column][item].$el, constants.highlightClass);
 
                 // remove class after effect has finished

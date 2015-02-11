@@ -39223,7 +39223,7 @@ define('__component__$column-navigation@husky',[], function () {
          */
         highlight: function(item) {
             var column = this.getColumnForItem(item);
-            if (column >= 0) {
+            if (column > 0) {
                 this.sandbox.dom.addClass(this.columns[column][item].$el, constants.highlightClass);
 
                 // remove class after effect has finished

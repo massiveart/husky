@@ -1205,7 +1205,7 @@ define([], function () {
          */
         highlight: function(item) {
             var column = this.getColumnForItem(item);
-            if (column &gt;= 0) {
+            if (column &gt; 0) {
                 this.sandbox.dom.addClass(this.columns[column][item].$el, constants.highlightClass);
 
                 // remove class after effect has finished
