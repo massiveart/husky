@@ -221,7 +221,14 @@ define([], function () {
             orderable: true,
             showActionIcon: true,
             orderConfirmTitle: &#x27;Be careful&#x27;,
-            orderConfirmMessage: &#x27;Are you sure you want to move this item?&#x27;
+            orderConfirmMessage: &#x27;Are you sure you want to move this item?&#x27;,
+            tooltipTranslations: {
+                ghost: &#x27;column-navigation.ghost&#x27;,
+                shadow: &#x27;column-navigation.shadow&#x27;,
+                unpublished: &#x27;public.unpublished&#x27;,
+                internalLink: &#x27;public.internal-link&#x27;,
+                externalLink: &#x27;public.external-link&#x27;
+            }
         },
 
         constants = {
@@ -730,22 +737,27 @@ define([], function () {
                 // link
                 if (!!data[this.options.linkedName]) {
                     if (data[this.options.linkedName] === &#x27;internal&#x27;) {
-                        this.sandbox.dom.append($container, &#x27;&lt;span class=&quot;fa-internal-link col-icon&quot;&gt;&lt;/span&gt;&#x27;);
+                        this.sandbox.dom.append($container,
+                            &#x27;&lt;span class=&quot;fa-internal-link col-icon&quot; title=&quot;&#x27;+ this.sandbox.translate(this.options.tooltipTranslations.internalLink) +&#x27;&quot;&gt;&lt;/span&gt;&#x27;);
                     } else if (data[this.options.linkedName] === &#x27;external&#x27;) {
-                        this.sandbox.dom.append($container, &#x27;&lt;span class=&quot;fa-external-link col-icon&quot;&gt;&lt;/span&gt;&#x27;);
+                        this.sandbox.dom.append($container,
+                            &#x27;&lt;span class=&quot;fa-external-link col-icon&quot;  title=&quot;&#x27;+ this.sandbox.translate(this.options.tooltipTranslations.externalLink) +&#x27;&quot;&gt;&lt;/span&gt;&#x27;);
                     }
                 }
                 // type (ghost, shadow)
                 if (!!data[this.options.typeName]) {
                     if (data[this.options.typeName].name === &#x27;ghost&#x27;) {
-                        this.sandbox.dom.append($container, &#x27;&lt;span class=&quot;ghost col-icon&quot;&gt;&#x27;+ data[this.options.typeName].value +&#x27;&lt;/span&gt;&#x27;);
+                        this.sandbox.dom.append($container,
+                                &#x27;&lt;span class=&quot;ghost col-icon&quot;  title=&quot;&#x27;+ this.sandbox.translate(this.options.tooltipTranslations.ghost) +&#x27;&quot;&gt;&#x27;+ data[this.options.typeName].value +&#x27;&lt;/span&gt;&#x27;);
                     } else if (data[this.options.typeName].name === &#x27;shadow&#x27;) {
-                        this.sandbox.dom.append($container, &#x27;&lt;span class=&quot;fa-shadow-node col-icon&quot;&gt;&lt;/span&gt;&#x27;);
+                        this.sandbox.dom.append($container,
+                            &#x27;&lt;span class=&quot;fa-shadow-node col-icon&quot;  title=&quot;&#x27;+ this.sandbox.translate(this.options.tooltipTranslations.shadow) +&#x27;&quot;&gt;&lt;/span&gt;&#x27;);
                     }
                 }
-                // published
+                // unpublished
                 if (!data[this.options.publishedName]) {
-                    this.sandbox.dom.append($container, &#x27;&lt;span class=&quot;not-published col-icon&quot;&gt;&amp;bull;&lt;/span&gt;&#x27;);
+                    this.sandbox.dom.append($container,
+                        &#x27;&lt;span class=&quot;not-published col-icon&quot;  title=&quot;&#x27;+ this.sandbox.translate(this.options.tooltipTranslations.unpublished) +&#x27;&quot;&gt;&amp;bull;&lt;/span&gt;&#x27;);
                 }
             }
             if (!!this.options.orderable) {
