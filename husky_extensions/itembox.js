@@ -264,7 +264,7 @@ define(function() {
 
                 this.renderNoContent();
 
-                if (!this.sandbox.util.isEmpty(data)) {
+                if (!this.isDataEmpty(data)) {
                     this.loadContent(data);
                 } else {
                     this.sandbox.dom.data(this.$el, this.options.dataAttribute, this.options.dataDefault);
@@ -580,6 +580,15 @@ define(function() {
                 }
 
                 this.sandbox.dom.html(this.getId('footerMaxCount'), length);
+            },
+
+            /**
+             * Checks if the given data is empty, can be overriden by the concrete implementation.
+             * Especially useful if data is not an array.
+             * @param data {object} The data to check
+             */
+            isDataEmpty: function(data) {
+                return this.sandbox.util.isEmpty(data);
             },
 
             /**
