@@ -39477,6 +39477,7 @@ define('__component__$column-navigation@husky',[], function () {
                     this.insertAddColumn(selectedItem, column);
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
+                    this.toggleSettingDropdownItems(column);
                 }
             }
         },

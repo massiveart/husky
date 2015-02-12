@@ -1282,6 +1282,7 @@ define([], function () {
                     this.insertAddColumn(selectedItem, column);
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
+                    this.toggleSettingDropdownItems(column);
                 }
             }
         },
