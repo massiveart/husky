@@ -19,6 +19,10 @@
  * @params {String} [options.selected] id of selected element - needed to restore state
  * @params {String} [options.actionIcon] icon class of action button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
+ * @params {String}  [options.data[].mode] if 'order' - column gets set in order mode if clicked
+ * @params {Function}  [options.data[].enabler] Gets called each time the options change columns.
+ *                                            Gets an object with a numberItems and a hasSelected property.
+ *                                            If returns false the dropdown item will get disabled, enabled otherwise
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
  * @params {String} [options.idName] name of id-key
@@ -424,9 +428,6 @@ define([], function () {
          * Instantiats the dropdown component
          */
         initSettingsDropdown: function () {
-
-            // TODO show dropdown only if item is selected and enable/disable certain elements of the dropdown depending on the selected element
-
             this.sandbox.start([
                 {
                     name: 'dropdown@husky',
@@ -767,7 +768,7 @@ define([], function () {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.dom.$add, 'click', this.addNode.bind(this));
             this.sandbox.dom.on(this.$el, 'click', this.actionClickHandler.bind(this), '.action');
-            this.sandbox.dom.on(this.$el, 'dblclick', this.actionClickHandler.bind(this), 'li');
+            this.sandbox.dom.on(this.dom.$container, 'dblclick', this.actionClickHandler.bind(this), 'li');
 
             this.sandbox.dom.on(this.$el, 'click', function (event) {
                 this.sandbox.dom.stopPropagation(event);
@@ -1180,8 +1181,35 @@ define([], function () {
             if (visibleRatio >= constants.minVisibleRatio) {
                 this.sandbox.dom.css(this.$optionsContainer, {'visibility': 'visible'});
                 this.updateOptionsMargin($activeColumn);
+                this.toggleSettingDropdownItems(this.lastHoveredColumn);
             } else {
                 this.hideOptions();
+            }
+        },
+
+        /**
+         * Calls the enabler for all dropdown-items (if exists) and disables
+         * or enalbes the corresponding item
+         * @param column - the index of the column on which the enalber should check the states of the items
+         */
+        toggleSettingDropdownItems: function(column) {
+            if (!!this.options.data && this.options.data.length > 0) {
+                var context = {
+                    numberItems: 0,
+                    hasSelected: false
+                };
+                if (!!this.columns[column]) {
+                    context.numberItems = Object.keys(this.columns[column]).length;
+                    context.hasSelected = !!this.selected[column];
+                }
+                this.sandbox.util.each(this.options.data, function (index, item) {
+                    if (!!item.enabler && typeof item.enabler === 'function') {
+                        this.sandbox.emit(
+                                'husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.toggle',
+                                item.id, item.enabler(context)
+                        );
+                    }
+                }.bind(this));
             }
         },
 

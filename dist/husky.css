@@ -7246,25 +7246,34 @@ li a.navigation-settings-icon {
   background-color: #ddd;
   cursor: default;
 }
+/* line 68, ../scss/modules/dropdown.scss */
+.dropdown-menu > ul > li.disabled {
+  color: #999;
+}
+/* line 70, ../scss/modules/dropdown.scss */
+.dropdown-menu > ul > li.disabled:hover {
+  background-color: transparent;
+  cursor: default;
+}
 
-/* line 72, ../scss/modules/dropdown.scss */
+/* line 79, ../scss/modules/dropdown.scss */
 .dropdown-align-right {
   right: 6px;
   left: inherit;
 }
 
-/* line 77, ../scss/modules/dropdown.scss */
+/* line 84, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 82, ../scss/modules/dropdown.scss */
+/* line 89, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: inline-block;
   cursor: pointer;
 }
-/* line 85, ../scss/modules/dropdown.scss */
+/* line 92, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -7278,7 +7287,7 @@ li a.navigation-settings-icon {
   border-top: 6px solid #000;
 }
 
-/* line 100, ../scss/modules/dropdown.scss */
+/* line 107, ../scss/modules/dropdown.scss */
 .dropdown-trigger {
   height: 30px;
   line-height: 30px;

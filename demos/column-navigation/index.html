@@ -91,7 +91,10 @@
                                         {
                                             id: 1,
                                             name: 'Order this column',
-                                            mode: 'order'
+                                            mode: 'order',
+                                            enabler: function(column) { // Button is enabled if column has more than one item
+                                                return column.numberItems > 1;
+                                            }
                                         },
                                         {
                                             id: 2,
@@ -99,7 +102,10 @@
                                         },
                                         {
                                             id: 2,
-                                            name: 'Button 2'
+                                            name: 'Button 2',
+                                            enabler: function(column) { // Button is enabled if column has an even number of items
+                                                return column.numberItems % 2 === 0;
+                                            }
                                         },
                                         {
                                             id: 3,
@@ -107,7 +113,10 @@
                                         },
                                         {
                                             id: 4,
-                                            name: 'Button 4'
+                                            name: 'Button 4',
+                                            enabler: function(column) { // Button is enabled if column as a selected item
+                                                return column.hasSelected;
+                                            }
                                         }
                                     ],
                                     tooltipTranslations: {
