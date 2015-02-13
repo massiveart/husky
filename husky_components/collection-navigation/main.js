@@ -14,7 +14,7 @@
  * @constructor
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
- * @param {Object} [options.translations] Holds the translations
+ * @param {Object} [options.translates] Holds the translates
  */
 define([
     'husky_components/collection-navigation/collections-list-view', 
@@ -27,12 +27,16 @@ define([
     var defaultOptions = {
         url: null,
         collectionId: null,
+        childrenPropertyName: 'items',
+        childrenLinkPropertyName: 'children',
+        showAddCollectionsBtn: true,
         translates: {
-            noCollections: ''
+            noCollections: 'No Collections',
+            title: 'Collections'
         }
     },
 
-    consts = {
+    constants = {
         ROOT_ID: 'root'
     },
 
@@ -141,15 +145,15 @@ define([
             var current = {},
                 parent = response._embedded.parent;
 
-            current.id = response.id || consts.ROOT_ID;
+            current.id = response.id || constants.ROOT_ID;
             current.name = response.name;
 
             if (!!parent) {
-                parent.id = parent.id || consts.ROOT_ID;
+                parent.id = parent.id || constants.ROOT_ID;
             }
 
             this.data = {
-                children: response._embedded.items || null,
+                children: response._embedded[this.options.childrenPropertyName] || null,
                 parent: parent,
                 current: current
             };
@@ -185,12 +189,12 @@ define([
                 item, url;
 
             if (!data) {
-                if (id === consts.ROOT_ID) {
-                    url = this.data.parent._links.self.href;
+                if (id === constants.ROOT_ID) {
+                    url = this.data.parent._links[this.options.childrenLinkPropertyName].href;
                 } else {
                     // underscores where returns a list but we only want the first item 
                     item = _.where(this.data.children, { id: id })[0];
-                    url = item._links.self.href;
+                    url = item._links[this.options.childrenLinkPropertyName].href;
                 }
 
                 return this.load(url).then(this.storeData.bind(this));
@@ -216,7 +220,7 @@ define([
             this.getCollectionItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    this.collectionView.render(data);
+                    this.collectionView.render(data, this.options);
                     this.sandbox.emit(CHANGE_COLLECTION, { collectionId: id });
                 }.bind(this));
         },
@@ -234,7 +238,7 @@ define([
             this.getCollectionItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    newCollectionView.render(data);
+                    newCollectionView.render(data, this.options);
                     this.sandbox.emit(CHANGE_COLLECTION, { collectionId: id });
                 }.bind(this));
         },
@@ -244,7 +248,10 @@ define([
          * @method updateHeader
          */
         updateHeader: function(data) {
-            var tpl = this.headerTpl({ data: data });
+            var tpl = this.headerTpl({ 
+                data: data,
+                translates: this.options.translates
+            });
             this.$el.find('.collection-navigation-header').html(tpl);
         },
 
@@ -271,7 +278,7 @@ define([
          */
         createCollectionView: function(data) {
             var view = (new CollectionView()).init();
-            return view.render(data);
+            return view.render(data, this.options);
         },
 
         /**
@@ -337,6 +344,6 @@ define([
                             this.collectionView = newView;
                         }.bind(this)
                     });
-        },
+        }
     };  
 });
