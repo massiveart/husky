@@ -447,6 +447,10 @@
                 $(selector).click();
             };
 
+            app.core.dom.submit = function(selector) {
+                $(selector).submit();
+            };
+
             app.core.dom.animate = function(selector, properties, options) {
                 $(selector).animate(properties, options);
             };
