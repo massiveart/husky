@@ -20,59 +20,61 @@ define([
     'husky_components/collection-navigation/collections-list-view',
     'text!collection-navigation/main.html',
     'text!collection-navigation/header.html'
-    ], function (CollectionView, mainTpl, headerTpl) {
+], function(CollectionView, mainTpl, headerTpl) {
 
     'use strict';
 
     var defaultOptions = {
-        url: null,
-        collectionId: null,
-        childrenPropertyName: 'items',
-        childrenLinkPropertyName: 'children',
-        showAddCollectionsBtn: true,
-        translates: {
-            noCollections: 'No Collections',
-            title: 'Collections'
-        }
-    },
+            url: null,
+            collectionId: null,
+            resultKey: 'items',
+            parentResultKey: 'parent',
+            nameKey: 'name',
+            childrenLinkKey: 'children',
+            showAddCollectionsBtn: true,
+            translates: {
+                noCollections: 'No Collections',
+                title: 'Collections'
+            }
+        },
 
-    constants = {
-        ROOT_ID: 'root'
-    },
+        constants = {
+            ROOT_ID: 'root'
+        },
 
-    namespace = 'husky.collection-navigation.',
+        namespace = 'husky.collection-navigation.',
 
-    /**
-     * Creates the eventnames
-     * @param postfix {String} event name to append
-     */
-    createEventName = function(postfix) {
-        return namespace + postfix;
-    },
+        /**
+         * Creates the eventnames
+         * @param postfix {String} event name to append
+         */
+        createEventName = function(postfix) {
+            return namespace + postfix;
+        },
 
-    /**
-     * raised after initialization has finished
-     * @event husky.collection-navigation.initialized
-     */
-    INITIALIZED = createEventName('initialized'),
+        /**
+         * raised after initialization has finished
+         * @event husky.collection-navigation.initialized
+         */
+        INITIALIZED = createEventName('initialized'),
 
-    /**
-     * raised after the collection was changed e.g. open new collection
-     * @event husky.collection-navigation.collection.change
-     */
-    CHANGE_COLLECTION = createEventName('collection.change'),
+        /**
+         * raised after the collection was changed e.g. open new collection
+         * @event husky.collection-navigation.collection.change
+         */
+        CHANGE_COLLECTION = createEventName('collection.change'),
 
-    /**
-     * raised when clicked on the add collection button
-     * @event husky.collection-navigation.collection.add
-     */
-    ADD_COLLECTION = createEventName('collection.add'),
+        /**
+         * raised when clicked on the add collection button
+         * @event husky.collection-navigation.collection.add
+         */
+        ADD_COLLECTION = createEventName('collection.add'),
 
-    /**
-     * raised when clicked on the item icon
-     * @event husky.collection-navigation.content.show
-     */
-    SHOW_CONTENT = createEventName('content.show');
+        /**
+         * raised when clicked on the item icon
+         * @event husky.collection-navigation.content.show
+         */
+        SHOW_CONTENT = createEventName('content.show');
 
     return {
         /**
@@ -134,7 +136,7 @@ define([
             url = url || this.options.url;
 
             return this.sandbox.util.load(url)
-                        .then(this.parse.bind(this));
+                .then(this.parse.bind(this));
         },
 
         /**
@@ -146,14 +148,14 @@ define([
                 parent = response._embedded.parent;
 
             current.id = response.id || constants.ROOT_ID;
-            current.name = response.name;
+            current.name = response[this.options.nameKey];
 
             if (!!parent) {
                 parent.id = parent.id || constants.ROOT_ID;
             }
 
             this.data = {
-                children: response._embedded[this.options.childrenPropertyName] || null,
+                children: response._embedded[this.options.resultKey] || null,
                 parent: parent,
                 current: current
             };
@@ -190,11 +192,11 @@ define([
 
             if (!data) {
                 if (id === constants.ROOT_ID) {
-                    url = this.data.parent._links[this.options.childrenLinkPropertyName].href;
+                    url = this.data.parent._links[this.options.childrenLinkKey].href;
                 } else {
                     // underscores where returns a list but we only want the first item
-                    item = _.where(this.data.children, { id: id })[0];
-                    url = item._links[this.options.childrenLinkPropertyName].href;
+                    item = _.where(this.data.children, {id: id})[0];
+                    url = item._links[this.options.childrenLinkKey].href;
                 }
 
                 return this.load(url).then(this.storeData.bind(this));
@@ -221,7 +223,7 @@ define([
                 .then(function(data) {
                     this.updateHeader(data);
                     this.collectionView.render(data, this.options);
-                    this.sandbox.emit(CHANGE_COLLECTION, { collectionId: id });
+                    this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
                 }.bind(this));
         },
 
@@ -239,7 +241,7 @@ define([
                 .then(function(data) {
                     this.updateHeader(data);
                     newCollectionView.render(data, this.options);
-                    this.sandbox.emit(CHANGE_COLLECTION, { collectionId: id });
+                    this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
                 }.bind(this));
         },
 
@@ -250,7 +252,8 @@ define([
         updateHeader: function(data) {
             var tpl = this.headerTpl({
                 data: data,
-                translates: this.options.translates
+                translates: this.options.translates,
+                nameKey: this.options.nameKey
             });
             this.$el.find('.collection-navigation-header').html(tpl);
         },
@@ -277,7 +280,7 @@ define([
          * @param  {Object} data
          */
         createCollectionView: function(data) {
-            var view = (new CollectionView()).init();
+            var view = (new CollectionView(this.options)).init();
             return view.render(data, this.options);
         },
 
@@ -301,18 +304,18 @@ define([
          */
         playAppendAnimation: function(oldView) {
             this.collectionView.$el
-                    .css({
-                        left: '100%'
-                    })
-                    .animate({
-                        left: '0%'
-                    }, {
-                        duration: 250,
-                        done: function() {
-                            oldView.destroy();
-                            this.collectionView.$el.removeClass('is-animated');
-                        }.bind(this)
-                    });
+                .css({
+                    left: '100%'
+                })
+                .animate({
+                    left: '0%'
+                }, {
+                    duration: 250,
+                    done: function() {
+                        oldView.destroy();
+                        this.collectionView.$el.removeClass('is-animated');
+                    }.bind(this)
+                });
         },
 
         /**
@@ -332,18 +335,18 @@ define([
          */
         playPrependAnimation: function(newView) {
             this.collectionView.$el
-                    .css({
-                        left: '0%'
-                    })
-                    .animate({
-                        left: '100%'
-                    }, {
-                        duration: 250,
-                        done: function() {
-                            this.collectionView.destroy();
-                            this.collectionView = newView;
-                        }.bind(this)
-                    });
+                .css({
+                    left: '0%'
+                })
+                .animate({
+                    left: '100%'
+                }, {
+                    duration: 250,
+                    done: function() {
+                        this.collectionView.destroy();
+                        this.collectionView = newView;
+                    }.bind(this)
+                });
         }
     };
 });

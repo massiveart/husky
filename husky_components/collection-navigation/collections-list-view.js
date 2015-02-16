@@ -10,19 +10,21 @@
  */
 
 
-define(['text!./collections-list.html'], function(collectionsListTpl) {
+define(['text!collection-navigation/collections-list.html'], function(collectionsListTpl) {
 
     /**
      * @class CollectionsListView
      * @constructor
      */
-    return function CollectionsListView() {
+    return function CollectionsListView(options) {
         return {
             /**
              * @method init
              */
             init: function() {
-                this.template = _.template(collectionsListTpl);
+                this.template = _.template(collectionsListTpl, {
+                    nameKey: options.nameKey
+                });
                 this.$el = $('<div/>', {
                     'class': 'collection-navigation-list'
                 });
