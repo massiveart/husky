@@ -1340,7 +1340,9 @@ define([], function () {
          */
         actionClickHandler: function (event) {
             var $listItem, id, item, column;
-
+            if (this.inOrderMode === true) {
+                return false;
+            }
             if (this.sandbox.dom.hasClass(event.currentTarget, 'action') === true) {
                 $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
             } else {
