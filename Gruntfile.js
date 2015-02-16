@@ -162,7 +162,8 @@ module.exports = function(grunt) {
                             'fonts/{,*/}*',
                             'vendor/ckeditor/{,**/}*',
                             'vendor/jquery.minicolors.png',
-                            'scss/variables.scss'
+                            'scss/variables.scss',
+                            'scss/mixins.scss'
                         ]
                     },
                     {

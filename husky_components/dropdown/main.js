@@ -118,7 +118,9 @@ define([], function() {
             // on click on list item
             this.sandbox.dom.on(this.$dropDownList, 'click', function(event) {
                 event.stopPropagation();
-                this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
+                if (!this.sandbox.dom.hasClass(event.currentTarget, 'disabled')) {
+                    this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
+                }
             }.bind(this), 'li:not(".divider")');
         },
 
@@ -126,10 +128,29 @@ define([], function() {
             this.sandbox.on(this.getEvent('toggle'), this.triggerClick.bind(this));
             this.sandbox.on(this.getEvent('show'), this.showDropDown.bind(this));
             this.sandbox.on(this.getEvent('hide'), this.hideDropDown.bind(this));
+            this.sandbox.on(this.getEvent('item.enable'), this.itemEnable.bind(this));
+            this.sandbox.on(this.getEvent('item.disable'), this.itemDisable.bind(this));
+            this.sandbox.on(this.getEvent('item.toggle'), this.itemToggle.bind(this));
         },
 
         getEvent: function(append) {
             return 'husky.dropdown.' + this.options.instanceName + '.' + append;
+        },
+
+        itemToggle: function(id, enable) {
+            if (enable === true) {
+                this.itemEnable(id);
+            } else {
+                this.itemDisable(id);
+            }
+        },
+
+        itemEnable: function(id) {
+            this.sandbox.dom.removeClass(this.$find('li[data-id="'+ id +'"]'), 'disabled');
+        },
+
+        itemDisable: function(id) {
+            this.sandbox.dom.addClass(this.$find('li[data-id="'+ id +'"]'), 'disabled');
         },
 
         // trigger event with clicked item

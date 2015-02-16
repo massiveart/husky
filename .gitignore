@@ -16,6 +16,6 @@ doc
 *.sublime-workspace
 *.sass-cache
 *.log
-
+doc/*
 .idea/*
 *.iml
