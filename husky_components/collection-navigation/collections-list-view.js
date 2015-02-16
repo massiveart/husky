@@ -1,3 +1,15 @@
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/collection-navigation
+ */
+
+
 define(['text!./collections-list.html'], function(collectionsListTpl) {
 
     /**
@@ -34,11 +46,12 @@ define(['text!./collections-list.html'], function(collectionsListTpl) {
             /**
              * @method render
              * @param {Object} data
+             * @param {Object} options
              * @chainable
              */
-            render: function(data) {
+            render: function(data, options) {
                 data = data || {};
-                var tpl = this.template({ data: data });
+                var tpl = this.template({ data: data, options: options });
 
                 this.$el.html(tpl);
 
