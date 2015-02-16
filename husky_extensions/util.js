@@ -1,3 +1,12 @@
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 define(function() {
 
     'use strict';
@@ -6,6 +15,18 @@ define(function() {
         name: 'Util',
 
         initialize: function(app) {
+            /**
+             * Replace rules for escape html function
+             * @type {{}}
+             */
+            var entityMap = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': '&quot;',
+                "'": '&#39;',
+                "/": '&#x2F;'
+            };
 
             // for comparing arrays
             app.core.util.compare = function(a, b) {
@@ -116,29 +137,29 @@ define(function() {
                 return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
             },
 
-            app.core.util.cropFront = function(text, maxLength, delimiter) {
-                if (!text || text.length <= maxLength) {
-                    return text;
-                }
+                app.core.util.cropFront = function(text, maxLength, delimiter) {
+                    if (!text || text.length <= maxLength) {
+                        return text;
+                    }
 
-                delimiter = delimiter || '...';
+                    delimiter = delimiter || '...';
 
-                return delimiter + text.slice(-(maxLength - delimiter.length));
-            },
+                    return delimiter + text.slice(-(maxLength - delimiter.length));
+                },
 
-            app.core.util.cropTail = function(text, maxLength, delimiter) {
-                if (!text || text.length <= maxLength) {
-                    return text;
-                }
+                app.core.util.cropTail = function(text, maxLength, delimiter) {
+                    if (!text || text.length <= maxLength) {
+                        return text;
+                    }
 
-                delimiter = delimiter || '...';
+                    delimiter = delimiter || '...';
 
-                return text.slice(0, (maxLength - delimiter.length)) + delimiter;
-            },
+                    return text.slice(0, (maxLength - delimiter.length)) + delimiter;
+                },
 
-            app.core.util.contains = function(list, value) {
-                return _.contains(list, value);
-            };
+                app.core.util.contains = function(list, value) {
+                    return _.contains(list, value);
+                };
 
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
@@ -159,10 +180,20 @@ define(function() {
                     parent = [];
                 }
                 return $.extend(true, parent, object);
-            }
+            };
 
 			app.core.util.template = _.template;
 
+            /**
+             * Escapes special html character
+             * @param string
+             * @returns {string}
+             */
+            app.core.util.escapeHtml = function(string) {
+                return String(string).replace(/[&<>"'\/]/g, function(s) {
+                    return entityMap[s];
+                });
+            };
         }
     };
 });
