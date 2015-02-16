@@ -65,6 +65,13 @@
               background-color: $grayLighterer;
               cursor: default;
             }
+            &.disabled {
+                color: $grayLight;
+                &:hover {
+                    background-color: transparent;
+                    cursor: default;
+                }
+            }
         }
     }
 }

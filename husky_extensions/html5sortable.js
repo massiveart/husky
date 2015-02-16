@@ -1,4 +1,14 @@
 /**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+/**
  * see https://github.com/farhadi/html5sortable for documentation
  */
 
