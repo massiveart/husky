@@ -42,7 +42,7 @@
                                 message: app.sandbox.translate(message),
                                 closeCallback: closeCallback,
                                 okCallback: okCallback,
-                                type: 'type'
+                                type: type
                             }
                         }
                     ]);
