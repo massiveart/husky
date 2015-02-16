@@ -463,12 +463,6 @@ define([], function() {
          * Removes the component
          */
         removeComponent: function() {
-            // todo fix bug: sometimes overlay-sandbox has own sandbox or parent-sandboxes as child which
-            // couses an endless loop. The bug can be reproduced by starting the component
-            // in a clickhandler with openOnStart-option true
-            // this.sandbox.stop();
-
-            this.sandbox.stop('*');
             this.sandbox.stop();
         },
 
@@ -989,13 +983,15 @@ define([], function() {
          */
         closeHandler: function(event) {
             var cancelCallback = this.slides[this.activeSlide].closeCallback ||
-                this.slides[this.activeSlide].cancelCallback;
+                this.slides[this.activeSlide].cancelCallback,
+                element = null;
 
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
                 this.sandbox.dom.stopPropagation(event);
+                element = event.currentTarget;
             }
-            if (this.executeCallback(cancelCallback, event.currentTarget) !== false) {
+            if (this.executeCallback(cancelCallback, element) !== false) {
                 this.closeOverlay();
             }
         },
