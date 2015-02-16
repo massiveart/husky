@@ -42764,6 +42764,439 @@ define('__component__$input@husky',[], function() {
 
 });
 
+
+define('text!husky_components/collection-navigation/collections-list.html',[],function () { return '<ul class="collection-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="collection-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="collection-navigation-item-name">\n            <%= child.name %>\n            <span class="fa-chevron-right"></span>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-info">\n            No collections\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n<div class="collection-navigation-list-footer">\n    <% if (options.showAddCollectionsBtn) { %>\n    <button class="collection-navigation-add btn">\n        <span class="fa-plus-circle"></span>\n        Add collection\n    </button>\n    <% } %>\n</div>\n';});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/collection-navigation
+ */
+
+
+define('husky_components/collection-navigation/collections-list-view',['text!./collections-list.html'], function(collectionsListTpl) {
+
+    /**
+     * @class CollectionsListView
+     * @constructor
+     */
+    return function CollectionsListView() {
+        return {
+            /**
+             * @method init
+             */
+            init: function() {
+                this.template = _.template(collectionsListTpl);
+                this.$el = $('<div/>', {
+                    'class': 'collection-navigation-list'
+                });
+
+                return this;
+            },
+
+            /**
+             * Removes the view
+             * @method destroy
+             * @chainable
+             */
+            destroy: function() {
+                this.$el.off();
+                this.$el.remove();
+                this.$el = null;
+
+                return this;
+            },
+
+            /**
+             * @method render
+             * @param {Object} data
+             * @param {Object} options
+             * @chainable
+             */
+            render: function(data, options) {
+                data = data || {};
+                var tpl = this.template({ data: data, options: options });
+
+                this.$el.html(tpl);
+
+                return this;
+            },
+
+            /**
+             * Insert the html into the dom
+             * @method placeAt
+             * @chainable
+             */
+            placeAt: function(container) {
+                $(container).append(this.$el);
+
+                return this;
+            }
+        };
+    }
+});
+
+
+define('text!collection-navigation/main.html',[],function () { return '<div class="collection-navigation">\n    <div class="collection-navigation-header"></div>\n    <div class="collection-navigation-list-container"></div>\n</div>\n';});
+
+
+define('text!collection-navigation/header.html',[],function () { return '<% if (!!data.parent) { %>\n<div class="collection-navigation-back" data-parent-id="<%= data.parent.id %>">\n    <span class="fa-chevron-left"></span>\n    <%= data.parent.name %>\n</div>\n<% } else { %>\n<div>\n    <%= data.current.name || translates.title %>\n</div>\n<% } %>\n';});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/collection-navigation
+ */
+
+/**
+ * @class CollectionNavigation
+ * @constructor
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.url] url to fetch data from
+ * @param {Object} [options.translates] Holds the translates
+ */
+define('__component__$collection-navigation@husky',[
+    'husky_components/collection-navigation/collections-list-view',
+    'text!collection-navigation/main.html',
+    'text!collection-navigation/header.html'
+    ], function (CollectionView, mainTpl, headerTpl) {
+
+    
+
+    var defaultOptions = {
+        url: null,
+        collectionId: null,
+        childrenPropertyName: 'items',
+        childrenLinkPropertyName: 'children',
+        showAddCollectionsBtn: true,
+        translates: {
+            noCollections: 'No Collections',
+            title: 'Collections'
+        }
+    },
+
+    constants = {
+        ROOT_ID: 'root'
+    },
+
+    namespace = 'husky.collection-navigation.',
+
+    /**
+     * Creates the eventnames
+     * @param postfix {String} event name to append
+     */
+    createEventName = function(postfix) {
+        return namespace + postfix;
+    },
+
+    /**
+     * raised after initialization has finished
+     * @event husky.collection-navigation.initialized
+     */
+    INITIALIZED = createEventName('initialized'),
+
+    /**
+     * raised after the collection was changed e.g. open new collection
+     * @event husky.collection-navigation.collection.change
+     */
+    CHANGE_COLLECTION = createEventName('collection.change'),
+
+    /**
+     * raised when clicked on the add collection button
+     * @event husky.collection-navigation.collection.add
+     */
+    ADD_COLLECTION = createEventName('collection.add'),
+
+    /**
+     * raised when clicked on the item icon
+     * @event husky.collection-navigation.content.show
+     */
+    SHOW_CONTENT = createEventName('content.show');
+
+    return {
+        /**
+         * @method initialize
+         */
+        initialize: function() {
+            this.cache = null;
+            this.collectionView = null;
+            this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
+            this.template = this.sandbox.util.template(mainTpl);
+            this.headerTpl = this.sandbox.util.template(headerTpl);
+            this.render();
+
+            return this.load().then(function(data) {
+                this.sandbox.emit(INITIALIZED);
+
+                this.collectionView = this.createCollectionView(data);
+                this.updateHeader(data);
+                this.storeData(data);
+                this.appendCollectionView();
+            }.bind(this));
+        },
+
+        /**
+         * Component destructor function
+         * @method remove
+         */
+        remove: function() {
+            this.cache.destroy();
+            this.collectionsList.destroy();
+        },
+
+        /**
+         * Initial render method. Inserts the main template into the dom
+         * @method render
+         */
+        render: function() {
+            var tpl = this.template();
+            this.$el.html(tpl);
+            this.bindDOMEvents();
+        },
+
+        /**
+         * @method bindDOMEvents
+         */
+        bindDOMEvents: function() {
+            this.$el.on('click', '.collection-navigation-item-name', this.openChildCollectionHandler.bind(this));
+            this.$el.on('click', '.collection-navigation-item-thumb', this.showContentHandler.bind(this));
+            this.$el.on('click', '.collection-navigation-back', this.openParentCollectionHandler.bind(this));
+            this.$el.on('click', '.collection-navigation-add', this.addCollectionHandler.bind(this));
+        },
+
+        /**
+         * Fetch the data from the server
+         * @method load
+         * @param {String} url
+         */
+        load: function(url) {
+            url = url || this.options.url;
+
+            return this.sandbox.util.load(url)
+                        .then(this.parse.bind(this));
+        },
+
+        /**
+         * @method parse
+         * @param {Object} response Response
+         */
+        parse: function(response) {
+            var current = {},
+                parent = response._embedded.parent;
+
+            current.id = response.id || constants.ROOT_ID;
+            current.name = response.name;
+
+            if (!!parent) {
+                parent.id = parent.id || constants.ROOT_ID;
+            }
+
+            this.data = {
+                children: response._embedded[this.options.childrenPropertyName] || null,
+                parent: parent,
+                current: current
+            };
+
+            return this.data;
+        },
+
+        /**
+         * caches the data inside a cache object
+         * @method storeData
+         * @param  {Object} data
+         */
+        storeData: function(data) {
+            var current = data.current;
+
+            if (!this.cache) {
+                this.cache = this.sandbox.cacheFactory.create();
+            }
+
+            this.cache.put(current.id, data);
+
+            return data;
+        },
+
+        /**
+         * check if we already have the data.
+         * If this is not the case, we fetch the data from the server
+         * @method getCollectionItems
+         */
+        getCollectionItems: function(id) {
+            var dfd = $.Deferred(),
+                data = this.cache.get(id),
+                item, url;
+
+            if (!data) {
+                if (id === constants.ROOT_ID) {
+                    url = this.data.parent._links[this.options.childrenLinkPropertyName].href;
+                } else {
+                    // underscores where returns a list but we only want the first item
+                    item = _.where(this.data.children, { id: id })[0];
+                    url = item._links[this.options.childrenLinkPropertyName].href;
+                }
+
+                return this.load(url).then(this.storeData.bind(this));
+            } else {
+                dfd.resolve(data);
+            }
+
+            return dfd.promise();
+        },
+
+        /**
+         * @method openChildCollectionHandler
+         * @param {Object} event
+         */
+        openChildCollectionHandler: function(event) {
+            var $item = $(event.currentTarget).closest('li'),
+                id = $item.data('id'),
+                oldCollectionView = this.collectionView;
+
+            this.collectionView = this.createCollectionView();
+            this.appendCollectionView(oldCollectionView);
+
+            this.getCollectionItems(id)
+                .then(function(data) {
+                    this.updateHeader(data);
+                    this.collectionView.render(data, this.options);
+                    this.sandbox.emit(CHANGE_COLLECTION, { collectionId: id });
+                }.bind(this));
+        },
+
+        /**
+         * @method openParentCollectionHandler
+         */
+        openParentCollectionHandler: function(event) {
+            var $item = $(event.currentTarget),
+                id = $item.data('parent-id'),
+                newCollectionView = this.createCollectionView();
+
+            this.prependCollectionView(newCollectionView);
+
+            this.getCollectionItems(id)
+                .then(function(data) {
+                    this.updateHeader(data);
+                    newCollectionView.render(data, this.options);
+                    this.sandbox.emit(CHANGE_COLLECTION, { collectionId: id });
+                }.bind(this));
+        },
+
+        /**
+         * Update the header html
+         * @method updateHeader
+         */
+        updateHeader: function(data) {
+            var tpl = this.headerTpl({
+                data: data,
+                translates: this.options.translates
+            });
+            this.$el.find('.collection-navigation-header').html(tpl);
+        },
+
+        /**
+         * Throw an event to tell that the content of the collection should be loaded
+         * @method showContentHandler
+         */
+        showContentHandler: function() {
+            this.sandbox.emit(SHOW_CONTENT);
+        },
+
+        /**
+         * Throw an event to tell that the add collection button was clicked
+         * @method addCollectionHandler
+         */
+        addCollectionHandler: function() {
+            this.sandbox.emit(ADD_COLLECTION);
+        },
+
+        /**
+         * Initialize a new collection view
+         * @method createCollectionView
+         * @param  {Object} data
+         */
+        createCollectionView: function(data) {
+            var view = (new CollectionView()).init();
+            return view.render(data, this.options);
+        },
+
+        /**
+         * Append the collection view into the dom
+         * @method appendCollectionView
+         * @param {Object} oldView
+         */
+        appendCollectionView: function(oldView) {
+            if (!!oldView) {
+                this.collectionView.$el.addClass('is-animated');
+                this.playAppendAnimation(oldView);
+            }
+
+            this.collectionView.placeAt('.collection-navigation-list-container');
+        },
+
+        /**
+         * @method playAppendAnimation
+         * @param {Object} oldView
+         */
+        playAppendAnimation: function(oldView) {
+            this.collectionView.$el
+                    .css({
+                        left: '100%'
+                    })
+                    .animate({
+                        left: '0%'
+                    }, {
+                        duration: 250,
+                        done: function() {
+                            oldView.destroy();
+                            this.collectionView.$el.removeClass('is-animated');
+                        }.bind(this)
+                    });
+        },
+
+        /**
+         * Handle the back button action
+         * @method prependCollectionView
+         * @param {Object} newView
+         */
+        prependCollectionView: function(newView) {
+            newView.placeAt('.collection-navigation-list-container');
+            this.collectionView.$el.addClass('is-animated');
+            this.playPrependAnimation(newView);
+        },
+
+        /**
+         * @method playPrependAnimation
+         * @param {Object} oldView
+         */
+        playPrependAnimation: function(newView) {
+            this.collectionView.$el
+                    .css({
+                        left: '0%'
+                    })
+                    .animate({
+                        left: '100%'
+                    }, {
+                        duration: 250,
+                        done: function() {
+                            this.collectionView.destroy();
+                            this.collectionView = newView;
+                        }.bind(this)
+                    });
+        }
+    };
+});
+
 (function() {
 
     

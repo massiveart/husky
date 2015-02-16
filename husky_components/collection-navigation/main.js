@@ -17,9 +17,9 @@
  * @param {Object} [options.translates] Holds the translates
  */
 define([
-    'husky_components/collection-navigation/collections-list-view', 
-    'text!./main.html',
-    'text!./header.html'
+    'husky_components/collection-navigation/collections-list-view',
+    'text!collection-navigation/main.html',
+    'text!collection-navigation/header.html'
     ], function (CollectionView, mainTpl, headerTpl) {
 
     'use strict';
@@ -179,7 +179,7 @@ define([
         },
 
         /**
-         * check if we already have the data. 
+         * check if we already have the data.
          * If this is not the case, we fetch the data from the server
          * @method getCollectionItems
          */
@@ -192,7 +192,7 @@ define([
                 if (id === constants.ROOT_ID) {
                     url = this.data.parent._links[this.options.childrenLinkPropertyName].href;
                 } else {
-                    // underscores where returns a list but we only want the first item 
+                    // underscores where returns a list but we only want the first item
                     item = _.where(this.data.children, { id: id })[0];
                     url = item._links[this.options.childrenLinkPropertyName].href;
                 }
@@ -248,7 +248,7 @@ define([
          * @method updateHeader
          */
         updateHeader: function(data) {
-            var tpl = this.headerTpl({ 
+            var tpl = this.headerTpl({
                 data: data,
                 translates: this.options.translates
             });
@@ -289,7 +289,7 @@ define([
         appendCollectionView: function(oldView) {
             if (!!oldView) {
                 this.collectionView.$el.addClass('is-animated');
-                this.playAppendAnimation(oldView);   
+                this.playAppendAnimation(oldView);
             }
 
             this.collectionView.placeAt('.collection-navigation-list-container');
@@ -345,5 +345,5 @@ define([
                         }.bind(this)
                     });
         }
-    };  
+    };
 });

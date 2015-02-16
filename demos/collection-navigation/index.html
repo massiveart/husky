@@ -15,7 +15,7 @@
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="../../dist/husky.css">
-        
+
         <style>
             #content {
                 overflow: hidden;
@@ -34,7 +34,10 @@
 
         <script>
             require.config({
-                baseUrl: '../../'
+                baseUrl: '../../',
+                paths: {
+                    "collection-navigation": "husky_components/collection-navigation"
+                }
             });
 
             require(['lib/husky'], function (Husky) {
