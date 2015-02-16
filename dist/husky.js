@@ -43212,6 +43212,15 @@ define('__component__$input@husky',[], function() {
 
 });
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -43316,6 +43325,15 @@ define('__component__$input@husky',[], function() {
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -43442,6 +43460,15 @@ define('__component__$input@husky',[], function() {
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 define('husky_extensions/collection',[],function() {
 
     
@@ -44318,6 +44345,15 @@ if(jQuery) (function($) {
 })(jQuery);
 define("jquery-minicolors", function(){});
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -44345,6 +44381,15 @@ define("jquery-minicolors", function(){});
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -44364,9 +44409,11 @@ define("jquery-minicolors", function(){});
                  * @param message - the message (or translation key) for the box
                  * @param okCallback - callback to execute after box was confirmed
                  * @param closeCallback - callback to execute on cancel
+                 * @param [type] - 'warning' or 'error' - default 'warning'
                  */
-                warning: function (that, title, message, okCallback, closeCallback) {
-                    var $element = app.core.dom.createElement('<div/>');
+                warning: function (that, title, message, okCallback, closeCallback, type) {
+                    var $element = app.core.dom.createElement('<div/>'),
+                        type = type || 'warning';
                     app.core.dom.append(that.$el, $element);
 
                     that.sandbox.start([
@@ -44378,7 +44425,7 @@ define("jquery-minicolors", function(){});
                                 message: app.sandbox.translate(message),
                                 closeCallback: closeCallback,
                                 okCallback: okCallback,
-                                type: 'warning'
+                                type: 'type'
                             }
                         }
                     ]);
@@ -44387,8 +44434,6 @@ define("jquery-minicolors", function(){});
         }
     });
 })();
-
-
 
 /* =========================================================
  * bootstrap-datepicker.js
@@ -46985,6 +47030,15 @@ define("datepicker-zh-CN", function(){});
 
 define("datepicker-zh-TW", function(){});
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -47150,6 +47204,15 @@ define("datepicker-zh-TW", function(){});
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -47178,6 +47241,15 @@ define("datepicker-zh-TW", function(){});
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -47358,6 +47430,16 @@ define("datepicker-zh-TW", function(){});
 })();
 
 /**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+/**
  * see https://github.com/farhadi/html5sortable for documentation
  */
 
@@ -47391,6 +47473,15 @@ define("datepicker-zh-TW", function(){});
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -47536,7 +47627,6 @@ define("datepicker-zh-TW", function(){});
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/listbox
  */
 
 /**
@@ -48147,6 +48237,15 @@ define('husky_extensions/itembox',[],function() {
     }
 });
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -48697,6 +48796,15 @@ define('husky_extensions/itembox',[],function() {
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 define('husky_extensions/model',[],function() {
 
     
@@ -48724,6 +48832,15 @@ define('husky_extensions/model',[],function() {
     };
 });
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -48754,6 +48871,15 @@ define('husky_extensions/model',[],function() {
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
     
@@ -48870,6 +48996,15 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
 });
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -48924,6 +49059,15 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 (function() {
 
     
@@ -48957,6 +49101,15 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
     });
 })();
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
 define('husky_extensions/util',[],function() {
 
     
