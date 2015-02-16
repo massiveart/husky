@@ -64,7 +64,12 @@ define(function() {
          */
         createEventName = function(eventName) {
             // TODO extract to extension?
-            return this.options.eventNamespace + '.' + eventName;
+            return [
+                this.options.eventNamespace,
+                '.',
+                (this.options.instanceName ? this.options.instanceName + '.' : ''),
+                eventName
+            ].join('');
         },
 
         templates = {
@@ -125,7 +130,7 @@ define(function() {
         },
 
         bindCustomEvents = function() {
-            this.sandbox.on(this.DATA_CHANGED(), this.loadContent.bind(this));
+            this.sandbox.on(this.DATA_CHANGED(), this.changeData.bind(this));
             this.sandbox.on(this.DATA_RETRIEVED(), this.renderContent.bind(this));
         },
 
@@ -228,9 +233,10 @@ define(function() {
              * render the itembox
              */
             render: function() {
+                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
                 var data = this.getData();
 
-                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
                 this.viewAll = true;
 
                 this.ids = {
@@ -258,10 +264,10 @@ define(function() {
 
                 this.renderNoContent();
 
-                if (!this.sandbox.util.isEmpty(data)) {
+                if (!this.isDataEmpty(data)) {
                     this.loadContent(data);
                 } else {
-                    this.setData(this.options.dataDefault, false);
+                    this.sandbox.dom.data(this.$el, this.options.dataAttribute, this.options.dataDefault);
                 }
 
                 this.setDisplayOption(this.options.defaultDisplayOption);
@@ -322,7 +328,7 @@ define(function() {
             },
 
             /**
-             * Set the given data to the elements data attribute
+             * Throws a data-changed event if the data actually has changed
              * @param data {object} The data to set
              * @param reload {boolean} True if the itembox list should be reloaded afterwards
              */
@@ -331,11 +337,21 @@ define(function() {
                 reload = typeof(reload) === 'undefined' ? true : reload;
 
                 if (!this.sandbox.util.isEqual(oldData, data)) {
-                    this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
+                    this.sandbox.emit(this.DATA_CHANGED(), data, this.$el, reload);
+                }
+            },
 
-                    if (reload) {
-                        this.sandbox.emit(this.DATA_CHANGED(), data, this.$el);
-                    }
+            /**
+             * Event handler for the changed data event, sets data to element and reloads the list if specified
+             * @param data {object} The data to set
+             * @param $el {object} The element to which the data should be bound
+             * @param reload {boolean} True if the list should be reloaded, otherwise false
+             */
+            changeData: function (data, $el, reload) {
+                this.sandbox.dom.data(this.$el, this.options.dataAttribute, data);
+
+                if (!!reload) {
+                    this.loadContent(data);
                 }
             },
 
@@ -564,6 +580,15 @@ define(function() {
                 }
 
                 this.sandbox.dom.html(this.getId('footerMaxCount'), length);
+            },
+
+            /**
+             * Checks if the given data is empty, can be overriden by the concrete implementation.
+             * Especially useful if data is not an array.
+             * @param data {object} The data to check
+             */
+            isDataEmpty: function(data) {
+                return this.sandbox.util.isEmpty(data);
             },
 
             /**

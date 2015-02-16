@@ -859,7 +859,8 @@ define([], function () {
             item: function (width, data) {
 
                 var isMarked = (this.marked.indexOf(data[this.options.idName]) !== -1),
-                    item = ['<li data-id="', data[this.options.idName], '" class="pointer' + ((isMarked === true) ? ' ' + this.options.markedClass : '' ) + '">'];
+                    item = ['<li data-id="', data[this.options.idName], '" class="pointer' + ((isMarked === true) ? ' ' + this.options.markedClass : '' ) + '">'],
+                    title = this.sandbox.util.escapeHtml(data[this.options.titleName]);
 
                 // icons left
                 item.push('<span class="icons-left">');
@@ -894,9 +895,9 @@ define([], function () {
 
                 // text center
                 if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
-                    item.push('<span title="' + data[this.options.titleName] + '" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="' + title + '" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
-                    item.push('<span title="' + data[this.options.titleName] + '" class="item-text pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="' + title + '" class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
 
                 // icons right (subpage, edit)

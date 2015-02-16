@@ -54,6 +54,8 @@ define([], function() {
         },
 
         initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, this.options);
+
             this.render();
 
             this.setData([1, 2, 3]);
