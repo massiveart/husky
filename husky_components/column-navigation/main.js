@@ -1269,7 +1269,7 @@ define([], function () {
                         this.sandbox.emit(SELECTED.call(this), selectedItem);
 
                         if (!!selectedItem[this.options.hasSubName]) {
-                            this.load(selectedItem._links.children, column);
+                            this.load(selectedItem._links.children.href, column);
                         }
 
                         this.removeColumns(column + 1);
