@@ -38,6 +38,10 @@ define([
                     var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-\?\$\#])*\/?/;
                     return regex.test(value);
                 },
+                time:  function(value) {
+                    var regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+                    return regex.test(value);
+                },
                 color:  function(value) {
                     // hex color with leading #
                     var regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
