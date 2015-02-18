@@ -88,8 +88,8 @@ define([
          * @method initialize
          */
         initialize: function() {
-            this.cache = null;
             this.collectionView = null;
+            this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
             this.template = this.sandbox.util.template(mainTpl);
             this.headerTpl = this.sandbox.util.template(headerTpl);
@@ -140,6 +140,8 @@ define([
          */
         bindCustomEvents: function() {
             this.sandbox.on(SET_URL, function(url) {
+                this.cache.deleteAll();
+
                 this.load(url)
                     .then(this.storeData.bind(this))
                     .then(function(data) {
@@ -193,10 +195,6 @@ define([
         storeData: function(data) {
             var current = data.current;
 
-            if (!this.cache) {
-                this.cache = this.sandbox.cacheFactory.create();
-            }
-
             this.cache.put(current.id, data);
 
             return data;
@@ -218,6 +216,11 @@ define([
                 } else {
                     // underscores where returns a list but we only want the first item
                     item = _.where(this.data.children, {id: id})[0];
+
+                    if (!item && !!this.data.parent && this.data.parent.id === id) {
+                        item = this.data.parent;
+                    }
+
                     url = item._links[this.options.childrenLinkKey].href;
                 }
 
