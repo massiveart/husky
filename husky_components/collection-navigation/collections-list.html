@@ -5,7 +5,9 @@
         <div class="collection-navigation-item-thumb" style="background-image: url('http://lorempixel.com/35/35')"></div>
         <div class="collection-navigation-item-name">
             <%= child[options.nameKey] %>
+            <% if (data.hasSub) { %>
             <span class="fa-chevron-right"></span>
+            <% } %>
         </div>
     </li>
     <% }) %>
