@@ -101,8 +101,8 @@
             "__component__$toggler@husky": "husky_components/toggler/main",
             "__component__$dropzone@husky": "husky_components/dropzone/main",
             "__component__$input@husky": "husky_components/input/main",
-            "collection-navigation": "husky_components/collection-navigation",
-            "__component__$collection-navigation@husky": "husky_components/collection-navigation/main"
+            "data-navigation": "husky_components/data-navigation",
+            "__component__$data-navigation@husky": "husky_components/data-navigation/main"
         },
         "shim": {
             "backbone": {
@@ -158,7 +158,7 @@
             "__component__$toggler@husky",
             "__component__$dropzone@husky",
             "__component__$input@husky",
-            "__component__$collection-navigation@husky"
+            "__component__$data-navigation@husky"
         ]
     }
 }
