@@ -1,11 +1,11 @@
-<ul class="collection-navigation-items">
+<ul class="data-navigation-items">
     <% if (!!data.children && !!data.children.length) { %>
     <% _.each(data.children, function(child) { %>
     <li data-id="<%= child.id %>">
-        <div class="collection-navigation-item-thumb" style="background-image: url('http://lorempixel.com/35/35')"></div>
-        <div class="collection-navigation-item-name">
+        <div class="data-navigation-item-thumb" style="background-image: url('http://lorempixel.com/35/35')"></div>
+        <div class="data-navigation-item-name">
             <%= child[options.nameKey] %>
-            <% if (data.hasSub) { %>
+            <% if (!!child.hasSub) { %>
             <span class="fa-chevron-right"></span>
             <% } %>
         </div>
@@ -13,13 +13,13 @@
     <% }) %>
     <% } else if (!!data.children && data.children.length === 0) { %>
     <li class="not-selectable">
-        <div class="collection-navigation-info">
-            No collections
+        <div class="data-navigation-info">
+            No Data
         </div>
     </li>
     <% } else { %>
     <li class="not-selectable">
-        <div class="collection-navigation-loader-container">
+        <div class="data-navigation-loader-container">
             <div class="spinner">
                 <div class="double-bounce1"></div>
                 <div class="double-bounce2"></div>
@@ -28,11 +28,11 @@
     </li>
     <% } %>
 </ul>
-<div class="collection-navigation-list-footer">
-    <% if (options.showAddCollectionsBtn) { %>
-    <button class="collection-navigation-add btn">
+<div class="data-navigation-list-footer">
+    <% if (options.showAddBtn) { %>
+    <button class="data-navigation-add btn">
         <span class="fa-plus-circle"></span>
-        Add collection
+        Add data
     </button>
     <% } %>
 </div>

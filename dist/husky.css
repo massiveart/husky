@@ -11070,22 +11070,22 @@ a.btn-black, a.btn-highlight {
   line-height: 14px;
 }
 
-/* line 1, ../scss/modules/collection-navigation.scss */
-.collection-navigation-container {
+/* line 1, ../scss/modules/data-navigation.scss */
+.data-navigation-container {
   width: 250px;
   height: 100%;
 }
 
-/* line 6, ../scss/modules/collection-navigation.scss */
-.collection-navigation {
+/* line 6, ../scss/modules/data-navigation.scss */
+.data-navigation {
   height: 100%;
   padding-top: 100px;
   background-color: #111417;
   color: #fff;
 }
 
-/* line 13, ../scss/modules/collection-navigation.scss */
-.collection-navigation-header {
+/* line 13, ../scss/modules/data-navigation.scss */
+.data-navigation-header {
   position: relative;
   height: 50px;
   padding: 0 10px;
@@ -11095,35 +11095,35 @@ a.btn-black, a.btn-highlight {
   color: #999;
 }
 
-/* line 23, ../scss/modules/collection-navigation.scss */
-.collection-navigation-list-container {
+/* line 23, ../scss/modules/data-navigation.scss */
+.data-navigation-list-container {
   height: 100%;
   overflow: hidden;
   position: relative;
 }
 
-/* line 29, ../scss/modules/collection-navigation.scss */
-.collection-navigation-list {
+/* line 29, ../scss/modules/data-navigation.scss */
+.data-navigation-list {
   width: 100%;
   height: 100%;
   background-color: #111417;
 }
-/* line 34, ../scss/modules/collection-navigation.scss */
-.collection-navigation-list.is-animated {
+/* line 34, ../scss/modules/data-navigation.scss */
+.data-navigation-list.is-animated {
   position: absolute;
   top: 0;
   left: 100%;
   z-index: 5;
 }
 
-/* line 42, ../scss/modules/collection-navigation.scss */
-.collection-navigation-list-footer {
+/* line 42, ../scss/modules/data-navigation.scss */
+.data-navigation-list-footer {
   padding: 20px 0;
   text-align: center;
 }
 
-/* line 47, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items {
+/* line 47, ../scss/modules/data-navigation.scss */
+.data-navigation-items {
   height: calc(100% - 150px);
   min-height: 150px;
   margin: 0;
@@ -11131,8 +11131,8 @@ a.btn-black, a.btn-highlight {
   list-style: none;
   overflow: auto;
 }
-/* line 55, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items > li {
+/* line 55, ../scss/modules/data-navigation.scss */
+.data-navigation-items > li {
   position: relative;
   height: 50px;
   line-height: 50px;
@@ -11142,36 +11142,36 @@ a.btn-black, a.btn-highlight {
   text-overflow: ellipsis;
   cursor: pointer;
 }
-/* line 65, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items > li:hover {
+/* line 65, ../scss/modules/data-navigation.scss */
+.data-navigation-items > li:hover {
   background-color: #21272E;
 }
-/* line 69, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items > li:focus {
+/* line 69, ../scss/modules/data-navigation.scss */
+.data-navigation-items > li:focus {
   outline: 0;
 }
-/* line 73, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items > li:last-child {
+/* line 73, ../scss/modules/data-navigation.scss */
+.data-navigation-items > li:last-child {
   border-bottom: 1px solid #21272E;
 }
-/* line 77, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items > li.not-selectable {
+/* line 77, ../scss/modules/data-navigation.scss */
+.data-navigation-items > li.not-selectable {
   cursor: default;
 }
-/* line 80, ../scss/modules/collection-navigation.scss */
-.collection-navigation-items > li.not-selectable:hover {
+/* line 80, ../scss/modules/data-navigation.scss */
+.data-navigation-items > li.not-selectable:hover {
   background-color: initial;
 }
 
-/* line 87, ../scss/modules/collection-navigation.scss */
-.collection-navigation-item-name {
+/* line 87, ../scss/modules/data-navigation.scss */
+.data-navigation-item-name {
   display: inline-block;
   width: calc(100% - 45px);
   text-overflow: ellipsis;
   overflow: hidden;
 }
-/* line 93, ../scss/modules/collection-navigation.scss */
-.collection-navigation-item-name .fa-chevron-right {
+/* line 93, ../scss/modules/data-navigation.scss */
+.data-navigation-item-name .fa-chevron-right {
   position: absolute;
   right: 10px;
   top: 18px;
@@ -11179,8 +11179,8 @@ a.btn-black, a.btn-highlight {
   color: #999;
 }
 
-/* line 102, ../scss/modules/collection-navigation.scss */
-.collection-navigation-item-thumb {
+/* line 102, ../scss/modules/data-navigation.scss */
+.data-navigation-item-thumb {
   position: relative;
   top: 6px;
   display: inline-block;
@@ -11193,17 +11193,17 @@ a.btn-black, a.btn-highlight {
   background-repeat: no-repeat;
 }
 
-/* line 115, ../scss/modules/collection-navigation.scss */
-.collection-navigation-back {
+/* line 115, ../scss/modules/data-navigation.scss */
+.data-navigation-back {
   padding-left: 20px;
   cursor: pointer;
 }
-/* line 119, ../scss/modules/collection-navigation.scss */
-.collection-navigation-back:focus {
+/* line 119, ../scss/modules/data-navigation.scss */
+.data-navigation-back:focus {
   outline: 0;
 }
-/* line 123, ../scss/modules/collection-navigation.scss */
-.collection-navigation-back .fa-chevron-left {
+/* line 123, ../scss/modules/data-navigation.scss */
+.data-navigation-back .fa-chevron-left {
   position: absolute;
   top: 18px;
   left: 10px;
@@ -11211,15 +11211,15 @@ a.btn-black, a.btn-highlight {
   color: #fff;
 }
 
-/* line 133, ../scss/modules/collection-navigation.scss */
-.collection-navigation-add .fa-plus-circle {
+/* line 133, ../scss/modules/data-navigation.scss */
+.data-navigation-add .fa-plus-circle {
   margin-right: 5px;
   float: left;
   font-size: 16px;
 }
 
-/* line 140, ../scss/modules/collection-navigation.scss */
-.collection-navigation-loader-container {
+/* line 140, ../scss/modules/data-navigation.scss */
+.data-navigation-loader-container {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -11228,8 +11228,8 @@ a.btn-black, a.btn-highlight {
   padding: 4px 0;
 }
 
-/* line 149, ../scss/modules/collection-navigation.scss */
-.collection-navigation-info {
+/* line 149, ../scss/modules/data-navigation.scss */
+.data-navigation-info {
   text-align: center;
   line-height: 50px;
 }

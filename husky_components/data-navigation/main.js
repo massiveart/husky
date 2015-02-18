@@ -6,35 +6,35 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/collection-navigation
+ * @module husky/components/data-navigation
  */
 
 /**
- * @class CollectionNavigation
+ * @class DataNavigation
  * @constructor
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
  * @param {Object} [options.translates] Holds the translates
  */
 define([
-    'husky_components/collection-navigation/collections-list-view',
-    'text!collection-navigation/main.html',
-    'text!collection-navigation/header.html'
-], function(CollectionView, mainTpl, headerTpl) {
+    'husky_components/data-navigation/list-view',
+    'text!data-navigation/main.html',
+    'text!data-navigation/header.html'
+], function(View, mainTpl, headerTpl) {
 
     'use strict';
 
     var defaultOptions = {
             url: null,
-            collectionId: null,
+            id: null,
             resultKey: 'items',
             parentResultKey: 'parent',
             nameKey: 'name',
             childrenLinkKey: 'children',
-            showAddCollectionsBtn: true,
+            showAddBtn: true,
             translates: {
-                noCollections: 'No Collections',
-                title: 'Collections'
+                noData: 'No Data',
+                title: 'Data'
             }
         },
 
@@ -42,53 +42,66 @@ define([
             ROOT_ID: 'root'
         },
 
-        namespace = 'husky.collection-navigation.',
+        eventNamespace = 'husky.data-navigation.',
 
         /**
          * Creates the eventnames
-         * @param postfix {String} event name to append
+         * @param postFix {String} event name to append
          */
-        createEventName = function(postfix) {
-            return namespace + postfix;
+        createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         },
 
         /**
          * raised after initialization has finished
-         * @event husky.collection-navigation.initialized
+         * @event husky.data-navigation.initialized
          */
-        INITIALIZED = createEventName('initialized'),
+        INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
         /**
-         * raised after the collection was changed e.g. open new collection
-         * @event husky.collection-navigation.collection.change
+         * raised after the item was selected
+         * @param item {Object} selected item
+         * @event husky.data-navigation.select
          */
-        CHANGE_COLLECTION = createEventName('collection.change'),
+        SELECT = function() {
+            return createEventName.call(this, 'select')
+        },
 
         /**
-         * raised when clicked on the add collection button
-         * @event husky.collection-navigation.collection.add
+         * raised when clicked on the add button
+         * @param item {Object} current item
+         * @event husky.data-navigation.add
          */
-        ADD_COLLECTION = createEventName('collection.add'),
+        ADD = function() {
+            return createEventName.call(this, 'add')
+        },
 
         /**
          * raised when clicked on the item icon
-         * @event husky.collection-navigation.content.show
+         * @param item {Object} item to navigate into
+         * @event husky.data-navigation.content.show
          */
-        SHOW_CONTENT = createEventName('content.show'),
+        NAVIGATE = function() {
+            return createEventName.call(this, 'navigate')
+        },
 
         /**
          * Setter for current url navigation will be relaoded with data
          * @param url {string} url to load data
-         * @event husky.collection-navigation.content.show
+         * @event husky.data-navigation.content.show
          */
-        SET_URL = createEventName('set-url');
+        SET_URL = function() {
+            return createEventName.call(this, 'set-url')
+        };
 
     return {
         /**
          * @method initialize
          */
         initialize: function() {
-            this.collectionView = null;
+            this.view = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
             this.template = this.sandbox.util.template(mainTpl);
@@ -97,12 +110,12 @@ define([
             this.bindCustomEvents();
 
             return this.load().then(function(data) {
-                this.sandbox.emit(INITIALIZED);
+                this.sandbox.emit(INITIALIZED.call(this));
 
-                this.collectionView = this.createCollectionView(data);
+                this.view = this.createView(data);
                 this.updateHeader(data);
                 this.storeData(data);
-                this.appendCollectionView();
+                this.appendView();
             }.bind(this));
         },
 
@@ -112,7 +125,6 @@ define([
          */
         remove: function() {
             this.cache.destroy();
-            this.collectionsList.destroy();
         },
 
         /**
@@ -129,24 +141,24 @@ define([
          * @method bindDOMEvents
          */
         bindDOMEvents: function() {
-            this.$el.on('click', '.collection-navigation-item-name', this.openChildCollectionHandler.bind(this));
-            this.$el.on('click', '.collection-navigation-item-thumb', this.showContentHandler.bind(this));
-            this.$el.on('click', '.collection-navigation-back', this.openParentCollectionHandler.bind(this));
-            this.$el.on('click', '.collection-navigation-add', this.addCollectionHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-name', this.openChildHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-thumb', this.showContentHandler.bind(this));
+            this.$el.on('click', '.data-navigation-back', this.openParentHandler.bind(this));
+            this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
         /**
          * @method bindCustomEvents
          */
         bindCustomEvents: function() {
-            this.sandbox.on(SET_URL, function(url) {
+            this.sandbox.on(SET_URL.call(this), function(url) {
                 this.cache.deleteAll();
 
                 this.load(url)
                     .then(this.storeData.bind(this))
                     .then(function(data) {
                         this.updateHeader(data);
-                        this.collectionView.render(data, this.options);
+                        this.view.render(data, this.options);
                     }.bind(this));
             }.bind(this));
         },
@@ -203,9 +215,9 @@ define([
         /**
          * check if we already have the data.
          * If this is not the case, we fetch the data from the server
-         * @method getCollectionItems
+         * @method getItems
          */
-        getCollectionItems: function(id) {
+        getItems: function(id) {
             var dfd = $.Deferred(),
                 data = this.cache.get(id),
                 item, url;
@@ -224,8 +236,19 @@ define([
                     url = item._links[this.options.childrenLinkKey].href;
                 }
 
-                return this.load(url).then(this.storeData.bind(this));
+                if (!!item.hasSub) {
+                    return this.load(url).then(this.storeData.bind(this));
+                } else {
+                    this.data = {
+                        children: [],
+                        parent: this.data.current,
+                        current: item
+                    };
+
+                    dfd.resolve(this.data);
+                }
             } else {
+                this.data = data;
                 dfd.resolve(data);
             }
 
@@ -233,40 +256,40 @@ define([
         },
 
         /**
-         * @method openChildCollectionHandler
+         * @method openChildHandler
          * @param {Object} event
          */
-        openChildCollectionHandler: function(event) {
+        openChildHandler: function(event) {
             var $item = $(event.currentTarget).closest('li'),
                 id = $item.data('id'),
-                oldCollectionView = this.collectionView;
+                oldView = this.view;
 
-            this.collectionView = this.createCollectionView();
-            this.appendCollectionView(oldCollectionView);
-            this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
+            this.view = this.createView();
+            this.appendView(oldView);
+            this.sandbox.emit(SELECT.call(this), {id: id});
 
-            this.getCollectionItems(id)
+            this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    this.collectionView.render(data, this.options);
+                    this.view.render(data, this.options);
                 }.bind(this));
         },
 
         /**
-         * @method openParentCollectionHandler
+         * @method openParentHandler
          */
-        openParentCollectionHandler: function(event) {
+        openParentHandler: function(event) {
             var $item = $(event.currentTarget),
                 id = $item.data('parent-id'),
-                newCollectionView = this.createCollectionView();
+                newView = this.createView();
 
-            this.prependCollectionView(newCollectionView);
-            this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
+            this.prependView(newView);
+            this.sandbox.emit(SELECT.call(this), {id: id});
 
-            this.getCollectionItems(id)
+            this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    newCollectionView.render(data, this.options);
+                    newView.render(data, this.options);
                 }.bind(this));
         },
 
@@ -280,47 +303,47 @@ define([
                 translates: this.options.translates,
                 nameKey: this.options.nameKey
             });
-            this.$el.find('.collection-navigation-header').html(tpl);
+            this.$el.find('.data-navigation-header').html(tpl);
         },
 
         /**
-         * Throw an event to tell that the content of the collection should be loaded
+         * Throw an event to tell that the content should be loaded
          * @method showContentHandler
          */
         showContentHandler: function() {
-            this.sandbox.emit(SHOW_CONTENT);
+            this.sandbox.emit(NAVIGATE.call(this));
         },
 
         /**
-         * Throw an event to tell that the add collection button was clicked
-         * @method addCollectionHandler
+         * Throw an event to tell that the add button was clicked
+         * @method addHandler
          */
-        addCollectionHandler: function() {
-            this.sandbox.emit(ADD_COLLECTION);
+        addHandler: function() {
+            this.sandbox.emit(ADD.call(this));
         },
 
         /**
-         * Initialize a new collection view
-         * @method createCollectionView
+         * Initialize a new view
+         * @method createView
          * @param  {Object} data
          */
-        createCollectionView: function(data) {
-            var view = (new CollectionView(this.options)).init();
+        createView: function(data) {
+            var view = (new View(this.options)).init();
             return view.render(data, this.options);
         },
 
         /**
-         * Append the collection view into the dom
-         * @method appendCollectionView
-         * @param {Object} oldView
+         * Append the view into the dom
+         * @method appendView
+         * @param {Object} view
          */
-        appendCollectionView: function(oldView) {
-            if (!!oldView) {
-                this.collectionView.$el.addClass('is-animated');
-                this.playAppendAnimation(oldView);
+        appendView: function(view) {
+            if (!!view) {
+                this.view.$el.addClass('is-animated');
+                this.playAppendAnimation(view);
             }
 
-            this.collectionView.placeAt('.collection-navigation-list-container');
+            this.view.placeAt('.data-navigation-list-container');
         },
 
         /**
@@ -328,7 +351,7 @@ define([
          * @param {Object} oldView
          */
         playAppendAnimation: function(oldView) {
-            this.collectionView.$el
+            this.view.$el
                 .css({
                     left: '100%'
                 })
@@ -338,28 +361,28 @@ define([
                     duration: 250,
                     done: function() {
                         oldView.destroy();
-                        this.collectionView.$el.removeClass('is-animated');
+                        this.view.$el.removeClass('is-animated');
                     }.bind(this)
                 });
         },
 
         /**
          * Handle the back button action
-         * @method prependCollectionView
-         * @param {Object} newView
+         * @method prependView
+         * @param {Object} view
          */
-        prependCollectionView: function(newView) {
-            newView.placeAt('.collection-navigation-list-container');
-            this.collectionView.$el.addClass('is-animated');
-            this.playPrependAnimation(newView);
+        prependView: function(view) {
+            view.placeAt('.data-navigation-list-container');
+            this.view.$el.addClass('is-animated');
+            this.playPrependAnimation(view);
         },
 
         /**
          * @method playPrependAnimation
-         * @param {Object} oldView
+         * @param {Object} view
          */
-        playPrependAnimation: function(newView) {
-            this.collectionView.$el
+        playPrependAnimation: function(view) {
+            this.view.$el
                 .css({
                     left: '0%'
                 })
@@ -368,8 +391,8 @@ define([
                 }, {
                     duration: 250,
                     done: function() {
-                        this.collectionView.destroy();
-                        this.collectionView = newView;
+                        this.view.destroy();
+                        this.view = view;
                     }.bind(this)
                 });
         }

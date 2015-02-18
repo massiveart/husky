@@ -137,17 +137,22 @@
 
         "admin/api/collections": {
             "verbs": ["GET"],
-            "mockFile": "collection-navigation/collections.json"
-        },
-
-        "admin/api/collections": {
-            "verbs": ["GET"],
-            "mockFile": "collection-navigation/collections.json"
+            "mockFile": "data-navigation/data.json"
         },
 
         "admin/api/collections/1": {
             "verbs": ["GET"],
-            "mockFile": "collection-navigation/collections-child.json"
+            "mockFile": "data-navigation/data-child-1.json"
+        },
+
+        "admin/api/collections/7": {
+            "verbs": ["GET"],
+            "mockFile": "data-navigation/data-child-1-2.json"
+        },
+
+        "admin/api/collections/2": {
+            "verbs": ["GET"],
+            "mockFile": "data-navigation/data-child-2.json"
         }
     }
 }

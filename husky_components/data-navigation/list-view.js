@@ -6,25 +6,25 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/collection-navigation
+ * @module husky/components/data-navigation
  */
 
 
-define(['text!collection-navigation/collections-list.html'], function(collectionsListTpl) {
+define(['text!data-navigation/list.html'], function(listTpl) {
 
     /**
-     * @class CollectionsListView
+     * @class ListView
      * @constructor
      */
-    return function CollectionsListView(options) {
+    return function ListView() {
         return {
             /**
              * @method init
              */
             init: function() {
-                this.template = _.template(collectionsListTpl);
+                this.template = _.template(listTpl);
                 this.$el = $('<div/>', {
-                    'class': 'collection-navigation-list'
+                    'class': 'data-navigation-list'
                 });
 
                 return this;

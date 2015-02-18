@@ -26,7 +26,7 @@
     </head>
     <body>
         <div id="content" class="grid">
-            <div id="collection-navigation" class="collection-navigation-container"></div>
+            <div id="data-navigation" class="data-navigation-container"></div>
         </div>
 
         <script src="../../bower_components/jquery/jquery.js"></script>
@@ -36,7 +36,7 @@
             require.config({
                 baseUrl: '../../',
                 paths: {
-                    "collection-navigation": "husky_components/collection-navigation"
+                    "data-navigation": "husky_components/data-navigation"
                 }
             });
 
@@ -47,10 +47,10 @@
 
                 app.start([
                     {
-                        name: 'collection-navigation@husky',
+                        name: 'data-navigation@husky',
                         options: {
-                            el: '#collection-navigation',
-                            url: 'http://husky.lo:7878/admin/api/collections/1',
+                            el: '#data-navigation',
+                            url: 'http://husky.lo:7878/admin/api/collections',
                             childrenLinkPropertyName: 'self'
                         }
                     }
