@@ -22,9 +22,7 @@ define(['text!collection-navigation/collections-list.html'], function(collection
              * @method init
              */
             init: function() {
-                this.template = _.template(collectionsListTpl, {
-                    nameKey: options.nameKey
-                });
+                this.template = _.template(collectionsListTpl);
                 this.$el = $('<div/>', {
                     'class': 'collection-navigation-list'
                 });

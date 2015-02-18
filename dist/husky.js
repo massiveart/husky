@@ -39473,7 +39473,7 @@ define('__component__$column-navigation@husky',[], function () {
                         this.sandbox.emit(SELECTED.call(this), selectedItem);
 
                         if (!!selectedItem[this.options.hasSubName]) {
-                            this.load(selectedItem._links.children, column);
+                            this.load(selectedItem._links.children.href, column);
                         }
 
                         this.removeColumns(column + 1);
@@ -43224,7 +43224,7 @@ define('__component__$input@husky',[], function() {
 });
 
 
-define('text!collection-navigation/collections-list.html',[],function () { return '<ul class="collection-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="collection-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="collection-navigation-item-name">\n            <%= child[nameKey] %>\n            <span class="fa-chevron-right"></span>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-info">\n            No collections\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n<div class="collection-navigation-list-footer">\n    <% if (options.showAddCollectionsBtn) { %>\n    <button class="collection-navigation-add btn">\n        <span class="fa-plus-circle"></span>\n        Add collection\n    </button>\n    <% } %>\n</div>\n';});
+define('text!collection-navigation/collections-list.html',[],function () { return '<ul class="collection-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="collection-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="collection-navigation-item-name">\n            <%= child[options.nameKey] %>\n            <span class="fa-chevron-right"></span>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-info">\n            No collections\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n<div class="collection-navigation-list-footer">\n    <% if (options.showAddCollectionsBtn) { %>\n    <button class="collection-navigation-add btn">\n        <span class="fa-plus-circle"></span>\n        Add collection\n    </button>\n    <% } %>\n</div>\n';});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -43250,9 +43250,7 @@ define('husky_components/collection-navigation/collections-list-view',['text!col
              * @method init
              */
             init: function() {
-                this.template = _.template(collectionsListTpl, {
-                    nameKey: options.nameKey
-                });
+                this.template = _.template(collectionsListTpl);
                 this.$el = $('<div/>', {
                     'class': 'collection-navigation-list'
                 });
@@ -43384,7 +43382,14 @@ define('__component__$collection-navigation@husky',[
          * raised when clicked on the item icon
          * @event husky.collection-navigation.content.show
          */
-        SHOW_CONTENT = createEventName('content.show');
+        SHOW_CONTENT = createEventName('content.show'),
+
+        /**
+         * Setter for current url navigation will be relaoded with data
+         * @param url {string} url to load data
+         * @event husky.collection-navigation.content.show
+         */
+        SET_URL = createEventName('set-url');
 
     return {
         /**
@@ -43397,6 +43402,7 @@ define('__component__$collection-navigation@husky',[
             this.template = this.sandbox.util.template(mainTpl);
             this.headerTpl = this.sandbox.util.template(headerTpl);
             this.render();
+            this.bindCustomEvents();
 
             return this.load().then(function(data) {
                 this.sandbox.emit(INITIALIZED);
@@ -43435,6 +43441,20 @@ define('__component__$collection-navigation@husky',[
             this.$el.on('click', '.collection-navigation-item-thumb', this.showContentHandler.bind(this));
             this.$el.on('click', '.collection-navigation-back', this.openParentCollectionHandler.bind(this));
             this.$el.on('click', '.collection-navigation-add', this.addCollectionHandler.bind(this));
+        },
+
+        /**
+         * @method bindCustomEvents
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(SET_URL, function(url) {
+                this.load(url)
+                    .then(this.storeData.bind(this))
+                    .then(function(data) {
+                        this.updateHeader(data);
+                        this.collectionView.render(data, this.options);
+                    }.bind(this));
+            }.bind(this));
         },
 
         /**
@@ -43528,12 +43548,12 @@ define('__component__$collection-navigation@husky',[
 
             this.collectionView = this.createCollectionView();
             this.appendCollectionView(oldCollectionView);
+            this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
 
             this.getCollectionItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     this.collectionView.render(data, this.options);
-                    this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
                 }.bind(this));
         },
 
@@ -43546,12 +43566,12 @@ define('__component__$collection-navigation@husky',[
                 newCollectionView = this.createCollectionView();
 
             this.prependCollectionView(newCollectionView);
+            this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
 
             this.getCollectionItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     newCollectionView.render(data, this.options);
-                    this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
                 }.bind(this));
         },
 

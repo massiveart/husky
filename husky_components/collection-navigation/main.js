@@ -74,7 +74,14 @@ define([
          * raised when clicked on the item icon
          * @event husky.collection-navigation.content.show
          */
-        SHOW_CONTENT = createEventName('content.show');
+        SHOW_CONTENT = createEventName('content.show'),
+
+        /**
+         * Setter for current url navigation will be relaoded with data
+         * @param url {string} url to load data
+         * @event husky.collection-navigation.content.show
+         */
+        SET_URL = createEventName('set-url');
 
     return {
         /**
@@ -87,6 +94,7 @@ define([
             this.template = this.sandbox.util.template(mainTpl);
             this.headerTpl = this.sandbox.util.template(headerTpl);
             this.render();
+            this.bindCustomEvents();
 
             return this.load().then(function(data) {
                 this.sandbox.emit(INITIALIZED);
@@ -125,6 +133,20 @@ define([
             this.$el.on('click', '.collection-navigation-item-thumb', this.showContentHandler.bind(this));
             this.$el.on('click', '.collection-navigation-back', this.openParentCollectionHandler.bind(this));
             this.$el.on('click', '.collection-navigation-add', this.addCollectionHandler.bind(this));
+        },
+
+        /**
+         * @method bindCustomEvents
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(SET_URL, function(url) {
+                this.load(url)
+                    .then(this.storeData.bind(this))
+                    .then(function(data) {
+                        this.updateHeader(data);
+                        this.collectionView.render(data, this.options);
+                    }.bind(this));
+            }.bind(this));
         },
 
         /**
@@ -218,12 +240,12 @@ define([
 
             this.collectionView = this.createCollectionView();
             this.appendCollectionView(oldCollectionView);
+            this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
 
             this.getCollectionItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     this.collectionView.render(data, this.options);
-                    this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
                 }.bind(this));
         },
 
@@ -236,12 +258,12 @@ define([
                 newCollectionView = this.createCollectionView();
 
             this.prependCollectionView(newCollectionView);
+            this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
 
             this.getCollectionItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     newCollectionView.render(data, this.options);
-                    this.sandbox.emit(CHANGE_COLLECTION, {collectionId: id});
                 }.bind(this));
         },
 
