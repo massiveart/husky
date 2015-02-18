@@ -141,9 +141,10 @@ define([
          * @method bindDOMEvents
          */
         bindDOMEvents: function() {
-            this.$el.on('click', '.data-navigation-item-name', this.openChildHandler.bind(this));
-            this.$el.on('click', '.data-navigation-item-thumb', this.showContentHandler.bind(this));
-            this.$el.on('click', '.data-navigation-back', this.openParentHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-name', this.selectChildrenDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-next', this.navigateChildrenHandler.bind(this));
+            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
@@ -256,23 +257,24 @@ define([
         },
 
         /**
-         * @method openChildHandler
+         * @method openChildrenHandler
          * @param {Object} event
          */
-        openChildHandler: function(event) {
+        openChildrenHandler: function(event) {
             var $item = $(event.currentTarget).closest('li'),
                 id = $item.data('id'),
                 oldView = this.view;
 
             this.view = this.createView();
             this.appendView(oldView);
-            this.sandbox.emit(SELECT.call(this), {id: id});
 
             this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     this.view.render(data, this.options);
                 }.bind(this));
+
+            return id;
         },
 
         /**
@@ -284,13 +286,14 @@ define([
                 newView = this.createView();
 
             this.prependView(newView);
-            this.sandbox.emit(SELECT.call(this), {id: id});
 
             this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     newView.render(data, this.options);
                 }.bind(this));
+
+            return id;
         },
 
         /**
@@ -307,10 +310,32 @@ define([
         },
 
         /**
+         * Navigate to content and throw selected event
+         * @method selectDataHandler
+         */
+        selectParentDataHandler: function(event) {
+           var id = this.openParentHandler(event);
+            this.sandbox.emit(SELECT.call(this), {id: id});
+        },
+
+
+        /**
+         * Navigate to content and throw selected event
+         * @method selectDataHandler
+         */
+        selectChildrenDataHandler: function(event) {
+            var id = this.openChildrenHandler(event);
+            this.sandbox.emit(SELECT.call(this), {id: id});
+        },
+
+        /**
          * Throw an event to tell that the content should be loaded
          * @method showContentHandler
          */
-        showContentHandler: function() {
+        navigateChildrenHandler: function(event) {
+            event.stopPropagation();
+
+            this.openChildrenHandler(event);
             this.sandbox.emit(NAVIGATE.call(this));
         },
 
@@ -319,7 +344,7 @@ define([
          * @method addHandler
          */
         addHandler: function() {
-            this.sandbox.emit(ADD.call(this));
+            this.sandbox.emit(ADD.call(this), this.data.current);
         },
 
         /**
