@@ -39,7 +39,9 @@
                         {
                             "title": "Collections",
                             "id": "7",
-                            "dataNavigationUrl": "http://husky.lo:7878/admin/api/collections"
+                            "dataNavigation": {
+                                "url": "http://husky.lo:7878/admin/api/collections"
+                            }
                         }
                     ]
                 },

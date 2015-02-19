@@ -881,8 +881,8 @@ define(function() {
                 this.removeDataNavigation();
             }
 
-            if (!!item && !!item.dataNavigationUrl) {
-                this.renderDataNavigation(item);
+            if (!!item && !!item.dataNavigation) {
+                this.renderDataNavigation(item.dataNavigation);
             } else if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
             }
@@ -925,20 +925,37 @@ define(function() {
 
         /**
          * Render data navigation and init with item
-         * @param item
+         * @param options
          */
-        renderDataNavigation: function(item) {
+        renderDataNavigation: function(options) {
             this.collapse();
 
             var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'});
             this.sandbox.dom.append(this.$el, $element);
 
+            var componentOptions = {
+                el: $element,
+                url: options.url
+            };
+
+            // optional options
+            if (!!options.resultKey) {
+                componentOptions.resultKey = options.resultKey;
+            }
+            if (!!options.nameKey) {
+                componentOptions.nameKey = options.nameKey;
+            }
+            if (!!options.showAddBtn) {
+                componentOptions.showAddBtn = options.showAddBtn;
+            }
+            if (!!options.childrenLinkKey) {
+                componentOptions.childrenLinkKey = options.childrenLinkKey;
+            }
+
+            // init data-navigation
             this.sandbox.start([{
                 name: 'data-navigation@husky',
-                options: {
-                    el: $element,
-                    url: item.dataNavigationUrl
-                }
+                options: componentOptions
             }]);
         },
 
