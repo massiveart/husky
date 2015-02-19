@@ -434,6 +434,11 @@ define(function() {
 
             this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
                 $headerCell = this.sandbox.dom.createElement(templates.headerCell);
+
+                if (!!column.class && typeof column.class === 'string') {
+                    this.sandbox.dom.addClass($headerCell, column.class);
+                }
+
                 this.sandbox.dom.html($headerCell, this.sandbox.util.template(templates.textContainer)({
                     content: this.sandbox.translate(column.content)
                 }));
@@ -657,6 +662,11 @@ define(function() {
                     this.sandbox.dom.prepend(content, selectItem);
                 }
             }
+
+            if (!!column.class && typeof column.class === 'string') {
+                this.sandbox.dom.addClass($cell, column.class);
+            }
+
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
 
