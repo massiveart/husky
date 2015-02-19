@@ -945,11 +945,14 @@ define(function() {
             if (!!options.nameKey) {
                 componentOptions.nameKey = options.nameKey;
             }
+            if (!!options.childrenLinkKey) {
+                componentOptions.childrenLinkKey = options.childrenLinkKey;
+            }
             if (!!options.showAddBtn) {
                 componentOptions.showAddBtn = options.showAddBtn;
             }
-            if (!!options.childrenLinkKey) {
-                componentOptions.childrenLinkKey = options.childrenLinkKey;
+            if (!!options.translates) {
+                componentOptions.translates = options.translates;
             }
 
             // init data-navigation

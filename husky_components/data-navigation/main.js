@@ -31,7 +31,7 @@ define([
             parentResultKey: 'parent',
             nameKey: 'name',
             childrenLinkKey: 'children',
-            showAddBtn: true,
+            showAddButton: true,
             translates: {
                 noData: 'No Data',
                 title: 'Data'
