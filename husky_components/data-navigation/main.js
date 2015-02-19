@@ -101,18 +101,19 @@ define([
          * @method initialize
          */
         initialize: function() {
-            this.view = null;
+            this.currentView = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
             this.template = this.sandbox.util.template(mainTpl);
             this.headerTpl = this.sandbox.util.template(headerTpl);
+
             this.render();
             this.bindCustomEvents();
 
             return this.load().then(function(data) {
                 this.sandbox.emit(INITIALIZED.call(this));
 
-                this.view = this.createView(data);
+                this.currentView = this.createView(data);
                 this.updateHeader(data);
                 this.storeData(data);
                 this.appendView();
@@ -132,7 +133,7 @@ define([
          * @method render
          */
         render: function() {
-            var tpl = this.template();
+            var tpl = this.template({options: this.options});
             this.$el.html(tpl);
             this.bindDOMEvents();
         },
@@ -159,7 +160,7 @@ define([
                     .then(this.storeData.bind(this))
                     .then(function(data) {
                         this.updateHeader(data);
-                        this.view.render(data, this.options);
+                        this.currentView.render(data, this.options);
                     }.bind(this));
             }.bind(this));
         },
@@ -263,15 +264,15 @@ define([
         openChildrenHandler: function(event) {
             var $item = $(event.currentTarget).closest('li'),
                 id = $item.data('id'),
-                oldView = this.view;
+                oldView = this.currentView;
 
-            this.view = this.createView();
+            this.currentView = this.createView();
             this.appendView(oldView);
 
             this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    this.view.render(data, this.options);
+                    this.currentView.render(data, this.options);
                 }.bind(this));
 
             return id;
@@ -364,11 +365,11 @@ define([
          */
         appendView: function(view) {
             if (!!view) {
-                this.view.$el.addClass('is-animated');
+                this.currentView.$el.addClass('is-animated');
                 this.playAppendAnimation(view);
             }
 
-            this.view.placeAt('.data-navigation-list-container');
+            this.currentView.placeAt('.data-navigation-list-container');
         },
 
         /**
@@ -376,7 +377,7 @@ define([
          * @param {Object} oldView
          */
         playAppendAnimation: function(oldView) {
-            this.view.$el
+            this.currentView.$el
                 .css({
                     left: '100%'
                 })
@@ -386,7 +387,7 @@ define([
                     duration: 250,
                     done: function() {
                         oldView.destroy();
-                        this.view.$el.removeClass('is-animated');
+                        this.currentView.$el.removeClass('is-animated');
                     }.bind(this)
                 });
         },
@@ -398,7 +399,7 @@ define([
          */
         prependView: function(view) {
             view.placeAt('.data-navigation-list-container');
-            this.view.$el.addClass('is-animated');
+            this.currentView.$el.addClass('is-animated');
             this.playPrependAnimation(view);
         },
 
@@ -407,7 +408,7 @@ define([
          * @param {Object} view
          */
         playPrependAnimation: function(view) {
-            this.view.$el
+            this.currentView.$el
                 .css({
                     left: '0%'
                 })
@@ -416,8 +417,8 @@ define([
                 }, {
                     duration: 250,
                     done: function() {
-                        this.view.destroy();
-                        this.view = view;
+                        this.currentView.destroy();
+                        this.currentView = view;
                     }.bind(this)
                 });
         }

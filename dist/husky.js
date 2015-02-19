@@ -12130,7 +12130,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
     return result.value;
   };
 
-  // Shuffle an array, using the modern version of the
+  // Shuffle an array, using the modern version of the 
   // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
   _.shuffle = function(obj) {
     var rand;
@@ -14719,7 +14719,7 @@ define("backbone", ["underscore","jquery"], (function (global) {
   java, location, Components, FileUtils */
 
 define('text',['module'], function (module) {
-
+    
 
     var text, fs, Cc, Ci, xpcIsWindows,
         progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
@@ -15100,7 +15100,7 @@ define('text',['module'], function (module) {
 });
 
 define('aura/ext/debug', [],function() {
-
+  
 
   return {
     name: 'debug',
@@ -15689,7 +15689,7 @@ define('aura/ext/debug', [],function() {
 }();
 
 define('aura/ext/mediator', ['eventemitter','underscore'],function () {
-
+  
 
   return {
     name: 'mediator',
@@ -15811,7 +15811,7 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
 
 define('aura/ext/components', [],function() {
 
-
+  
 
   return function(app) {
 
@@ -15867,7 +15867,7 @@ define('aura/ext/components', [],function() {
       }).then(function(result) {
         return invokeCallbacks("after", fnName, context, args.concat(result)).then(function() {
           core.data.when(result).then(function() {
-            dfd.resolve(result)
+            dfd.resolve(result) 
           });
         }, dfd.reject);
       }).fail(function(err) {
@@ -16353,7 +16353,7 @@ define('aura/ext/components', [],function() {
 
 define('form/util',[], function() {
 
-
+    
 
     var ignoredKeys = [
         'form',
@@ -16565,7 +16565,7 @@ define('form/util',[], function() {
 
 define('form/element',['form/util'], function(Util) {
 
-
+    
 
     return function(el, form, options) {
 
@@ -16953,7 +16953,7 @@ define('form/validation',[
     'form/util'
 ], function(Util) {
 
-
+    
 
     return function(form) {
         var valid,
@@ -17053,7 +17053,7 @@ define('form/mapper',[
     'form/util'
 ], function(Util) {
 
-
+    
 
     return function(form) {
 
@@ -17733,7 +17733,7 @@ define('form',[
     'form/util'
 ], function(Element, Validation, Mapper, Util) {
 
-
+    
 
     return function(el, options) {
         var defaults = {
@@ -17878,7 +17878,7 @@ define('type/default',[
     'form/util'
 ],function(Util) {
 
-
+    
 
     return function($el, defaults, options, name, typeInterface, form) {
 
@@ -17954,7 +17954,7 @@ define('type/string',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = { },
@@ -17988,7 +17988,7 @@ define('type/date',[
     'form/util'
 ], function(Default, Util) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18050,7 +18050,7 @@ define('type/decimal',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18108,7 +18108,7 @@ define('type/hiddenData',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18162,7 +18162,7 @@ define('type/mappingData',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18237,7 +18237,7 @@ define('type/email',[
     'form/util'
 ], function(Default, Util) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18279,7 +18279,7 @@ define('type/url',[
     'form/util'
 ], function(Default, Util) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18323,7 +18323,7 @@ define('type/label',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18386,7 +18386,7 @@ define('type/select',[
     'form/util'
 ], function(Default, Util) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18446,7 +18446,7 @@ define('type/readonly-select',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18527,7 +18527,7 @@ define('type/collection',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18585,7 +18585,7 @@ define('type/attributes',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -18625,7 +18625,7 @@ define('type/attributes',[
 
 define('validator/default',[],function() {
 
-
+    
 
     return function($el, form, defaults, options, name) {
 
@@ -18689,7 +18689,7 @@ define('validator/min',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = {
@@ -18723,7 +18723,7 @@ define('validator/max',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = {
@@ -18757,7 +18757,7 @@ define('validator/minLength',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = {
@@ -18791,7 +18791,7 @@ define('validator/maxLength',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = {
@@ -18825,7 +18825,7 @@ define('validator/required',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = { },
@@ -18885,7 +18885,7 @@ define('validator/unique',[
     'form/util'
 ], function(Default, Util) {
 
-
+    
 
     return function($el, form, element, options) {
 
@@ -18993,7 +18993,7 @@ define('validator/equal',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = {
@@ -19098,7 +19098,7 @@ define('validator/regex',[
     'validator/default'
 ], function(Default) {
 
-
+    
 
     return function($el, form, element, options) {
         var defaults = {
@@ -21615,7 +21615,7 @@ define("jqueryAdapter", function(){});
 */
 
 (function (exportCallback) {
-
+    
 
 var UriTemplateError = (function () {
 
@@ -21643,15 +21643,15 @@ var objectHelper = (function () {
     function isString (value) {
         return Object.prototype.toString.apply(value) === '[object String]';
     }
-
+    
     function isNumber (value) {
         return Object.prototype.toString.apply(value) === '[object Number]';
     }
-
+    
     function isBoolean (value) {
         return Object.prototype.toString.apply(value) === '[object Boolean]';
     }
-
+    
     function join (arr, separator) {
         var
             result = '',
@@ -22474,7 +22474,7 @@ var UriTemplate = (function () {
     exportCallback(UriTemplate);
 
 }(function (UriTemplate) {
-
+        
         // export UriTemplate, when module is present, or pass it to window or global
         if (typeof module !== "undefined") {
             module.exports = UriTemplate;
@@ -22501,7 +22501,7 @@ var UriTemplate = (function () {
 
 (function($) {
     var _ = function() {
-
+        
         return {
             isMsie: function() {
                 return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
@@ -22623,7 +22623,7 @@ var UriTemplate = (function () {
     }();
     var VERSION = "0.10.5";
     var tokenizers = function() {
-
+        
         return {
             nonword: nonword,
             whitespace: whitespace,
@@ -22654,7 +22654,7 @@ var UriTemplate = (function () {
         }
     }();
     var LruCache = function() {
-
+        
         function LruCache(maxSize) {
             this.maxSize = _.isNumber(maxSize) ? maxSize : 100;
             this.reset();
@@ -22721,7 +22721,7 @@ var UriTemplate = (function () {
         return LruCache;
     }();
     var PersistentStorage = function() {
-
+        
         var ls, methods;
         try {
             ls = window.localStorage;
@@ -22801,7 +22801,7 @@ var UriTemplate = (function () {
         }
     }();
     var Transport = function() {
-
+        
         var pendingRequestsCount = 0, pendingRequests = {}, maxPendingRequests = 6, sharedCache = new LruCache(10);
         function Transport(o) {
             o = o || {};
@@ -22888,7 +22888,7 @@ var UriTemplate = (function () {
         }
     }();
     var SearchIndex = function() {
-
+        
         function SearchIndex(o) {
             o = o || {};
             if (!o.datumTokenizer || !o.queryTokenizer) {
@@ -23006,7 +23006,7 @@ var UriTemplate = (function () {
         }
     }();
     var oParser = function() {
-
+        
         return {
             local: getLocal,
             prefetch: getPrefetch,
@@ -23075,7 +23075,7 @@ var UriTemplate = (function () {
         }
     }();
     (function(root) {
-
+        
         var old, keys;
         old = root.Bloodhound;
         keys = {
@@ -23229,7 +23229,7 @@ var UriTemplate = (function () {
         };
     }();
     var css = function() {
-
+        
         var css = {
             wrapper: {
                 position: "relative",
@@ -23291,7 +23291,7 @@ var UriTemplate = (function () {
         return css;
     }();
     var EventBus = function() {
-
+        
         var namespace = "typeahead:";
         function EventBus(o) {
             if (!o || !o.el) {
@@ -23308,7 +23308,7 @@ var UriTemplate = (function () {
         return EventBus;
     }();
     var EventEmitter = function() {
-
+        
         var splitter = /\s+/, nextTick = getNextTick();
         return {
             onSync: onSync,
@@ -23398,7 +23398,7 @@ var UriTemplate = (function () {
         }
     }();
     var highlight = function(doc) {
-
+        
         var defaults = {
             node: null,
             pattern: null,
@@ -23450,7 +23450,7 @@ var UriTemplate = (function () {
         }
     }(window.document);
     var Input = function() {
-
+        
         var specialKeyCodeMap;
         specialKeyCodeMap = {
             9: "tab",
@@ -23645,7 +23645,7 @@ var UriTemplate = (function () {
         }
     }();
     var Dataset = function() {
-
+        
         var datasetKey = "ttDataset", valueKey = "ttValue", datumKey = "ttDatum";
         function Dataset(o) {
             o = o || {};
@@ -23779,7 +23779,7 @@ var UriTemplate = (function () {
         }
     }();
     var Dropdown = function() {
-
+        
         function Dropdown(o) {
             var that = this, onSuggestionClick, onSuggestionMouseEnter, onSuggestionMouseLeave;
             o = o || {};
@@ -23939,7 +23939,7 @@ var UriTemplate = (function () {
         }
     }();
     var Typeahead = function() {
-
+        
         var attrsKey = "ttAttrs";
         function Typeahead(o) {
             var $menu, $input, $hint;
@@ -24186,7 +24186,7 @@ var UriTemplate = (function () {
         }
     }();
     (function() {
-
+        
         var old, typeaheadKey, methods;
         old = $.fn.typeahead;
         typeaheadKey = "ttTypeahead";
@@ -24517,19 +24517,19 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 /*
 #
 # More info at [www.dropzonejs.com](http://www.dropzonejs.com)
-#
-# Copyright (c) 2012, Matias Meno
-#
+# 
+# Copyright (c) 2012, Matias Meno  
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-#
+# 
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-#
+# 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24558,9 +24558,9 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 
     /*
     This is a list of all available events you can register on a dropzone object.
-
+    
     You can register an event handler like this:
-
+    
         dropzone.on("dragEnter", function() { });
     */
 
@@ -25979,7 +25979,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
   Dropzone.SUCCESS = "success";
 
   /*
-
+  
   Bugfix for iOS 6 and 7
   Source: http://stackoverflow.com/questions/11929099/html5-canvas-drawimage-ratio-bug-ios
   based on the work of https://github.com/stomita/ios-imagefile-megapixel
@@ -26120,7 +26120,7 @@ if (typeof exports == "object") {
  * ========================================================== */
 (function($) {
 
-
+    
 
     var defaults = {
         prefilled: null,
@@ -26172,7 +26172,7 @@ if (typeof exports == "object") {
                     if ( -1 === suggestion ) {
                         //console.log("tag:" + tag + " not in tagList, not adding it");
                         return;
-                    }
+                    } 
                 }
 
             }
@@ -26601,7 +26601,7 @@ define('type/husky-select',[
     'form/util'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -26692,7 +26692,7 @@ define('type/husky-input',[
     'type/default'
 ], function(Default) {
 
-
+    
 
     return function($el, options) {
         var defaults = {
@@ -26934,7 +26934,7 @@ define('bower_components/aura/lib/platform',[],function() {
 })();
 
 define('bower_components/aura/lib/logger',[], function() {
-
+  
 
   var noop    = function() {},
       console = window.console || {};
@@ -27464,7 +27464,7 @@ define('bower_components/aura/lib/aura',[
      * @return {void}
      */
     app.cleanUp = function () {
-      _.defer(function() {
+      _.defer(function() {    
         _.each(appSandboxes, function(sandbox) {
           if (!!sandbox && !!sandbox.el && !app.core.dom.contains($(sandbox.el)[0], document)) {
             sandbox.stop();
@@ -27505,7 +27505,7 @@ define('bower_components/aura/lib/aura',[
       // Stop sandbox directly if the selector is a ref and which _ref can be
       // found
       var sandbox = app.sandboxes.get(selector);
-
+      
       if (sandbox) {
         stopSandbox(sandbox);
       }
@@ -27536,7 +27536,7 @@ define('bower_components/aura/lib/aura',[
         _.invoke(sandbox._children, 'stop');
         app.core.mediator.emit(event, sandbox);
         if (sandbox._component) {
-          // remove is deprecated
+          // remove is deprecated 
           sandbox._component.invokeWithCallbacks('remove');
           sandbox._component.invokeWithCallbacks('destroy');
         }
@@ -27579,7 +27579,7 @@ define('husky',[
     'bower_components/aura/lib/aura'
 ], function(Aura) {
 
-
+    
 
     // husky - subclass of aurajs
     function Husky(config) {
@@ -27662,7 +27662,7 @@ define('husky',[
 
 define('__component__$navigation@husky',[],function() {
 
-
+    
 
     var templates = {
             /** component skeleton */
@@ -28470,8 +28470,7 @@ define('__component__$navigation@husky',[],function() {
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
                 $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
                 $parent = this.sandbox.dom.parent(event.currentTarget),
-                item;
-
+                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
 
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
@@ -28488,18 +28487,16 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
             this.sandbox.dom.addClass($items, 'is-active');
 
-
             if (emit !== false) {
                 // emit event
-                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
                 this.sandbox.emit('husky.navigation.item.select', item);
             }
 
-
-            if (!customTarget) {
+            if (!!item.dataNavigationUrl) {
+                this.renderDataNavigation(item);
+            } else if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
             }
-
         },
 
         /**
@@ -28509,7 +28506,8 @@ define('__component__$navigation@husky',[],function() {
          */
         getItemById: function(id) {
             for (var i = -1, length = this.items.length; ++i < length;) {
-                if (id === this.items[i].id) {
+                // api can return string values as id so here "no" typesafe comparison
+                if (id == this.items[i].id) {
                     return this.items[i];
                 }
             }
@@ -28534,10 +28532,20 @@ define('__component__$navigation@husky',[],function() {
             this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
             this.sandbox.dom.width(this.$navigation, 0);
             this.hidden = true;
+        },
+
+        /**
+         * Render data navigation and init with item
+         * @param item
+         */
+        renderDataNavigation: function(item) {
+            this.sandbox.logger.log('data-navigation:', item.dataNavigationUrl);
+            this.collapse();
+
+            var $element = this.sandbox.dom.createElement('<div/>', {style: "width: 250px; height: 100%; background: red; float: left;"});
+            this.sandbox.dom.append(this.$el, $element);
         }
-
     };
-
 });
 
 /**
@@ -28570,7 +28578,7 @@ define('__component__$navigation@husky',[],function() {
  */
 define('__component__$column-options@husky',[],function() {
 
-
+    
 
     var defaults = {
             url: null,
@@ -28995,7 +29003,7 @@ define('__component__$column-options@husky',[],function() {
  */
 define('husky_components/datagrid/decorators/table-view',[],function() {
 
-
+    
 
     var defaults = {
         editable: false,
@@ -30365,7 +30373,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
  */
 define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 
-
+    
 
     var defaults = {
             large: false,
@@ -30685,7 +30693,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
  */
 define('husky_components/datagrid/decorators/group-view',[],function () {
 
-
+    
 
     var defaults = {
 
@@ -30933,7 +30941,7 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
  */
 define('husky_components/datagrid/decorators/dropdown-pagination',[],function() {
 
-
+    
 
     var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
@@ -31287,7 +31295,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  */
 (function() {
 
-
+    
 
     define('__component__$datagrid@husky',[
         'husky_components/datagrid/decorators/table-view',
@@ -32982,7 +32990,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
 define('__component__$dropdown@husky',[], function() {
 
-
+    
 
     var moduleName = 'Husky.Ui.DropDown',
         defaults = {
@@ -33276,7 +33284,7 @@ define('__component__$dropdown@husky',[], function() {
 
 define('__component__$matrix@husky',[],function() {
 
-
+    
 
     var sandbox,
         activeClass = 'is-active';
@@ -33527,7 +33535,7 @@ define('__component__$matrix@husky',[],function() {
  */
 define('__component__$search@husky',[], function() {
 
-
+    
 
     var templates = {
             skeleton: [
@@ -33769,7 +33777,7 @@ define('__component__$search@husky',[], function() {
 
 define('__component__$tabs@husky',[],function() {
 
-
+    
 
     var defaults = {
             url: null,
@@ -34116,7 +34124,7 @@ define('__component__$tabs@husky',[],function() {
  */
 define('__component__$toolbar@husky',[],function() {
 
-
+    
 
     var defaults = {
             url: null,
@@ -35202,7 +35210,7 @@ define('__component__$toolbar@husky',[],function() {
 
 define('__component__$auto-complete@husky',[], function() {
 
-
+    
 
     /**
      * Default values for options
@@ -35873,7 +35881,7 @@ define('__component__$auto-complete@husky',[], function() {
  */
 define('__component__$auto-complete-list@husky',[], function() {
 
-
+        
 
         /**
          * Default values for options
@@ -36586,7 +36594,7 @@ define('__component__$auto-complete-list@husky',[], function() {
  */
 define('__component__$dependent-select@husky',[],function() {
 
-
+    
 
     var defaults = {
             url: null,
@@ -36863,12 +36871,12 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {String} [options.direction] 'bottom', 'top', or 'auto' pop up direction of the drop down.
  * @param {String} [options.resultKey] key in result set - default is empty and the _embedded property of the result set will be taken
  * @param {String} [options.url] url to load data from
- * @param {Boolean} [options.isNative] should use native select
+ * @param {Boolean} [options.isNative] should use native select 
  */
 
 define('__component__$select@husky',[], function() {
 
-
+    
 
     var translations = {
             addItem: 'select.add-item',
@@ -37399,7 +37407,7 @@ define('__component__$select@husky',[], function() {
 
             // change label
             this.changeLabel();
-
+            
             if (!this.selectedElements.length) {
                 this.triggerDeselect(selectedId);
             } else {
@@ -38099,7 +38107,7 @@ define('__component__$select@husky',[], function() {
 
 define('__component__$password-fields@husky',[], function() {
 
-
+    
 
     var defaults = {
         instanceName: 'undefined',
@@ -38253,7 +38261,7 @@ define('__component__$password-fields@husky',[], function() {
  */
 define('__component__$column-navigation@husky',[], function () {
 
-
+    
 
     var defaults = {
             url: null,
@@ -39598,7 +39606,7 @@ define('__component__$column-navigation@husky',[], function () {
  */
 define('__component__$loader@husky',[],function() {
 
-
+    
 
     var defaults = {
         size: '40px',
@@ -39708,7 +39716,7 @@ define('__component__$loader@husky',[],function() {
  */
 define('__component__$ckeditor@husky',[], function() {
 
-
+    
 
     var defaults = {
             initializedCallback: null,
@@ -39860,7 +39868,7 @@ define('__component__$ckeditor@husky',[], function() {
         startEditor: function() {
             var config = getConfig.call(this);
             this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
-
+            
             if (!!this.editorContent) {
                 this.editor.setData(this.editorContent);
             }
@@ -39947,7 +39955,7 @@ define('__component__$ckeditor@husky',[], function() {
  */
 define('__component__$overlay@husky',[], function() {
 
-
+    
 
     var defaults = {
             trigger: 'click',
@@ -41010,7 +41018,7 @@ define('__component__$overlay@husky',[], function() {
  */
 define('__component__$label@husky',[],function() {
 
-
+    
 
     var defaults = {
         instanceName: 'undefined',
@@ -41245,7 +41253,7 @@ define('__component__$label@husky',[],function() {
  */
 define('__component__$matcher@husky',[], function() {
 
-
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -41834,7 +41842,7 @@ define('__component__$matcher@husky',[], function() {
  */
 define('__component__$process@husky',[], function() {
 
-
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -42094,7 +42102,7 @@ define('__component__$process@husky',[], function() {
  */
 define('__component__$toggler@husky',[], function() {
 
-
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -42336,7 +42344,7 @@ define('__component__$toggler@husky',[], function() {
  */
 define('__component__$dropzone@husky',[], function () {
 
-
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -42833,7 +42841,7 @@ define('__component__$dropzone@husky',[], function () {
  */
 define('__component__$input@husky',[], function() {
 
-
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -43224,7 +43232,7 @@ define('__component__$input@husky',[], function() {
 });
 
 
-define('text!collection-navigation/collections-list.html',[],function () { return '<ul class="collection-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="collection-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="collection-navigation-item-name">\n            <%= child[options.nameKey] %>\n            <span class="fa-chevron-right"></span>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-info">\n            No collections\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="collection-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n<div class="collection-navigation-list-footer">\n    <% if (options.showAddCollectionsBtn) { %>\n    <button class="collection-navigation-add btn">\n        <span class="fa-plus-circle"></span>\n        Add collection\n    </button>\n    <% } %>\n</div>\n';});
+define('text!data-navigation/list.html',[],function () { return '<ul class="data-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="data-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="data-navigation-item-name">\n            <%= child[options.nameKey] %>\n            <% if (!!child.hasSub) { %>\n            <span class="fa-chevron-right data-navigation-item-next"></span>\n            <% } %>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="data-navigation-info">\n            No Data\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="data-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n<div class="data-navigation-list-footer">\n    <% if (options.showAddBtn) { %>\n    <button class="data-navigation-add btn">\n        <span class="fa-plus-circle"></span>\n        Add data\n    </button>\n    <% } %>\n</div>\n';});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -43234,25 +43242,25 @@ define('text!collection-navigation/collections-list.html',[],function () { retur
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/collection-navigation
+ * @module husky/components/data-navigation
  */
 
 
-define('husky_components/collection-navigation/collections-list-view',['text!collection-navigation/collections-list.html'], function(collectionsListTpl) {
+define('husky_components/data-navigation/list-view',['text!data-navigation/list.html'], function(listTpl) {
 
     /**
-     * @class CollectionsListView
+     * @class ListView
      * @constructor
      */
-    return function CollectionsListView(options) {
+    return function ListView() {
         return {
             /**
              * @method init
              */
             init: function() {
-                this.template = _.template(collectionsListTpl);
+                this.template = _.template(listTpl);
                 this.$el = $('<div/>', {
-                    'class': 'collection-navigation-list'
+                    'class': 'data-navigation-list'
                 });
 
                 return this;
@@ -43301,10 +43309,10 @@ define('husky_components/collection-navigation/collections-list-view',['text!col
 });
 
 
-define('text!collection-navigation/main.html',[],function () { return '<div class="collection-navigation">\n    <div class="collection-navigation-header"></div>\n    <div class="collection-navigation-list-container"></div>\n</div>\n';});
+define('text!data-navigation/main.html',[],function () { return '<div class="data-navigation">\n    <div class="data-navigation-header"></div>\n    <div class="data-navigation-list-container"></div>\n</div>\n';});
 
 
-define('text!collection-navigation/header.html',[],function () { return '<% if (!!data.parent) { %>\n<div class="collection-navigation-back" data-parent-id="<%= data.parent.id %>">\n    <span class="fa-chevron-left"></span>\n    <%= data.parent[nameKey] %>\n</div>\n<% } else { %>\n<div>\n    <%= data.current[nameKey] || translates.title %>\n</div>\n<% } %>\n';});
+define('text!data-navigation/header.html',[],function () { return '<% if (data.current.id !== \'root\') { %>\n<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">\n    <span class="fa-chevron-left"></span>\n<% if (!!data.parent) { %>\n    <%= data.parent[nameKey] %>\n<% } else { %>\n    <%= translates.title %>\n<% } %>\n</div>\n<% } else { %>\n<div>\n    <%= data.current[nameKey] || translates.title %>\n</div>\n<% } %>\n';});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -43314,23 +43322,23 @@ define('text!collection-navigation/header.html',[],function () { return '<% if (
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/collection-navigation
+ * @module husky/components/data-navigation
  */
 
 /**
- * @class CollectionNavigation
+ * @class DataNavigation
  * @constructor
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
  * @param {Object} [options.translates] Holds the translates
  */
-define('__component__$collection-navigation@husky',[
-    'husky_components/data-navigation/collections-list-view',
-    'text!collection-navigation/main.html',
-    'text!collection-navigation/header.html'
-], function(CollectionView, mainTpl, headerTpl) {
+define('__component__$data-navigation@husky',[
+    'husky_components/data-navigation/list-view',
+    'text!data-navigation/main.html',
+    'text!data-navigation/header.html'
+], function(View, mainTpl, headerTpl) {
 
-
+    
 
     var defaultOptions = {
             url: null,
@@ -43341,8 +43349,8 @@ define('__component__$collection-navigation@husky',[
             childrenLinkKey: 'children',
             showAddBtn: true,
             translates: {
-                noData: 'No Collections',
-                title: 'Collections'
+                noData: 'No Data',
+                title: 'Data'
             }
         },
 
@@ -43350,54 +43358,67 @@ define('__component__$collection-navigation@husky',[
             ROOT_ID: 'root'
         },
 
-        namespace = 'husky.collection-navigation.',
+        eventNamespace = 'husky.data-navigation.',
 
         /**
          * Creates the eventnames
-         * @param postfix {String} event name to append
+         * @param postFix {String} event name to append
          */
-        createEventName = function(postfix) {
-            return namespace + postfix;
+        createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         },
 
         /**
          * raised after initialization has finished
-         * @event husky.collection-navigation.initialized
+         * @event husky.data-navigation.initialized
          */
-        INITIALIZED = createEventName('initialized'),
+        INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
         /**
-         * raised after the collection was changed e.g. open new collection
-         * @event husky.collection-navigation.collection.change
+         * raised after the item was selected
+         * @param item {Object} selected item
+         * @event husky.data-navigation.select
          */
-        CHANGE_COLLECTION = createEventName('collection.change'),
+        SELECT = function() {
+            return createEventName.call(this, 'select')
+        },
 
         /**
-         * raised when clicked on the add collection button
-         * @event husky.collection-navigation.collection.add
+         * raised when clicked on the add button
+         * @param item {Object} current item
+         * @event husky.data-navigation.add
          */
-        ADD_COLLECTION = createEventName('collection.add'),
+        ADD = function() {
+            return createEventName.call(this, 'add')
+        },
 
         /**
          * raised when clicked on the item icon
-         * @event husky.collection-navigation.content.show
+         * @param item {Object} item to navigate into
+         * @event husky.data-navigation.content.show
          */
-        SHOW_CONTENT = createEventName('content.show'),
+        NAVIGATE = function() {
+            return createEventName.call(this, 'navigate')
+        },
 
         /**
          * Setter for current url navigation will be relaoded with data
          * @param url {string} url to load data
-         * @event husky.collection-navigation.content.show
+         * @event husky.data-navigation.content.show
          */
-        SET_URL = createEventName('set-url');
+        SET_URL = function() {
+            return createEventName.call(this, 'set-url')
+        };
 
     return {
         /**
          * @method initialize
          */
         initialize: function() {
-            this.cache = null;
             this.view = null;
+            this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
             this.template = this.sandbox.util.template(mainTpl);
             this.headerTpl = this.sandbox.util.template(headerTpl);
@@ -43405,7 +43426,7 @@ define('__component__$collection-navigation@husky',[
             this.bindCustomEvents();
 
             return this.load().then(function(data) {
-                this.sandbox.emit(INITIALIZED);
+                this.sandbox.emit(INITIALIZED.call(this));
 
                 this.view = this.createView(data);
                 this.updateHeader(data);
@@ -43420,7 +43441,6 @@ define('__component__$collection-navigation@husky',[
          */
         remove: function() {
             this.cache.destroy();
-            this.collectionsList.destroy();
         },
 
         /**
@@ -43437,17 +43457,20 @@ define('__component__$collection-navigation@husky',[
          * @method bindDOMEvents
          */
         bindDOMEvents: function() {
-            this.$el.on('click', '.collection-navigation-item-name', this.openChildHandler.bind(this));
-            this.$el.on('click', '.collection-navigation-item-thumb', this.showContentHandler.bind(this));
-            this.$el.on('click', '.collection-navigation-back', this.openParentHandler.bind(this));
-            this.$el.on('click', '.collection-navigation-add', this.addHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-name', this.selectChildrenDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item-next', this.navigateChildrenHandler.bind(this));
+            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
         /**
          * @method bindCustomEvents
          */
         bindCustomEvents: function() {
-            this.sandbox.on(SET_URL, function(url) {
+            this.sandbox.on(SET_URL.call(this), function(url) {
+                this.cache.deleteAll();
+
                 this.load(url)
                     .then(this.storeData.bind(this))
                     .then(function(data) {
@@ -43501,10 +43524,6 @@ define('__component__$collection-navigation@husky',[
         storeData: function(data) {
             var current = data.current;
 
-            if (!this.cache) {
-                this.cache = this.sandbox.cacheFactory.create();
-            }
-
             this.cache.put(current.id, data);
 
             return data;
@@ -43513,7 +43532,7 @@ define('__component__$collection-navigation@husky',[
         /**
          * check if we already have the data.
          * If this is not the case, we fetch the data from the server
-         * @method getCollectionItems
+         * @method getItems
          */
         getItems: function(id) {
             var dfd = $.Deferred(),
@@ -43526,11 +43545,27 @@ define('__component__$collection-navigation@husky',[
                 } else {
                     // underscores where returns a list but we only want the first item
                     item = _.where(this.data.children, {id: id})[0];
+
+                    if (!item && !!this.data.parent && this.data.parent.id === id) {
+                        item = this.data.parent;
+                    }
+
                     url = item._links[this.options.childrenLinkKey].href;
                 }
 
-                return this.load(url).then(this.storeData.bind(this));
+                if (!!item.hasSub) {
+                    return this.load(url).then(this.storeData.bind(this));
+                } else {
+                    this.data = {
+                        children: [],
+                        parent: this.data.current,
+                        current: item
+                    };
+
+                    dfd.resolve(this.data);
+                }
             } else {
+                this.data = data;
                 dfd.resolve(data);
             }
 
@@ -43538,41 +43573,43 @@ define('__component__$collection-navigation@husky',[
         },
 
         /**
-         * @method openChildCollectionHandler
+         * @method openChildrenHandler
          * @param {Object} event
          */
-        openChildHandler: function(event) {
+        openChildrenHandler: function(event) {
             var $item = $(event.currentTarget).closest('li'),
                 id = $item.data('id'),
-                oldCollectionView = this.view;
+                oldView = this.view;
 
             this.view = this.createView();
-            this.appendView(oldCollectionView);
-            this.sandbox.emit(CHANGE_COLLECTION, {id: id});
+            this.appendView(oldView);
 
             this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     this.view.render(data, this.options);
                 }.bind(this));
+
+            return id;
         },
 
         /**
-         * @method openParentCollectionHandler
+         * @method openParentHandler
          */
         openParentHandler: function(event) {
             var $item = $(event.currentTarget),
                 id = $item.data('parent-id'),
-                newCollectionView = this.createView();
+                newView = this.createView();
 
-            this.prependView(newCollectionView);
-            this.sandbox.emit(CHANGE_COLLECTION, {id: id});
+            this.prependView(newView);
 
             this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    newCollectionView.render(data, this.options);
+                    newView.render(data, this.options);
                 }.bind(this));
+
+            return id;
         },
 
         /**
@@ -43585,47 +43622,69 @@ define('__component__$collection-navigation@husky',[
                 translates: this.options.translates,
                 nameKey: this.options.nameKey
             });
-            this.$el.find('.collection-navigation-header').html(tpl);
+            this.$el.find('.data-navigation-header').html(tpl);
         },
 
         /**
-         * Throw an event to tell that the content of the collection should be loaded
+         * Navigate to content and throw selected event
+         * @method selectDataHandler
+         */
+        selectParentDataHandler: function(event) {
+           var id = this.openParentHandler(event);
+            this.sandbox.emit(SELECT.call(this), {id: id});
+        },
+
+
+        /**
+         * Navigate to content and throw selected event
+         * @method selectDataHandler
+         */
+        selectChildrenDataHandler: function(event) {
+            var id = this.openChildrenHandler(event);
+            this.sandbox.emit(SELECT.call(this), {id: id});
+        },
+
+        /**
+         * Throw an event to tell that the content should be loaded
          * @method showContentHandler
          */
-        showContentHandler: function() {
-            this.sandbox.emit(SHOW_CONTENT);
+        navigateChildrenHandler: function(event) {
+            event.stopPropagation();
+
+            this.openChildrenHandler(event);
+            this.sandbox.emit(NAVIGATE.call(this));
         },
 
         /**
-         * Throw an event to tell that the add collection button was clicked
-         * @method addCollectionHandler
+         * Throw an event to tell that the add button was clicked
+         * @method addHandler
          */
         addHandler: function() {
-            this.sandbox.emit(ADD_COLLECTION);
+            this.sandbox.emit(ADD.call(this), this.data.current);
         },
 
         /**
-         * Initialize a new collection view
-         * @method createCollectionView
+         * Initialize a new view
+         * @method createView
          * @param  {Object} data
          */
         createView: function(data) {
-            var view = (new CollectionView(this.options)).init();
+            var view = (new View(this.options)).init();
             return view.render(data, this.options);
         },
 
         /**
-         * Append the collection view into the dom
-         * @method appendCollectionView
-         * @param {Object} oldView
+         * Append the view into the dom
+         * @method appendView
+         * @param {Object} view
          */
-        appendView: function(oldView) {
-            if (!!oldView) {
+        appendView: function(view) {
+            if (!!view) {
                 this.view.$el.addClass('is-animated');
-                this.playAppendAnimation(oldView);
+                this.playAppendAnimation(view);
             }
 
-            this.view.placeAt('.collection-navigation-list-container');
+            this.view.placeAt('.data-navigation-list-container');
         },
 
         /**
@@ -43650,20 +43709,20 @@ define('__component__$collection-navigation@husky',[
 
         /**
          * Handle the back button action
-         * @method prependCollectionView
-         * @param {Object} newView
+         * @method prependView
+         * @param {Object} view
          */
-        prependView: function(newView) {
-            newView.placeAt('.collection-navigation-list-container');
+        prependView: function(view) {
+            view.placeAt('.data-navigation-list-container');
             this.view.$el.addClass('is-animated');
-            this.playPrependAnimation(newView);
+            this.playPrependAnimation(view);
         },
 
         /**
          * @method playPrependAnimation
-         * @param {Object} oldView
+         * @param {Object} view
          */
-        playPrependAnimation: function(newView) {
+        playPrependAnimation: function(view) {
             this.view.$el
                 .css({
                     left: '0%'
@@ -43674,7 +43733,7 @@ define('__component__$collection-navigation@husky',[
                     duration: 250,
                     done: function() {
                         this.view.destroy();
-                        this.view = newView;
+                        this.view = view;
                     }.bind(this)
                 });
         }
@@ -43692,7 +43751,7 @@ define('__component__$collection-navigation@husky',[
  */
 (function() {
 
-
+    
 
     if (window.Backbone) {
         define('backbone', [], function() {
@@ -43808,7 +43867,7 @@ define('__component__$collection-navigation@husky',[
 
 (function() {
 
-
+    
 
     define('husky_extensions/cache-factory',[], {
         name: 'cacheFactory',
@@ -43886,7 +43945,7 @@ define('__component__$collection-navigation@husky',[
 
                 /**
                  * Get a cache reference
-                 * @method get
+                 * @method get 
                  * @param  {[Number} cacheId
                  */
                 get: function(cacheId) {
@@ -43908,7 +43967,7 @@ define('__component__$collection-navigation@husky',[
  */
 (function() {
 
-
+    
 
     require.config({
         paths: {
@@ -43974,7 +44033,7 @@ define('__component__$collection-navigation@husky',[
                                     // get a reference to the "Link Info" and "Target" tab.
                                 var infoTab = dialogDefinition.getContents('info'),
                                     targetTab = dialogDefinition.getContents('target'),
-
+                                
                                     // get a reference to the link type
                                     linkOptions = infoTab.get('linkType'),
                                     targetOptions = targetTab.get('linkTargetType'),
@@ -43993,7 +44052,7 @@ define('__component__$collection-navigation@husky',[
                                         '_self'
                                     ],
                                     selectedTargetOptions = [];
-
+                                    
                                 // just show included link options
                                 for (var i = 0; i < linkOptions.items.length; i++) {
                                     if (includedLinkOptions.indexOf(linkOptions.items[i][1]) !== -1) {
@@ -44043,7 +44102,7 @@ define('__component__$collection-navigation@husky',[
  */
 define('husky_extensions/collection',[],function() {
 
-
+    
 
     // simplified backbone collection
     var Collection = {
@@ -44928,7 +44987,7 @@ define("jquery-minicolors", function(){});
  */
 (function() {
 
-
+    
 
     require.config({
         paths: { "jquery-minicolors": 'bower_components/jquery-minicolors/jquery.minicolors' },
@@ -44964,7 +45023,7 @@ define("jquery-minicolors", function(){});
  */
 (function() {
 
-
+    
 
     define('husky_extensions/confirm',{
 
@@ -47613,7 +47672,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-
+    
 
     require.config({
         paths: {
@@ -47787,7 +47846,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-
+    
 
     require.config({
         paths: { "dropzone": 'bower_components/dropzone/dropzone' }
@@ -47824,7 +47883,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-
+    
 
     require.config({
         paths: {
@@ -48017,7 +48076,7 @@ define("datepicker-zh-TW", function(){});
 
 (function() {
 
-
+    
 
     require.config({
         paths: {
@@ -48056,7 +48115,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-
+    
 
     require.config({
         paths: { "form": 'bower_components/husky-validation/dist/validation' }
@@ -48206,7 +48265,7 @@ define("datepicker-zh-TW", function(){});
  */
 define('husky_extensions/itembox',[],function() {
 
-
+    
 
     var defaults = {
             instanceName: null,
@@ -48845,7 +48904,7 @@ define('husky_extensions/itembox',[],function() {
  */
 (function() {
 
-
+    
 
     if (window.jQuery) {
         define('jquery', [], function() {
@@ -49404,7 +49463,7 @@ define('husky_extensions/itembox',[],function() {
  */
 define('husky_extensions/model',[],function() {
 
-
+    
 
     // simplified backbone model
     var Model = {
@@ -49440,7 +49499,7 @@ define('husky_extensions/model',[],function() {
  */
 (function() {
 
-
+    
 
     if (window.TagsManager) {
         define('tagsManager', [], function() {
@@ -49479,7 +49538,7 @@ define('husky_extensions/model',[],function() {
  */
 define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
-
+    
 
     function TemplateManager(options) {
         this.options = _.defaults(options || {}, {
@@ -49604,7 +49663,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
  */
 (function() {
 
-
+    
 
     if (window.Typeahead) {
         define('typeahead', [], function() {
@@ -49667,7 +49726,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
  */
 (function() {
 
-
+    
 
     require.config({
         paths: { "uri-template": 'bower_components/massiveart-uritemplate/uritemplate' }
@@ -49709,7 +49768,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
  */
 define('husky_extensions/util',[],function() {
 
-
+    
 
     return {
         name: 'Util',

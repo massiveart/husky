@@ -37,19 +37,9 @@
                     "id": "6",
                     "items": [
                         {
-                            "title": "Images",
+                            "title": "Collections",
                             "id": "7",
-                            "action": "media/images"
-                        },
-                        {
-                            "title": "Documents",
-                            "id": "8",
-                            "action": "media/documents"
-                        },
-                        {
-                            "title": "Movies",
-                            "id": "9",
-                            "action": "media/movies"
+                            "dataNavigationUrl": "http://husky.lo:7878/admin/api/collections"
                         }
                     ]
                 },

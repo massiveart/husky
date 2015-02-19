@@ -26,13 +26,11 @@ $footerTopMargin: 40;
     padding-right: 9px;
 }
 
-
 $verticalMargin: 20px;
 $verticalItemPadding: 35px;
 $transitionDuration: 0.5s;
 $transDurationIcons: 0.2s;
 $fadeDuration: 100ms;
-
 
 .section-headline {
     position: relative;
@@ -40,7 +38,7 @@ $fadeDuration: 100ms;
     padding: 2px 0 0px;
     margin: 10px $verticalMargin 0;
     height: 20px;
-    color: rgba(255,255,255, 0.2);
+    color: rgba(255, 255, 255, 0.2);
     font-weight: bold;
     cursor: default;
 
@@ -66,8 +64,8 @@ $fadeDuration: 100ms;
 }
 
 .husky-navigation {
-  float: left;
-  height: 100%;
+    float: left;
+    height: 100%;
 }
 
 .navigation {
@@ -79,14 +77,14 @@ $fadeDuration: 100ms;
     background-color: $navigationBackgroundColor;
     overflow-x: visible;
     z-index: 101;
+    float: left;
 
     .navigation-close-icon {
         display: none;
         opacity: 0;
         height: 0;
-        -webkit-transform: scale3d(1,1,1); // this is a webkit bugfix
+        -webkit-transform: scale3d(1, 1, 1); // this is a webkit bugfix
     }
-
 
     &.collapseIcon .navigation-close-icon {
         position: absolute;
@@ -111,13 +109,13 @@ $fadeDuration: 100ms;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    color: rgba(255,255,255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 16px;
 
     a {
         display: inline-block;
         text-decoration: none;
-        color: rgba(255,255,255, 0.5);
+        color: rgba(255, 255, 255, 0.5);
         outline: none;
     }
 
@@ -200,9 +198,9 @@ li.is-active {
         background-color: $navigationHoverColor;
 
         &.is-expanded {
-          .navigation-items-toggle {
-            border-bottom-color: $navigationBackgroundColor
-          }
+            .navigation-items-toggle {
+                border-bottom-color: $navigationBackgroundColor
+            }
         }
     }
 
@@ -245,8 +243,8 @@ li.is-active {
         }
     }
 
-/* sub-items */
-.navigation-items-list {
+    /* sub-items */
+    .navigation-items-list {
         position: absolute;
         left: 0px;
         bottom: 0px;
@@ -299,7 +297,7 @@ li.is-active {
             overflow: hidden;
             line-height: 28px;
             display: inline-block;
-            color: rgba(255,255,255, 0.75);
+            color: rgba(255, 255, 255, 0.75);
             min-height: 30px; /* prohibits height changes on select */
         }
     }
@@ -512,7 +510,7 @@ li a.navigation-settings-icon {
 
     .navigation-items {
         div {
-            border: rgba(0,0,0,0) !important;
+            border: rgba(0, 0, 0, 0) !important;
             padding: 0 !important;
             margin: 0 !important;
             line-height: 0;
@@ -598,6 +596,12 @@ li a.navigation-settings-icon {
     }
 }
 
+.navigation-data-container {
+    width: 200px;
+    margin-left: 50px;
+    height: 100%;
+}
+
 //effects
 .navigation {
     @include single-transition(width, $transitionDuration);
@@ -608,16 +612,16 @@ li a.navigation-settings-icon {
 .navigation .wrapper,
 .navigation .wrapper:after,
 .navigation-items * {
-  @include single-transition(all, $transitionDuration);
+    @include single-transition(all, $transitionDuration);
 }
 
 .navigation-items {
-  @include transition(all 0, opacity $transitionDuration, background $transitionDuration);
+    @include transition(all 0, opacity $transitionDuration, background $transitionDuration);
 }
 
 .navigation-header {
     @include single-transition(margin, $transitionDuration);
-    
+
     .navigation-header-title {
         @include single-transition(opacity, $transitionDuration);
     }
