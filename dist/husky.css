@@ -6550,8 +6550,8 @@ span.error {
   display: block;
   height: 30px;
   width: 30px;
-  left: 100%;
-  top: 0;
+  left: calc(100% - 38px);
+  top: 6px;
   background-color: #21272E;
   line-height: 30px;
   vertical-align: center;
@@ -6562,9 +6562,19 @@ span.error {
   border-radius: 0 0 2px 0;
   opacity: 1;
 }
+/* line 107, ../scss/modules/navigation.scss */
+.navigation.collapsed + .navigation-data-container.expanded {
+  width: 250px;
+}
+/* line 110, ../scss/modules/navigation.scss */
+.navigation.collapsed + .navigation-data-container.expanded .data-navigation-header,
+.navigation.collapsed + .navigation-data-container.expanded .data-navigation-list-container {
+  opacity: 1;
+}
 
-/* line 108, ../scss/modules/navigation.scss */
+/* line 117, ../scss/modules/navigation.scss */
 .navigation-content {
+  position: relative;
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -6572,40 +6582,40 @@ span.error {
   font-size: 16px;
   /*for sticky navigation footer*/
 }
-/* line 115, ../scss/modules/navigation.scss */
+/* line 125, ../scss/modules/navigation.scss */
 .navigation-content a {
   display: inline-block;
   text-decoration: none;
   color: rgba(255, 255, 255, 0.5);
   outline: none;
 }
-/* line 122, ../scss/modules/navigation.scss */
+/* line 132, ../scss/modules/navigation.scss */
 .navigation-content ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-/* line 129, ../scss/modules/navigation.scss */
+/* line 139, ../scss/modules/navigation.scss */
 .navigation-content .wrapper {
   min-height: 100%;
   margin-bottom: -121px;
   overflow: hidden;
 }
-/* line 134, ../scss/modules/navigation.scss */
+/* line 144, ../scss/modules/navigation.scss */
 .navigation-content .wrapper:after {
   content: "";
   display: block;
   height: 161px;
 }
 
-/* line 142, ../scss/modules/navigation.scss */
+/* line 152, ../scss/modules/navigation.scss */
 .navigation-header {
   height: 30px;
   overflow: hidden;
   margin: 40px 20px 30px;
 }
 
-/* line 148, ../scss/modules/navigation.scss */
+/* line 158, ../scss/modules/navigation.scss */
 .navigation-header-title {
   display: inline-block;
   font-size: 18px;
@@ -6614,7 +6624,7 @@ span.error {
   line-height: 30px;
 }
 
-/* line 156, ../scss/modules/navigation.scss */
+/* line 166, ../scss/modules/navigation.scss */
 .logo {
   display: inline-block;
   margin-right: 10px;
@@ -6626,30 +6636,30 @@ span.error {
   background-repeat: no-repeat;
 }
 
-/* line 167, ../scss/modules/navigation.scss */
+/* line 177, ../scss/modules/navigation.scss */
 .navigation-search {
   position: relative;
   margin: 0px 20px;
   padding: 10px 0;
   height: 50px;
 }
-/* line 173, ../scss/modules/navigation.scss */
+/* line 183, ../scss/modules/navigation.scss */
 .navigation-search .search-icon {
   opacity: 1;
 }
 
-/* line 179, ../scss/modules/navigation.scss */
+/* line 189, ../scss/modules/navigation.scss */
 li.is-active > .navigation-items-toggle a,
 li.is-active > .navigation-subitems-toggle a {
   color: #fff;
 }
-/* line 184, ../scss/modules/navigation.scss */
+/* line 194, ../scss/modules/navigation.scss */
 li.is-active > div > a.navigation-settings-icon {
   display: block;
   color: #999;
 }
 
-/* line 190, ../scss/modules/navigation.scss */
+/* line 200, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items {
   position: relative;
   top: 0px;
@@ -6659,41 +6669,41 @@ li.is-active > div > a.navigation-settings-icon {
   /* sub-items */
   /* sub-sub-items */
 }
-/* line 197, ../scss/modules/navigation.scss */
+/* line 207, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items:hover:not(.is-active) {
   background-color: #191D22;
 }
-/* line 201, ../scss/modules/navigation.scss */
+/* line 211, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items:hover:not(.is-active).is-expanded .navigation-items-toggle {
   border-bottom-color: #21272E;
 }
-/* line 207, ../scss/modules/navigation.scss */
+/* line 217, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items > div {
   position: relative;
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
 }
-/* line 214, ../scss/modules/navigation.scss */
+/* line 224, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-active {
   background-color: #111417;
 }
-/* line 218, ../scss/modules/navigation.scss */
+/* line 228, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-active.is-expanded .navigation-items-toggle {
   border-bottom-color: #21272E;
 }
-/* line 224, ../scss/modules/navigation.scss */
+/* line 234, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-expanded {
   padding-bottom: 20px;
 }
-/* line 227, ../scss/modules/navigation.scss */
+/* line 237, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-expanded .navigation-items-toggle {
   border-bottom: 1px solid #111417;
   height: inherit;
   padding-bottom: 15px;
   height: 50px;
 }
-/* line 232, ../scss/modules/navigation.scss */
+/* line 242, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-expanded > .navigation-items-list {
   display: block;
   opacity: 1;
@@ -6703,11 +6713,11 @@ li.is-active > div > a.navigation-settings-icon {
   -webkit-transition-delay: 75ms;
   transition: opacity 100ms 75ms;
 }
-/* line 241, ../scss/modules/navigation.scss */
+/* line 251, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-selected a {
   color: white;
 }
-/* line 247, ../scss/modules/navigation.scss */
+/* line 257, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items .navigation-items-list {
   position: absolute;
   left: 0px;
@@ -6725,12 +6735,12 @@ li.is-active > div > a.navigation-settings-icon {
   -webkit-transition: opacity 100ms;
   transition: opacity 100ms;
 }
-/* line 263, ../scss/modules/navigation.scss */
+/* line 273, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items ul ul {
   font-size: 12px;
   padding-left: 20px;
 }
-/* line 268, ../scss/modules/navigation.scss */
+/* line 278, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items li {
   border-radius: 3px;
   cursor: pointer;
@@ -6739,7 +6749,7 @@ li.is-active > div > a.navigation-settings-icon {
   left: 0px;
   height: 30px;
 }
-/* line 276, ../scss/modules/navigation.scss */
+/* line 286, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a::before {
   font-size: 12px;
   content: "";
@@ -6752,11 +6762,11 @@ li.is-active > div > a.navigation-settings-icon {
   left: 0px;
   padding-right: 9px;
 }
-/* line 282, ../scss/modules/navigation.scss */
+/* line 292, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items li.is-selected a {
   color: white;
 }
-/* line 285, ../scss/modules/navigation.scss */
+/* line 295, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items li.is-selected a::before {
   font-size: 12px;
   content: "";
@@ -6769,7 +6779,7 @@ li.is-active > div > a.navigation-settings-icon {
   left: 0px;
   padding-right: 9px;
 }
-/* line 291, ../scss/modules/navigation.scss */
+/* line 301, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items li a {
   padding: 0px 0 0px 10px;
   height: 100%;
@@ -6784,11 +6794,11 @@ li.is-active > div > a.navigation-settings-icon {
   /* prohibits height changes on select */
 }
 
-/* line 308, ../scss/modules/navigation.scss */
+/* line 318, ../scss/modules/navigation.scss */
 .navigation-subitems.is-expanded > .navigation-items-list {
   display: block;
 }
-/* line 311, ../scss/modules/navigation.scss */
+/* line 321, ../scss/modules/navigation.scss */
 .navigation-subitems.is-expanded .navigation-subitems-toggle {
   border-bottom: 1px solid #111417;
   height: inherit;
@@ -6796,7 +6806,7 @@ li.is-active > div > a.navigation-settings-icon {
   padding-bottom: 0;
 }
 
-/* line 318, ../scss/modules/navigation.scss */
+/* line 328, ../scss/modules/navigation.scss */
 .navigation-item {
   width: 100%;
   display: inline-block;
@@ -6807,7 +6817,7 @@ li.is-active > div > a.navigation-settings-icon {
   height: 100%;
 }
 
-/* line 328, ../scss/modules/navigation.scss */
+/* line 338, ../scss/modules/navigation.scss */
 .navigation-item-title {
   padding-left: 35px;
   height: 100%;
@@ -6819,7 +6829,7 @@ li.is-active > div > a.navigation-settings-icon {
   white-space: nowrap;
 }
 
-/* line 339, ../scss/modules/navigation.scss */
+/* line 349, ../scss/modules/navigation.scss */
 .navigation-item-icon {
   position: absolute;
   top: 0px;
@@ -6830,7 +6840,7 @@ li.is-active > div > a.navigation-settings-icon {
   line-height: 48px;
 }
 
-/* line 349, ../scss/modules/navigation.scss */
+/* line 359, ../scss/modules/navigation.scss */
 .navigation-items-toggle {
   position: relative;
   height: 50px;
@@ -6838,7 +6848,7 @@ li.is-active > div > a.navigation-settings-icon {
   z-index: 200;
 }
 
-/* line 356, ../scss/modules/navigation.scss */
+/* line 366, ../scss/modules/navigation.scss */
 li a.navigation-settings-icon {
   width: auto;
   position: absolute;
@@ -6848,7 +6858,7 @@ li a.navigation-settings-icon {
   display: none;
 }
 
-/* line 365, ../scss/modules/navigation.scss */
+/* line 375, ../scss/modules/navigation.scss */
 .navigation-toggle-icon {
   width: auto;
   position: absolute;
@@ -6857,28 +6867,28 @@ li a.navigation-settings-icon {
   font-size: 12px;
 }
 
-/* line 373, ../scss/modules/navigation.scss */
+/* line 383, ../scss/modules/navigation.scss */
 .navigation-subitems-toggle {
   padding: 2px 0 2px;
   position: relative;
   height: 30px;
 }
-/* line 378, ../scss/modules/navigation.scss */
+/* line 388, ../scss/modules/navigation.scss */
 .navigation-subitems-toggle .navigation-toggle-icon {
   top: 3px;
 }
-/* line 382, ../scss/modules/navigation.scss */
+/* line 392, ../scss/modules/navigation.scss */
 .navigation-subitems-toggle .navigation-item {
   padding: 0px;
 }
 
-/* line 388, ../scss/modules/navigation.scss */
+/* line 398, ../scss/modules/navigation.scss */
 .navigation footer {
   padding: 15px 20px 15px 23px;
   height: 121px;
   background-color: #111417;
 }
-/* line 393, ../scss/modules/navigation.scss */
+/* line 403, ../scss/modules/navigation.scss */
 .navigation footer .user {
   font-size: 12px;
   color: #fff;
@@ -6887,7 +6897,7 @@ li a.navigation-settings-icon {
   white-space: nowrap;
   cursor: pointer;
 }
-/* line 401, ../scss/modules/navigation.scss */
+/* line 411, ../scss/modules/navigation.scss */
 .navigation footer .user .pic {
   color: #fff;
   text-align: right;
@@ -6895,13 +6905,13 @@ li a.navigation-settings-icon {
   display: inline-block;
   margin-right: 15px;
 }
-/* line 408, ../scss/modules/navigation.scss */
+/* line 418, ../scss/modules/navigation.scss */
 .navigation footer .user .name {
   display: inline-block;
   vertical-align: middle;
   padding-bottom: 5px;
 }
-/* line 415, ../scss/modules/navigation.scss */
+/* line 425, ../scss/modules/navigation.scss */
 .navigation footer .options {
   height: 20px;
   margin-bottom: 15px;
@@ -6911,16 +6921,16 @@ li a.navigation-settings-icon {
   top: 0px;
   left: 0px;
 }
-/* line 424, ../scss/modules/navigation.scss */
+/* line 434, ../scss/modules/navigation.scss */
 .navigation footer .options .locale-dropdown {
   color: #000;
   width: 60px;
 }
-/* line 429, ../scss/modules/navigation.scss */
+/* line 439, ../scss/modules/navigation.scss */
 .navigation footer .options .dropdown-list {
   min-width: 150px;
 }
-/* line 433, ../scss/modules/navigation.scss */
+/* line 443, ../scss/modules/navigation.scss */
 .navigation footer .options .logout {
   color: white;
   cursor: pointer;
@@ -6932,14 +6942,14 @@ li a.navigation-settings-icon {
   top: 0px;
   right: 0px;
 }
-/* line 445, ../scss/modules/navigation.scss */
+/* line 455, ../scss/modules/navigation.scss */
 .navigation footer .version {
   padding-left: 35px;
   font-size: 10px;
   color: #878787;
   white-space: nowrap;
 }
-/* line 451, ../scss/modules/navigation.scss */
+/* line 461, ../scss/modules/navigation.scss */
 .navigation footer .version a {
   color: #fff;
   text-decoration: none;
@@ -6948,21 +6958,21 @@ li a.navigation-settings-icon {
 /**
  * MINIFIED NAVIGATION
  */
-/* line 462, ../scss/modules/navigation.scss */
+/* line 472, ../scss/modules/navigation.scss */
 .navigation.collapsed {
   width: 50px;
   overflow-x: hidden;
 }
-/* line 466, ../scss/modules/navigation.scss */
+/* line 476, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-header {
   margin-left: 10px;
   margin-right: 0;
 }
-/* line 471, ../scss/modules/navigation.scss */
+/* line 481, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-header-title {
   opacity: 0;
 }
-/* line 475, ../scss/modules/navigation.scss */
+/* line 485, ../scss/modules/navigation.scss */
 .navigation.collapsed .section-headline {
   opacity: 0;
   height: 0;
@@ -6971,23 +6981,23 @@ li a.navigation-settings-icon {
   margin-top: 0;
   margin-bottom: 0;
 }
-/* line 484, ../scss/modules/navigation.scss */
+/* line 494, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-search.search-container {
   margin: 0;
   margin-left: 8px;
 }
-/* line 488, ../scss/modules/navigation.scss */
+/* line 498, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-search.search-container input {
   opacity: 0;
   z-index: 0;
 }
-/* line 492, ../scss/modules/navigation.scss */
+/* line 502, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-search.search-container .search-icon {
   opacity: 1;
   z-index: 100;
   color: rgba(255, 255, 255, 0.5);
 }
-/* line 501, ../scss/modules/navigation.scss */
+/* line 511, ../scss/modules/navigation.scss */
 .navigation.collapsed * .navigation-settings-icon,
 .navigation.collapsed * .navigation-toggle-icon, .navigation.collapsed .is-active .navigation-settings-icon,
 .navigation.collapsed .is-active .navigation-toggle-icon, .navigation.collapsed .is-expanded .navigation-settings-icon,
@@ -6998,70 +7008,70 @@ li a.navigation-settings-icon {
   -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
 }
-/* line 507, ../scss/modules/navigation.scss */
+/* line 517, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-item-title {
   opacity: 0;
 }
-/* line 512, ../scss/modules/navigation.scss */
+/* line 522, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-items div {
   border: transparent !important;
   padding: 0 !important;
   margin: 0 !important;
   line-height: 0;
 }
-/* line 519, ../scss/modules/navigation.scss */
+/* line 529, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-items a {
   padding: 0;
 }
-/* line 523, ../scss/modules/navigation.scss */
+/* line 533, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-items .navigation-items-list {
   opacity: 0;
   display: none;
 }
-/* line 529, ../scss/modules/navigation.scss */
+/* line 539, ../scss/modules/navigation.scss */
 .navigation.collapsed li {
   padding: 0;
 }
-/* line 533, ../scss/modules/navigation.scss */
+/* line 543, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-item-icon {
   margin-left: 15px;
   padding-left: 0px;
   line-height: 50px;
   vertical-align: middle;
 }
-/* line 540, ../scss/modules/navigation.scss */
+/* line 550, ../scss/modules/navigation.scss */
 .navigation.collapsed footer {
   padding-left: 15px;
   cursor: pointer;
   height: 51px;
   overflow: hidden;
 }
-/* line 546, ../scss/modules/navigation.scss */
+/* line 556, ../scss/modules/navigation.scss */
 .navigation.collapsed footer * {
   opacity: 0;
   height: 0px;
   margin: 0px;
 }
-/* line 552, ../scss/modules/navigation.scss */
+/* line 562, ../scss/modules/navigation.scss */
 .navigation.collapsed footer .user {
   opacity: 1;
   height: 20px;
 }
-/* line 556, ../scss/modules/navigation.scss */
+/* line 566, ../scss/modules/navigation.scss */
 .navigation.collapsed footer .user .pic {
   opacity: 1;
   height: 20px;
 }
-/* line 564, ../scss/modules/navigation.scss */
+/* line 574, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-content .wrapper {
   margin-bottom: -51px;
 }
-/* line 566, ../scss/modules/navigation.scss */
+/* line 576, ../scss/modules/navigation.scss */
 .navigation.collapsed .navigation-content .wrapper:after {
   height: 91px;
 }
 
-/* line 573, ../scss/modules/navigation.scss */
+/* line 583, ../scss/modules/navigation.scss */
 .navigation-tooltip {
   position: absolute;
   height: 30px;
@@ -7075,7 +7085,7 @@ li a.navigation-settings-icon {
   border-radius: 2px;
   z-index: 1000;
 }
-/* line 586, ../scss/modules/navigation.scss */
+/* line 596, ../scss/modules/navigation.scss */
 .navigation-tooltip::before {
   content: ' ';
   position: absolute;
@@ -7088,14 +7098,27 @@ li a.navigation-settings-icon {
   border-right: 10px solid #111417;
 }
 
-/* line 599, ../scss/modules/navigation.scss */
+/* line 609, ../scss/modules/navigation.scss */
 .navigation-data-container {
+  -moz-transition: width 0.4s ease-in-out;
+  -o-transition: width 0.4s ease-in-out;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
   width: 200px;
   margin-left: 50px;
   height: 100%;
 }
+/* line 615, ../scss/modules/navigation.scss */
+.navigation-data-container .data-navigation-header,
+.navigation-data-container .data-navigation-list-container {
+  -moz-transition: opacity 0.2s ease-in-out;
+  -o-transition: opacity 0.2s ease-in-out;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+}
 
-/* line 606, ../scss/modules/navigation.scss */
+/* line 623, ../scss/modules/navigation.scss */
 .navigation {
   -moz-transition: width 0.5s;
   -o-transition: width 0.5s;
@@ -7103,7 +7126,7 @@ li a.navigation-settings-icon {
   transition: width 0.5s;
 }
 
-/* line 610, ../scss/modules/navigation.scss */
+/* line 627, ../scss/modules/navigation.scss */
 .navigation footer,
 .navigation footer > *,
 .navigation .wrapper,
@@ -7115,7 +7138,7 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 618, ../scss/modules/navigation.scss */
+/* line 635, ../scss/modules/navigation.scss */
 .navigation-items {
   -moz-transition: all 0, opacity 0.5s, background 0.5s;
   -o-transition: all 0, opacity 0.5s, background 0.5s;
@@ -7123,14 +7146,14 @@ li a.navigation-settings-icon {
   transition: all 0, opacity 0.5s, background 0.5s;
 }
 
-/* line 622, ../scss/modules/navigation.scss */
+/* line 639, ../scss/modules/navigation.scss */
 .navigation-header {
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
   -webkit-transition: margin 0.5s;
   transition: margin 0.5s;
 }
-/* line 625, ../scss/modules/navigation.scss */
+/* line 642, ../scss/modules/navigation.scss */
 .navigation-header .navigation-header-title {
   -moz-transition: opacity 0.5s;
   -o-transition: opacity 0.5s;
@@ -7138,14 +7161,14 @@ li a.navigation-settings-icon {
   transition: opacity 0.5s;
 }
 
-/* line 630, ../scss/modules/navigation.scss */
+/* line 647, ../scss/modules/navigation.scss */
 .navigation-search {
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
   -webkit-transition: margin 0.5s;
   transition: margin 0.5s;
 }
-/* line 632, ../scss/modules/navigation.scss */
+/* line 649, ../scss/modules/navigation.scss */
 .navigation-search input {
   -moz-transition: width 0.5s;
   -o-transition: width 0.5s;
@@ -7153,7 +7176,7 @@ li a.navigation-settings-icon {
   transition: width 0.5s;
 }
 
-/* line 637, ../scss/modules/navigation.scss */
+/* line 654, ../scss/modules/navigation.scss */
 .section-headline,
 .section-headline * {
   -moz-transition: all 0.5s;
@@ -7162,7 +7185,7 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 642, ../scss/modules/navigation.scss */
+/* line 659, ../scss/modules/navigation.scss */
 .navigation-item-title {
   -moz-transition: opacity 0.5s;
   -o-transition: opacity 0.5s;
@@ -7170,7 +7193,7 @@ li a.navigation-settings-icon {
   transition: opacity 0.5s;
 }
 
-/* line 646, ../scss/modules/navigation.scss */
+/* line 663, ../scss/modules/navigation.scss */
 .search-icon {
   -moz-transition: color 0.5s;
   -o-transition: color 0.5s;
@@ -7178,7 +7201,7 @@ li a.navigation-settings-icon {
   transition: color 0.5s;
 }
 
-/* line 651, ../scss/modules/navigation.scss */
+/* line 668, ../scss/modules/navigation.scss */
 .navigation:not(.collapsed) * {
   opacity: 1;
 }
@@ -11080,11 +11103,10 @@ a.btn-black, a.btn-highlight {
 
 /* line 1, ../scss/modules/data-navigation.scss */
 .data-navigation-container {
-  width: 250px;
   height: 100%;
 }
 
-/* line 6, ../scss/modules/data-navigation.scss */
+/* line 5, ../scss/modules/data-navigation.scss */
 .data-navigation {
   height: 100%;
   padding-top: 100px;
@@ -11092,7 +11114,7 @@ a.btn-black, a.btn-highlight {
   color: #fff;
 }
 
-/* line 13, ../scss/modules/data-navigation.scss */
+/* line 12, ../scss/modules/data-navigation.scss */
 .data-navigation-header {
   position: relative;
   height: 50px;
@@ -11103,20 +11125,20 @@ a.btn-black, a.btn-highlight {
   color: #999;
 }
 
-/* line 23, ../scss/modules/data-navigation.scss */
+/* line 22, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container {
   height: calc(100% - 150px);
   overflow: hidden;
   position: relative;
 }
 
-/* line 29, ../scss/modules/data-navigation.scss */
+/* line 28, ../scss/modules/data-navigation.scss */
 .data-navigation-list {
   width: 100%;
   height: calc(100% - 150px);
   background-color: #111417;
 }
-/* line 34, ../scss/modules/data-navigation.scss */
+/* line 33, ../scss/modules/data-navigation.scss */
 .data-navigation-list.is-animated {
   position: absolute;
   top: 0;
@@ -11124,13 +11146,13 @@ a.btn-black, a.btn-highlight {
   z-index: 5;
 }
 
-/* line 42, ../scss/modules/data-navigation.scss */
+/* line 41, ../scss/modules/data-navigation.scss */
 .data-navigation-list-footer {
   padding: 20px 0;
   text-align: center;
 }
 
-/* line 47, ../scss/modules/data-navigation.scss */
+/* line 46, ../scss/modules/data-navigation.scss */
 .data-navigation-items {
   height: calc(100% - 150px);
   min-height: 150px;
@@ -11139,7 +11161,7 @@ a.btn-black, a.btn-highlight {
   list-style: none;
   overflow: auto;
 }
-/* line 55, ../scss/modules/data-navigation.scss */
+/* line 54, ../scss/modules/data-navigation.scss */
 .data-navigation-items > li {
   position: relative;
   height: 50px;
@@ -11150,35 +11172,35 @@ a.btn-black, a.btn-highlight {
   text-overflow: ellipsis;
   cursor: pointer;
 }
-/* line 65, ../scss/modules/data-navigation.scss */
+/* line 64, ../scss/modules/data-navigation.scss */
 .data-navigation-items > li:hover {
   background-color: #21272E;
 }
-/* line 69, ../scss/modules/data-navigation.scss */
+/* line 68, ../scss/modules/data-navigation.scss */
 .data-navigation-items > li:focus {
   outline: 0;
 }
-/* line 73, ../scss/modules/data-navigation.scss */
+/* line 72, ../scss/modules/data-navigation.scss */
 .data-navigation-items > li:last-child {
   border-bottom: 1px solid #21272E;
 }
-/* line 77, ../scss/modules/data-navigation.scss */
+/* line 76, ../scss/modules/data-navigation.scss */
 .data-navigation-items > li.not-selectable {
   cursor: default;
 }
-/* line 80, ../scss/modules/data-navigation.scss */
+/* line 79, ../scss/modules/data-navigation.scss */
 .data-navigation-items > li.not-selectable:hover {
   background-color: initial;
 }
 
-/* line 87, ../scss/modules/data-navigation.scss */
+/* line 86, ../scss/modules/data-navigation.scss */
 .data-navigation-item-name {
   display: inline-block;
   width: calc(100% - 45px);
   text-overflow: ellipsis;
   overflow: hidden;
 }
-/* line 93, ../scss/modules/data-navigation.scss */
+/* line 92, ../scss/modules/data-navigation.scss */
 .data-navigation-item-name .fa-chevron-right {
   position: absolute;
   right: 10px;
@@ -11187,7 +11209,7 @@ a.btn-black, a.btn-highlight {
   color: #999;
 }
 
-/* line 102, ../scss/modules/data-navigation.scss */
+/* line 101, ../scss/modules/data-navigation.scss */
 .data-navigation-item-thumb {
   position: relative;
   top: 6px;
@@ -11201,16 +11223,16 @@ a.btn-black, a.btn-highlight {
   background-repeat: no-repeat;
 }
 
-/* line 115, ../scss/modules/data-navigation.scss */
+/* line 114, ../scss/modules/data-navigation.scss */
 .data-navigation-back {
   padding-left: 20px;
   cursor: pointer;
 }
-/* line 119, ../scss/modules/data-navigation.scss */
+/* line 118, ../scss/modules/data-navigation.scss */
 .data-navigation-back:focus {
   outline: 0;
 }
-/* line 123, ../scss/modules/data-navigation.scss */
+/* line 122, ../scss/modules/data-navigation.scss */
 .data-navigation-back .fa-chevron-left {
   position: absolute;
   top: 18px;
@@ -11219,14 +11241,14 @@ a.btn-black, a.btn-highlight {
   color: #fff;
 }
 
-/* line 133, ../scss/modules/data-navigation.scss */
+/* line 132, ../scss/modules/data-navigation.scss */
 .data-navigation-add .fa-plus-circle {
   margin-right: 5px;
   float: left;
   font-size: 16px;
 }
 
-/* line 140, ../scss/modules/data-navigation.scss */
+/* line 139, ../scss/modules/data-navigation.scss */
 .data-navigation-loader-container {
   position: absolute;
   width: 100%;
@@ -11236,7 +11258,7 @@ a.btn-black, a.btn-highlight {
   padding: 4px 0;
 }
 
-/* line 149, ../scss/modules/data-navigation.scss */
+/* line 148, ../scss/modules/data-navigation.scss */
 .data-navigation-info {
   text-align: center;
   line-height: 50px;

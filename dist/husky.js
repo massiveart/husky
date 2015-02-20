@@ -27669,6 +27669,7 @@ define('__component__$navigation@husky',[],function() {
             skeleton: [
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
+                '       <div class="fa-times navigation-close-icon"></div>',
                 '       <div class="wrapper">',
                 '           <header class="navigation-header">',
                 '               <div class="logo"></div>',
@@ -27680,7 +27681,6 @@ define('__component__$navigation@husky',[],function() {
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
-                '   <div class="fa-times navigation-close-icon">',
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
@@ -27760,21 +27760,21 @@ define('__component__$navigation@husky',[],function() {
          * @event husky.navigation.select-item
          * @param {string} selectAction The select-action to match the navigation-item for
          */
-            EVENT_SELECT_ITEM = namespace + 'select-item',
+        EVENT_SELECT_ITEM = namespace + 'select-item',
 
         /**
          * raised when navigation was collapsed
          * @event husky.navigation.collapsed
          * @param {Number} width The width of the collapsed navigation
          */
-            EVENT_COLLAPSED = namespace + 'collapsed',
+        EVENT_COLLAPSED = namespace + 'collapsed',
 
         /**
          * raised when navigation was un-collapsed
          * @event husky.navigation.uncollapsed
          * @param {Number} width The width of the un-collapsed navigation
          */
-            EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
+        EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
 
 
         /**
@@ -27782,14 +27782,14 @@ define('__component__$navigation@husky',[],function() {
          * @event husky.navigation.collapse
          * @param {Boolean} stayCollapsed - if true the navigation stays collapsed till the custom-uncollapse event is emited
          */
-            EVENT_COLLAPSE = namespace + 'collapse',
+        EVENT_COLLAPSE = namespace + 'collapse',
 
         /**
          * forces navigation to uncollapse
          * @event husky.navigation.uncollapse
          * @param {Bool} force If true, the navigation will act as overflow and collapse again after interaction
          */
-            EVENT_UNCOLLAPSE = namespace + 'uncollapse',
+        EVENT_UNCOLLAPSE = namespace + 'uncollapse',
 
 
         /**
@@ -27797,49 +27797,49 @@ define('__component__$navigation@husky',[],function() {
          * only raised when not forced
          * @event husky.navigation.size.change
          */
-            EVENT_SIZE_CHANGE = namespace + 'size.change',
+        EVENT_SIZE_CHANGE = namespace + 'size.change',
 
         /**
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
          */
-            EVENT_SIZE_CHANGED = namespace + 'size.changed',
+        EVENT_SIZE_CHANGED = namespace + 'size.changed',
 
         /**
          * raised when the user locale is changed
          * @event husky.navigation.user-locale.changed
          */
-            USER_LOCALE_CHANGED = namespace + 'user-locale.changed',
+        USER_LOCALE_CHANGED = namespace + 'user-locale.changed',
 
         /**
          * raised when the version history is clicked
          * @event husky.navigation.version-history.clicked
          */
-            VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
+        VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
 
         /**
          * raised when the username gets clicked
          * @event husky.navigation.username.clicked
          */
-            USERNAME_CLICKED = namespace + 'username.clicked',
+        USERNAME_CLICKED = namespace + 'username.clicked',
 
         /**
          * show the navigation when it was hidden before
          * @event husky.navigation.show
          */
-            EVENT_SHOW = namespace + 'show',
+        EVENT_SHOW = namespace + 'show',
 
         /**
          * triggers the update of the navigation size
          * @event husky.navigation.show.size
          */
-            EVENT_SIZE_UPDATE = namespace + 'size.update',
+        EVENT_SIZE_UPDATE = namespace + 'size.update',
 
         /**
          * hides the navigation completely
          * @event husky.navigation.hide
          */
-            EVENT_HIDE = namespace + 'hide'
+        EVENT_HIDE = namespace + 'hide'
         ;
 
 
@@ -27889,8 +27889,12 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.addClass(this.$el, CONSTANTS.COMPONENT_CLASS);
 
             // render skeleton
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
-                this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
+            this.sandbox.dom.html(
+                this.$el,
+                this.sandbox.template.parse(
+                    templates.skeleton,
+                    this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate})
+                )
             );
 
             this.$navigation = this.$find('.navigation');
@@ -27975,10 +27979,16 @@ define('__component__$navigation@husky',[],function() {
                 item.parentTitle = data.title;
                 this.items.push(item);
                 if (item.items && item.items.length > 0) {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {
+                        item: item,
+                        translate: this.sandbox.translate
+                    }));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
                 } else {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {
+                        item: item,
+                        translate: this.sandbox.translate
+                    }));
                 }
                 this.sandbox.dom.append(list, elem);
 
@@ -28171,7 +28181,7 @@ define('__component__$navigation@husky',[],function() {
                     parent = this.sandbox.dom.closest(match, '.navigation-items');
 
                     // toggle parent only when it is not expaneded
-                    if(!this.sandbox.dom.hasClass(parent, 'is-expanded')){
+                    if (!this.sandbox.dom.hasClass(parent, 'is-expanded')) {
                         this.toggleItems(null, parent);
                     }
                 }
@@ -28412,8 +28422,10 @@ define('__component__$navigation@husky',[],function() {
         unCollapse: function(forced) {
             if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
                 if (forced) {
-                    // freeze width of parent so that the navigation overlaps the content
-                    this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
+                    if(!this.hasDataNavigation()) {
+                        // freeze width of parent so that the navigation overlaps the content
+                        this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
+                    }
                     this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
                 } else {
                     this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
@@ -28492,8 +28504,12 @@ define('__component__$navigation@husky',[],function() {
                 this.sandbox.emit('husky.navigation.item.select', item);
             }
 
-            if (!!item.dataNavigationUrl) {
-                this.renderDataNavigation(item);
+            if (this.hasDataNavigation()) {
+                this.removeDataNavigation();
+            }
+
+            if (!!item && !!item.dataNavigation) {
+                this.renderDataNavigation(item.dataNavigation);
             } else if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
             }
@@ -28536,14 +28552,62 @@ define('__component__$navigation@husky',[],function() {
 
         /**
          * Render data navigation and init with item
-         * @param item
+         * @param options
          */
-        renderDataNavigation: function(item) {
-            this.sandbox.logger.log('data-navigation:', item.dataNavigationUrl);
+        renderDataNavigation: function(options) {
             this.collapse();
 
-            var $element = this.sandbox.dom.createElement('<div/>', {style: "width: 250px; height: 100%; background: red; float: left;"});
+            var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'});
             this.sandbox.dom.append(this.$el, $element);
+
+            var componentOptions = {
+                el: $element,
+                url: options.url
+            };
+
+            // optional options
+            if (!!options.resultKey) {
+                componentOptions.resultKey = options.resultKey;
+            }
+            if (!!options.nameKey) {
+                componentOptions.nameKey = options.nameKey;
+            }
+            if (!!options.childrenLinkKey) {
+                componentOptions.childrenLinkKey = options.childrenLinkKey;
+            }
+            if (!!options.showAddBtn) {
+                componentOptions.showAddBtn = options.showAddBtn;
+            }
+            if (!!options.translates) {
+                componentOptions.translates = options.translates;
+            }
+
+            this.sandbox.util.delay(function() {
+                $element.addClass('expanded');
+            }, 0);
+
+            // init data-navigation
+            this.sandbox.start([{
+                name: 'data-navigation@husky',
+                options: componentOptions
+            }]);
+        },
+
+        /**
+         * Remove data navigation
+         */
+        removeDataNavigation: function() {
+            this.sandbox.stop(this.$find('.navigation-data-container'));
+
+            this.unCollapse();
+        },
+
+        /**
+         * Returns true if a data navigation is initialized
+         * @returns {boolean}
+         */
+        hasDataNavigation: function() {
+            return this.$find('.navigation-data-container').length > 0;
         }
     };
 });
@@ -43232,7 +43296,7 @@ define('__component__$input@husky',[], function() {
 });
 
 
-define('text!data-navigation/list.html',[],function () { return '<ul class="data-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="data-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="data-navigation-item-name">\n            <%= child[options.nameKey] %>\n            <% if (!!child.hasSub) { %>\n            <span class="fa-chevron-right data-navigation-item-next"></span>\n            <% } %>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="data-navigation-info">\n            No Data\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="data-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n<div class="data-navigation-list-footer">\n    <% if (options.showAddBtn) { %>\n    <button class="data-navigation-add btn">\n        <span class="fa-plus-circle"></span>\n        Add data\n    </button>\n    <% } %>\n</div>\n';});
+define('text!data-navigation/list.html',[],function () { return '<ul class="data-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="data-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="data-navigation-item-name">\n            <%= child[options.nameKey] %>\n            <% if (!!child.hasSub) { %>\n            <span class="fa-chevron-right data-navigation-item-next"></span>\n            <% } %>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="data-navigation-info">\n            No Data\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="data-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n';});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -43309,10 +43373,10 @@ define('husky_components/data-navigation/list-view',['text!data-navigation/list.
 });
 
 
-define('text!data-navigation/main.html',[],function () { return '<div class="data-navigation">\n    <div class="data-navigation-header"></div>\n    <div class="data-navigation-list-container"></div>\n</div>\n';});
+define('text!data-navigation/main.html',[],function () { return '<div class="data-navigation">\n    <div class="data-navigation-header"></div>\n    <div class="data-navigation-list-container"></div>\n<% if (options.showAddBtn) { %>\n    <div class="data-navigation-list-footer">\n        <button class="data-navigation-add btn">\n            <span class="fa-plus-circle"></span>\n            Add data\n        </button>\n    </div>\n<% } %>\n</div>\n';});
 
 
-define('text!data-navigation/header.html',[],function () { return '<% if (data.current.id !== \'root\') { %>\n<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">\n    <span class="fa-chevron-left"></span>\n<% if (!!data.parent) { %>\n    <%= data.parent[nameKey] %>\n<% } else { %>\n    <%= translates.title %>\n<% } %>\n</div>\n<% } else { %>\n<div>\n    <%= data.current[nameKey] || translates.title %>\n</div>\n<% } %>\n';});
+define('text!data-navigation/header.html',[],function () { return '<% if (data.current.id !== \'root\') { %>\n<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">\n    <span class="fa-chevron-left"></span>\n<% if (!!data.parent && data.parent[nameKey]) { %>\n    <%= data.parent[nameKey] %>\n<% } else { %>\n    <%= translates.title %>\n<% } %>\n</div>\n<% } else { %>\n<div>\n    <%= data.current[nameKey] || translates.title %>\n</div>\n<% } %>\n';});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -43347,7 +43411,7 @@ define('__component__$data-navigation@husky',[
             parentResultKey: 'parent',
             nameKey: 'name',
             childrenLinkKey: 'children',
-            showAddBtn: true,
+            showAddButton: true,
             translates: {
                 noData: 'No Data',
                 title: 'Data'
@@ -43417,18 +43481,19 @@ define('__component__$data-navigation@husky',[
          * @method initialize
          */
         initialize: function() {
-            this.view = null;
+            this.currentView = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
             this.template = this.sandbox.util.template(mainTpl);
             this.headerTpl = this.sandbox.util.template(headerTpl);
+
             this.render();
             this.bindCustomEvents();
 
             return this.load().then(function(data) {
                 this.sandbox.emit(INITIALIZED.call(this));
 
-                this.view = this.createView(data);
+                this.currentView = this.createView(data);
                 this.updateHeader(data);
                 this.storeData(data);
                 this.appendView();
@@ -43448,7 +43513,7 @@ define('__component__$data-navigation@husky',[
          * @method render
          */
         render: function() {
-            var tpl = this.template();
+            var tpl = this.template({options: this.options});
             this.$el.html(tpl);
             this.bindDOMEvents();
         },
@@ -43475,7 +43540,7 @@ define('__component__$data-navigation@husky',[
                     .then(this.storeData.bind(this))
                     .then(function(data) {
                         this.updateHeader(data);
-                        this.view.render(data, this.options);
+                        this.currentView.render(data, this.options);
                     }.bind(this));
             }.bind(this));
         },
@@ -43579,15 +43644,15 @@ define('__component__$data-navigation@husky',[
         openChildrenHandler: function(event) {
             var $item = $(event.currentTarget).closest('li'),
                 id = $item.data('id'),
-                oldView = this.view;
+                oldView = this.currentView;
 
-            this.view = this.createView();
+            this.currentView = this.createView();
             this.appendView(oldView);
 
             this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
-                    this.view.render(data, this.options);
+                    this.currentView.render(data, this.options);
                 }.bind(this));
 
             return id;
@@ -43680,11 +43745,11 @@ define('__component__$data-navigation@husky',[
          */
         appendView: function(view) {
             if (!!view) {
-                this.view.$el.addClass('is-animated');
+                this.currentView.$el.addClass('is-animated');
                 this.playAppendAnimation(view);
             }
 
-            this.view.placeAt('.data-navigation-list-container');
+            this.currentView.placeAt('.data-navigation-list-container');
         },
 
         /**
@@ -43692,7 +43757,7 @@ define('__component__$data-navigation@husky',[
          * @param {Object} oldView
          */
         playAppendAnimation: function(oldView) {
-            this.view.$el
+            this.currentView.$el
                 .css({
                     left: '100%'
                 })
@@ -43702,7 +43767,7 @@ define('__component__$data-navigation@husky',[
                     duration: 250,
                     done: function() {
                         oldView.destroy();
-                        this.view.$el.removeClass('is-animated');
+                        this.currentView.$el.removeClass('is-animated');
                     }.bind(this)
                 });
         },
@@ -43714,7 +43779,7 @@ define('__component__$data-navigation@husky',[
          */
         prependView: function(view) {
             view.placeAt('.data-navigation-list-container');
-            this.view.$el.addClass('is-animated');
+            this.currentView.$el.addClass('is-animated');
             this.playPrependAnimation(view);
         },
 
@@ -43723,7 +43788,7 @@ define('__component__$data-navigation@husky',[
          * @param {Object} view
          */
         playPrependAnimation: function(view) {
-            this.view.$el
+            this.currentView.$el
                 .css({
                     left: '0%'
                 })
@@ -43732,8 +43797,8 @@ define('__component__$data-navigation@husky',[
                 }, {
                     duration: 250,
                     done: function() {
-                        this.view.destroy();
-                        this.view = view;
+                        this.currentView.destroy();
+                        this.currentView = view;
                     }.bind(this)
                 });
         }

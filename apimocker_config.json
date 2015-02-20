@@ -4,7 +4,7 @@
     "quiet": false,
     "port": "7878",
     "latency": 700,
-    "allowedDomains": ["http://husky.lo"],
+    "allowedDomains": ["http://husky.lo:9001"],
     "allowedHeaders": ["Content-Type", "Cache-Control", "X-Requested-With"],
     "webServices": {
 

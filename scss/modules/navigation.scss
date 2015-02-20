@@ -91,8 +91,8 @@ $fadeDuration: 100ms;
         display: block;
         height: 30px;
         width: 30px;
-        left: 100%;
-        top: 0;
+        left: calc(100% - 38px);
+        top: 6px;
         background-color: $navigationBackgroundColor;
         line-height: 30px;
         vertical-align: center;
@@ -103,9 +103,19 @@ $fadeDuration: 100ms;
         border-radius: 0 0 $borderRadiusSmall 0;
         opacity: 1;
     }
+
+    &.collapsed + .navigation-data-container.expanded {
+        width: 250px;
+
+        .data-navigation-header,
+        .data-navigation-list-container {
+            opacity: 1;
+        }
+    }
 }
 
 .navigation-content {
+    position: relative;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -597,9 +607,16 @@ li a.navigation-settings-icon {
 }
 
 .navigation-data-container {
+    @include transition(width .4s ease-in-out);
     width: 200px;
     margin-left: 50px;
     height: 100%;
+
+    .data-navigation-header,
+    .data-navigation-list-container {
+        @include transition(opacity .2s ease-in-out);
+        opacity: 0;
+    }
 }
 
 //effects

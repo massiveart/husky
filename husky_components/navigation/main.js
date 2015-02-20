@@ -42,6 +42,7 @@ define(function() {
             skeleton: [
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
+                '       <div class="fa-times navigation-close-icon"></div>',
                 '       <div class="wrapper">',
                 '           <header class="navigation-header">',
                 '               <div class="logo"></div>',
@@ -53,7 +54,6 @@ define(function() {
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
-                '   <div class="fa-times navigation-close-icon">',
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
@@ -954,6 +954,10 @@ define(function() {
             if (!!options.translates) {
                 componentOptions.translates = options.translates;
             }
+
+            this.sandbox.util.delay(function() {
+                $element.addClass('expanded');
+            }, 0);
 
             // init data-navigation
             this.sandbox.start([{
