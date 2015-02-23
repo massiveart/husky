@@ -39976,7 +39976,8 @@ define('__component__$ckeditor@husky',[], function() {
             linksEnabled: true,
             scriptsEnabled: true,
             iframeEnabled: true,
-            pasteFromWord: true
+            pasteFromWord: true,
+            autoGrow_maxHeight: 500
         },
 
         /**
@@ -40026,9 +40027,9 @@ define('__component__$ckeditor@husky',[], function() {
 
             config.toolbar = [
                 { name: 'semantics', items: ['Format']},
-                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                { name: 'basicstyles', items: [ 'Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
                 { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'list', items: [ 'BulletedList'] }
+                { name: 'list', items: [ 'NumberedList', 'BulletedList'] }
             ];
 
             // activate paste from Word
@@ -40052,15 +40053,15 @@ define('__component__$ckeditor@husky',[], function() {
 
             // extra allowed content iframe
             if (this.options.iframeEnabled === true) {
-                extraAllowedContent = ' iframe(*)[src,border,frameborder,width,height,style,name,marginheight,marginwidth,seamless,srcdoc];';
+                extraAllowedContent += ' iframe(*)[src,border,frameborder,width,height,style,allowfullscreen,name,marginheight,marginwidth,seamless,srcdoc];';
             }
 
             // extra allowed content iframe
             if (this.options.scriptsEnabled === true) {
-                extraAllowedContent = ' scripts(*)[src,type,defer,async,charset];';
+                extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
             }
 
-            config.toolbar.push({ name: 'code', items: [ 'Source'] });
+            config.toolbar.push({ name: 'code', items: [ 'Source' ] });
 
             delete config.initializedCallback;
             delete config.baseUrl;
@@ -43644,13 +43645,12 @@ define('__component__$input@husky',[], function() {
         var getConfig = function() {
             return {
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
-                height: '300px',
                 width: '100%',
                 defaultLanguage: 'en',
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,contextmenu',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky, ../../../../husky_components/ckeditor/skins/husky/'

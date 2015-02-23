@@ -25,10 +25,12 @@ define([], function() {
     var defaults = {
             initializedCallback: null,
             instanceName: null,
-            godMode: false,
             tableEnabled: true,
             linksEnabled: true,
-            pasteFromWord: true
+            scriptsEnabled: true,
+            iframeEnabled: true,
+            pasteFromWord: true,
+            autoGrow_maxHeight: 500
         },
 
         /**
@@ -78,24 +80,41 @@ define([], function() {
 
             config.toolbar = [
                 { name: 'semantics', items: ['Format']},
-                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                { name: 'basicstyles', items: [ 'Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
                 { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'list', items: [ 'BulletedList'] }
+                { name: 'list', items: [ 'NumberedList', 'BulletedList'] }
             ];
 
+            // activate paste from Word
             if (this.options.pasteFromWord === true) {
                 config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
             }
 
+            // activate embed links
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
             }
+
+            // activate tables
             if (this.options.tableEnabled === true) {
                 config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
             }
 
-            config.toolbar.push({ name: 'code', items: [ 'Source'] });
+            // extra allowed
+            var extraAllowedContent = '';
+
+            // extra allowed content iframe
+            if (this.options.iframeEnabled === true) {
+                extraAllowedContent += ' iframe(*)[src,border,frameborder,width,height,style,allowfullscreen,name,marginheight,marginwidth,seamless,srcdoc];';
+            }
+
+            // extra allowed content iframe
+            if (this.options.scriptsEnabled === true) {
+                extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
+            }
+
+            config.toolbar.push({ name: 'code', items: [ 'Source' ] });
 
             delete config.initializedCallback;
             delete config.baseUrl;
@@ -106,16 +125,13 @@ define([], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
-            delete config.godMode;
             delete config.linksEnabled;
             delete config.tableEnabled;
+            delete config.scriptsEnabled;
+            delete config.iframeEnabled;
 
             // allow img tags to have any class (*) and any attribute [*]
-            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
-            // enable all content
-            if (!!this.options.godMode) {
-                config.allowedContent = true;
-            }
+            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title];' + extraAllowedContent;
 
             return config;
         };
@@ -172,7 +188,7 @@ define([], function() {
         startEditor: function() {
             var config = getConfig.call(this);
             this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
-            
+
             if (!!this.editorContent) {
                 this.editor.setData(this.editorContent);
             }

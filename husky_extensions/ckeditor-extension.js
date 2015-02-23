@@ -28,13 +28,12 @@
         var getConfig = function() {
             return {
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
-                height: '300px',
                 width: '100%',
                 defaultLanguage: 'en',
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,contextmenu',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky, ../../../../husky_components/ckeditor/skins/husky/'
