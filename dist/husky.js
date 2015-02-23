@@ -27669,7 +27669,7 @@ define('__component__$navigation@husky',[],function() {
             skeleton: [
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
-                '       <div class="fa-times navigation-close-icon"></div>',
+                '       <div class="fa-chevron-left navigation-close-icon"></div>',
                 '       <div class="wrapper">',
                 '           <header class="navigation-header">',
                 '               <div class="logo"></div>',
@@ -28160,15 +28160,20 @@ define('__component__$navigation@husky',[],function() {
 
         /**
          * Takes an action and select the matching navigation point
-         * @param selectAction {string}
+         * @param selectItem {string} action or id
          */
-        preselectItem: function(selectAction) {
+        preselectItem: function(selectItem) {
             var matchLength = 0, matchItem, parent, match;
             this.sandbox.util.foreach(this.items, function(item) {
-                if (!item || !item.action) {
+                if (!item || !item.action || !item.id) {
                     return;
                 }
-                if (selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
+                if (selectItem === item.id) {
+                    matchItem = item;
+                    return false;
+                }
+
+                if (selectItem.indexOf(item.action) !== -1 && item.action.length > matchLength) {
                     matchItem = item;
                     matchLength = item.action.length;
                 }
@@ -43295,9 +43300,6 @@ define('__component__$input@husky',[], function() {
 
 });
 
-
-define('text!data-navigation/list.html',[],function () { return '<ul class="data-navigation-items">\n    <% if (!!data.children && !!data.children.length) { %>\n    <% _.each(data.children, function(child) { %>\n    <li data-id="<%= child.id %>">\n        <div class="data-navigation-item-thumb" style="background-image: url(\'http://lorempixel.com/35/35\')"></div>\n        <div class="data-navigation-item-name">\n            <%= child[options.nameKey] %>\n            <% if (!!child.hasSub) { %>\n            <span class="fa-chevron-right data-navigation-item-next"></span>\n            <% } %>\n        </div>\n    </li>\n    <% }) %>\n    <% } else if (!!data.children && data.children.length === 0) { %>\n    <li class="not-selectable">\n        <div class="data-navigation-info">\n            No Data\n        </div>\n    </li>\n    <% } else { %>\n    <li class="not-selectable">\n        <div class="data-navigation-loader-container">\n            <div class="spinner">\n                <div class="double-bounce1"></div>\n                <div class="double-bounce2"></div>\n            </div>\n        </div>\n    </li>\n    <% } %>\n</ul>\n';});
-
 /**
  * This file is part of Husky frontend development framework.
  *
@@ -43309,8 +43311,44 @@ define('text!data-navigation/list.html',[],function () { return '<ul class="data
  * @module husky/components/data-navigation
  */
 
+define('husky_components/data-navigation/list-view',[], function() {
 
-define('husky_components/data-navigation/list-view',['text!data-navigation/list.html'], function(listTpl) {
+    var templates = {
+        list: function() {
+            return [
+                '<ul class="data-navigation-items">',
+                '<% if (!!data.children && !!data.children.length) { %>',
+                '<% _.each(data.children, function(child) { %>',
+                '<li data-id="<%= child.id %>">',
+                '<div class="data-navigation-item-thumb" style="background-image: url(', '\'http://lorempixel.com/35/35\'', ')"></div>',
+                '<div class="data-navigation-item-name">',
+                '<%= child[options.nameKey] %>',
+                '<% if (!!child.hasSub) { %>',
+                '<span class="fa-chevron-right data-navigation-item-next"></span>',
+                '<% } %>',
+                '</div>',
+                '</li>',
+                '<% }) %>',
+                '<% } else if (!!data.children && data.children.length === 0) { %>',
+                '<li class="not-selectable">',
+                '<div class="data-navigation-info">',
+                'No Data',
+                '</div>',
+                '</li>',
+                '<% } else { %>',
+                '<li class="not-selectable">',
+                '<div class="data-navigation-loader-container">',
+                '<div class="spinner">',
+                '<div class="double-bounce1"></div>',
+                '<div class="double-bounce2"></div>',
+                '</div>',
+                '</div>',
+                '</li>',
+                '<% } %>',
+                '</ul>'
+            ].join('');
+        }
+    };
 
     /**
      * @class ListView
@@ -43322,7 +43360,7 @@ define('husky_components/data-navigation/list-view',['text!data-navigation/list.
              * @method init
              */
             init: function() {
-                this.template = _.template(listTpl);
+                this.template = _.template(templates.list());
                 this.$el = $('<div/>', {
                     'class': 'data-navigation-list'
                 });
@@ -43372,12 +43410,6 @@ define('husky_components/data-navigation/list-view',['text!data-navigation/list.
     }
 });
 
-
-define('text!data-navigation/main.html',[],function () { return '<div class="data-navigation">\n    <div class="data-navigation-header"></div>\n    <div class="data-navigation-list-container"></div>\n<% if (options.showAddBtn) { %>\n    <div class="data-navigation-list-footer">\n        <button class="data-navigation-add btn">\n            <span class="fa-plus-circle"></span>\n            Add data\n        </button>\n    </div>\n<% } %>\n</div>\n';});
-
-
-define('text!data-navigation/header.html',[],function () { return '<% if (data.current.id !== \'root\') { %>\n<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">\n    <span class="fa-chevron-left"></span>\n<% if (!!data.parent && data.parent[nameKey]) { %>\n    <%= data.parent[nameKey] %>\n<% } else { %>\n    <%= translates.title %>\n<% } %>\n</div>\n<% } else { %>\n<div>\n    <%= data.current[nameKey] || translates.title %>\n</div>\n<% } %>\n';});
-
 /**
  * This file is part of Husky frontend development framework.
  *
@@ -43397,10 +43429,8 @@ define('text!data-navigation/header.html',[],function () { return '<% if (data.c
  * @param {Object} [options.translates] Holds the translates
  */
 define('__component__$data-navigation@husky',[
-    'husky_components/data-navigation/list-view',
-    'text!data-navigation/main.html',
-    'text!data-navigation/header.html'
-], function(View, mainTpl, headerTpl) {
+    'husky_components/data-navigation/list-view'
+], function(View) {
 
     
 
@@ -43415,6 +43445,45 @@ define('__component__$data-navigation@husky',[
             translates: {
                 noData: 'No Data',
                 title: 'Data'
+            }
+        },
+
+        templates = {
+            header: function() {
+                return [
+                    '<% if (data.current.id !== \'root\') { %>',
+                    '<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
+                    '<span class="fa-chevron-left"></span>',
+                    '<% if (!!data.parent && data.parent[nameKey]) { %>',
+                    '<%= data.parent[nameKey] %>',
+                    '<% } else { %>',
+                    '<%= translates.title %>',
+                    '<% } %>',
+                    '</div>',
+                    '<% } else { %>',
+                    '<div>',
+                    '<%= data.current[nameKey] || translates.title %>',
+                    '</div>',
+                    '<% } %>'
+                ].join('');
+            },
+
+            main: function() {
+                return [
+                    '<div class="data-navigation">', '',
+                    '<div class="data-navigation-header"></div>', '',
+                    '<div class="data-navigation-list-container"></div>', '',
+                    '<% if (options.showAddBtn) { %>', '',
+                    '<div class="data-navigation-list-footer">', '',
+                    '<button class="data-navigation-add btn">', '',
+                    '<span class="fa-plus-circle"></span>', '',
+                    'Add data', '',
+                    '</button>', '',
+                    '</div>', '',
+                    '<% } %>', '',
+                    '</div>', '',
+                    ''
+                ].join('');
             }
         },
 
@@ -43484,8 +43553,8 @@ define('__component__$data-navigation@husky',[
             this.currentView = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
-            this.template = this.sandbox.util.template(mainTpl);
-            this.headerTpl = this.sandbox.util.template(headerTpl);
+            this.template = this.sandbox.util.template(templates.main());
+            this.headerTpl = this.sandbox.util.template(templates.header());
 
             this.render();
             this.bindCustomEvents();
@@ -43562,7 +43631,7 @@ define('__component__$data-navigation@husky',[
          * @param {Object} response Response
          */
         parse: function(response) {
-            var current = {},
+            var current = {item: response},
                 parent = response._embedded.parent;
 
             current.id = response.id || constants.ROOT_ID;
@@ -43621,13 +43690,7 @@ define('__component__$data-navigation@husky',[
                 if (!!item.hasSub) {
                     return this.load(url).then(this.storeData.bind(this));
                 } else {
-                    this.data = {
-                        children: [],
-                        parent: this.data.current,
-                        current: item
-                    };
-
-                    dfd.resolve(this.data);
+                    dfd.resolve(this.parse(item));
                 }
             } else {
                 this.data = data;
@@ -43649,13 +43712,11 @@ define('__component__$data-navigation@husky',[
             this.currentView = this.createView();
             this.appendView(oldView);
 
-            this.getItems(id)
+            return this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     this.currentView.render(data, this.options);
                 }.bind(this));
-
-            return id;
         },
 
         /**
@@ -43668,13 +43729,11 @@ define('__component__$data-navigation@husky',[
 
             this.prependView(newView);
 
-            this.getItems(id)
+            return this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     newView.render(data, this.options);
                 }.bind(this));
-
-            return id;
         },
 
         /**
@@ -43695,8 +43754,9 @@ define('__component__$data-navigation@husky',[
          * @method selectDataHandler
          */
         selectParentDataHandler: function(event) {
-           var id = this.openParentHandler(event);
-            this.sandbox.emit(SELECT.call(this), {id: id});
+            this.openParentHandler(event).then(function(){
+               this.sandbox.emit(SELECT.call(this), this.data.current.item);
+           }.bind(this));
         },
 
 
@@ -43705,8 +43765,10 @@ define('__component__$data-navigation@husky',[
          * @method selectDataHandler
          */
         selectChildrenDataHandler: function(event) {
-            var id = this.openChildrenHandler(event);
-            this.sandbox.emit(SELECT.call(this), {id: id});
+            this.openChildrenHandler(event).then(function() {
+                this.sandbox.emit(SELECT.call(this), this.data.current.item);
+            }.bind(this));
+
         },
 
         /**
@@ -43716,8 +43778,9 @@ define('__component__$data-navigation@husky',[
         navigateChildrenHandler: function(event) {
             event.stopPropagation();
 
-            this.openChildrenHandler(event);
-            this.sandbox.emit(NAVIGATE.call(this));
+            this.openChildrenHandler(event).then(function() {
+                this.sandbox.emit(NAVIGATE.call(this), this.data.current.item);
+            }.bind(this));
         },
 
         /**
@@ -43725,7 +43788,7 @@ define('__component__$data-navigation@husky',[
          * @method addHandler
          */
         addHandler: function() {
-            this.sandbox.emit(ADD.call(this), this.data.current);
+            this.sandbox.emit(ADD.call(this), this.data.current.item);
         },
 
         /**

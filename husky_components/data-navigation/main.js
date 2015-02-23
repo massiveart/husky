@@ -17,10 +17,8 @@
  * @param {Object} [options.translates] Holds the translates
  */
 define([
-    'husky_components/data-navigation/list-view',
-    'text!data-navigation/main.html',
-    'text!data-navigation/header.html'
-], function(View, mainTpl, headerTpl) {
+    'husky_components/data-navigation/list-view'
+], function(View) {
 
     'use strict';
 
@@ -35,6 +33,45 @@ define([
             translates: {
                 noData: 'No Data',
                 title: 'Data'
+            }
+        },
+
+        templates = {
+            header: function() {
+                return [
+                    '<% if (data.current.id !== \'root\') { %>',
+                    '<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
+                    '<span class="fa-chevron-left"></span>',
+                    '<% if (!!data.parent && data.parent[nameKey]) { %>',
+                    '<%= data.parent[nameKey] %>',
+                    '<% } else { %>',
+                    '<%= translates.title %>',
+                    '<% } %>',
+                    '</div>',
+                    '<% } else { %>',
+                    '<div>',
+                    '<%= data.current[nameKey] || translates.title %>',
+                    '</div>',
+                    '<% } %>'
+                ].join('');
+            },
+
+            main: function() {
+                return [
+                    '<div class="data-navigation">', '',
+                    '<div class="data-navigation-header"></div>', '',
+                    '<div class="data-navigation-list-container"></div>', '',
+                    '<% if (options.showAddBtn) { %>', '',
+                    '<div class="data-navigation-list-footer">', '',
+                    '<button class="data-navigation-add btn">', '',
+                    '<span class="fa-plus-circle"></span>', '',
+                    'Add data', '',
+                    '</button>', '',
+                    '</div>', '',
+                    '<% } %>', '',
+                    '</div>', '',
+                    ''
+                ].join('');
             }
         },
 
@@ -104,8 +141,8 @@ define([
             this.currentView = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
-            this.template = this.sandbox.util.template(mainTpl);
-            this.headerTpl = this.sandbox.util.template(headerTpl);
+            this.template = this.sandbox.util.template(templates.main());
+            this.headerTpl = this.sandbox.util.template(templates.header());
 
             this.render();
             this.bindCustomEvents();

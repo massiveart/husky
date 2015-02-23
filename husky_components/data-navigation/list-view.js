@@ -9,7 +9,44 @@
  * @module husky/components/data-navigation
  */
 
-define(['text!data-navigation/list.html'], function(listTpl) {
+define([], function() {
+
+    var templates = {
+        list: function() {
+            return [
+                '<ul class="data-navigation-items">',
+                '<% if (!!data.children && !!data.children.length) { %>',
+                '<% _.each(data.children, function(child) { %>',
+                '<li data-id="<%= child.id %>">',
+                '<div class="data-navigation-item-thumb" style="background-image: url(', '\'http://lorempixel.com/35/35\'', ')"></div>',
+                '<div class="data-navigation-item-name">',
+                '<%= child[options.nameKey] %>',
+                '<% if (!!child.hasSub) { %>',
+                '<span class="fa-chevron-right data-navigation-item-next"></span>',
+                '<% } %>',
+                '</div>',
+                '</li>',
+                '<% }) %>',
+                '<% } else if (!!data.children && data.children.length === 0) { %>',
+                '<li class="not-selectable">',
+                '<div class="data-navigation-info">',
+                'No Data',
+                '</div>',
+                '</li>',
+                '<% } else { %>',
+                '<li class="not-selectable">',
+                '<div class="data-navigation-loader-container">',
+                '<div class="spinner">',
+                '<div class="double-bounce1"></div>',
+                '<div class="double-bounce2"></div>',
+                '</div>',
+                '</div>',
+                '</li>',
+                '<% } %>',
+                '</ul>'
+            ].join('');
+        }
+    };
 
     /**
      * @class ListView
@@ -21,7 +58,7 @@ define(['text!data-navigation/list.html'], function(listTpl) {
              * @method init
              */
             init: function() {
-                this.template = _.template(listTpl);
+                this.template = _.template(templates.list());
                 this.$el = $('<div/>', {
                     'class': 'data-navigation-list'
                 });
