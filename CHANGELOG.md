@@ -5,6 +5,8 @@ CHANGELOGS:
 Unreleased
 ==========
 
+ - update ckeditor to version 4.4.7, add subscript and numbered list to ckeditor toolbar
+
  - added start and destroy interface for ckeditor component
 
  - updated text block design in content-types
@@ -43,7 +45,7 @@ Unreleased
 2014/10/06 v0.8.1
 =================
 
- - autocomplete-list api change: 
+ - autocomplete-list api change:
    'autoCompleteIcon' is the input icon
    'suggestionIcon' is the icon inside the typeahead suggestion dropdown
 
