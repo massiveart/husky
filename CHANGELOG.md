@@ -5,7 +5,10 @@ CHANGELOGS:
 Unreleased
 ==========
 
- - update ckeditor to version 4.4.7, add subscript and numbered list to ckeditor toolbar, add allow iframe and script tag option
+ - update ckeditor:
+   - version 4.4.7 update
+   - add subscript and numbered list to ckeditor toolbar
+   - add allow iframe and script tag option
 
  - added start and destroy interface for ckeditor component
 
