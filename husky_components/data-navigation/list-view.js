@@ -9,7 +9,6 @@
  * @module husky/components/data-navigation
  */
 
-
 define(['text!data-navigation/list.html'], function(listTpl) {
 
     /**

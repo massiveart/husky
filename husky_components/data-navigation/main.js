@@ -241,13 +241,7 @@ define([
                 if (!!item.hasSub) {
                     return this.load(url).then(this.storeData.bind(this));
                 } else {
-                    this.data = {
-                        children: [],
-                        parent: this.data.current,
-                        current: item
-                    };
-
-                    dfd.resolve(this.data);
+                    dfd.resolve(this.parse(item));
                 }
             } else {
                 this.data = data;
@@ -311,9 +305,9 @@ define([
          * @method selectDataHandler
          */
         selectParentDataHandler: function(event) {
-           var id = this.openParentHandler(event);
-
-            this.sandbox.emit(SELECT.call(this), {id: id});
+            this.openParentHandler(event).then(function(){
+               this.sandbox.emit(SELECT.call(this), this.data.current.item);
+           }.bind(this));
         },
 
 
@@ -322,7 +316,7 @@ define([
          * @method selectDataHandler
          */
         selectChildrenDataHandler: function(event) {
-            this.openChildrenHandler(event).thne(function() {
+            this.openChildrenHandler(event).then(function() {
                 this.sandbox.emit(SELECT.call(this), this.data.current.item);
             }.bind(this));
 
