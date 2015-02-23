@@ -26944,7 +26944,9 @@ define('type/husky-input',[
         var defaults = {
                 id: 'id',
                 label: 'value',
-                required: false
+                required: false,
+                dateFormat: 'd',
+                timeFormat: 't'
             },
 
             typeValidators = {
@@ -26965,8 +26967,11 @@ define('type/husky-input',[
                     return regex.test(value);
                 },
                 time: function(value) {
-                    var regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-                    return regex.test(value);
+                    if (value === '') {
+                        return true;
+                    }
+
+                    return Globalize.parseDate(value, this.options.timeFormat) !== null;
                 },
                 color: function(value) {
                     // hex color with leading #
