@@ -9,9 +9,8 @@
  */
 
 define([
-    'type/default',
-    'globalize'
-], function(Default, Globalize) {
+    'type/default'
+], function(Default) {
 
     'use strict';
 
@@ -47,13 +46,6 @@ define([
                     }
 
                     return Globalize.parseDate(value, this.options.timeFormat) !== null;
-                },
-                date: function(value) {
-                    if (value === '') {
-                        return true;
-                    }
-
-                    return Globalize.parseDate(value, this.options.dateFormat) !== null;
                 },
                 color: function(value) {
                     // hex color with leading #
