@@ -13,8 +13,8 @@
 
     require.config({
         paths: {
-            ckeditor: 'vendor/ckeditor/ckeditor',
-            jqueryAdapter: 'vendor/ckeditor/adapters/jquery'
+            ckeditor: 'bower_components/ckeditor/ckeditor',
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery'
         },
         shim: {
             jqueryAdapter: {
@@ -34,10 +34,10 @@
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,contextmenu',
                 resize_enabled: false,
                 uiColor: '#ffffff',
-                skin: 'husky'
+                skin: 'husky, ../../../../husky_components/ckeditor/skins/husky/'
             };
         };
 
@@ -75,7 +75,7 @@
                                     // get a reference to the "Link Info" and "Target" tab.
                                 var infoTab = dialogDefinition.getContents('info'),
                                     targetTab = dialogDefinition.getContents('target'),
-                                
+
                                     // get a reference to the link type
                                     linkOptions = infoTab.get('linkType'),
                                     targetOptions = targetTab.get('linkTargetType'),
@@ -94,7 +94,7 @@
                                         '_self'
                                     ],
                                     selectedTargetOptions = [];
-                                    
+
                                 // just show included link options
                                 for (var i = 0; i < linkOptions.items.length; i++) {
                                     if (includedLinkOptions.indexOf(linkOptions.items[i][1]) !== -1) {

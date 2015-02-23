@@ -160,7 +160,6 @@ module.exports = function(grunt) {
                         dest: 'dist',
                         src: [
                             'fonts/{,*/}*',
-                            'vendor/ckeditor/{,**/}*',
                             'vendor/jquery.minicolors.png',
                             'scss/variables.scss',
                             'scss/mixins.scss'
@@ -318,6 +317,13 @@ module.exports = function(grunt) {
                         cwd: '.bower_components/bootstrap-datepicker/js/',
                         src: ['**'],
                         dest: 'bower_components/bootstrap-datepicker/'
+                    },
+                    // ckeditor
+                    {
+                        expand: true,
+                        cwd: '.bower_components/ckeditor',
+                        src: ['**'],
+                        dest: 'bower_components/ckeditor'
                     }
                 ]
             }
