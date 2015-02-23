@@ -182,7 +182,7 @@ define([
          * @param {Object} response Response
          */
         parse: function(response) {
-            var current = {},
+            var current = {item: response},
                 parent = response._embedded.parent;
 
             current.id = response.id || constants.ROOT_ID;
@@ -269,13 +269,11 @@ define([
             this.currentView = this.createView();
             this.appendView(oldView);
 
-            this.getItems(id)
+            return this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     this.currentView.render(data, this.options);
                 }.bind(this));
-
-            return id;
         },
 
         /**
@@ -288,13 +286,11 @@ define([
 
             this.prependView(newView);
 
-            this.getItems(id)
+            return this.getItems(id)
                 .then(function(data) {
                     this.updateHeader(data);
                     newView.render(data, this.options);
                 }.bind(this));
-
-            return id;
         },
 
         /**
@@ -316,6 +312,7 @@ define([
          */
         selectParentDataHandler: function(event) {
            var id = this.openParentHandler(event);
+
             this.sandbox.emit(SELECT.call(this), {id: id});
         },
 
@@ -325,8 +322,10 @@ define([
          * @method selectDataHandler
          */
         selectChildrenDataHandler: function(event) {
-            var id = this.openChildrenHandler(event);
-            this.sandbox.emit(SELECT.call(this), {id: id});
+            this.openChildrenHandler(event).thne(function() {
+                this.sandbox.emit(SELECT.call(this), this.data.current.item);
+            }.bind(this));
+
         },
 
         /**
@@ -336,8 +335,9 @@ define([
         navigateChildrenHandler: function(event) {
             event.stopPropagation();
 
-            this.openChildrenHandler(event);
-            this.sandbox.emit(NAVIGATE.call(this));
+            this.openChildrenHandler(event).then(function() {
+                this.sandbox.emit(NAVIGATE.call(this), this.data.current.item);
+            }.bind(this));
         },
 
         /**
@@ -345,7 +345,7 @@ define([
          * @method addHandler
          */
         addHandler: function() {
-            this.sandbox.emit(ADD.call(this), this.data.current);
+            this.sandbox.emit(ADD.call(this), this.data.current.item);
         },
 
         /**
