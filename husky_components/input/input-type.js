@@ -75,7 +75,7 @@ define([
                     return Globalize.format(dateTime, 'HH:mm:ss');
                 },
                 date: function() {
-                    return Globalize.format(dateTime, 'yyyy-MM-dd');
+                    return this.$el.data('value');
                 }
             },
 
