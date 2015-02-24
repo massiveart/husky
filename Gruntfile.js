@@ -412,6 +412,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build:css', [
         'compass',
         'cssmin',
+        'copy:ckeditor_theme',
         'copy:dist',
     ]);
 
