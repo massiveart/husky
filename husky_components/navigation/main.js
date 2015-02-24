@@ -123,7 +123,8 @@ define(function() {
             UNCOLLAPSED_WIDTH: 250, //px
             COLLAPSED_WIDTH: 50, //px
             ITEM_LABEL_HEIGHT: 50, //px
-            TRANSITIONEND_EVENT: 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd'
+            TRANSITIONEND_EVENT: 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+            HIDDEN_CLASS: 'disappeared'
         },
 
         namespace = 'husky.navigation.',
@@ -767,9 +768,6 @@ define(function() {
 
         collapse: function() {
             if (this.hidden === false) {
-                this.sandbox.dom.one(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
-                    this.sandbox.dom.css(this.$el, {'width': ''});
-                }.bind(this));
                 this.sandbox.dom.addClass(this.$navigation, 'collapsed');
                 this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
                 this.removeHeightforExpanded();
@@ -893,6 +891,7 @@ define(function() {
          * Shows the navigation
          */
         show: function() {
+            this.sandbox.dom.removeClass(this.$navigation, CONSTANTS.HIDDEN_CLASS);
             if (!!this.currentNavigationWidth) {
                 this.sandbox.dom.removeAttr(this.$navigation, 'style');
                 this.currentNavigationWidth = null;
@@ -904,6 +903,7 @@ define(function() {
          * Hides the navigaiton
          */
         hide: function() {
+            this.sandbox.dom.addClass(this.$navigation, CONSTANTS.HIDDEN_CLASS);
             this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
             this.sandbox.dom.width(this.$navigation, 0);
             this.hidden = true;

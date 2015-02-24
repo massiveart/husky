@@ -358,7 +358,7 @@ define([], function () {
 
                             // call the after-drop callback on the last file
                             if (typeof that.options.afterDropCallback === 'function') {
-                                if (this.files.length === that.filesDropped) {
+                                if (this.files.length === that.filesDropped || that.filesDropped === 0) { // if filesDropped is 0 the file(s) werent dropped but added via the popup window
                                     that.options.afterDropCallback(file).then(function() {
                                         that.sandbox.util.foreach(this.files, function(file) {
                                             that.sandbox.util.delay(this.processFile.bind(this, file), 0);
