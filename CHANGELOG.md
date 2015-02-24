@@ -1,7 +1,7 @@
 CHANGELOGS:
 ===========
 
-2015/02/24 v0.9.0
+2015/02/24 v0.10.0
 =================
 
 This is not a complete feature list!
