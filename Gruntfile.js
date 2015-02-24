@@ -167,6 +167,16 @@ module.exports = function(grunt) {
                     },
                     {
                         expand: true,
+                        dot: true,
+                        cwd: './',
+                        dest: 'dist',
+                        src: [
+                            'bower_components/ckeditor/**',
+                            'husky_components/ckeditor/**'
+                        ]
+                    },
+                    {
+                        expand: true,
                         cwd: '.tmp',
                         dest: 'dist',
                         src: [

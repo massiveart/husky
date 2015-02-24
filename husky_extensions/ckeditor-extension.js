@@ -33,7 +33,7 @@
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow,sourcedialog,codemirror',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky, ../../../../husky_components/ckeditor/skins/husky/'
