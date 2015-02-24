@@ -108,6 +108,15 @@ define([
         },
 
         /**
+         * raised after the item was selected without instancename
+         * @param item {Object} selected item
+         * @event husky.data-navigation.select
+         */
+        SELECT_GLOBAL = function() {
+            return eventNamespace + 'select';
+        },
+
+        /**
          * raised when clicked on the add button
          * @param item {Object} current item
          * @event husky.data-navigation.add
@@ -119,7 +128,7 @@ define([
         /**
          * raised when clicked on the item icon
          * @param item {Object} item to navigate into
-         * @event husky.data-navigation.content.show
+         * @event husky.data-navigation.content.navigate
          */
         NAVIGATE = function() {
             return createEventName.call(this, 'navigate')
@@ -128,7 +137,7 @@ define([
         /**
          * Setter for current url navigation will be reloaded with data
          * @param url {string} url to load data
-         * @event husky.data-navigation.content.show
+         * @event husky.data-navigation.content.set-url
          */
         SET_URL = function() {
             return createEventName.call(this, 'set-url')
@@ -228,6 +237,7 @@ define([
 
             if (!!parent) {
                 parent.id = parent.id || constants.ROOT_ID;
+            } else if (current.id === constants.ROOT_ID) {
                 current.item = null;
             }
 
@@ -277,11 +287,7 @@ define([
                     url = item._links[this.options.childrenLinkKey].href;
                 }
 
-                if (!!item.hasSub) {
-                    return this.load(url).then(this.storeData.bind(this));
-                } else {
-                    dfd.resolve(this.parse(item));
-                }
+                return this.load(url).then(this.storeData.bind(this));
             } else {
                 this.data = data;
                 dfd.resolve(data);
@@ -346,6 +352,7 @@ define([
         selectParentDataHandler: function(event) {
             this.openParentHandler(event).then(function(){
                this.sandbox.emit(SELECT.call(this), this.data.current.item);
+                this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
            }.bind(this));
         },
 
@@ -357,8 +364,8 @@ define([
         selectChildrenDataHandler: function(event) {
             this.openChildrenHandler(event).then(function() {
                 this.sandbox.emit(SELECT.call(this), this.data.current.item);
+                this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
             }.bind(this));
-
         },
 
         /**

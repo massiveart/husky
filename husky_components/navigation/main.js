@@ -948,6 +948,9 @@ define(function() {
             if (!!options.childrenLinkKey) {
                 componentOptions.childrenLinkKey = options.childrenLinkKey;
             }
+            if (!!options.instanceName) {
+                componentOptions.instanceName = options.instanceName;
+            }
             if (!!options.showAddBtn) {
                 componentOptions.showAddBtn = options.showAddBtn;
             }
