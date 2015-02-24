@@ -36,7 +36,7 @@
                 extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
                 resize_enabled: false,
                 uiColor: '#ffffff',
-                skin: 'husky, ../../../../husky_components/ckeditor/skins/husky/'
+                skin: 'husky'
             };
         };
 

@@ -168,11 +168,10 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         dot: true,
-                        cwd: './',
-                        dest: 'dist',
+                        cwd: './bower_components',
+                        dest: 'dist/vendor',
                         src: [
-                            'bower_components/ckeditor/**',
-                            'husky_components/ckeditor/**'
+                            'ckeditor/**'
                         ]
                     },
                     {
@@ -336,6 +335,17 @@ module.exports = function(grunt) {
                         dest: 'bower_components/ckeditor'
                     }
                 ]
+            },
+            ckeditor_theme: {
+                files: [
+                    // ckeditor husky theme
+                    {
+                        expand: true,
+                        cwd: 'husky_components/ckeditor',
+                        src: ['**'],
+                        dest: 'bower_components/ckeditor'
+                    }
+                ]
             }
         },
         bower: {
@@ -409,7 +419,12 @@ module.exports = function(grunt) {
         'clean:bower_before',
         'bower:install',
         'copy:bower',
+        'copy:ckeditor_theme',
         'clean:bower_after'
+    ]);
+
+    grunt.registerTask('update:theme', [
+        'copy:ckeditor_theme'
     ]);
 
     grunt.registerTask('default', [
