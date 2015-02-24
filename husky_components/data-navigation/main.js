@@ -32,7 +32,8 @@ define([
             showAddButton: true,
             translates: {
                 noData: 'No Data',
-                title: 'Data'
+                title: 'Data',
+                addButton: 'Add Data'
             }
         },
 
@@ -61,11 +62,11 @@ define([
                     '<div class="data-navigation">', '',
                     '<div class="data-navigation-header"></div>', '',
                     '<div class="data-navigation-list-container"></div>', '',
-                    '<% if (options.showAddBtn) { %>', '',
+                    '<% if (options.showAddButton) { %>', '',
                     '<div class="data-navigation-list-footer">', '',
                     '<button class="data-navigation-add btn">', '',
                     '<span class="fa-plus-circle"></span>', '',
-                    'Add data', '',
+                    '<%= options.translates.addButton %>',
                     '</button>', '',
                     '</div>', '',
                     '<% } %>', '',
@@ -125,7 +126,7 @@ define([
         },
 
         /**
-         * Setter for current url navigation will be relaoded with data
+         * Setter for current url navigation will be reloaded with data
          * @param url {string} url to load data
          * @event husky.data-navigation.content.show
          */
@@ -141,7 +142,7 @@ define([
             this.currentView = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
-            this.template = this.sandbox.util.template(templates.main());
+            this.mainTpl = this.sandbox.util.template(templates.main());
             this.headerTpl = this.sandbox.util.template(templates.header());
 
             this.render();
@@ -170,7 +171,7 @@ define([
          * @method render
          */
         render: function() {
-            var tpl = this.template({options: this.options});
+            var tpl = this.mainTpl({options: this.options});
             this.$el.html(tpl);
             this.bindDOMEvents();
         },
@@ -227,6 +228,7 @@ define([
 
             if (!!parent) {
                 parent.id = parent.id || constants.ROOT_ID;
+                current.item = null;
             }
 
             this.data = {

@@ -28160,20 +28160,15 @@ define('__component__$navigation@husky',[],function() {
 
         /**
          * Takes an action and select the matching navigation point
-         * @param selectItem {string} action or id
+         * @param selectAction {string}
          */
-        preselectItem: function(selectItem) {
+        preselectItem: function(selectAction) {
             var matchLength = 0, matchItem, parent, match;
             this.sandbox.util.foreach(this.items, function(item) {
-                if (!item || !item.action || !item.id) {
+                if (!item || !item.action) {
                     return;
                 }
-                if (selectItem === item.id) {
-                    matchItem = item;
-                    return false;
-                }
-
-                if (selectItem.indexOf(item.action) !== -1 && item.action.length > matchLength) {
+                if (selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
                     matchItem = item;
                     matchLength = item.action.length;
                 }
@@ -43444,7 +43439,8 @@ define('__component__$data-navigation@husky',[
             showAddButton: true,
             translates: {
                 noData: 'No Data',
-                title: 'Data'
+                title: 'Data',
+                addButton: 'Add Data'
             }
         },
 
@@ -43473,11 +43469,11 @@ define('__component__$data-navigation@husky',[
                     '<div class="data-navigation">', '',
                     '<div class="data-navigation-header"></div>', '',
                     '<div class="data-navigation-list-container"></div>', '',
-                    '<% if (options.showAddBtn) { %>', '',
+                    '<% if (options.showAddButton) { %>', '',
                     '<div class="data-navigation-list-footer">', '',
                     '<button class="data-navigation-add btn">', '',
                     '<span class="fa-plus-circle"></span>', '',
-                    'Add data', '',
+                    '<%= options.translates.addButton %>',
                     '</button>', '',
                     '</div>', '',
                     '<% } %>', '',
@@ -43537,7 +43533,7 @@ define('__component__$data-navigation@husky',[
         },
 
         /**
-         * Setter for current url navigation will be relaoded with data
+         * Setter for current url navigation will be reloaded with data
          * @param url {string} url to load data
          * @event husky.data-navigation.content.show
          */
@@ -43553,7 +43549,7 @@ define('__component__$data-navigation@husky',[
             this.currentView = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
-            this.template = this.sandbox.util.template(templates.main());
+            this.mainTpl = this.sandbox.util.template(templates.main());
             this.headerTpl = this.sandbox.util.template(templates.header());
 
             this.render();
@@ -43582,7 +43578,7 @@ define('__component__$data-navigation@husky',[
          * @method render
          */
         render: function() {
-            var tpl = this.template({options: this.options});
+            var tpl = this.mainTpl({options: this.options});
             this.$el.html(tpl);
             this.bindDOMEvents();
         },
@@ -43639,6 +43635,7 @@ define('__component__$data-navigation@husky',[
 
             if (!!parent) {
                 parent.id = parent.id || constants.ROOT_ID;
+                current.item = null;
             }
 
             this.data = {
