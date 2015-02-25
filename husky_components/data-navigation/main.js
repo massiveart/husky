@@ -141,6 +141,22 @@ define([
          */
         SET_URL = function() {
             return createEventName.call(this, 'set-url')
+        },
+
+        /**
+         * Navigation will be reloaded with current url
+         * @event husky.data-navigation.content.reload
+         */
+        RELOAD = function() {
+            return createEventName.call(this, 'reload')
+        },
+
+        /**
+         * Clear cache completely
+         * @event husky.data-navigation.content.clear-cache
+         */
+        CLEAR_CACHE = function() {
+            return createEventName.call(this, 'clear-cache')
         };
 
     return {
@@ -201,15 +217,41 @@ define([
          */
         bindCustomEvents: function() {
             this.sandbox.on(SET_URL.call(this), function(url) {
-                this.cache.deleteAll();
-
-                this.load(url)
-                    .then(this.storeData.bind(this))
-                    .then(function(data) {
-                        this.updateHeader(data);
-                        this.currentView.render(data, this.options);
-                    }.bind(this));
+                if (url !== this.getCurrentUrl) {
+                    this.setUrl(url, true);
+                }
             }.bind(this));
+
+            this.sandbox.on(RELOAD.call(this), function() {
+                this.setUrl(this.getCurrentUrl(), true);
+            }.bind(this));
+
+            this.sandbox.on(CLEAR_CACHE.call(this), function() {
+                this.cache.deleteAll();
+            }.bind(this));
+        },
+
+        getCurrentUrl: function() {
+            var url = this.options.url;
+
+            if (!!this.data.current.item) {
+                url = this.data.current.item._links[this.options.childrenLinkKey].href;
+            }
+
+            return url;
+        },
+
+        setUrl: function(url, clearCache) {
+            if (!!clearCache) {
+                this.cache.deleteAll();
+            }
+
+            this.load(url)
+                .then(this.storeData.bind(this))
+                .then(function(data) {
+                    this.updateHeader(data);
+                    this.currentView.render(data, this.options);
+                }.bind(this));
         },
 
         /**
@@ -275,7 +317,11 @@ define([
 
             if (!data) {
                 if (id === constants.ROOT_ID) {
-                    url = this.data.parent._links[this.options.childrenLinkKey].href;
+                    if (!!this.data.parent) {
+                        url = this.data.parent._links[this.options.childrenLinkKey].href;
+                    } else {
+                        url = this.options.url;
+                    }
                 } else {
                     // underscores where returns a list but we only want the first item
                     item = _.where(this.data.children, {id: id})[0];
