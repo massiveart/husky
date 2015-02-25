@@ -13,6 +13,7 @@
  * @class DataNavigation
  * @constructor
  * @param {Object} [options] Configuration object
+ * @param {String} [options.rootUrl] - optional root url to fetch root data
  * @param {String} [options.url] url to fetch data from
  * @param {Object} [options.translates] Holds the translates
  */
@@ -24,6 +25,7 @@ define([
 
     var defaultOptions = {
             url: null,
+            rootUrl: null,
             id: null,
             resultKey: 'items',
             parentResultKey: 'parent',
@@ -232,7 +234,7 @@ define([
         },
 
         getCurrentUrl: function() {
-            var url = this.options.url;
+            var url = this.options.rootUrl;
 
             if (!!this.data.current.item) {
                 url = this.data.current.item._links[this.options.childrenLinkKey].href;
@@ -260,7 +262,7 @@ define([
          * @param {String} url
          */
         load: function(url) {
-            url = url || this.options.url;
+            url = url || this.options.url || this.options.rootUrl;
 
             return this.sandbox.util.load(url)
                 .then(this.parse.bind(this));
@@ -320,7 +322,7 @@ define([
                     if (!!this.data.parent) {
                         url = this.data.parent._links[this.options.childrenLinkKey].href;
                     } else {
-                        url = this.options.url;
+                        url = this.options.rootUrl;
                     }
                 } else {
                     // underscores where returns a list but we only want the first item
