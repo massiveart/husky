@@ -136,6 +136,14 @@ define(function() {
         EVENT_SELECT_ITEM = namespace + 'select-item',
 
         /**
+         * listens on and activates the matching navigation-item
+         * @event husky.navigation.select-id
+         * @param {string} id The id of item which should be selected
+         * @param {Object} options Additional options
+         */
+        EVENT_SELECT_ID = namespace + 'select-id',
+
+        /**
          * raised when navigation was collapsed
          * @event husky.navigation.collapsed
          * @param {Number} width The width of the collapsed navigation
@@ -492,6 +500,7 @@ define(function() {
             this.sandbox.on(EVENT_SIZE_UPDATE, this.resizeListener.bind(this));
 
             this.sandbox.on(EVENT_SELECT_ITEM, this.preselectItem.bind(this));
+            this.sandbox.on(EVENT_SELECT_ID, this.selectItem.bind(this));
         },
 
         resizeListener: function() {
@@ -561,6 +570,33 @@ define(function() {
                 this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);
             }
+        },
+
+
+        /**
+         * Select item with given id
+         * @param id {string}
+         * @param options {options}
+         */
+        selectItem: function(id, options) {
+            var item = this.getItemById(id),
+                domObject = item.domObject,
+                parent;
+
+            if (this.sandbox.dom.hasClass(domObject, 'is-selected')) {
+                return;
+            }
+
+            if (this.sandbox.dom.hasClass(domObject, 'js-navigation-sub-item')) {
+                parent = this.sandbox.dom.closest(domObject, '.navigation-items');
+
+                // toggle parent only when it is not expaneded
+                if (!this.sandbox.dom.hasClass(parent, 'is-expanded')) {
+                    this.toggleItems(null, parent);
+                }
+            }
+            this.selectSubItem(null, domObject, false, options);
+            this.checkBottomHit(null, domObject);
         },
 
 
@@ -841,8 +877,9 @@ define(function() {
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
          * @param emit
+         * @param {Object} options Extends the item
          */
-        selectSubItem: function(event, customTarget, emit) {
+        selectSubItem: function(event, customTarget, emit, options) {
 
             if (!!event) {
                 event.preventDefault();
@@ -872,17 +909,22 @@ define(function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
             this.sandbox.dom.addClass($items, 'is-active');
 
+            var extendedItem = item;
+            if(!!options) {
+                extendedItem = this.sandbox.util.extend(true, {}, extendedItem, options);
+            }
+
             if (emit !== false) {
                 // emit event
-                this.sandbox.emit('husky.navigation.item.select', item);
+                this.sandbox.emit('husky.navigation.item.select', extendedItem);
             }
 
             if (this.hasDataNavigation()) {
                 this.removeDataNavigation();
             }
 
-            if (!!item && !!item.dataNavigation) {
-                this.renderDataNavigation(item.dataNavigation);
+            if (!!extendedItem && !!extendedItem.dataNavigation) {
+                this.renderDataNavigation(extendedItem.dataNavigation);
             } else if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
             }
@@ -935,7 +977,8 @@ define(function() {
 
             var componentOptions = {
                 el: $element,
-                url: options.url
+                url: options.url,
+                rootUrl: options.rootUrl
             };
 
             // optional options
