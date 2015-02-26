@@ -39,6 +39,8 @@
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
  * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
+ * @params {Array} [options.disableIds] an array of uuids which will be disabled
+ * @params {Array} [options.disabledChildren] an array of uuids which will be disabled
  * @params {Boolean} [options.orderable] if true component-items can be ordered
  * @params {Boolean} [options.tooltipTranslations] translation-keys for the tooltips
  * @params {Boolean} [options.tooltipTranslations.ghost] translation-keys for ghost
@@ -72,6 +74,8 @@ define([], function() {
             showOptions: true,
             showStatus: true,
             premarkedIds: [],
+            disableIds: [],
+            disabledChildren: false,
             markable: false,
             orderable: true,
             showActionIcon: true,
@@ -93,6 +97,7 @@ define([], function() {
             markedClass: 'marked',
             displayedcolumns: 2, // number of displayed columns with content
             wrapperClass: 'column-navigation-wrapper',
+            disabledClass: 'disabled',
             columnClass: 'column',
             optionsClass: 'options',
             componentClass: 'husky-column-navigation',
@@ -585,15 +590,21 @@ define([], function() {
          */
         renderItem: function(data) {
             var $item = this.sandbox.dom.createElement(this.sandbox.util.template(templates.item)({
-                title: data[this.options.titleName],
-                id: data[this.options.idName]
-            }));
+                    title: data[this.options.titleName],
+                    id: data[this.options.idName]
+                })),
+                disabled = (this.options.disableIds.indexOf(data[this.options.idName]) !== -1);
+
             if (this.marked.indexOf(data[this.options.idName]) !== -1) { // if is marked
                 this.sandbox.dom.addClass($item, constants.markedClass);
             }
+            if (disabled) { // if is marked
+                this.sandbox.dom.addClass($item, constants.disabledClass);
+            }
             this.renderLeftInfo($item, data);
             this.renderItemText($item, data);
-            this.renderRightInfo($item, data);
+            this.renderRightInfo($item, data, disabled);
+
             return $item;
         },
 
@@ -655,13 +666,14 @@ define([], function() {
          * Renders the right buttons and icons for an item
          * @param $item - dom object of the item
          * @param data - the data for the item
+         * @param disabled - indicates if item is disabled
          */
-        renderRightInfo: function($item, data) {
+        renderRightInfo: function($item, data, disabled) {
             var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item);
-            if (this.options.showActionIcon === true) {
+            if (this.options.showActionIcon === true && !disabled) {
                 this.sandbox.dom.append($container, '<span class="' + this.options.actionIcon + ' action col-icon"></span>');
             }
-            if (!!data[this.options.hasSubName]) {
+            if (!!data[this.options.hasSubName] && (!disabled || !this.options.disabledChildren)) {
                 this.sandbox.dom.append($container, '<span class="fa-chevron-right arrow inactive col-icon"></span>');
             }
         },
@@ -781,7 +793,9 @@ define([], function() {
         },
 
         bindDOMEvents: function() {
-            this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li:not(.selected)');
+            var selector = 'li:not(.selected' + (this.options.disabledChildren ? ', .' + constants.disabledClass : '') + ')';
+
+            this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), selector);
 
             this.sandbox.dom.on(this.$el, 'mouseenter', this.itemMouseEnter.bind(this), '.column-navigation li');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), '.column-navigation li');
@@ -1361,6 +1375,7 @@ define([], function() {
          */
         actionClickHandler: function(event) {
             var $listItem, id, item, column;
+
             if (this.inOrderMode === true) {
                 return false;
             }
@@ -1369,6 +1384,11 @@ define([], function() {
             } else {
                 $listItem = this.sandbox.dom.$(event.currentTarget);
             }
+
+            if ($listItem.hasClass(constants.disabledClass)) {
+                return;
+            }
+
             column = this.sandbox.dom.index(this.sandbox.dom.parents(event.currentTarget, '.column'));
             id = this.sandbox.dom.attr($listItem, 'data-id');
             item = this.columns[column][id];
