@@ -44,12 +44,14 @@ define([
                 return [
                     '<% if (data.current.id !== \'root\') { %>',
                     '<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
-                    '<span class="fa-chevron-left"></span>',
+                    '<span class="fa-chevron-left data-navigation-parent-back"></span>',
+                    '<div class="data-navigation-parent-text">',
                     '<% if (!!data.parent && data.parent[nameKey]) { %>',
                     '<%= data.parent[nameKey] %>',
                     '<% } else { %>',
                     '<%= translates.title %>',
                     '<% } %>',
+                    '</div>',
                     '</div>',
                     '<% } else { %>',
                     '<div>',
@@ -61,19 +63,18 @@ define([
 
             main: function() {
                 return [
-                    '<div class="data-navigation">', '',
-                    '<div class="data-navigation-header"></div>', '',
-                    '<div class="data-navigation-list-container"></div>', '',
-                    '<% if (options.showAddButton) { %>', '',
-                    '<div class="data-navigation-list-footer">', '',
-                    '<button class="data-navigation-add btn">', '',
-                    '<span class="fa-plus-circle"></span>', '',
+                    '<div class="data-navigation">',
+                    '<div class="data-navigation-header"></div>',
+                    '<div class="data-navigation-list-container"></div>',
+                    '<% if (options.showAddButton) { %>',
+                    '<div class="data-navigation-list-footer">',
+                    '<button class="data-navigation-add btn">',
+                    '<span class="fa-plus-circle"></span>',
                     '<%= options.translates.addButton %>',
-                    '</button>', '',
-                    '</div>', '',
-                    '<% } %>', '',
-                    '</div>', '',
-                    ''
+                    '</button>',
+                    '</div>',
+                    '<% } %>',
+                    '</div>'
                 ].join('');
             }
         },
@@ -210,7 +211,8 @@ define([
             this.$el.on('click', '.data-navigation-item-name', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-next', this.navigateChildrenHandler.bind(this));
-            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-parent-back', this.navigateParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-parent-text', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
@@ -368,7 +370,7 @@ define([
          */
         openParentHandler: function(event) {
             var $item = $(event.currentTarget),
-                id = $item.data('parent-id'),
+                id = this.sandbox.dom.parent($item).data('parent-id'),
                 newView = this.createView();
 
             this.prependView(newView);
@@ -399,11 +401,18 @@ define([
          */
         selectParentDataHandler: function(event) {
             this.openParentHandler(event).then(function(){
-               this.sandbox.emit(SELECT.call(this), this.data.current.item);
+                this.sandbox.emit(SELECT.call(this), this.data.current.item);
                 this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
-           }.bind(this));
+            }.bind(this));
         },
 
+        /**
+         * Navigate to content
+         * @method selectDataHandler
+         */
+        navigateParentDataHandler: function(event) {
+            this.openParentHandler(event);
+        },
 
         /**
          * Navigate to content and throw selected event
