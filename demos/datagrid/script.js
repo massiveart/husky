@@ -51,7 +51,9 @@ require(['lib/husky'], function(Husky) {
                     searchFields: ['fullName'],
                     columnOptionsInstanceName: '',
                     el: '#datagrid',
-                    matchings: 'http://husky.lo:7878/admin/api/datagrid/fields'
+                    matchings: 'http://husky.lo:7878/admin/api/datagrid/fields',
+                    selectedCounter: true,
+                    selectedCounterText: 'selected elements'
                 }
             },
             {
@@ -74,6 +76,8 @@ require(['lib/husky'], function(Husky) {
                     columnOptionsInstanceName: '',
                     el: '#datagrid2',
                     instanceName: 'grid2',
+                    selectedCounter: true,
+                    selectedCounterText: 'selected elements',
                     matchings: [
                         {
                             content: 'Content 1',
@@ -122,6 +126,7 @@ require(['lib/husky'], function(Husky) {
                     searchInstanceName: 'test',
                     el: '#thumbnails-datagrid',
                     instanceName: 'grid-thumbnails',
+                    selectedCounter: false,
                     matchings: [
                         {
                             name: 'title',
