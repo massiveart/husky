@@ -7081,7 +7081,7 @@ li a.navigation-settings-icon {
   display: inline-block;
   padding: 0 10px;
   color: white;
-  background-color: #111417;
+  background-color: #21272E;
   border-radius: 2px;
   z-index: 1000;
 }
@@ -7095,7 +7095,7 @@ li a.navigation-settings-icon {
   height: 0;
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 10px solid #111417;
+  border-right: 10px solid #21272E;
 }
 
 /* line 609, ../scss/modules/navigation.scss */
