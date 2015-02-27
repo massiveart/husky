@@ -8867,28 +8867,32 @@ a.btn-black, a.btn-highlight {
 .column-navigation-wrapper .column-navigation .column-item {
   cursor: pointer;
 }
-/* line 238, ../scss/modules/column-navigation.scss */
+/* line 237, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .column-item.disabled {
+  color: #ccc;
+}
+/* line 242, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .orderer {
   display: block;
   float: left;
   width: 40px;
   padding: 0 10px 0 0;
 }
-/* line 243, ../scss/modules/column-navigation.scss */
+/* line 247, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .orderer .form-element, .column-navigation-wrapper .column-navigation .orderer .husky-input {
   height: 20px;
   padding-left: 3px;
   padding-right: 3px;
 }
-/* line 250, ../scss/modules/column-navigation.scss */
+/* line 254, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .fa-external-link {
   margin-top: 1px;
 }
-/* line 255, ../scss/modules/column-navigation.scss */
+/* line 259, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .options {
   width: 251px;
 }
-/* line 259, ../scss/modules/column-navigation.scss */
+/* line 263, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   display: inline-block;
   width: 50%;
@@ -8898,7 +8902,7 @@ a.btn-black, a.btn-highlight {
   border-radius: 0 0 0 3px;
   font-size: 16px;
 }
-/* line 269, ../scss/modules/column-navigation.scss */
+/* line 273, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .ok {
   display: block;
   width: 100%;
@@ -8908,7 +8912,7 @@ a.btn-black, a.btn-highlight {
   border-radius: 0 0 3px 3px;
   font-size: 16px;
 }
-/* line 279, ../scss/modules/column-navigation.scss */
+/* line 283, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
   display: inline-block;
   width: 50%;

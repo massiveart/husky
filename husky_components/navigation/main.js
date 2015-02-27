@@ -972,7 +972,7 @@ define(function() {
         renderDataNavigation: function(options) {
             this.collapse();
 
-            var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'});
+            var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'}), key;
             this.sandbox.dom.append(this.$el, $element);
 
             var componentOptions = {
@@ -998,7 +998,11 @@ define(function() {
                 componentOptions.showAddBtn = options.showAddBtn;
             }
             if (!!options.translates) {
-                componentOptions.translates = options.translates;
+                componentOptions.translates = {};
+
+                for(key in options.translates){
+                    componentOptions.translates[key] = this.sandbox.translate(options.translates[key]);
+                }
             }
 
             this.sandbox.util.delay(function() {
