@@ -171,13 +171,6 @@ define(function() {
          */
             EVENT_SIZE_CHANGE = namespace + 'size.change',
 
-
-        /**
-         * raised when the search item gets clicked
-         * @event husky.navigation.search.clicked
-         */
-            EVENT_SEARCH_CLICKED = namespace + 'search.clicked',
-
         /**
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
@@ -275,8 +268,6 @@ define(function() {
             this.$navigation = this.$find('.navigation');
             this.$navigationContent = this.$find('.navigation-content');
 
-            this.renderSearch();
-
             // render navigation items
             this.renderNavigationItems(this.options.data);
 
@@ -293,22 +284,6 @@ define(function() {
 
             // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
-        },
-
-        /**
-         * Renders the search item
-         */
-        renderSearch: function() {
-            var $sectionDiv = this.sandbox.dom.createElement('<div class="section">'),
-                $sectionList = this.sandbox.dom.createElement('<ul class="section-items">'),
-                $searchItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
-                    item: {id: 'husky-navigation-search', title: 'public.search'},
-                    icon: 'fa-search',
-                    translate: this.sandbox.translate
-                }));
-            this.sandbox.dom.append($sectionList, $searchItem);
-            this.sandbox.dom.append($sectionDiv, $sectionList);
-            this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
         },
 
         /**
@@ -459,11 +434,6 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit(USERNAME_CLICKED);
             }.bind(this), 'footer .user');
-
-            // emit search event if search item gets clicked
-            this.sandbox.dom.on(this.$el, 'click', function() {
-                this.sandbox.emit(EVENT_SEARCH_CLICKED);
-            }.bind(this), '#husky-navigation-search');
         },
 
         /**
