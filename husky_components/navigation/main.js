@@ -10,7 +10,6 @@
  *
  * Description:
  *  Navigation Element
- *  also loads search component
  *
  * Options:
  *  footerTemplate - html template to define the footer
@@ -47,7 +46,6 @@ define(function() {
                 '               <div class="logo"></div>',
                 '               <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '           </header>',
-                '           <div id="navigation-search" class="navigation-search"></div>',
                 '           <div id="navigation-item-container" class="navigation-item-container"></div>',
                 '       </div>',
                 '       <footer>',
@@ -173,6 +171,13 @@ define(function() {
          */
             EVENT_SIZE_CHANGE = namespace + 'size.change',
 
+
+        /**
+         * raised when the search item gets clicked
+         * @event husky.navigation.search.clicked
+         */
+            EVENT_SEARCH_CLICKED = namespace + 'search.clicked',
+
         /**
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
@@ -270,16 +275,7 @@ define(function() {
             this.$navigation = this.$find('.navigation');
             this.$navigationContent = this.$find('.navigation-content');
 
-            // start search component
-            this.sandbox.start([
-                {
-                    name: 'search@husky',
-                    options: {
-                        el: '#navigation-search',
-                        placeholderText: 'public.search'
-                    }
-                }
-            ]);
+            this.renderSearch();
 
             // render navigation items
             this.renderNavigationItems(this.options.data);
@@ -297,6 +293,22 @@ define(function() {
 
             // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
+        },
+
+        /**
+         * Renders the search item
+         */
+        renderSearch: function() {
+            var $sectionDiv = this.sandbox.dom.createElement('<div class="section">'),
+                $sectionList = this.sandbox.dom.createElement('<ul class="section-items">'),
+                $searchItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
+                    item: {id: 'husky-navigation-search', title: 'public.search'},
+                    icon: 'fa-search',
+                    translate: this.sandbox.translate
+                }));
+            this.sandbox.dom.append($sectionList, $searchItem);
+            this.sandbox.dom.append($sectionDiv, $sectionList);
+            this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
         },
 
         /**
@@ -419,20 +431,16 @@ define(function() {
 
             // collapse events
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.resizeListener.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation #navigation-search a.search-icon');
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
             this.sandbox.dom.on(this.$el, 'click', this.collapsedFooterClickHandler.bind(this), '.navigation.collapsed footer');
 
 
             // tooltip events
             this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
-                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'), 'placeholder'), event);
-            }.bind(this), '.navigation.collapsed .navigation-search');
-            this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
                 this.showToolTip.call(this, this.sandbox.translate(this.options.translations.user), event);
             }.bind(this), '.navigation.collapsed footer');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
-            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search, .navigation.collapsed footer');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed, .navigation.collapsed footer');
 
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
                 this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
@@ -451,6 +459,11 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit(USERNAME_CLICKED);
             }.bind(this), 'footer .user');
+
+            // emit search event if search item gets clicked
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.emit(EVENT_SEARCH_CLICKED);
+            }.bind(this), '#husky-navigation-search');
         },
 
         /**
@@ -802,22 +815,6 @@ define(function() {
                     this.tooltipsEnabled = false;
                 }
             }
-        },
-
-        // called when search icon was clicked
-        showCollapsedSearch: function(event) {
-
-            // remove collapse
-            this.unCollapse(true);
-
-            // focus search
-            var input = this.sandbox.dom.find('input', this.sandbox.dom.parent(event.currentTarget)),
-                instanceName;
-            this.sandbox.dom.trigger(input, 'focus');
-
-            // close when search is sent
-            instanceName = this.options.searchInstanceName ? this.options.searchInstanceName + '.' : '';
-            this.sandbox.once('husky.' + instanceName + 'search', this.resizeListener.bind(this));
         },
 
 

@@ -621,10 +621,10 @@
              * @param params url
              */
             loadMatchings: function(params) {
-                this.sandbox.dom.hide(this.$find('.selected-elements'));
+                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.util.load(params.url)
                     .then(function(response) {
-                        this.sandbox.dom.show(this.$find('.selected-elements'));
+                        this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                         if (this.isLoading === true) {
                             this.stopLoading();
                         }
@@ -706,7 +706,7 @@
                 this.sandbox.dom.append(this.$element, this.sandbox.util.template(templates.selectedCounter)({
                     text: this.sandbox.translate(this.options.selectedCounterText)
                 }));
-                this.sandbox.dom.hide(this.$find('.selected-elements'));
+                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
             },
 
             /**
@@ -714,7 +714,7 @@
              */
             renderView: function() {
                 this.gridViews[this.viewId].render(this.data, this.$element);
-                this.sandbox.dom.show(this.$find('.selected-elements'));
+                this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.emit(VIEW_RENDERED.call(this));
             },
 
@@ -784,10 +784,10 @@
              */
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
-                this.sandbox.dom.hide(this.$find('.selected-elements'));
+                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
-                        this.sandbox.dom.show(this.$find('.selected-elements'));
+                        this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                         if (this.isLoading === true) {
                             this.stopLoading();
                         }
