@@ -41,7 +41,7 @@ define([
                     return regex.test(value);
                 },
                 time: function(value) {
-                    return Globalize.parseDate(value, 'HH:mm:ss') !== null;
+                    return Globalize.parseDate(value, this.options.timeFormat) !== null;
                 },
                 color: function(value) {
                     // hex color with leading #
@@ -95,13 +95,23 @@ define([
                 },
 
                 needsValidation: function() {
-                    var val = this.getValue();
+                    var val = this.getInputValue();
 
                     return val !== '';
                 },
 
+                getInputValue: function() {
+                    var type = this.$el.data('auraSkin');
+
+                    if (type === 'data') {
+                        return typeGetter.date.call(this);
+                    }
+
+                    return typeGetter.default.call(this);
+                },
+
                 validate: function() {
-                    var value = this.getValue(),
+                    var value = this.getInputValue(),
                         type = this.$el.data('auraSkin');
 
                     if (!!type && !!typeValidators[type]) {
