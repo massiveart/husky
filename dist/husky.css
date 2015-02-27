@@ -11264,3 +11264,9 @@ a.btn-black, a.btn-highlight {
   text-align: center;
   line-height: 50px;
 }
+
+/* line 151, ../scss/modules/data-navigation.scss */
+.data-navigation-info-empty {
+  color: #999;
+  font-size: 14px;
+}
