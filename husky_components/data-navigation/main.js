@@ -227,6 +227,8 @@ define([
             this.sandbox.on(SET_URL.call(this), function(url) {
                 if (url !== this.getCurrentUrl) {
                     this.setUrl(url, true);
+                } else {
+                    this.cache.deleteAll();
                 }
             }.bind(this));
 
@@ -404,7 +406,9 @@ define([
          * @method selectDataHandler
          */
         selectParentDataHandler: function(event) {
-            this.openParentHandler(event).then(function(){
+            event.stopPropagation();
+
+            this.openParentHandler(event).then(function() {
                 this.sandbox.emit(SELECT.call(this), this.data.current.item);
                 this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
             }.bind(this));
@@ -415,6 +419,8 @@ define([
          * @method selectDataHandler
          */
         navigateParentDataHandler: function(event) {
+            event.stopPropagation();
+
             this.openParentHandler(event);
         },
 
@@ -423,6 +429,8 @@ define([
          * @method selectDataHandler
          */
         selectChildrenDataHandler: function(event) {
+            event.stopPropagation();
+
             this.openChildrenHandler(event).then(function() {
                 this.sandbox.emit(SELECT.call(this), this.data.current.item);
                 this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
