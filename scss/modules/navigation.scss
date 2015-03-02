@@ -95,7 +95,7 @@ $fadeDuration: 100ms;
         top: 6px;
         background-color: $navigationBackgroundColor;
         line-height: 30px;
-        vertical-align: center;
+        vertical-align: middle;
         color: white;
         text-align: center;
         font-size: 20px;
@@ -111,6 +111,11 @@ $fadeDuration: 100ms;
         .data-navigation-list-container {
             opacity: 1;
         }
+    }
+
+    &.disappeared.collapseIcon .navigation-close-icon {
+        display: none;
+
     }
 }
 

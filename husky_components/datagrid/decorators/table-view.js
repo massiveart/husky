@@ -25,6 +25,7 @@
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
  * @param {Boolean} [options.stickyHeader] true to make the table header sticky
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
+ * @param {Boolean} [options.rowClickSelect] if true the row gets selected on click and the row-click event is emitted on double-click
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -58,7 +59,8 @@ define(function() {
         icons: [],
         removeIcon: 'trash-o',
         croppedMaxLength: 35,
-        openPathToSelectedChildren: false
+        openPathToSelectedChildren: false,
+        rowClickSelect: false
     },
 
     constants = {
@@ -100,6 +102,7 @@ define(function() {
         textContainerClass: 'cell-content',
         renderingClass: 'rendering',
         headerCloneClass: 'header-clone',
+        counterIndentClass: 'indent',
         childIndent: 25 //px
     },
 
@@ -271,6 +274,9 @@ define(function() {
             this.sandbox.dom.append($container, this.$el);
             this.addViewClasses();
             this.data = data;
+            if (this.options.fullWidth === true) {
+                this.indentSelectedCounter();
+            }
             this.renderTable();
             this.bindDomEvents();
             if (this.datagrid.options.resizeListeners === true) {
@@ -286,10 +292,29 @@ define(function() {
         },
 
         /**
+         * Indents the datagrid's selected-counter
+         */
+        indentSelectedCounter: function() {
+            if (this.datagrid.options.selectedCounter === true) {
+                this.sandbox.dom.addClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
+            }
+        },
+
+        /**
+         * Removes the indent of the selected-counter
+         */
+        removeIndentSelectedCounter: function() {
+            if (this.datagrid.options.selectedCounter === true) {
+                this.sandbox.dom.removeClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
+            }
+        },
+
+        /**
          * Destroys the view
          */
         destroy: function() {
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
+            this.removeIndentSelectedCounter();
             this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
@@ -434,6 +459,11 @@ define(function() {
 
             this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
                 $headerCell = this.sandbox.dom.createElement(templates.headerCell);
+
+                if (!!column.class && typeof column.class === 'string') {
+                    this.sandbox.dom.addClass($headerCell, column.class);
+                }
+
                 this.sandbox.dom.html($headerCell, this.sandbox.util.template(templates.textContainer)({
                     content: this.sandbox.translate(column.content)
                 }));
@@ -657,6 +687,11 @@ define(function() {
                     this.sandbox.dom.prepend(content, selectItem);
                 }
             }
+
+            if (!!column.class && typeof column.class === 'string') {
+                this.sandbox.dom.addClass($cell, column.class);
+            }
+
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
 
@@ -881,7 +916,12 @@ define(function() {
                 '.' + constants.checkboxClass + ', .' + constants.radioClass
             );
             // handle click on body row
-            this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
+            if (this.options.rowClickSelect === false) {
+                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
+            } else {
+                this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
+                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowSelectHandler.bind(this), '.' + constants.rowClass);
+            }
             // remove row event
             if (this.options.removeRow === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.removeItemClickHandler.bind(this), '.' + constants.rowRemoverClass);
@@ -1189,11 +1229,26 @@ define(function() {
          * @param event {Object} the event object
          */
         selectItemChangeHandler: function (event) {
-            this.sandbox.dom.stopPropagation(event);
+            if (!!event.type) {
+                this.sandbox.dom.stopPropagation(event);
+            }
             var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.target, '.' + constants.rowClass), 'id'),
                 isChecked = this.sandbox.dom.is(event.target, ':checked');
             if (this.options.selectItem.type === selectItems.CHECKBOX) {
                 this.toggleSelectRecord(recordId, isChecked);
+            } else if (this.options.selectItem.type === selectItems.RADIO) {
+                this.uniqueSelectRecord(recordId);
+            }
+        },
+
+        /**
+         * Handles the click on a body row if the options rowClickSelect is set to true
+         * @param event
+         */
+        bodyRowSelectHandler: function (event) {
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            if (this.options.selectItem.type === selectItems.CHECKBOX) {
+                this.toggleSelectRecord(recordId, !this.datagrid.itemIsSelected(recordId));
             } else if (this.options.selectItem.type === selectItems.RADIO) {
                 this.uniqueSelectRecord(recordId);
             }
