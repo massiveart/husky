@@ -17,7 +17,7 @@ define([], function() {
                 '<ul class="data-navigation-items">',
                 '<% if (!!data.children && !!data.children.length) { %>',
                 '<% _.each(data.children, function(child) { %>',
-                '<li data-id="<%= child.id %>">',
+                '<li data-id="<%= child.id %>" class="data-navigation-item">',
                 '<% if (!!child.preview) { %>',
                 '<div class="data-navigation-item-thumb" style="background-image: url(\'<%=child.preview.url%>\')"></div>',
                 '<% } else { %>',

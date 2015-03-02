@@ -13,8 +13,13 @@
  * @class DataNavigation
  * @constructor
  * @param {Object} [options] Configuration object
+ * @param {String} [options.instanceName] - name of instance
  * @param {String} [options.rootUrl] - optional root url to fetch root data
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.resultKey] - key of array result
+ * @param {String} [options.nameKey] - key of object name
+ * @param {String} [options.childrenLinkKey] - key of children link in object
+ * @param {String} [options.showAddButton] - Indicates if add button should be rendered
  * @param {Object} [options.translates] Holds the translates
  */
 define([
@@ -26,7 +31,6 @@ define([
     var defaultOptions = {
             url: null,
             rootUrl: null,
-            id: null,
             resultKey: 'items',
             parentResultKey: 'parent',
             nameKey: 'name',
@@ -208,11 +212,11 @@ define([
          * @method bindDOMEvents
          */
         bindDOMEvents: function() {
-            this.$el.on('click', '.data-navigation-item-name', this.selectChildrenDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-item', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-next', this.navigateChildrenHandler.bind(this));
             this.$el.on('click', '.data-navigation-parent-back', this.navigateParentDataHandler.bind(this));
-            this.$el.on('click', '.data-navigation-parent-text', this.selectParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
@@ -369,8 +373,8 @@ define([
          * @method openParentHandler
          */
         openParentHandler: function(event) {
-            var $item = $(event.currentTarget),
-                id = this.sandbox.dom.parent($item).data('parent-id'),
+            var $item = $(event.currentTarget).closest('*[data-parent-id]'),
+                id = this.sandbox.dom.data($item, 'parent-id'),
                 newView = this.createView();
 
             this.prependView(newView);
