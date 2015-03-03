@@ -89,6 +89,7 @@
     width: calc(100% - 45px);
     text-overflow: ellipsis;
     overflow: hidden;
+    padding-left: 5px;
 
     .fa-chevron-right {
         position: absolute;
@@ -113,7 +114,6 @@
 }
 
 .data-navigation-back {
-    padding-left: 5px;
     height: 50px;
 
     &:focus {
@@ -126,10 +126,10 @@
         color: #fff;
         cursor: pointer;
 
-        width: 45px;
-        height: 45px;
-        padding-top: 16px;
-        padding-left: 16px;
+        width: 50px;
+        height: 50px;
+        padding-top: 17px;
+        padding-left: 22px;
 
         &:hover {
             background-color: #21272E;
@@ -138,7 +138,7 @@
     }
 
     .data-navigation-parent-text {
-        margin-left: 50px;
+        margin-left: 60px;
 
         padding-right: 20px;
         white-space: nowrap;
