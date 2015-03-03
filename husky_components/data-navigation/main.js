@@ -50,15 +50,15 @@ define([
                     '<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
                     '<span class="fa-chevron-left data-navigation-parent-back"></span>',
                     '<div class="data-navigation-parent-text">',
-                    '<% if (!!data.parent && data.parent[nameKey]) { %>',
-                    '<%= data.parent[nameKey] %>',
+                    '<% if (!!data.current && data.current[nameKey]) { %>',
+                    '<%= data.current[nameKey] %>',
                     '<% } else { %>',
                     '<%= translates.title %>',
                     '<% } %>',
                     '</div>',
                     '</div>',
                     '<% } else { %>',
-                    '<div>',
+                    '<div class="root-text">',
                     '<%= data.current[nameKey] || translates.title %>',
                     '</div>',
                     '<% } %>'
@@ -214,9 +214,7 @@ define([
         bindDOMEvents: function() {
             this.$el.on('click', '.data-navigation-item', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
-            this.$el.on('click', '.data-navigation-item-next', this.navigateChildrenHandler.bind(this));
-            this.$el.on('click', '.data-navigation-parent-back', this.navigateParentDataHandler.bind(this));
-            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-parent-back', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
