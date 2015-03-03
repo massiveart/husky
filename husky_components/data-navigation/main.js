@@ -50,8 +50,8 @@ define([
                     '<div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
                     '<span class="fa-chevron-left data-navigation-parent-back"></span>',
                     '<div class="data-navigation-parent-text">',
-                    '<% if (!!data.current && data.current[nameKey]) { %>',
-                    '<%= data.current[nameKey] %>',
+                    '<% if (!!data.current && data.current.name) { %>',
+                    '<%= data.current.name %>',
                     '<% } else { %>',
                     '<%= translates.title %>',
                     '<% } %>',
@@ -59,7 +59,7 @@ define([
                     '</div>',
                     '<% } else { %>',
                     '<div class="root-text">',
-                    '<%= data.current[nameKey] || translates.title %>',
+                    '<%= data.current.name || translates.title %>',
                     '</div>',
                     '<% } %>'
                 ].join('');
