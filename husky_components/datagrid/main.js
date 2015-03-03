@@ -148,7 +148,7 @@
                  * @returns {String}
                  */
                 number: function(val) {
-                    return this.sandbox.numberFormat(val);
+                    return this.sandbox.numberFormat(val, 'n');
                 },
 
                 /**

@@ -31471,7 +31471,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                  * @returns {String}
                  */
                 number: function(val) {
-                    return this.sandbox.numberFormat(val);
+                    return this.sandbox.numberFormat(val, 'n');
                 },
 
                 /**
