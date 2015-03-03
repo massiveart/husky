@@ -515,7 +515,11 @@ define([
          * @param {Object} view
          */
         playPrependAnimation: function(view) {
-            this.currentView.$el
+            var oldView = this.currentView;
+            this.currentView = view;
+
+            oldView.$el
+                .stop()
                 .css({
                     left: '0%'
                 })
@@ -524,8 +528,7 @@ define([
                 }, {
                     duration: 250,
                     done: function() {
-                        this.currentView.destroy();
-                        this.currentView = view;
+                        oldView.destroy();
                     }.bind(this)
                 });
         }
