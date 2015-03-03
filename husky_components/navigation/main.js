@@ -972,6 +972,7 @@ define(function() {
                 }
             }
 
+            this.sandbox.dom.addClass(this.$el, 'data-navigation-opened');
             this.sandbox.util.delay(function() {
                 $element.addClass('expanded');
             }, 0);
@@ -987,6 +988,8 @@ define(function() {
          * Remove data navigation
          */
         removeDataNavigation: function() {
+            this.sandbox.dom.removeClass(this.$el, 'data-navigation-opened');
+
             this.sandbox.stop(this.$find('.navigation-data-container'));
 
             this.unCollapse();
