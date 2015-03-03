@@ -81,7 +81,8 @@
                 BYTES: 'bytes',
                 RADIO: 'radio',
                 COUNT: 'count',
-                TRANSLATION: 'translation'
+                TRANSLATION: 'translation',
+                NUMBER: 'number'
             },
 
             decorators = {
@@ -141,6 +142,14 @@
                     return this.sandbox.translate(val);
                 },
 
+                /**
+                 * Formats a float as culture specific number
+                 * @param val {String} the string to format
+                 * @returns {String}
+                 */
+                number: function(val) {
+                    return this.sandbox.numberFormat(val, 'n');
+                },
 
                 /**
                  * Attaches a postfix to a number
