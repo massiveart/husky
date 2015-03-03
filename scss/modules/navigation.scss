@@ -66,6 +66,10 @@ $fadeDuration: 100ms;
 .husky-navigation {
     float: left;
     height: 100%;
+
+    &.data-navigation-opened {
+        width: 300px !important;
+    }
 }
 
 .navigation {
