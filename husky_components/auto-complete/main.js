@@ -189,7 +189,7 @@ define([], function() {
          */
         getValueName: function() {
             if (!!this.options.value) {
-                return app.core.util.escapeHtml(this.options.value[this.options.valueKey]);
+                return this.sandbox.util.escapeHtml(this.options.value[this.options.valueKey]);
             } else {
                 return '';
             }
