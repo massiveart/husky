@@ -30,7 +30,7 @@
             {
                 "id": "1",
                 "content1": "B Hallo 1.1",
-                "content2": 23,
+                "content2": 23.75,
                 "content3": {
                     "50x50": "http://placehold.it/50x50",
                     "170x170": "http://placehold.it/170x170"
@@ -40,7 +40,7 @@
             {
                 "id": "2",
                 "content1": "A Hallo 1.1",
-                "content2": 234938720390,
+                "content2": 1,
                 "content3": {
                     "50x50": "http://placehold.it/50x50",
                     "170x170": "http://placehold.it/170x170"
@@ -50,7 +50,7 @@
             {
                 "id": "3",
                 "content1": "C Hallo 1.1",
-                "content2": 10953,
+                "content2": 10953.50,
                 "content3": {
                     "50x50": "http://placehold.it/50x50",
                     "170x170": "http://placehold.it/170x170"
@@ -60,7 +60,7 @@
             {
                 "id": "4",
                 "content1": "D Hallo 1.1",
-                "content2": 3265489,
+                "content2": 3265489.99,
                 "content3": {
                     "50x50": "http://placehold.it/50x50",
                     "170x170": "http://placehold.it/170x170"
