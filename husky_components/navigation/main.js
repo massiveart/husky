@@ -574,7 +574,7 @@ define(function() {
             if (this.sandbox.dom.hasClass(domObject, 'js-navigation-sub-item')) {
                 parent = this.sandbox.dom.closest(domObject, '.navigation-items');
 
-                // toggle parent only when it is not expaneded
+                // toggle parent only when it is not expanded
                 if (!this.sandbox.dom.hasClass(parent, 'is-expanded')) {
                     this.toggleItems(null, parent);
                 }
