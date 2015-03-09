@@ -38,7 +38,7 @@ define([
             pageKey: 'page',
             limitKey: 'limit',
             searchKey: 'search',
-            limit: 10,
+            limit: 50,
             showAddButton: true,
             translates: {
                 noData: 'No Data',
