@@ -39,13 +39,12 @@ define([], function() {
             slideExpandedClass: 'slide-expanded'
         },
 
-
         /**
          * triggered when user clicked on search icon or pressed enter
          * @event husky.search[.INSTANCE_NAME]
          * @param {String} the string thats been looked for
          */
-            SEARCH = function() {
+        SEARCH = function() {
             return this.getEventName();
         },
 
@@ -53,15 +52,23 @@ define([], function() {
          * triggered when user clicks on reset button of search
          * @event husky.search[.INSTANCE_NAME].reset
          */
-            RESET = function() {
+        RESET = function() {
             return this.getEventName('reset');
+        },
+
+        /**
+         * clear value if search field
+         * @event husky.search[.INSTANCE_NAME].clear
+         */
+        CLEAR = function() {
+            return this.getEventName('clear');
         },
 
         /**
          * triggered when user clicks on search icon or pressed enter
          * @event husky.search[.INSTANCE_NAME].initialized
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return this.getEventName('initialized');
         };
 
@@ -74,9 +81,15 @@ define([], function() {
             this.render();
 
             this.bindDOMEvents();
+            this.bindCustomEvents();
 
             this.sandbox.emit(INITIALIZED.call(this));
+        },
 
+        bindCustomEvents: function() {
+            this.sandbox.on(CLEAR.call(this), function() {
+                this.removeSearch(null, true);
+            }.bind(this));
         },
 
         render: function() {
@@ -88,7 +101,6 @@ define([], function() {
             }
 
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
-
         },
 
         // bind dom elements
@@ -120,8 +132,11 @@ define([], function() {
             this.sandbox.dom.addClass(this.$el, constants.slideExpandedClass);
         },
 
-        resetSearch : function() {
-            this.sandbox.emit(RESET.call(this));
+        resetSearch: function(noEmit) {
+            if(!noEmit) {
+                this.sandbox.emit(RESET.call(this));
+            }
+
             this.searchSubmitted = false;
         },
 
@@ -144,8 +159,6 @@ define([], function() {
                 // escape pressed
                 this.removeSearch();
             }
-
-
         },
 
         submitSearch: function(event) {
@@ -171,7 +184,7 @@ define([], function() {
             this.sandbox.emit(SEARCH.call(this), searchString);
         },
 
-        removeSearch: function(event) {
+        removeSearch: function(event, noEmit) {
             if (!!event) {
                 event.preventDefault();
             } else {
@@ -186,7 +199,7 @@ define([], function() {
             this.sandbox.dom.hide(event.target);
             this.sandbox.dom.val($input, '');
             if (this.searchSubmitted) {
-                this.resetSearch();
+                this.resetSearch(noEmit);
             }
         },
 
