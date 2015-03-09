@@ -3,6 +3,10 @@
 }
 
 .data-navigation {
+    .search {
+        margin: 20px 40px;
+    }
+
     height: 100%;
     padding-top: 100px;
     background-color: $navigationActiveColor;
@@ -24,7 +28,7 @@
 
 .data-navigation-list-container {
     height: calc(100% - 200px);
-    overflow: hidden;
+    overflow: scroll;
     position: relative;
 }
 
@@ -48,7 +52,7 @@
 
 .data-navigation-items {
     height: 100%;
-    min-height: 150px;
+    min-height: calc(100% - 150px);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -167,6 +171,7 @@
 .data-navigation-info {
     text-align: center;
     line-height: 50px;
+    height: calc(100% - 150px);
 }
 
 .data-navigation-info-empty {
