@@ -38,7 +38,7 @@ define([
             pageKey: 'page',
             limitKey: 'limit',
             searchKey: 'search',
-            limit: 50,
+            limit: 20,
             showAddButton: true,
             translates: {
                 noData: 'No Data',
@@ -191,13 +191,15 @@ define([
             this.render();
             this.bindCustomEvents();
 
-            return this.load().then(function(data) {
-                this.sandbox.emit(INITIALIZED.call(this));
+            this.sandbox.once('husky.loader.initialized', function() {
+                this.load().then(function(data) {
+                    this.sandbox.emit(INITIALIZED.call(this));
 
-                this.currentView = this.createView(data);
-                this.updateHeader(data);
-                this.storeData(data);
-                this.appendView();
+                    this.currentView = this.createView(data);
+                    this.updateHeader(data);
+                    this.storeData(data);
+                    this.appendView();
+                }.bind(this));
             }.bind(this));
         },
 
@@ -220,6 +222,16 @@ define([
 
             this.sandbox.start([
                 {
+                    name: 'loader@husky',
+                    options: {
+                        el: this.sandbox.dom.find('.loader', this.$el),
+                        hidden: true
+                    }
+                }
+            ]);
+
+            this.sandbox.start([
+                {
                     name: 'search@husky',
                     options: {
                         el: this.sandbox.dom.find('.search', this.$el),
@@ -237,16 +249,6 @@ define([
          * @method startInfiniteScroll
          */
         startInfiniteScroll: function() {
-            this.sandbox.start([
-                {
-                    name: 'loader@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.loader', this.$el),
-                        hidden: true
-                    }
-                }
-            ]);
-
             this.sandbox.infiniteScroll('.iscroll', this.loadNextPage.bind(this), 50);
         },
 
@@ -258,7 +260,7 @@ define([
             var def = this.sandbox.data.deferred();
 
             if (!!this.data.hasNextPage) {
-                this.sandbox.emit('husky.loader.show');
+                this.showLoader();
 
                 this.page++;
                 this.sandbox.util.load(this.getUrl(this.getCurrentUrl()))
@@ -268,7 +270,7 @@ define([
                         this.data.hasNextPage = children.length == this.options.limit;
                         this.currentView.append(children, this.options);
 
-                        this.sandbox.emit('husky.loader.hide');
+                        this.hideLoader();
                         def.resolve();
                     }.bind(this));
             } else {
@@ -350,10 +352,24 @@ define([
          */
         load: function(url) {
             this.page = 1;
+            this.showLoader();
 
             return this.sandbox.util.load(this.getUrl(url))
                 .then(this.parse.bind(this))
+                .then(function(data) {
+                    this.hideLoader();
+
+                    return data;
+                }.bind(this))
                 .then(this.hideSearch.bind(this));
+        },
+
+        hideLoader: function() {
+            this.sandbox.emit('husky.loader.hide');
+        },
+
+        showLoader: function() {
+            this.sandbox.emit('husky.loader.show');
         },
 
         /**
