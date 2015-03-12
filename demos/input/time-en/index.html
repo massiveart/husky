@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Husky input demo</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../../dist/husky.css">
+    </head>
+    <style>
+        body {
+            padding: 50px;
+        }
+    </style>
+    <body>
+
+        <h1>Husky input demo</h1>
+
+        <div class="grid form-horizontal">
+            <div class="grid-col-6">
+                <div class="form-group">
+                    <label>Time</label>
+
+                    <div data-aura-component="input@husky"
+                         data-aura-skin="time"
+                         data-aura-instance-name="time"
+                         data-form="true"
+                         data-type="husky-input"
+                         data-mapper-property="time"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-col-2">
+                <div id="setData" class="btn pointer">Set data</div>
+            </div>
+            <div class="grid-col-2">
+                <div id="getData" class="btn pointer">Get data</div>
+            </div>
+            <div class="grid-col-2">
+                <div id="validate" class="btn pointer">Validate</div>
+            </div>
+        </div>
+        <script src="../../js/jquery.js"></script>
+        <script data-main="script" src="../../js/require.js"></script>
+    </body>
+</html>
