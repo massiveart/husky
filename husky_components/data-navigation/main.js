@@ -192,14 +192,22 @@ define([
             this.bindCustomEvents();
 
             this.sandbox.once('husky.loader.initialized', function() {
-                this.load().then(function(data) {
-                    this.sandbox.emit(INITIALIZED.call(this));
+                this.showLoader();
 
-                    this.currentView = this.createView(data);
-                    this.updateHeader(data);
-                    this.storeData(data);
-                    this.appendView();
-                }.bind(this));
+                this.load()
+                    .then(function(data) {
+                        this.hideLoader();
+
+                        return data;
+                    }.bind(this))
+                    .then(function(data) {
+                        this.sandbox.emit(INITIALIZED.call(this));
+
+                        this.currentView = this.createView(data);
+                        this.updateHeader(data);
+                        this.storeData(data);
+                        this.appendView();
+                    }.bind(this));
             }.bind(this));
         },
 
@@ -352,15 +360,9 @@ define([
          */
         load: function(url) {
             this.page = 1;
-            this.showLoader();
 
             return this.sandbox.util.load(this.getUrl(url))
                 .then(this.parse.bind(this))
-                .then(function(data) {
-                    this.hideLoader();
-
-                    return data;
-                }.bind(this))
                 .then(this.hideSearch.bind(this));
         },
 
