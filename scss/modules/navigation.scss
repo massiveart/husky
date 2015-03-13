@@ -87,7 +87,6 @@ $fadeDuration: 100ms;
         -webkit-transform: scale3d(1,1,1); // this is a webkit bugfix
     }
 
-
     &.collapseIcon .navigation-close-icon {
         position: absolute;
         display: block;
@@ -104,6 +103,10 @@ $fadeDuration: 100ms;
         cursor: pointer;
         border-radius: 0 0 $borderRadiusSmall 0;
         opacity: 1;
+    }
+
+    &.disappeared.collapseIcon .navigation-close-icon {
+      display: none;
     }
 }
 

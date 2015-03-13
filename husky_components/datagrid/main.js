@@ -28,6 +28,8 @@
  * @param {String} [options.matchings.class] css class of the column
  * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
+ * @param {Boolean} [options.selectedCounter] If true a counter will be displayed which shows how much elements have been selected
+ * @param {String} [options.selectedCounterText] translation key or text used in the selected-counter
  */
 (function() {
 
@@ -67,7 +69,9 @@
                 onlySelectLeaves: false,
                 childrenPropertyName: false,
                 resizeListeners: true,
-                resultKey: 'items'
+                resultKey: 'items',
+                selectedCounter: false,
+                selectedCounterText: 'public.elements-selected'
             },
 
             types = {
@@ -77,7 +81,8 @@
                 BYTES: 'bytes',
                 RADIO: 'radio',
                 COUNT: 'count',
-                TRANSLATION: 'translation'
+                TRANSLATION: 'translation',
+                NUMBER: 'number'
             },
 
             decorators = {
@@ -137,6 +142,14 @@
                     return this.sandbox.translate(val);
                 },
 
+                /**
+                 * Formats a float as culture specific number
+                 * @param val {String} the string to format
+                 * @returns {String}
+                 */
+                number: function(val) {
+                    return this.sandbox.numberFormat(val, 'n');
+                },
 
                 /**
                  * Attaches a postfix to a number
@@ -185,6 +198,9 @@
                     '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
                     '   <span class="icon"></span>',
                     '</div>'
+                ].join(''),
+                selectedCounter: [
+                    '<span class="selected-elements smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
                 ].join('')
             },
 
@@ -431,6 +447,22 @@
                 return this.createEventName('items.get-selected');
             },
 
+            /**
+             * listens on and shows the medium loader above the view
+             * @event husky.datagrid.medium-loader.show
+             */
+            MEDIUM_LOADER_SHOW = function() {
+                return this.createEventName('medium-loader.show');
+            },
+
+            /**
+             * listens on and shows the medium loader above the view
+             * @event husky.datagrid.medium-loader.show
+             */
+            MEDIUM_LOADER_HIDE = function() {
+                return this.createEventName('medium-loader.hide');
+            },
+
         /**
          * Private Methods
          * --------------------------------------------------------------------
@@ -507,6 +539,7 @@
                 this.paginationId = this.options.pagination;
 
                 this.$loader = null;
+                this.$mediumLoader = null;
                 this.isLoading = false;
                 this.initialLoaded = false;
 
@@ -521,10 +554,10 @@
                     direction: null
                 };
 
-                this.initRender();
-
                 // Should only be be called once
                 this.bindCustomEvents();
+
+                this.initRender();
 
                 this.sandbox.emit(INITIALIZED.call(this));
             },
@@ -576,7 +609,7 @@
              */
             evaluateMatchings: function() {
                 var matchings = this.options.matchings;
-                if (typeof(matchings) == 'string') {
+                if (typeof(matchings) === 'string') {
                     // Load matchings/fields from url
                     this.loading();
                     this.loadMatchings({
@@ -597,8 +630,10 @@
              * @param params url
              */
             loadMatchings: function(params) {
+                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.util.load(params.url)
                     .then(function(response) {
+                        this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                         if (this.isLoading === true) {
                             this.stopLoading();
                         }
@@ -664,7 +699,6 @@
                     this.preSelectItems();
                     this.initialLoaded = true;
                 }
-
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
@@ -675,10 +709,21 @@
             },
 
             /**
+             * Renderes the counter which shows how many elements have been selected
+             */
+            renderSelectedCounter: function() {
+                this.sandbox.dom.append(this.$element, this.sandbox.util.template(templates.selectedCounter)({
+                    text: this.sandbox.translate(this.options.selectedCounterText)
+                }));
+                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
+            },
+
+            /**
              * Renderes the current view
              */
             renderView: function() {
                 this.gridViews[this.viewId].render(this.data, this.$element);
+                this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.emit(VIEW_RENDERED.call(this));
             },
 
@@ -748,9 +793,10 @@
              */
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
-
+                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
+                        this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                         if (this.isLoading === true) {
                             this.stopLoading();
                         }
@@ -816,9 +862,47 @@
              */
             initRender: function() {
                 this.bindDOMEvents();
+                this.renderMediumLoader();
+                if (this.options.selectedCounter === true) {
+                    this.renderSelectedCounter();
+                }
                 this.getPaginationDecorator(this.paginationId);
                 this.getViewDecorator(this.viewId);
                 this.evaluateMatchings();
+            },
+
+            /**
+             * Renderes and starts the medium loader, which can
+             * be displayed above a view with events
+             */
+            renderMediumLoader: function() {
+                this.$mediumLoader = this.sandbox.dom.createElement('<div class="medium-loader"/>');
+                this.sandbox.dom.append(this.$element, this.$mediumLoader);
+
+                this.sandbox.start([
+                    {
+                        name: 'loader@husky',
+                        options: {
+                            el: this.$mediumLoader,
+                            size: '50px',
+                            color: '#cccccc'
+                        }
+                    }
+                ]);
+            },
+
+            /**
+             * Displays the medium loader above the view
+             */
+            showMediumLoader: function() {
+                this.sandbox.dom.addClass(this.$mediumLoader, 'show');
+            },
+
+            /**
+             * Hides the medium loader
+             */
+            hideMediumLoader: function() {
+                this.sandbox.dom.removeClass(this.$mediumLoader, 'show');
             },
 
             /**
@@ -1107,6 +1191,12 @@
                 // change an exsiting data-record
                 this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
 
+                // update selected-counter
+                this.sandbox.on(NUMBER_SELECTIONS.call(this), this.updateSelectedCounter.bind(this));
+
+                this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
+                this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
+
                 this.startColumnOptionsListener();
                 this.startSearchListener();
             },
@@ -1270,6 +1360,16 @@
             },
 
             /**
+             * Updates the selected-elements counter
+             * @param {String|number} number - the number of selected items
+             */
+            updateSelectedCounter: function(number) {
+                if (this.options.selectedCounter === true) {
+                    this.sandbox.dom.html(this.$find('.selected-elements .number'), number);
+                }
+            },
+
+            /**
              * Methods for data manipulation
              * --------------------------------------------------------------------
              */
@@ -1293,8 +1393,8 @@
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
                     this.setItemSelected(this.data.embedded[i].id);
                 }
-                // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), this.selectedItems);
+                // emit events with selected data
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.selectedItems.length);
                 this.setSelectedItemsToData();
             },

@@ -1,32 +1,24 @@
-===========
 CHANGELOGS:
 ===========
-
-Unreleased
-==========
 
  - update ckeditor:
    - version 4.4.7 update
    - add subscript and numbered list to ckeditor toolbar
    - add allow iframe and script tag option
 
+2015/02/24 v0.10.0
+=================
+
+This is not a complete feature list!
+
  - added start and destroy interface for ckeditor component
-
  - updated text block design in content-types
-
- - updated datagrid api
-   'children' property is now 'hasChildren'
-
+ - updated datagrid api: 'children' property is now 'hasChildren'
  - fixed indentation for datagrid code
-
  - fixed overlay cleanup method
-
  - updated aura version
-
  - added default icon for auto-complete list
-
  - fixed url-validation in husky-input
-
  - updated ckeditor link-dialog in extension
 
 2014/10/08 v0.8.3
