@@ -6,7 +6,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/column-navigation
+ * @module husky/components/ckeditor
  */
 
 
@@ -27,7 +27,7 @@ define([], function() {
             instanceName: null,
             tableEnabled: true,
             linksEnabled: true,
-            scriptsEnabled: true,
+            scriptEnabled: true,
             iframeEnabled: true,
             pasteFromWord: true,
             autoGrow_maxHeight: 500
@@ -110,7 +110,7 @@ define([], function() {
             }
 
             // extra allowed content iframe
-            if (this.options.scriptsEnabled === true) {
+            if (this.options.scriptEnabled === true) {
                 extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
             }
 
@@ -127,7 +127,7 @@ define([], function() {
             delete config.element;
             delete config.linksEnabled;
             delete config.tableEnabled;
-            delete config.scriptsEnabled;
+            delete config.scriptEnabled;
             delete config.iframeEnabled;
 
             // allow img tags to have any class (*) and any attribute [*]
@@ -195,15 +195,30 @@ define([], function() {
         },
 
         destroyEditor: function() {
-            this.editorContent = this.editor.getData();
-            this.editor.destroy();
+            if (!!this.editor) {
+                this.editorContent = this.editor.getData();
+                if (this.editor.window.getFrame()) {
+                    this.editor.destroy();
+                } else {
+                    delete CKEDITOR.instances[this.editor.name];
+                }
+            }
         },
 
         remove: function() {
             var instance = this.sandbox.ckeditor.getInstance(this.options.instanceName);
 
             if (!!instance) {
-                instance.destroy();
+                // FIXME HACK
+                // this hack fix 'clearCustomData' not null on template change
+                // this error come when editor dom element don't exists
+                // check if dom element exist else remove the instance from object
+                // should also fix memory leak that the instances are not deleted from CKEDITOR
+                if (instance.window.getFrame()) {
+                    instance.destroy();
+                } else {
+                    delete CKEDITOR.instances[this.options.instanceName];
+                }
             }
         }
     };
