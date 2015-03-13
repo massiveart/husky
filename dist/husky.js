@@ -40131,7 +40131,9 @@ define('__component__$ckeditor@husky',[], function() {
             scriptEnabled: true,
             iframeEnabled: true,
             pasteFromWord: true,
-            autoGrow_maxHeight: 500
+            height: null,
+            maxHeight: null,
+            enterMode: null
         },
 
         /**
@@ -40202,6 +40204,27 @@ define('__component__$ckeditor@husky',[], function() {
                 config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
             }
 
+            // set height
+            if (!!this.options.height) {
+                config.autoGrow_minHeight = this.options.height;
+                config.height = this.options.height;
+            }
+
+            // set maxHeight
+            if (!!this.options.maxHeight) {
+                config.autoGrow_maxHeight = this.options.maxHeight;
+                // if height bigger maxHeight height = maxHeight
+                if (config.height > config.autoGrow_maxHeight) {
+                    config.autoGrow_maxHeight = config.height;
+                }
+            }
+
+            // ENTER MODE
+            if (!!this.options.enterMode) {
+                config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
+            }
+
+
             // extra allowed
             var extraAllowedContent = '';
 
@@ -40230,6 +40253,7 @@ define('__component__$ckeditor@husky',[], function() {
             delete config.tableEnabled;
             delete config.scriptEnabled;
             delete config.iframeEnabled;
+            delete config.maxHeight;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title];' + extraAllowedContent;
