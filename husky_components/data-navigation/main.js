@@ -21,6 +21,7 @@
  * @param {String} [options.childrenLinkKey] - key of children link in object
  * @param {String} [options.showAddButton] - Indicates if add button should be rendered
  * @param {Object} [options.translates] Holds the translates
+ * @param {Bool} [options.globalEvents] Should global events be sent
  */
 define([
     'husky_components/data-navigation/list-view'
@@ -36,6 +37,7 @@ define([
             nameKey: 'name',
             childrenLinkKey: 'children',
             showAddButton: true,
+            globalEvents: true,
             translates: {
                 noData: 'No Data',
                 title: 'Data',
@@ -408,7 +410,9 @@ define([
 
             this.openParentHandler(event).then(function() {
                 this.sandbox.emit(SELECT.call(this), this.data.current.item);
-                this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
+                if (this.options.globalEvents) {
+                    this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
+                }
             }.bind(this));
         },
 
@@ -431,7 +435,9 @@ define([
 
             this.openChildrenHandler(event).then(function() {
                 this.sandbox.emit(SELECT.call(this), this.data.current.item);
-                this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
+                if (this.options.globalEvents) {
+                    this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
+                }
             }.bind(this));
         },
 
