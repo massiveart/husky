@@ -476,6 +476,14 @@
                 return $.inArray(value, array);
             };
 
+            app.core.dom.wrapAll = function(selector, html){
+                return $(selector).wrapAll(html);
+            };
+
+            app.core.dom.first = function(selector) {
+                return $(selector).first();
+            };
+
             /**
              * Awesome visible method. Returns false if any part of a given element is not visible
              * Method is copied and slightly adapted from https://github.com/teamdf/jquery-visible/
