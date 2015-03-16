@@ -160,10 +160,18 @@ module.exports = function(grunt) {
                         dest: 'dist',
                         src: [
                             'fonts/{,*/}*',
-                            'vendor/ckeditor/{,**/}*',
                             'vendor/jquery.minicolors.png',
                             'scss/variables.scss',
                             'scss/mixins.scss'
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: './bower_components',
+                        dest: 'dist/vendor',
+                        src: [
+                            'ckeditor/**'
                         ]
                     },
                     {
@@ -318,6 +326,24 @@ module.exports = function(grunt) {
                         cwd: '.bower_components/bootstrap-datepicker/js/',
                         src: ['**'],
                         dest: 'bower_components/bootstrap-datepicker/'
+                    },
+                    // ckeditor
+                    {
+                        expand: true,
+                        cwd: '.bower_components/ckeditor',
+                        src: ['**'],
+                        dest: 'bower_components/ckeditor'
+                    }
+                ]
+            },
+            ckeditor_theme: {
+                files: [
+                    // ckeditor husky theme
+                    {
+                        expand: true,
+                        cwd: 'husky_components/ckeditor',
+                        src: ['**'],
+                        dest: 'bower_components/ckeditor'
                     }
                 ]
             }
@@ -386,6 +412,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build:css', [
         'compass',
         'cssmin',
+        'copy:ckeditor_theme',
         'copy:dist',
     ]);
 
@@ -393,7 +420,12 @@ module.exports = function(grunt) {
         'clean:bower_before',
         'bower:install',
         'copy:bower',
+        'copy:ckeditor_theme',
         'clean:bower_after'
+    ]);
+
+    grunt.registerTask('update:theme', [
+        'copy:ckeditor_theme'
     ]);
 
     grunt.registerTask('default', [

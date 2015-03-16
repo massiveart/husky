@@ -6,7 +6,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/column-navigation
+ * @module husky/components/ckeditor
  */
 
 
@@ -25,10 +25,14 @@ define([], function() {
     var defaults = {
             initializedCallback: null,
             instanceName: null,
-            godMode: false,
             tableEnabled: true,
             linksEnabled: true,
-            pasteFromWord: true
+            scriptEnabled: true,
+            iframeEnabled: true,
+            pasteFromWord: true,
+            height: null,
+            maxHeight: null,
+            enterMode: null
         },
 
         /**
@@ -78,24 +82,62 @@ define([], function() {
 
             config.toolbar = [
                 { name: 'semantics', items: ['Format']},
-                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                { name: 'basicstyles', items: [ 'Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
                 { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'list', items: [ 'BulletedList'] }
+                { name: 'list', items: [ 'NumberedList', 'BulletedList'] }
             ];
 
+            // activate paste from Word
             if (this.options.pasteFromWord === true) {
                 config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
             }
 
+            // activate embed links
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
             }
+
+            // activate tables
             if (this.options.tableEnabled === true) {
                 config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
             }
 
-            config.toolbar.push({ name: 'code', items: [ 'Source'] });
+            // set height
+            if (!!this.options.height) {
+                config.autoGrow_minHeight = this.options.height;
+                config.height = this.options.height;
+            }
+
+            // set maxHeight
+            if (!!this.options.maxHeight) {
+                config.autoGrow_maxHeight = this.options.maxHeight;
+                // if height bigger maxHeight height = maxHeight
+                if (config.height > config.autoGrow_maxHeight) {
+                    config.autoGrow_maxHeight = config.height;
+                }
+            }
+
+            // ENTER MODE
+            if (!!this.options.enterMode) {
+                config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
+            }
+
+
+            // extra allowed
+            var extraAllowedContent = '';
+
+            // extra allowed content iframe
+            if (this.options.iframeEnabled === true) {
+                extraAllowedContent += ' iframe(*)[src,border,frameborder,width,height,style,allowfullscreen,name,marginheight,marginwidth,seamless,srcdoc];';
+            }
+
+            // extra allowed content iframe
+            if (this.options.scriptEnabled === true) {
+                extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
+            }
+
+            config.toolbar.push({ name: 'code', items: [ 'Source' ] });
 
             delete config.initializedCallback;
             delete config.baseUrl;
@@ -106,16 +148,14 @@ define([], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
-            delete config.godMode;
             delete config.linksEnabled;
             delete config.tableEnabled;
+            delete config.scriptEnabled;
+            delete config.iframeEnabled;
+            delete config.maxHeight;
 
             // allow img tags to have any class (*) and any attribute [*]
-            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
-            // enable all content
-            if (!!this.options.godMode) {
-                config.allowedContent = true;
-            }
+            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title];' + extraAllowedContent;
 
             return config;
         };
@@ -172,22 +212,37 @@ define([], function() {
         startEditor: function() {
             var config = getConfig.call(this);
             this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
-            
+
             if (!!this.editorContent) {
                 this.editor.setData(this.editorContent);
             }
         },
 
         destroyEditor: function() {
-            this.editorContent = this.editor.getData();
-            this.editor.destroy();
+            if (!!this.editor) {
+                this.editorContent = this.editor.getData();
+                if (this.editor.window.getFrame()) {
+                    this.editor.destroy();
+                } else {
+                    delete CKEDITOR.instances[this.editor.name];
+                }
+            }
         },
 
         remove: function() {
             var instance = this.sandbox.ckeditor.getInstance(this.options.instanceName);
 
             if (!!instance) {
-                instance.destroy();
+                // FIXME HACK
+                // this hack fix 'clearCustomData' not null on template change
+                // this error come when editor dom element don't exists
+                // check if dom element exist else remove the instance from object
+                // should also fix memory leak that the instances are not deleted from CKEDITOR
+                if (instance.window.getFrame()) {
+                    instance.destroy();
+                } else {
+                    delete CKEDITOR.instances[this.options.instanceName];
+                }
             }
         }
     };

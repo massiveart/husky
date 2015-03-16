@@ -1,6 +1,11 @@
 CHANGELOGS:
 ===========
 
+ - update ckeditor:
+   - version 4.4.7 update
+   - add subscript and numbered list to ckeditor toolbar
+   - add allow iframe and script tag option
+
 2015/02/24 v0.10.0
 =================
 
