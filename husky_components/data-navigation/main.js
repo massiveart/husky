@@ -366,8 +366,10 @@ define([
             return this.sandbox.util.load(this.getUrl(url))
                 .then(this.parse.bind(this))
                 .then(this.hideSearch.bind(this))
-                .then(function() {
+                .then(function(data) {
                     this.loading = false;
+
+                    return data;
                 }.bind(this));
         },
 
