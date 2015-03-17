@@ -36,6 +36,10 @@ define([
             parentResultKey: 'parent',
             nameKey: 'name',
             childrenLinkKey: 'children',
+            pageKey: 'page',
+            limitKey: 'limit',
+            searchKey: 'search',
+            limit: 20,
             showAddButton: true,
             globalEvents: true,
             translates: {
@@ -71,7 +75,11 @@ define([
                 return [
                     '<div class="data-navigation">',
                     '   <div class="data-navigation-header"></div>',
-                    '   <div class="data-navigation-list-container"></div>',
+                    '   <div class="data-navigation-list-container iscroll">',
+                    '       <div class="search"></div>',
+                    '       <div class="iscroll-inner"></div>',
+                    '       <div class="loader"></div>',
+                    '   </div>',
                     '   <% if (options.showAddButton) { %>',
                     '       <div class="data-navigation-list-footer">',
                     '           <button class="data-navigation-add btn">',
@@ -169,6 +177,9 @@ define([
         };
 
     return {
+
+        page: 1,
+
         /**
          * @method initialize
          */
@@ -182,13 +193,23 @@ define([
             this.render();
             this.bindCustomEvents();
 
-            return this.load().then(function(data) {
-                this.sandbox.emit(INITIALIZED.call(this));
+            this.sandbox.once('husky.loader.initialized', function() {
+                this.showLoader();
 
-                this.currentView = this.createView(data);
-                this.updateHeader(data);
-                this.storeData(data);
-                this.appendView();
+                this.load()
+                    .then(function(data) {
+                        this.hideLoader();
+
+                        return data;
+                    }.bind(this))
+                    .then(function(data) {
+                        this.sandbox.emit(INITIALIZED.call(this));
+
+                        this.currentView = this.createView(data);
+                        this.updateHeader(data);
+                        this.storeData(data);
+                        this.appendView();
+                    }.bind(this));
             }.bind(this));
         },
 
@@ -208,6 +229,64 @@ define([
             var tpl = this.mainTpl({options: this.options});
             this.$el.html(tpl);
             this.bindDOMEvents();
+
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: this.sandbox.dom.find('.loader', this.$el),
+                        hidden: true
+                    }
+                }
+            ]);
+
+            this.sandbox.start([
+                {
+                    name: 'search@husky',
+                    options: {
+                        el: this.sandbox.dom.find('.search', this.$el),
+                        appearance: 'white',
+                        instanceName: 'data-navigation'
+                    }
+                }
+            ]);
+
+            this.startInfiniteScroll();
+        },
+
+        /**
+         * start infinite scrolling
+         * @method startInfiniteScroll
+         */
+        startInfiniteScroll: function() {
+            this.sandbox.infiniteScroll('.iscroll', this.loadNextPage.bind(this), 50);
+        },
+
+        /**
+         * load children from next page
+         * @method startInfiniteScroll
+         */
+        loadNextPage: function() {
+            var def = this.sandbox.data.deferred();
+
+            if (!!this.data.hasNextPage) {
+                this.showLoader();
+
+                this.page++;
+                this.sandbox.util.load(this.getUrl(this.getCurrentUrl()))
+                    .then(function(data) {
+                        var children = data._embedded[this.options.resultKey] || [];
+                        this.data.children = this.data.children.concat(children);
+                        this.data.hasNextPage = children.length == this.options.limit;
+                        this.currentView.append(children, this.options);
+
+                        this.hideLoader();
+                        def.resolve();
+                    }.bind(this));
+            } else {
+                def.resolve();
+            }
+            return def;
         },
 
         /**
@@ -238,6 +317,18 @@ define([
 
             this.sandbox.on(CLEAR_CACHE.call(this), function() {
                 this.cache.deleteAll();
+            }.bind(this));
+
+            this.sandbox.on('husky.search.data-navigation', function(searchTerm) {
+                this.searchTerm = searchTerm;
+
+                this.setUrl(this.getCurrentUrl(), true);
+            }.bind(this));
+
+            this.sandbox.on('husky.search.data-navigation.reset', function() {
+                this.searchTerm = null;
+
+                this.setUrl(this.getCurrentUrl(), true);
             }.bind(this));
         },
 
@@ -270,10 +361,52 @@ define([
          * @param {String} url
          */
         load: function(url) {
+            this.page = 1;
+
+            return this.sandbox.util.load(this.getUrl(url))
+                .then(this.parse.bind(this))
+                .then(this.hideSearch.bind(this));
+        },
+
+        hideLoader: function() {
+            this.sandbox.emit('husky.loader.hide');
+        },
+
+        showLoader: function() {
+            this.sandbox.emit('husky.loader.show');
+        },
+
+        /**
+         * @method clearSearch
+         */
+        clearSearch: function() {
+            this.searchTerm = null;
+
+            this.sandbox.emit('husky.search.data-navigation.clear');
+        },
+
+        /**
+         * Returns full url with search, page and limit parameter
+         * @param url
+         * @returns {string}
+         */
+        getUrl: function(url) {
             url = url || this.options.url || this.options.rootUrl;
 
-            return this.sandbox.util.load(url)
-                .then(this.parse.bind(this));
+            var delimiter = (url.indexOf('?') === -1) ? '?' : '&';
+
+            url = [
+                url, delimiter, this.options.pageKey, '=', this.page, '&',
+                this.options.limitKey, '=', this.options.limit
+            ].join('');
+
+            if (!!this.searchTerm) {
+                url = [
+                    url, '&', this.options.searchKey, '=', this.searchTerm
+                ].join('');
+            }
+
+            return url;
         },
 
         /**
@@ -296,10 +429,26 @@ define([
             this.data = {
                 children: response._embedded[this.options.resultKey] || null,
                 parent: parent,
-                current: current
+                current: current,
+                hasNextPage: true
             };
 
             return this.data;
+        },
+
+        /**
+         * hide search if no children available
+         * @param data
+         * @returns {*}
+         */
+        hideSearch: function(data) {
+            if (data.children.length === 0 && !this.searchTerm) {
+                this.$find('.search').hide();
+            } else {
+                this.$find('.search').show();
+            }
+
+            return data;
         },
 
         /**
@@ -310,7 +459,9 @@ define([
         storeData: function(data) {
             var current = data.current;
 
-            this.cache.put(current.id, data);
+            if (!this.searchTerm) {
+                this.cache.put(current.id, data);
+            }
 
             return data;
         },
@@ -346,6 +497,8 @@ define([
                 return this.load(url).then(this.storeData.bind(this));
             } else {
                 this.data = data;
+
+                dfd.then(this.hideSearch.bind(this));
                 dfd.resolve(data);
             }
 
@@ -361,6 +514,7 @@ define([
                 id = $item.data('id'),
                 oldView = this.currentView;
 
+            this.clearSearch();
             this.currentView = this.createView();
             this.appendView(oldView);
 
@@ -379,6 +533,7 @@ define([
                 id = this.sandbox.dom.data($item, 'parent-id'),
                 newView = this.createView();
 
+            this.clearSearch();
             this.prependView(newView);
 
             return this.getItems(id)
@@ -482,7 +637,7 @@ define([
                 this.playAppendAnimation(view);
             }
 
-            this.currentView.placeAt('.data-navigation-list-container');
+            this.currentView.placeAt('.data-navigation-list-container .iscroll-inner');
         },
 
         /**
@@ -511,7 +666,7 @@ define([
          * @param {Object} view
          */
         prependView: function(view) {
-            view.placeAt('.data-navigation-list-container');
+            view.placeAt('.data-navigation-list-container .iscroll-inner');
             this.currentView.$el.addClass('is-animated');
             this.playPrependAnimation(view);
         },
