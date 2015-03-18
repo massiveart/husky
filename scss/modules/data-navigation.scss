@@ -27,8 +27,7 @@
 }
 
 .data-navigation-list-container {
-    border-top: 1px solid #21272E;
-    height: calc(100% - 10px);
+    height: calc(100% - 100px);
     overflow: scroll;
     position: relative;
 }
@@ -47,6 +46,7 @@
 }
 
 .data-navigation-list-footer {
+    border-top: 1px solid #21272E;
     padding: 10px 0;
     text-align: center;
 }
