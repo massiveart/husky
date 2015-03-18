@@ -18,6 +18,12 @@
     &.dropdown-align-right {
         right: -3px;
     }
+
+    &.dropdown-align-top {
+        top: auto;
+        bottom: 20px;
+        margin-bottom: 0;
+    }
 }
 
 .dropdown-menu {

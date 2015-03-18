@@ -32,6 +32,8 @@
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
  * @params {String} [options.skin] skin class for the dropzone. currently available: 'small' or '' (default)
  * @params {Boolean} [options.keepFilesAfterSuccess] True to not slide the files away after uploading them successfully
+ * @params {Boolean} [options.dropzoneEnabled] Should the dropzone be enabled initially
+ * @params {Boolean} [options.cancelUploadOnOverlayClick] Cancel the upload process when the user clicks on the overlay background
  */
 define([], function () {
 
@@ -61,7 +63,9 @@ define([], function () {
             fadeOutDelay: 1500, //ms
             showOverlay: true,
             keepFilesAfterSuccess: false,
-            skin: ''
+            skin: '',
+            dropzoneEnabled: true,
+            cancelUploadOnOverlayClick: false
         },
 
         constants = {
@@ -105,13 +109,13 @@ define([], function () {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.dropzone.',
+        eventNamespace = 'husky.dropzone.',
 
         /**
          * raised after initialization process
          * @event husky.dropzone.<instance-name>.initialize
          */
-            INITIALIZED = function () {
+        INITIALIZED = function () {
             return createEventName.call(this, 'initialized');
         },
 
@@ -120,7 +124,7 @@ define([], function () {
          * @event husky.dropzone.<instance-name>.uploading
          * @param {Object} the file
          */
-            UPLOADING = function () {
+        UPLOADING = function () {
             return createEventName.call(this, 'uploading');
         },
 
@@ -130,7 +134,7 @@ define([], function () {
          * @param {Object} the file
          * @param {Object} the response
          */
-            SUCCESS = function () {
+        SUCCESS = function () {
             return createEventName.call(this, 'success');
         },
 
@@ -138,7 +142,7 @@ define([], function () {
          * listens on and opens the data-source folder-overlay
          * @event husky.dropzone.<instance-name>.open-data-source
          */
-            OPEN_DATA_SOURCE = function () {
+        OPEN_DATA_SOURCE = function () {
             return createEventName.call(this, 'open-data-source');
         },
 
@@ -146,7 +150,7 @@ define([], function () {
          * listens on and prevents an overlay with the dropzone from poping up
          * @event husky.dropzone.<instance-name>.open-data-source
          */
-            LOCK_POPUP = function () {
+        LOCK_POPUP = function () {
             return createEventName.call(this, 'lock-popup');
         },
 
@@ -154,7 +158,7 @@ define([], function () {
          * listens on and enables overlays with the dropzone to pop up
          * @event husky.dropzone.<instance-name>.open-data-source
          */
-            UNLOCK_POPUP = function () {
+        UNLOCK_POPUP = function () {
             return createEventName.call(this, 'unlock-popup');
         },
 
@@ -163,7 +167,7 @@ define([], function () {
          * @event husky.dropzone.<instance-name>.files-added
          * @param {Array} all newly added files
          */
-            FILES_ADDED = function () {
+        FILES_ADDED = function () {
             return createEventName.call(this, 'files-added');
         },
 
@@ -172,12 +176,28 @@ define([], function () {
          * @event husky.dropzone.<instance-name>.change-url
          * @param {String} the new url
          */
-            CHANGE_URL = function () {
+        CHANGE_URL = function () {
             return createEventName.call(this, 'change-url');
         },
 
+        /**
+         * listens on and enable the dropzone
+         * @event husky.dropzone.<instance-name>.enable
+         */
+        UPLOAD_ENABLE = function() {
+            return createEventName.call(this, 'enable');
+        },
+
+        /**
+         * listens on and disable the dropzone
+         * @event husky.dropzone.<instance-name>.disable
+         */
+        UPLOAD_DISABLE = function() {
+            return createEventName.call(this, 'disable');
+        },
+
         /** returns normalized event names */
-            createEventName = function (postFix) {
+        createEventName = function (postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -192,6 +212,7 @@ define([], function () {
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.dropzone = null;
+            this.dropzoneEnabled = this.options.dropzoneEnabled;
             this.$dropzone = null;
             this.lastUploadedFile = null;
             this.overlayOpened = false;
@@ -221,12 +242,24 @@ define([], function () {
                     this.openOverlay();
                 }.bind(this));
                 this.sandbox.dom.on(this.sandbox.dom.$document, 'drop', function(event) {
-                    this.addFiles(event.originalEvent.dataTransfer.files);
+                    if (this.dropzoneEnabled) {                        
+                        this.addFiles(event.originalEvent.dataTransfer.files);
+                    }
                 }.bind(this));
             }
             this.sandbox.dom.on(this.sandbox.dom.$document, 'dragover drop', function(event) {
                 this.sandbox.dom.preventDefault(event);
             }.bind(this));
+
+            if (this.options.cancelUploadOnOverlayClick) {
+                this.$el.on('click', '.husky-overlay-container.dropzone', function() {
+                    if (this.overlayOpened === true) {
+                        this.sandbox.emit('husky.overlay.dropzone-'+ this.options.instanceName +'.close');
+                    }
+                    this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                    this.dropzone.removeAllFiles();
+                }.bind(this));
+            }
         },
 
         /**
@@ -241,6 +274,16 @@ define([], function () {
             // change the url
             this.sandbox.on(CHANGE_URL.call(this), function(url) {
                 this.url = url;
+            }.bind(this));
+
+            this.sandbox.on(UPLOAD_DISABLE.call(this), function() {
+                this.dropzoneEnabled = false;
+                this.dropzone.disable();
+            }.bind(this));
+
+            this.sandbox.on(UPLOAD_ENABLE.call(this), function() {
+                this.dropzoneEnabled = true;
+                this.dropzone.enable();
             }.bind(this));
 
             if (this.options.showOverlay) {
@@ -259,7 +302,7 @@ define([], function () {
          */
         openOverlay: function () {
             // open the overlay only if it's not already opened and if the dropzone is not visible
-            if (this.overlayOpened === false && this.lockPopUp === false) {
+            if (this.overlayOpened === false && this.lockPopUp === false && this.dropzoneEnabled) {
                 // set height of components element to prevent the site from jumping
                 this.sandbox.dom.height(this.$el, this.sandbox.dom.outerHeight(this.$el));
 
