@@ -13,8 +13,8 @@
 
     require.config({
         paths: {
-            ckeditor: 'vendor/ckeditor/ckeditor',
-            jqueryAdapter: 'vendor/ckeditor/adapters/jquery'
+            ckeditor: 'bower_components/ckeditor/ckeditor',
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery'
         },
         shim: {
             jqueryAdapter: {
@@ -28,13 +28,12 @@
         var getConfig = function() {
             return {
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
-                height: '300px',
                 width: '100%',
                 defaultLanguage: 'en',
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
@@ -75,7 +74,7 @@
                                     // get a reference to the "Link Info" and "Target" tab.
                                 var infoTab = dialogDefinition.getContents('info'),
                                     targetTab = dialogDefinition.getContents('target'),
-                                
+
                                     // get a reference to the link type
                                     linkOptions = infoTab.get('linkType'),
                                     targetOptions = targetTab.get('linkTargetType'),
@@ -94,7 +93,7 @@
                                         '_self'
                                     ],
                                     selectedTargetOptions = [];
-                                    
+
                                 // just show included link options
                                 for (var i = 0; i < linkOptions.items.length; i++) {
                                     if (includedLinkOptions.indexOf(linkOptions.items[i][1]) !== -1) {
