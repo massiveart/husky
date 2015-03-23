@@ -19,7 +19,8 @@ define(function() {
             large: false,
             fadeInDuration: 400,
             largeThumbnailFormat: '170x170',
-            smallThumbnailFormat: '50x50'
+            smallThumbnailFormat: '50x50',
+            selectable: true
         },
 
         constants = {
@@ -52,10 +53,12 @@ define(function() {
                 '       <span class="' + constants.titleClass + '"><%= title %></span><br />',
                 '       <span class="' + constants.descriptionClass + '"><%= description %></span>',
                 '   </div>',
+                '<% if (!!selectable) { %>',
                 '   <div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
                 '       <input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
                 '       <span class="icon"></span>',
                 '   </div>',
+                '<% } %>',
                 '   <div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                 '</div>'
             ].join('')
@@ -192,7 +195,8 @@ define(function() {
                     title: this.sandbox.util.cropMiddle(title, 24),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
-                    checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id)
+                    checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id),
+                    selectable: this.options.selectable
                 })
             );
             if (this.datagrid.itemIsSelected.call(this.datagrid, record.id)) {
@@ -221,7 +225,11 @@ define(function() {
         bindThumbnailDomEvents: function(id) {
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
-                this.toggleItemSelected(id);
+                if (!!this.options.selectable) {
+                    this.toggleItemSelected(id);
+                } else {
+                    this.selectItem(id);
+                }
             }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
@@ -229,10 +237,12 @@ define(function() {
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
 
-            this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
-                this.selectItem(id);
-            }.bind(this));
+            if (!!this.options.selectable) {
+                this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                    this.selectItem(id);
+                }.bind(this));
+            }
         },
 
         /**
@@ -253,12 +263,16 @@ define(function() {
          * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
         selectItem: function(id, onlyView) {
-            this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
-            if (!this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
-                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
-            }
-            if (onlyView !== true) {
-                this.datagrid.setItemSelected.call(this.datagrid, id);
+            if (!!this.options.selectable) {
+                this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+                if (!this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
+                    this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
+                }
+                if (onlyView !== true) {
+                    this.datagrid.setItemSelected.call(this.datagrid, id);
+                }
+            } else {
+                this.datagrid.emitItemClickedEvent(id);
             }
         },
 

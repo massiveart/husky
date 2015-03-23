@@ -1343,7 +1343,9 @@
              * @param id {Number|String} id to emit with the event
              */
             emitItemClickedEvent: function(id) {
-                this.sandbox.emit(ITEM_CLICK.call(this), id);
+                var itemIndex = this.getRecordIndexById(id);
+
+                this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[itemIndex]);
             },
 
             /**
