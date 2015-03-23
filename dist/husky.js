@@ -15868,7 +15868,7 @@ define('aura/ext/components', [],function() {
       }).then(function(result) {
         return invokeCallbacks("after", fnName, context, args.concat(result)).then(function() {
           core.data.when(result).then(function() {
-            dfd.resolve(result) 
+            dfd.resolve(result)
           });
         }, dfd.reject);
       }).fail(function(err) {
@@ -15993,11 +15993,12 @@ define('aura/ext/components', [],function() {
 
     /**
      * Component loader.
-     * @param  {String} name    The name of the Component to load
-     * @param  {Object} options The options to pass to the new component instance.
-     * @return {Promise}        A Promise that resolves to the loaded component instance.
+     * @param  {String} name The name of the Component to load
+     * @param  {Object} opts The options to pass to the new component instance.
+     * @param  {Object} parentSandbox
+     * @return {Promise} A Promise that resolves to the loaded component instance.
      */
-    Component.load = function(name, opts) {
+    Component.load = function(name, opts, parentSandbox, reference) {
       // TODO: Make it more simple / or break it down
       // in several functions...
       // it's too big !
@@ -16023,6 +16024,13 @@ define('aura/ext/components', [],function() {
 
       // Here, we require the component's package definition
       require([ref], function(componentDefinition) {
+
+        var index;
+          if((index = parentSandbox.pendingStarts.indexOf(reference)) === -1){
+              return dfd.reject("pending start of component " + ref + " canceled !");
+          }
+
+          parentSandbox.pendingStarts.splice(index, 1);
 
         if (!componentDefinition) {
           return dfd.reject("component " + ref + " Definition is empty !");
@@ -16183,18 +16191,22 @@ define('aura/ext/components', [],function() {
       return list;
     };
 
-    /**
-     * Actual start method for a list of components.
-     *
-     * @static
-     * @param  {Array|String} components cf. `Component.parseList`
-     * @return {Promise} a promise that resolves to a list of started components.
-     */
-    Component.startAll = function(components) {
+      /**
+       * Actual start method for a list of components.
+       *
+       * @static
+       * @param  {Array|String} components cf. `Component.parseList`
+       * @param  {Object} parentSandbox sandbox which starts this components
+       * @return {Promise} a promise that resolves to a list of started components.
+       */
+    Component.startAll = function(components, parentSandbox) {
       var componentsList = Component.parseList(components);
       var list = [];
       core.util.each(componentsList, function(i, w) {
-        var ret = Component.load(w.name, w.options);
+          var ref  = core.util._.uniqueId('pending+'), ret;
+          parentSandbox.pendingStarts.push(ref);
+          ret = Component.load(w.name, w.options, parentSandbox, ref);
+
         list.push(ret);
       });
       var loadedComponents = core.data.when.apply(undefined, list);
@@ -16286,6 +16298,12 @@ define('aura/ext/components', [],function() {
          * @class Sandbox
          */
 
+          app.sandbox.pendingStarts = [];
+
+          app.sandbox.cancelPendingStarts = function(){
+              this.pendingStarts = [];
+          };
+
         /**
          * Start method.
          * This method takes either an Array of Components to start or or DOM Selector to
@@ -16306,7 +16324,7 @@ define('aura/ext/components', [],function() {
           }
           var self = this;
 
-          return Component.startAll(list).done(function () {
+          return Component.startAll(list, this).done(function () {
             var components   = Array.prototype.slice.call(arguments);
             _.each(components, function (w) {
               w.sandbox._component = w;
