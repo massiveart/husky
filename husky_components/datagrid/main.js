@@ -293,6 +293,15 @@
             },
 
             /**
+             * listens on and update the selected state of the given items
+             * @event husky.datagrid.selected.update
+             * @param {Array} ids of all items that should be selected
+             */
+            SELECTED_UPDATE = function() {
+                return this.createEventName('selected.update');
+            },
+
+            /**
              * raised when data was saved
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
@@ -1197,6 +1206,8 @@
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
 
+                this.sandbox.on(SELECTED_UPDATE.call(this), this.updateSelection.bind(this));
+
                 this.startColumnOptionsListener();
                 this.startSearchListener();
             },
@@ -1399,6 +1410,18 @@
                 // emit events with selected data
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.selectedItems.length);
                 this.setSelectedItemsToData();
+            },
+
+            /**
+             * Returns the ids of all selected items
+             * @param selection {Array} list of selected items
+             */
+            updateSelection: function(selection) {
+                this.gridViews[this.viewId].deselectAllRecords();
+                
+                for (i = -1, length = selection.length; ++i < length;) {
+                    this.gridViews[this.viewId].selectRecord(selection[i]);
+                }
             },
 
             /**
