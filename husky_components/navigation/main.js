@@ -57,7 +57,7 @@ define(function() {
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
-                '       <a class="<% if (!!item.action) { %>js-navigation-item <% } %>navigation-item" href="#">',
+                '       <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
@@ -73,7 +73,7 @@ define(function() {
             subToggleItem: [
                 '   <li class="js-navigation-items navigation-subitems" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
-                '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
+                '           <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
                 '           <% if (item.hasSettings) { %>',
                 '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
@@ -857,31 +857,39 @@ define(function() {
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
                 $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
                 $parent = this.sandbox.dom.parent(event.currentTarget),
-                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
+                item;
 
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
             }
+
+            item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
 
             // if toggle was clicked, do not set active and selected
             if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
                 return;
             }
 
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-            this.sandbox.dom.addClass($subItem, 'is-selected');
+            if (!item.event) {
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+                this.sandbox.dom.addClass($subItem, 'is-selected');
 
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
-            this.sandbox.dom.addClass($items, 'is-active');
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
+                this.sandbox.dom.addClass($items, 'is-active');
+            }
 
             var extendedItem = item;
-            if(!!options) {
+
+            if (!!options) {
                 extendedItem = this.sandbox.util.extend(true, {}, extendedItem, options);
             }
 
             if (emit !== false) {
-                // emit event
-                this.sandbox.emit('husky.navigation.item.select', extendedItem);
+                if (item.event) {
+                    this.sandbox.emit('husky.navigation.item.event.' + item.event, item.eventArgs);
+                } else {
+                    this.sandbox.emit('husky.navigation.item.select', extendedItem);
+                }
             }
 
             if (this.hasDataNavigation()) {
