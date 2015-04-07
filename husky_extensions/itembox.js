@@ -513,9 +513,9 @@ define(function() {
              * @param {int} itemId
              */
             removeItemById: function(itemId) {
-                var $removeItem = this.sandbox.dom.find('li[data-id=' + itemId + ']');
+                var $removeItem = this.sandbox.dom.find('li[data-id=' + itemId + ']', this.$el);
 
-                this.sandbox.dom.remove($removeItem, this.$el);
+                this.sandbox.dom.remove($removeItem);
                 this.removeHandler(itemId);
 
                 this.updateOrder();
