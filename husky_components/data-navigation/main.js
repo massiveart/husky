@@ -278,7 +278,7 @@ define([
                     .then(function(data) {
                         var children = data._embedded[this.options.resultKey] || [];
                         this.data.children = this.data.children.concat(children);
-                        this.data.hasNextPage = children.length == this.options.limit;
+                        this.data.hasNextPage = this.page < data.pages;
                         this.currentView.append(children, this.options);
 
                         this.hideLoader();
@@ -287,6 +287,7 @@ define([
             } else {
                 def.resolve();
             }
+
             return def;
         },
 

@@ -105,7 +105,8 @@
 .data-navigation-item-thumb {
     position: relative;
     top: 6px;
-    display: inline-block;
+    display: block;
+    float: left;
     width: 35px;
     height: 35px;
     margin-right: 10px;
