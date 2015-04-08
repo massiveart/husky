@@ -23,7 +23,7 @@
                 // Disable confirmation
                 Dropzone.confirm = function(question, accepted) {
                     accepted();
-                },
+                };
 
                 app.sandbox.dropzone = {
                     initialize: function(selector, configs) {
