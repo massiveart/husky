@@ -12,7 +12,7 @@
     'use strict';
 
     require.config({
-        paths: { "dropzone": 'bower_components/dropzone/dropzone' }
+        paths: { 'dropzone': 'bower_components/dropzone/dropzone-amd-module' }
     });
 
     define(['dropzone'], function(Dropzone) {
