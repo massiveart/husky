@@ -16,7 +16,7 @@
             "globalize_lib": "bower_components/globalize/lib/globalize",
             "typeahead": "bower_components/typeahead.js/typeahead.bundle",
             "tagsManager": "bower_components/tagmanager/tagmanager",
-            "dropzone": "bower_components/dropzone/dropzone-amd-module",
+            "dropzone": "bower_components/dropzone/dropzone",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
             "ckeditor" : "bower_components/ckeditor/ckeditor",
             "jqueryAdapter" : "bower_components/ckeditor/adapters/jquery",
@@ -111,7 +111,12 @@
             },
             "underscore": {
                 "exports": "_"
+            },
+            "dropzone": {
+                "exports": "Dropzone",
+                "deps": ["jquery"]
             }
+
         },
         "include": [
             "jquery",

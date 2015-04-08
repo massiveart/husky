@@ -12,7 +12,10 @@
     'use strict';
 
     require.config({
-        paths: { 'dropzone': 'bower_components/dropzone/dropzone-amd-module' }
+        paths: { 'dropzone': 'bower_components/dropzone/dropzone' },
+        shim: {
+            dropzone: {exports: 'Dropzone', deps: ['jquery']}
+        }
     });
 
     define(['dropzone'], function(Dropzone) {

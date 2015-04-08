@@ -298,7 +298,7 @@ module.exports = function(grunt) {
                         expand: true,
                         flatten: true,
                         src: [
-                            '.bower_components/dropzone/dist/dropzone-amd-module.js'
+                            '.bower_components/dropzone/dist/dropzone.js'
                         ],
                         dest: 'bower_components/dropzone'
                     },
