@@ -335,7 +335,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'husky_components/ckeditor',
-                        src: ['**'],
+                        src: ['skins/**'],
                         dest: 'bower_components/ckeditor'
                     }
                 ]
