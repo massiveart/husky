@@ -30903,6 +30903,14 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 this.selectItem(id);
             }.bind(this));
+
+            this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'error', function() {
+                this.$thumbnails[id].find('img').remove();;
+            }.bind(this));
+
+            this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'load', function() {
+                this.$thumbnails[id].find('.fa-coffee').remove();;
+            }.bind(this));
         },
 
         /**
