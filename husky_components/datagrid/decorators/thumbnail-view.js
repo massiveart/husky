@@ -239,7 +239,7 @@ define(function() {
             }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'load', function() {
-                this.$thumbnails[id].find('.fa-coffee').remove();;
+                this.$thumbnails[id].find('.fa-coffee').remove();
             }.bind(this));
         },
 
