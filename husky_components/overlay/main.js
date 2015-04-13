@@ -607,6 +607,7 @@ define([], function() {
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
+            this.overlay.$content.css('height', '');
 
             this.sandbox.emit(CLOSED.call(this));
 

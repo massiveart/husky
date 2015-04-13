@@ -73,21 +73,19 @@ define([
 
             main: function() {
                 return [
-                    '<div class="data-navigation">',
+                    '<div class="data-navigation<% if (options.showAddButton) { %> has-add-btn<% } %>">',
                     '   <div class="data-navigation-header"></div>',
                     '   <div class="data-navigation-list-container iscroll">',
-                    '       <div class="search"></div>',
-                    '       <div class="iscroll-inner"></div>',
+                    '       <div class="data-navigation-search"></div>',
+                    '       <div class="data-navigation-list-scroll iscroll-inner"></div>',
                     '       <div class="loader"></div>',
                     '   </div>',
-                    '   <% if (options.showAddButton) { %>',
                     '       <div class="data-navigation-list-footer">',
                     '           <button class="data-navigation-add btn">',
                     '               <span class="fa-plus-circle"></span>',
                     '               <%= options.translates.addButton %>',
                     '           </button>',
                     '       </div>',
-                    '   <% } %>',
                     '</div>'
                 ].join('');
             }
@@ -245,7 +243,7 @@ define([
                 {
                     name: 'search@husky',
                     options: {
-                        el: this.sandbox.dom.find('.search', this.$el),
+                        el: this.sandbox.dom.find('.data-navigation-search', this.$el),
                         appearance: 'white',
                         instanceName: 'data-navigation'
                     }
@@ -451,9 +449,9 @@ define([
          */
         hideSearch: function(data) {
             if (data.children.length === 0 && !this.searchTerm) {
-                this.$find('.search').hide();
+                this.$find('.data-navigation-search').hide();
             } else {
-                this.$find('.search').show();
+                this.$find('.data-navigation-search').show();
             }
 
             return data;
