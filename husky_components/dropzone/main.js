@@ -199,6 +199,10 @@ define([], function () {
         /** returns normalized event names */
         createEventName = function (postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        },
+
+        createJQueryEventName = function(event) {
+            return event + '.dropzone.' + (this.options.instanceName ? this.options.instanceName : '');
         };
 
     return {
@@ -238,18 +242,20 @@ define([], function () {
             }.bind(this));
 
             if (this.options.showOverlay) {
-                this.sandbox.dom.on(this.sandbox.dom.$document, 'dragenter', function () {
+                this.sandbox.dom.on(this.sandbox.dom.$document, createJQueryEventName.call(this, 'dragenter'), function() {
                     this.openOverlay();
                 }.bind(this));
-                this.sandbox.dom.on(this.sandbox.dom.$document, 'drop', function(event) {
+                this.sandbox.dom.on(this.sandbox.dom.$document, createJQueryEventName.call(this, 'drop'), function(event) {
                     if (this.dropzoneEnabled) {
                         this.addFiles(event.originalEvent.dataTransfer.files);
                     }
                 }.bind(this));
             }
-            this.sandbox.dom.on(this.sandbox.dom.$document, 'dragover drop', function(event) {
-                this.sandbox.dom.preventDefault(event);
-            }.bind(this));
+            this.sandbox.dom.on(this.sandbox.dom.$document,
+                createJQueryEventName.call(this, 'dragover') + ' ' + createJQueryEventName.call(this, 'drop'),
+                function(event) {
+                    this.sandbox.dom.preventDefault(event);
+                }.bind(this));
 
             if (this.options.cancelUploadOnOverlayClick) {
                 this.$el.on('click', '.husky-overlay-container.dropzone', function() {
@@ -539,6 +545,10 @@ define([], function () {
         remove: function() {
             this.dropzone.disable();
             this.dropzone.destroy();
+
+            this.sandbox.dom.off(this.sandbox.dom.$document, createJQueryEventName.call(this, 'dragenter'));
+            this.sandbox.dom.off(this.sandbox.dom.$document, createJQueryEventName.call(this, 'drop'));
+            this.sandbox.dom.off(this.sandbox.dom.$document, createJQueryEventName.call(this, 'dragover'));
         }
     };
 
