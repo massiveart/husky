@@ -202,7 +202,7 @@ define([], function () {
         },
 
         createJQueryEventName = function(event) {
-            return event + '.dropzone.' + (this.options.instanceName ? this.options.instanceName + '.' : '');
+            return event + '.dropzone.' + (this.options.instanceName ? this.options.instanceName : '');
         };
 
     return {
