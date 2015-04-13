@@ -29310,6 +29310,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             editedErrorClass: 'server-validation-error',
             newRecordId: 'newrecord',
             gridIconClass: 'grid-icon',
+            gridImageClass: 'grid-image',
             childWrapperClass: 'child-wrapper',
             parentClass: 'children-toggler',
             noChildrenClass: 'no-children',
@@ -29353,7 +29354,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 '   <input type="text" class="form-element husky-validate ' + constants.editableInputClass + '" value="<%= value %>">',
                 '</div>'
             ].join(''),
-            img: '<img alt="<%= alt %>" src="<%= src %>"/>',
+            img: [
+                '<div class="' + constants.gridImageClass + '">',
+                '   <img alt="<%= alt %>" src="<%= src %>"/>',
+                '   <div class="fa-coffee empty"></div>',
+                '</div>'
+            ].join(''),
             childWrapper: '<div class="' + constants.childWrapperClass + '"></div>',
             toggleIcon: '<span class="' + constants.toggleIconClass + '"></span>',
             icon: [
