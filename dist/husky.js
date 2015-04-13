@@ -39167,6 +39167,7 @@ define('__component__$column-navigation@husky',[], function () {
                     this.setElementSelected($item);
                     this.selected[number] = itemData;
                     lastSelected = itemData;
+                    this.options.selected = null;
                 }
             }.bind(this));
 
