@@ -30176,6 +30176,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (!!this.options.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
             }
+            this.sandbox.dom.on(this.table.$body.find('img'), 'error', function() {
+                $(this).remove();
+            });
+
+            this.sandbox.dom.on(this.table.$body.find('img'), 'load', function() {
+                $(this).parent().find('.fa-coffee').remove();
+            });
             this.sandbox.dom.on(this.table.$container, 'scroll', this.containerScrollHandler.bind(this));
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
         },
@@ -39200,7 +39207,7 @@ define('__component__$column-navigation@husky',[], function () {
          */
         renderItem: function(data) {
             var $item = this.sandbox.dom.createElement(this.sandbox.util.template(templates.item)({
-                title: data[this.options.titleName],
+                title: this.sandbox.util.escapeHtml(data[this.options.titleName]),
                 id: data[this.options.idName]
             }));
             if (this.marked.indexOf(data[this.options.idName]) !== -1) { // if is marked
