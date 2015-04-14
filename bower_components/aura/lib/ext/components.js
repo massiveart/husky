@@ -53,10 +53,10 @@ define('aura/ext/components', function() {
 
       before.then(function() {
         return fn.apply(context, args);
-      }).then(function(result) {
-        return invokeCallbacks("after", fnName, context, args.concat(result)).then(function() {
-          core.data.when(result).then(function() {
-            dfd.resolve(result) 
+      }).then(function(_res) {
+        return invokeCallbacks("after", fnName, context, args.concat(_res)).then(function() {
+          core.data.when(_res).then(function() {
+            dfd.resolve(_res);
           });
         }, dfd.reject);
       }).fail(function(err) {
@@ -485,6 +485,7 @@ define('aura/ext/components', function() {
          *                                      will be stopped before start.
          */
         app.sandbox.start = function (list, options) {
+          if (this.stopped) { return; }
           var event = ['aura', 'sandbox', 'start'].join(app.config.mediator.delimiter);
           app.core.mediator.emit(event, this);
           var children = this._children || [];
