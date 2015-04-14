@@ -33,6 +33,7 @@ define('aura/ext/mediator', function () {
 
       var attachListener = function(listenerType) {
         return function (name, listener, context) {
+          if (this.stopped) { return; }
           if (!_.isFunction(listener) || !_.isString(name)) {
             throw new Error('Invalid arguments passed to sandbox.' + listenerType);
           }
@@ -76,7 +77,7 @@ define('aura/ext/mediator', function () {
        * @param {Function} listener   Listener function to stop.
        */
       app.sandbox.off = function (name, listener) {
-        if(!this._events) { return; }
+        if (!this._events) { return; }
         this._events = _.reject(this._events, function (evt) {
           var ret = (evt.name === name);
           if (ret) { mediator.off(name, evt.callback); }
@@ -91,6 +92,7 @@ define('aura/ext/mediator', function () {
        * @param {Object} payload    Payload emitted
        */
       app.sandbox.emit = function () {
+        if (this.stopped) { return; }
         var debug = app.config.debug;
         if(debug.enable && (debug.components.length === 0 || debug.components.indexOf("aura:mediator") !== -1)){
           var eventData = Array.prototype.slice.call(arguments);
