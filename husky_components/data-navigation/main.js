@@ -45,7 +45,8 @@ define([
             translates: {
                 noData: 'No Data',
                 title: 'Data',
-                addButton: 'Add Data'
+                addButton: 'Add Data',
+                search: 'Search ...'
             }
         },
 
@@ -245,7 +246,8 @@ define([
                     options: {
                         el: this.sandbox.dom.find('.data-navigation-search', this.$el),
                         appearance: 'white',
-                        instanceName: 'data-navigation'
+                        instanceName: 'data-navigation',
+                        placeholderText: this.options.translates.search
                     }
                 }
             ]);
