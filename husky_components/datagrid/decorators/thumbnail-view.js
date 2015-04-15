@@ -243,6 +243,14 @@ define(function() {
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
 
+            this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'error', function() {
+                this.$thumbnails[id].find('img').remove();
+            }.bind(this));
+
+            this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'load', function() {
+                this.$thumbnails[id].find('.fa-coffee').remove();
+            }.bind(this));
+
             if (!!this.options.selectable) {
                 this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
                     this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
