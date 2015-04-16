@@ -12,7 +12,10 @@
     'use strict';
 
     require.config({
-        paths: { "dropzone": 'bower_components/dropzone/dropzone' }
+        paths: { 'dropzone': 'bower_components/dropzone/dropzone' },
+        shim: {
+            dropzone: {exports: 'Dropzone', deps: ['jquery']}
+        }
     });
 
     define(['dropzone'], function(Dropzone) {
@@ -23,7 +26,7 @@
                 // Disable confirmation
                 Dropzone.confirm = function(question, accepted) {
                     accepted();
-                },
+                };
 
                 app.sandbox.dropzone = {
                     initialize: function(selector, configs) {

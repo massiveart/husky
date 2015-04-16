@@ -71,7 +71,8 @@
                 resizeListeners: true,
                 resultKey: 'items',
                 selectedCounter: false,
-                selectedCounterText: 'public.elements-selected'
+                selectedCounterText: 'public.elements-selected',
+                viewSpacingBottom: 110
             },
 
             types = {
@@ -94,10 +95,6 @@
                 paginations: {
                     dropdown: decoratorDropdownPagination
                 }
-            },
-
-            constants = {
-                viewSpacingBottom: 80
             },
 
             filters = {
@@ -1258,6 +1255,22 @@
                         return i;
                     }
                 }
+
+                return null;
+            },
+
+            /**
+             * Returns the item for a given id
+             * @param id {Number|String} the id to search for
+             * @returns {Number|String} the index of the found record
+             */
+            getRecordById: function(id) {
+                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                    if (this.data.embedded[i].id === id) {
+                        return this.data.embedded[i];
+                    }
+                }
+
                 return null;
             },
 
@@ -1368,7 +1381,8 @@
                 if (!!this.paginations[this.paginationId] && !!this.paginations[this.paginationId].getHeight) {
                     height -= this.paginations[this.paginationId].getHeight();
                 }
-                height -= constants.viewSpacingBottom;
+                height -= this.options.viewSpacingBottom;
+
                 return height;
             },
 
@@ -1417,8 +1431,10 @@
              * @param selection {Array} list of selected items
              */
             updateSelection: function(selection) {
+                var i, length;
+
                 this.gridViews[this.viewId].deselectAllRecords();
-                
+
                 for (i = -1, length = selection.length; ++i < length;) {
                     this.gridViews[this.viewId].selectRecord(selection[i]);
                 }
@@ -1468,7 +1484,7 @@
                 if (this.selectedItems.indexOf(id) === -1) {
                     this.selectedItems.push(id);
                     // emit events with selected data
-                    this.sandbox.emit(ITEM_SELECT.call(this), id);
+                    this.sandbox.emit(ITEM_SELECT.call(this), id, this.getRecordById(id));
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                     this.setSelectedItemsToData();
                     return true;

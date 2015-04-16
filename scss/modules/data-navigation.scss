@@ -3,14 +3,29 @@
 }
 
 .data-navigation {
-    .search {
-        margin: 20px 40px;
-    }
-
     height: 100%;
     padding-top: 100px;
     background-color: $navigationActiveColor;
     color: #fff;
+
+    &.has-add-btn {
+        .data-navigation-list-container {
+            height: calc(100% - 100px);
+        }
+
+        .data-navigation-list-footer {
+            display: block;
+        }
+    }
+}
+
+
+.data-navigation-search {
+    margin: 20px 40px;
+}
+
+.data-navigation-list-scroll {
+    position: relative;
 }
 
 .data-navigation-header {
@@ -27,7 +42,7 @@
 }
 
 .data-navigation-list-container {
-    height: calc(100% - 100px);
+    height: calc(100% - 50px);
     overflow: scroll;
     position: relative;
 }
@@ -46,6 +61,7 @@
 }
 
 .data-navigation-list-footer {
+    display: none;
     padding: 10px 0;
     text-align: center;
 }
@@ -105,7 +121,8 @@
 .data-navigation-item-thumb {
     position: relative;
     top: 6px;
-    display: inline-block;
+    display: block;
+    float: left;
     width: 35px;
     height: 35px;
     margin-right: 10px;

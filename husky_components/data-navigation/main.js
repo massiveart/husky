@@ -45,7 +45,8 @@ define([
             translates: {
                 noData: 'No Data',
                 title: 'Data',
-                addButton: 'Add Data'
+                addButton: 'Add Data',
+                search: 'Search ...'
             }
         },
 
@@ -73,21 +74,19 @@ define([
 
             main: function() {
                 return [
-                    '<div class="data-navigation">',
+                    '<div class="data-navigation<% if (options.showAddButton) { %> has-add-btn<% } %>">',
                     '   <div class="data-navigation-header"></div>',
                     '   <div class="data-navigation-list-container iscroll">',
-                    '       <div class="search"></div>',
-                    '       <div class="iscroll-inner"></div>',
+                    '       <div class="data-navigation-search"></div>',
+                    '       <div class="data-navigation-list-scroll iscroll-inner"></div>',
                     '       <div class="loader"></div>',
                     '   </div>',
-                    '   <% if (options.showAddButton) { %>',
                     '       <div class="data-navigation-list-footer">',
                     '           <button class="data-navigation-add btn">',
                     '               <span class="fa-plus-circle"></span>',
                     '               <%= options.translates.addButton %>',
                     '           </button>',
                     '       </div>',
-                    '   <% } %>',
                     '</div>'
                 ].join('');
             }
@@ -245,9 +244,10 @@ define([
                 {
                     name: 'search@husky',
                     options: {
-                        el: this.sandbox.dom.find('.search', this.$el),
+                        el: this.sandbox.dom.find('.data-navigation-search', this.$el),
                         appearance: 'white',
-                        instanceName: 'data-navigation'
+                        instanceName: 'data-navigation',
+                        placeholderText: this.options.translates.search
                     }
                 }
             ]);
@@ -278,7 +278,7 @@ define([
                     .then(function(data) {
                         var children = data._embedded[this.options.resultKey] || [];
                         this.data.children = this.data.children.concat(children);
-                        this.data.hasNextPage = children.length == this.options.limit;
+                        this.data.hasNextPage = this.page < data.pages;
                         this.currentView.append(children, this.options);
 
                         this.hideLoader();
@@ -287,6 +287,7 @@ define([
             } else {
                 def.resolve();
             }
+
             return def;
         },
 
@@ -450,9 +451,9 @@ define([
          */
         hideSearch: function(data) {
             if (data.children.length === 0 && !this.searchTerm) {
-                this.$find('.search').hide();
+                this.$find('.data-navigation-search').hide();
             } else {
-                this.$find('.search').show();
+                this.$find('.data-navigation-search').show();
             }
 
             return data;
@@ -513,6 +514,14 @@ define([
         },
 
         /**
+         * Return item from local cache
+         * @param id
+         */
+        getItem: function(id) {
+            return _.where(this.data.children, {id: id})[0];
+        },
+
+        /**
          * @method openChildrenHandler
          * @param {Object} event
          */
@@ -570,12 +579,12 @@ define([
         selectParentDataHandler: function(event) {
             event.stopPropagation();
 
-            this.openParentHandler(event).then(function() {
-                this.sandbox.emit(SELECT.call(this), this.data.current.item);
-                if (this.options.globalEvents) {
-                    this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
-                }
-            }.bind(this));
+            this.sandbox.emit(SELECT.call(this), this.data.parent);
+            if (this.options.globalEvents) {
+                this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.parent);
+            }
+
+            this.openParentHandler(event);
         },
 
         /**
@@ -595,12 +604,16 @@ define([
         selectChildrenDataHandler: function(event) {
             event.stopPropagation();
 
-            this.openChildrenHandler(event).then(function() {
-                this.sandbox.emit(SELECT.call(this), this.data.current.item);
-                if (this.options.globalEvents) {
-                    this.sandbox.emit(SELECT_GLOBAL.call(this), this.data.current.item);
-                }
-            }.bind(this));
+            var $item = $(event.currentTarget).closest('li'),
+                id = $item.data('id'),
+                item = this.getItem(id);
+
+            this.sandbox.emit(SELECT.call(this), item);
+            if (this.options.globalEvents) {
+                this.sandbox.emit(SELECT_GLOBAL.call(this), item);
+            }
+
+            this.openChildrenHandler(event);
         },
 
         /**
@@ -610,9 +623,13 @@ define([
         navigateChildrenHandler: function(event) {
             event.stopPropagation();
 
-            this.openChildrenHandler(event).then(function() {
-                this.sandbox.emit(NAVIGATE.call(this), this.data.current.item);
-            }.bind(this));
+            var $item = $(event.currentTarget).closest('li'),
+                id = $item.data('id'),
+                item = this.getItem(id);
+
+            this.sandbox.emit(NAVIGATE.call(this), item);
+
+            this.openChildrenHandler(event);
         },
 
         /**

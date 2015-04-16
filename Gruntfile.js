@@ -79,13 +79,6 @@ module.exports = function(grunt) {
             temp: ['dist/temp'],
             tmp: ['.tmp'],
             hooks: ['.git/hooks/*'],
-            bower_after: {
-                files: {
-                    src: [
-                        '.bower_components'
-                    ]
-                }
-            },
             bower_before: {
                 files: {
                     src: [
@@ -305,7 +298,7 @@ module.exports = function(grunt) {
                         expand: true,
                         flatten: true,
                         src: [
-                            '.bower_components/dropzone/downloads/dropzone.js'
+                            '.bower_components/dropzone/dist/dropzone.js'
                         ],
                         dest: 'bower_components/dropzone'
                     },
@@ -342,7 +335,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: 'husky_components/ckeditor',
-                        src: ['**'],
+                        src: ['skins/**'],
                         dest: 'bower_components/ckeditor'
                     }
                 ]
@@ -413,15 +406,14 @@ module.exports = function(grunt) {
         'compass',
         'cssmin',
         'copy:ckeditor_theme',
-        'copy:dist',
+        'copy:dist'
     ]);
 
     grunt.registerTask('update', [
         'clean:bower_before',
         'bower:install',
         'copy:bower',
-        'copy:ckeditor_theme',
-        'clean:bower_after'
+        'copy:ckeditor_theme'
     ]);
 
     grunt.registerTask('update:theme', [
