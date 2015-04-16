@@ -1316,6 +1316,14 @@ define(function() {
 
         /**
          * Selects or deselects a record with a given id
+         * @param recordId {Number|String} the id of the record to select or deselect
+         */
+        selectRecord: function(recordId) {
+            this.toggleSelectRecord(recordId, true);
+        },
+
+        /**
+         * Selects or deselects a record with a given id
          * @param id {Number|String} the id of the record to select or deselect
          * @param select {Boolean} true to select false to deselect
          */

@@ -1020,7 +1020,12 @@ define(function() {
                     if (!!item.itemsOption && !!item.itemsOption.url) {
                         this.sandbox.util.load(item.itemsOption.url)
                             .then(function(result) {
-                                handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                                var data = result[this.options.itemsRequestKey];
+                                if (!!item.itemsOption.resultKey) {
+                                    data = data[item.itemsOption.resultKey];
+                                }
+
+                                handleRequestedItems.call(this, data, item.id);
                                 dfd.resolve();
                             }.bind(this))
                             .fail(function(result) {

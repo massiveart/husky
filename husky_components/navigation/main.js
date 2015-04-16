@@ -41,6 +41,7 @@ define(function() {
             skeleton: [
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
+                '       <div class="fa-chevron-left navigation-close-icon"></div>',
                 '       <div class="wrapper">',
                 '           <header class="navigation-header">',
                 '               <div class="logo"></div>',
@@ -51,7 +52,6 @@ define(function() {
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
-                '   <div class="fa-times navigation-close-icon">',
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
@@ -132,21 +132,29 @@ define(function() {
          * @event husky.navigation.select-item
          * @param {string} selectAction The select-action to match the navigation-item for
          */
-            EVENT_SELECT_ITEM = namespace + 'select-item',
+        EVENT_SELECT_ITEM = namespace + 'select-item',
+
+        /**
+         * listens on and activates the matching navigation-item
+         * @event husky.navigation.select-id
+         * @param {string} id The id of item which should be selected
+         * @param {Object} options Additional options
+         */
+        EVENT_SELECT_ID = namespace + 'select-id',
 
         /**
          * raised when navigation was collapsed
          * @event husky.navigation.collapsed
          * @param {Number} width The width of the collapsed navigation
          */
-            EVENT_COLLAPSED = namespace + 'collapsed',
+        EVENT_COLLAPSED = namespace + 'collapsed',
 
         /**
          * raised when navigation was un-collapsed
          * @event husky.navigation.uncollapsed
          * @param {Number} width The width of the un-collapsed navigation
          */
-            EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
+        EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
 
 
         /**
@@ -154,14 +162,14 @@ define(function() {
          * @event husky.navigation.collapse
          * @param {Boolean} stayCollapsed - if true the navigation stays collapsed till the custom-uncollapse event is emited
          */
-            EVENT_COLLAPSE = namespace + 'collapse',
+        EVENT_COLLAPSE = namespace + 'collapse',
 
         /**
          * forces navigation to uncollapse
          * @event husky.navigation.uncollapse
          * @param {Bool} force If true, the navigation will act as overflow and collapse again after interaction
          */
-            EVENT_UNCOLLAPSE = namespace + 'uncollapse',
+        EVENT_UNCOLLAPSE = namespace + 'uncollapse',
 
 
         /**
@@ -169,49 +177,49 @@ define(function() {
          * only raised when not forced
          * @event husky.navigation.size.change
          */
-            EVENT_SIZE_CHANGE = namespace + 'size.change',
+        EVENT_SIZE_CHANGE = namespace + 'size.change',
 
         /**
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
          */
-            EVENT_SIZE_CHANGED = namespace + 'size.changed',
+        EVENT_SIZE_CHANGED = namespace + 'size.changed',
 
         /**
          * raised when the user locale is changed
          * @event husky.navigation.user-locale.changed
          */
-            USER_LOCALE_CHANGED = namespace + 'user-locale.changed',
+        USER_LOCALE_CHANGED = namespace + 'user-locale.changed',
 
         /**
          * raised when the version history is clicked
          * @event husky.navigation.version-history.clicked
          */
-            VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
+        VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
 
         /**
          * raised when the username gets clicked
          * @event husky.navigation.username.clicked
          */
-            USERNAME_CLICKED = namespace + 'username.clicked',
+        USERNAME_CLICKED = namespace + 'username.clicked',
 
         /**
          * show the navigation when it was hidden before
          * @event husky.navigation.show
          */
-            EVENT_SHOW = namespace + 'show',
+        EVENT_SHOW = namespace + 'show',
 
         /**
          * triggers the update of the navigation size
          * @event husky.navigation.show.size
          */
-            EVENT_SIZE_UPDATE = namespace + 'size.update',
+        EVENT_SIZE_UPDATE = namespace + 'size.update',
 
         /**
          * hides the navigation completely
          * @event husky.navigation.hide
          */
-            EVENT_HIDE = namespace + 'hide'
+        EVENT_HIDE = namespace + 'hide'
         ;
 
 
@@ -261,8 +269,12 @@ define(function() {
             this.sandbox.dom.addClass(this.$el, CONSTANTS.COMPONENT_CLASS);
 
             // render skeleton
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
-                this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
+            this.sandbox.dom.html(
+                this.$el,
+                this.sandbox.template.parse(
+                    templates.skeleton,
+                    this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate})
+                )
             );
 
             this.$navigation = this.$find('.navigation');
@@ -336,10 +348,16 @@ define(function() {
                 item.parentTitle = data.title;
                 this.items.push(item);
                 if (item.items && item.items.length > 0) {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {
+                        item: item,
+                        translate: this.sandbox.translate
+                    }));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
                 } else {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {
+                        item: item,
+                        translate: this.sandbox.translate
+                    }));
                 }
                 this.sandbox.dom.append(list, elem);
 
@@ -466,6 +484,7 @@ define(function() {
             this.sandbox.on(EVENT_SIZE_UPDATE, this.resizeListener.bind(this));
 
             this.sandbox.on(EVENT_SELECT_ITEM, this.preselectItem.bind(this));
+            this.sandbox.on(EVENT_SELECT_ID, this.selectItem.bind(this));
         },
 
         resizeListener: function() {
@@ -528,13 +547,40 @@ define(function() {
                     parent = this.sandbox.dom.closest(match, '.navigation-items');
 
                     // toggle parent only when it is not expaneded
-                    if(!this.sandbox.dom.hasClass(parent, 'is-expanded')){
+                    if (!this.sandbox.dom.hasClass(parent, 'is-expanded')) {
                         this.toggleItems(null, parent);
                     }
                 }
                 this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);
             }
+        },
+
+
+        /**
+         * Select item with given id
+         * @param id {string}
+         * @param options {options}
+         */
+        selectItem: function(id, options) {
+            var item = this.getItemById(id),
+                domObject = item.domObject,
+                parent;
+
+            if (this.sandbox.dom.hasClass(domObject, 'is-selected')) {
+                return;
+            }
+
+            if (this.sandbox.dom.hasClass(domObject, 'js-navigation-sub-item')) {
+                parent = this.sandbox.dom.closest(domObject, '.navigation-items');
+
+                // toggle parent only when it is not expanded
+                if (!this.sandbox.dom.hasClass(parent, 'is-expanded')) {
+                    this.toggleItems(null, parent);
+                }
+            }
+            this.selectSubItem(null, domObject, false, options);
+            this.checkBottomHit(null, domObject);
         },
 
 
@@ -766,8 +812,10 @@ define(function() {
         unCollapse: function(forced) {
             if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
                 if (forced) {
-                    // freeze width of parent so that the navigation overlaps the content
-                    this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
+                    if(!this.hasDataNavigation()) {
+                        // freeze width of parent so that the navigation overlaps the content
+                        this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
+                    }
                     this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
                 } else {
                     this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
@@ -794,8 +842,9 @@ define(function() {
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
          * @param emit
+         * @param {Object} options Extends the item
          */
-        selectSubItem: function(event, customTarget, emit) {
+        selectSubItem: function(event, customTarget, emit, options) {
 
             if (!!event) {
                 event.preventDefault();
@@ -808,8 +857,7 @@ define(function() {
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
                 $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
                 $parent = this.sandbox.dom.parent(event.currentTarget),
-                item;
-
+                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
 
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
@@ -826,18 +874,25 @@ define(function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
             this.sandbox.dom.addClass($items, 'is-active');
 
+            var extendedItem = item;
+            if(!!options) {
+                extendedItem = this.sandbox.util.extend(true, {}, extendedItem, options);
+            }
 
             if (emit !== false) {
                 // emit event
-                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
-                this.sandbox.emit('husky.navigation.item.select', item);
+                this.sandbox.emit('husky.navigation.item.select', extendedItem);
             }
 
+            if (this.hasDataNavigation()) {
+                this.removeDataNavigation();
+            }
 
-            if (!customTarget) {
+            if (!!extendedItem && !!extendedItem.dataNavigation) {
+                this.renderDataNavigation(extendedItem.dataNavigation);
+            } else if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
             }
-
         },
 
         /**
@@ -847,7 +902,8 @@ define(function() {
          */
         getItemById: function(id) {
             for (var i = -1, length = this.items.length; ++i < length;) {
-                if (id === this.items[i].id) {
+                // api can return string values as id so here "no" typesafe comparison
+                if (id == this.items[i].id) {
                     return this.items[i];
                 }
             }
@@ -874,8 +930,77 @@ define(function() {
             this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
             this.sandbox.dom.width(this.$navigation, 0);
             this.hidden = true;
+        },
+
+        /**
+         * Render data navigation and init with item
+         * @param options
+         */
+        renderDataNavigation: function(options) {
+            this.collapse();
+
+            var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'}), key;
+            this.sandbox.dom.append(this.$el, $element);
+
+            var componentOptions = {
+                el: $element,
+                url: options.url,
+                rootUrl: options.rootUrl
+            };
+
+            // optional options
+            if (!!options.resultKey) {
+                componentOptions.resultKey = options.resultKey;
+            }
+            if (!!options.nameKey) {
+                componentOptions.nameKey = options.nameKey;
+            }
+            if (!!options.childrenLinkKey) {
+                componentOptions.childrenLinkKey = options.childrenLinkKey;
+            }
+            if (!!options.instanceName) {
+                componentOptions.instanceName = options.instanceName;
+            }
+            if (!!options.showAddBtn) {
+                componentOptions.showAddBtn = options.showAddBtn;
+            }
+            if (!!options.translates) {
+                componentOptions.translates = {};
+
+                for(key in options.translates){
+                    componentOptions.translates[key] = this.sandbox.translate(options.translates[key]);
+                }
+            }
+
+            this.sandbox.dom.addClass(this.$el, 'data-navigation-opened');
+            this.sandbox.util.delay(function() {
+                $element.addClass('expanded');
+            }, 0);
+
+            // init data-navigation
+            this.sandbox.start([{
+                name: 'data-navigation@husky',
+                options: componentOptions
+            }]);
+        },
+
+        /**
+         * Remove data navigation
+         */
+        removeDataNavigation: function() {
+            this.sandbox.dom.removeClass(this.$el, 'data-navigation-opened');
+
+            this.sandbox.stop(this.$find('.navigation-data-container'));
+
+            this.unCollapse();
+        },
+
+        /**
+         * Returns true if a data navigation is initialized
+         * @returns {boolean}
+         */
+        hasDataNavigation: function() {
+            return this.$find('.navigation-data-container').length > 0;
         }
-
     };
-
 });

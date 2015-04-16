@@ -10,6 +10,7 @@
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the view and unbind events
+ * @param {Boolean} [unselectOnBackgroundClick] should the items be deselcted on docuemnt click
  */
 define(function() {
 
@@ -19,7 +20,9 @@ define(function() {
             large: false,
             fadeInDuration: 400,
             largeThumbnailFormat: '170x170',
-            smallThumbnailFormat: '50x50'
+            smallThumbnailFormat: '50x50',
+            unselectOnBackgroundClick: true,
+            selectable: true
         },
 
         constants = {
@@ -52,10 +55,12 @@ define(function() {
                 '       <span class="' + constants.titleClass + '"><%= title %></span><br />',
                 '       <span class="' + constants.descriptionClass + '"><%= description %></span>',
                 '   </div>',
+                '<% if (!!selectable) { %>',
                 '   <div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
                 '       <input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
                 '       <span class="icon"></span>',
                 '   </div>',
+                '<% } %>',
                 '   <div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                 '</div>'
             ].join('')
@@ -120,7 +125,11 @@ define(function() {
             this.data = data;
 
             this.renderThumbnails(this.data.embedded);
-            this.sandbox.dom.on('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName, this.unselectAll.bind(this));
+            this.sandbox.dom.on('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName, function() {
+                if (this.options.unselectOnBackgroundClick) {
+                    this.unselectAll();
+                }
+            }.bind(this));
             this.rendered = true;
         },
 
@@ -192,7 +201,8 @@ define(function() {
                     title: this.sandbox.util.cropMiddle(title, 24),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
-                    checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id)
+                    checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id),
+                    selectable: this.options.selectable
                 })
             );
             if (this.datagrid.itemIsSelected.call(this.datagrid, record.id)) {
@@ -221,18 +231,17 @@ define(function() {
         bindThumbnailDomEvents: function(id) {
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
-                this.toggleItemSelected(id);
+                if (!!this.options.selectable) {
+                    this.toggleItemSelected(id);
+                } else {
+                    this.selectItem(id);
+                }
             }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
-
-            this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
-                this.selectItem(id);
-            }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'error', function() {
                 this.$thumbnails[id].find('img').remove();
@@ -241,6 +250,28 @@ define(function() {
             this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'load', function() {
                 this.$thumbnails[id].find('.fa-coffee').remove();
             }.bind(this));
+
+            if (!!this.options.selectable) {
+                this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                    this.selectItem(id);
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Selects a record with a given id
+         * @param recordId {Number|String} the id of the record to select or deselect
+         */
+        selectRecord: function(recordId) {
+            this.selectItem(recordId, false);
+        },
+
+        /**
+         * Deselects all records
+         */
+        deselectAllRecords: function() {
+            this.unselectAll();
         },
 
         /**
@@ -261,12 +292,16 @@ define(function() {
          * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
         selectItem: function(id, onlyView) {
-            this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
-            if (!this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
-                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
-            }
-            if (onlyView !== true) {
-                this.datagrid.setItemSelected.call(this.datagrid, id);
+            if (!!this.options.selectable) {
+                this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+                if (!this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
+                    this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
+                }
+                if (onlyView !== true) {
+                    this.datagrid.setItemSelected.call(this.datagrid, id);
+                }
+            } else {
+                this.datagrid.emitItemClickedEvent(id);
             }
         },
 

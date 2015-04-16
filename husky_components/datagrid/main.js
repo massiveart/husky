@@ -71,7 +71,8 @@
                 resizeListeners: true,
                 resultKey: 'items',
                 selectedCounter: false,
-                selectedCounterText: 'public.elements-selected'
+                selectedCounterText: 'public.elements-selected',
+                viewSpacingBottom: 110
             },
 
             types = {
@@ -94,10 +95,6 @@
                 paginations: {
                     dropdown: decoratorDropdownPagination
                 }
-            },
-
-            constants = {
-                viewSpacingBottom: 80
             },
 
             filters = {
@@ -290,6 +287,15 @@
              */
             ALL_SELECT = function() {
                 return this.createEventName('all.select');
+            },
+
+            /**
+             * listens on and update the selected state of the given items
+             * @event husky.datagrid.selected.update
+             * @param {Array} ids of all items that should be selected
+             */
+            SELECTED_UPDATE = function() {
+                return this.createEventName('selected.update');
             },
 
             /**
@@ -1197,6 +1203,8 @@
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
 
+                this.sandbox.on(SELECTED_UPDATE.call(this), this.updateSelection.bind(this));
+
                 this.startColumnOptionsListener();
                 this.startSearchListener();
             },
@@ -1247,6 +1255,22 @@
                         return i;
                     }
                 }
+
+                return null;
+            },
+
+            /**
+             * Returns the item for a given id
+             * @param id {Number|String} the id to search for
+             * @returns {Number|String} the index of the found record
+             */
+            getRecordById: function(id) {
+                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                    if (this.data.embedded[i].id === id) {
+                        return this.data.embedded[i];
+                    }
+                }
+
                 return null;
             },
 
@@ -1343,7 +1367,9 @@
              * @param id {Number|String} id to emit with the event
              */
             emitItemClickedEvent: function(id) {
-                this.sandbox.emit(ITEM_CLICK.call(this), id);
+                var itemIndex = this.getRecordIndexById(id);
+
+                this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[itemIndex]);
             },
 
             /**
@@ -1355,7 +1381,8 @@
                 if (!!this.paginations[this.paginationId] && !!this.paginations[this.paginationId].getHeight) {
                     height -= this.paginations[this.paginationId].getHeight();
                 }
-                height -= constants.viewSpacingBottom;
+                height -= this.options.viewSpacingBottom;
+
                 return height;
             },
 
@@ -1397,6 +1424,20 @@
                 // emit events with selected data
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.selectedItems.length);
                 this.setSelectedItemsToData();
+            },
+
+            /**
+             * Returns the ids of all selected items
+             * @param selection {Array} list of selected items
+             */
+            updateSelection: function(selection) {
+                var i, length;
+
+                this.gridViews[this.viewId].deselectAllRecords();
+
+                for (i = -1, length = selection.length; ++i < length;) {
+                    this.gridViews[this.viewId].selectRecord(selection[i]);
+                }
             },
 
             /**
@@ -1443,7 +1484,7 @@
                 if (this.selectedItems.indexOf(id) === -1) {
                     this.selectedItems.push(id);
                     // emit events with selected data
-                    this.sandbox.emit(ITEM_SELECT.call(this), id);
+                    this.sandbox.emit(ITEM_SELECT.call(this), id, this.getRecordById(id));
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                     this.setSelectedItemsToData();
                     return true;
