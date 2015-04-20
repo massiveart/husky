@@ -30326,15 +30326,21 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param attribute {String}
          */
         showInput: function(recordId, attribute) {
-            var $cell, $inputs;
+            var $cell, $inputs, $inputField, $inputWrapper;
+
             if (!attribute) {
                 $inputs = this.sandbox.dom.find('.' + constants.editableInputClass, this.table.rows[recordId].$el);
                 attribute = this.sandbox.dom.data(this.sandbox.dom.parents($inputs[0], 'td'), 'attribute');
             }
+
             $cell = this.table.rows[recordId].cells[attribute].$el;
-            this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
-            this.sandbox.dom.focus(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
-            this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
+            $inputField = this.sandbox.dom.find('.' + constants.editableInputClass, $cell);
+            $inputWrapper = this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell);
+            this.sandbox.dom.data($inputField, 'edit', 'on');
+
+            this.sandbox.dom.show($inputWrapper);
+            this.sandbox.dom.focus($inputField);
+            this.sandbox.dom.select($inputField);
         },
 
         /**
@@ -30342,11 +30348,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event {Object} the event object
          */
         editableInputKeyHandler: function(event) {
-            var recordId;
             // on enter
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 && this.sandbox.dom.data(event.currentTarget, 'edit') === 'on') {
                 this.sandbox.dom.stopPropagation(event);
-                recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+
+                var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
+                    recordId = this.sandbox.dom.data($parent, 'id');
+
+                this.sandbox.dom.data(event.currentTarget, 'edit', 'off');
                 this.editRow(recordId);
             }
         },
@@ -30356,9 +30365,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function(event) {
-            if (!!this.isFocusoutHandlerEnabled) {
+            if (!!this.isFocusoutHandlerEnabled && this.sandbox.dom.data(event.currentTarget, 'edit') === 'on') {
                 this.sandbox.dom.stopPropagation(event);
-                var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+
+                var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
+                    recordId = this.sandbox.dom.data($parent, 'id');
+
+                this.sandbox.dom.data(event.currentTarget, 'edit', 'off');
                 this.editRow(recordId);
             }
         },
