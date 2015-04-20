@@ -61,7 +61,6 @@
             "datepicker-sw": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.sw',
             "datepicker-th": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.th',
             "datepicker-tr": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.tr',
-            "datepicker-ua": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.ua',
             "datepicker-vi": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.vi',
             "datepicker-zh-CN": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN',
             "datepicker-zh-TW": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.zh-TW'
@@ -114,7 +113,6 @@
             "datepicker-sw": {deps: ['bootstrap-datepicker']},
             "datepicker-th": {deps: ['bootstrap-datepicker']},
             "datepicker-tr": {deps: ['bootstrap-datepicker']},
-            "datepicker-ua": {deps: ['bootstrap-datepicker']},
             "datepicker-vi": {deps: ['bootstrap-datepicker']},
             "datepicker-zh-CN": {deps: ['bootstrap-datepicker']},
             "datepicker-zh-TW": {deps: ['bootstrap-datepicker']}
@@ -129,8 +127,8 @@
         'datepicker-kr', 'datepicker-lt', 'datepicker-lv', 'datepicker-mk', 'datepicker-ms', 'datepicker-nb',
         'datepicker-nl', 'datepicker-nl-BE', 'datepicker-no', 'datepicker-pl', 'datepicker-pt', 'datepicker-pt-BR',
         'datepicker-ro', 'datepicker-rs', 'datepicker-rs-latin', 'datepicker-ru', 'datepicker-sk', 'datepicker-sl',
-        'datepicker-sq', 'datepicker-sv', 'datepicker-sw', 'datepicker-th', 'datepicker-tr', 'datepicker-ua',
-        'datepicker-vi', 'datepicker-zh-CN', 'datepicker-zh-TW'], {
+        'datepicker-sq', 'datepicker-sv', 'datepicker-sw', 'datepicker-th', 'datepicker-tr','datepicker-vi',
+        'datepicker-zh-CN', 'datepicker-zh-TW'], {
 
         name: 'bootstrap-datepicker',
 

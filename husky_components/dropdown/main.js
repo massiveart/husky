@@ -37,6 +37,7 @@ define([], function() {
             excludeItems: [], // items to filter,
             instanceName: 'undefined',  // instance name
             alignment: 'left',  // alignment of the arrow and the box
+            verticalAlignment: 'bottom', // alignment of the box
             translateLabels: true   // translate labels withe globalize
         };
 
@@ -83,6 +84,11 @@ define([], function() {
             // check alginment
             if (this.options.alignment === 'right') {
                 this.sandbox.dom.addClass(this.$dropDown, 'dropdown-align-right');
+            }
+
+            // check vertical alginment
+            if (this.options.verticalAlignment === 'top') {
+                this.sandbox.dom.addClass(this.$dropDown, 'dropdown-align-top');
             }
 
             // bind dom elements

@@ -19,3 +19,8 @@ doc
 doc/*
 .idea/*
 *.iml
+
+#eclipse
+.settings/*
+.buildpath
+.project

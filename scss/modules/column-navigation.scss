@@ -233,6 +233,10 @@
 
         .column-item {
             cursor: pointer;
+
+            &.disabled {
+                color: $grayLighter;
+            }
         }
 
         .orderer {

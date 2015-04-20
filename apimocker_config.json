@@ -4,7 +4,7 @@
     "quiet": false,
     "port": "7878",
     "latency": 700,
-    "allowedDomains": ["http://husky.lo"],
+    "allowedDomains": ["*"],
     "allowedHeaders": ["Content-Type", "Cache-Control", "X-Requested-With"],
     "webServices": {
 
@@ -133,6 +133,26 @@
             "verbs": ["GET"],
             "mockFile": "itembox/default.json",
             "switch": "ids"
+        },
+
+        "admin/api/collections": {
+            "verbs": ["GET"],
+            "mockFile": "data-navigation/data.json"
+        },
+
+        "admin/api/collections/1": {
+            "verbs": ["GET"],
+            "mockFile": "data-navigation/data-child-1.json"
+        },
+
+        "admin/api/collections/7": {
+            "verbs": ["GET"],
+            "mockFile": "data-navigation/data-child-1-2.json"
+        },
+
+        "admin/api/collections/2": {
+            "verbs": ["GET"],
+            "mockFile": "data-navigation/data-child-2.json"
         }
     }
 }

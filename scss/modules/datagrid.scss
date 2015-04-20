@@ -10,6 +10,13 @@
     top: 0px;
     left: 0px;
 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     &.sticky-header {
       padding-top: 30px;
       table {
@@ -300,6 +307,25 @@
           float: right;
         }
       }
+
+      .grid-image {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+
+        img {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+
+        .fa-coffee {
+          color: #ccc;
+          font-size: 1.6em;
+        }
+      }
     }
 
     .table-container {
@@ -349,6 +375,26 @@
       span {
         display: block;
       }
+    }
+
+    .selected-elements {
+        display: block;
+        padding-bottom: 10px;
+        &.indent {
+            padding-left: 50px;
+        }
+    }
+
+    .medium-loader {
+        overflow: hidden;
+        height: 0px;
+        transition: all 200ms;
+        margin-top: 0px;
+
+        &.show {
+            height: 70px;
+            margin-top: 10px;
+        }
     }
 }
 

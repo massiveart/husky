@@ -23,6 +23,9 @@
         CapitalizeFirstLetter: false,
         preventSubmitOnEnter: true,     // deprecated
         isClearInputOnEsc: true,        // deprecated
+        externalTagId: false,
+        prefillIdFieldName: 'Id',
+        prefillValueFieldName: 'Value',
         AjaxPush: null,
         AjaxPushAllTags: null,
         AjaxPushParameters: null,
@@ -40,10 +43,11 @@
         validator: null,
         onlyTagList: false,
         tagList: null,
+        fillInputOnTagRemove: false
     },
 
     publicMethods = {
-        pushTag : function (tag, ignoreEvents) {
+        pushTag : function (tag, ignoreEvents, externalTagId) {
             var $self = $(this), opts = $self.data('opts'), alreadyInList, tlisLowerCase, max, tagId,
             tlis = $self.data("tlis"), tlid = $self.data("tlid"), idx, newTagId, newTagRemoveId, escaped,
             html, $el, lastTagId, lastTagObj;
@@ -78,7 +82,10 @@
             }
 
             // call the validator (if any) and do not let the tag pass if invalid
-            if (opts.validator && !opts.validator(tag)) { return; }
+            if (opts.validator && !opts.validator(tag)) {
+                $self.trigger('tm:invalid', tag)
+                return;
+            }
 
             // dont accept new tags beyond the defined maximum
             if (opts.maxTags > 0 && tlis.length >= opts.maxTags) { return; }
@@ -98,20 +105,35 @@
 
             if (alreadyInList) {
                 $self.trigger('tm:duplicated', tag);
-                $("#" + $self.data("tm_rndid") + "_" + tlid[idx]).stop()
-                    .animate({backgroundColor: opts.blinkBGColor_1}, 100)
-                    .animate({backgroundColor: opts.blinkBGColor_2}, 100)
-                    .animate({backgroundColor: opts.blinkBGColor_1}, 100)
-                    .animate({backgroundColor: opts.blinkBGColor_2}, 100)
-                    .animate({backgroundColor: opts.blinkBGColor_1}, 100)
-                    .animate({backgroundColor: opts.blinkBGColor_2}, 100);
+                if (opts.blinkClass) {
+                    for (var i = 0; i < 6; ++i) {
+                        $("#" + $self.data("tm_rndid") + "_" + tlid[idx]).queue(function(next) {
+                            $(this).toggleClass(opts.blinkClass);
+                            next();
+                        }).delay(100);
+                    }
+                } else {
+                    $("#" + $self.data("tm_rndid") + "_" + tlid[idx]).stop()
+                        .animate({backgroundColor: opts.blinkBGColor_1}, 100)
+                        .animate({backgroundColor: opts.blinkBGColor_2}, 100)
+                        .animate({backgroundColor: opts.blinkBGColor_1}, 100)
+                        .animate({backgroundColor: opts.blinkBGColor_2}, 100)
+                        .animate({backgroundColor: opts.blinkBGColor_1}, 100)
+                        .animate({backgroundColor: opts.blinkBGColor_2}, 100);
+                }
             } else {
-                if (!ignoreEvents) { $self.trigger('tm:pushing', tag); }
+                if (opts.externalTagId === true) {
+                    if (externalTagId === undefined) {
+                        $.error('externalTagId is not passed for tag -' + tag);
+                    }
+                    tagId = externalTagId;
+                } else {
+                    max = Math.max.apply(null, tlid);
+                    max = max === -Infinity ? 0 : max;
 
-                max = Math.max.apply(null, tlid);
-                max = max === -Infinity ? 0 : max;
-
-                tagId = ++max;
+                    tagId = ++max;
+                }
+                if (!ignoreEvents) { $self.trigger('tm:pushing', [tag, tagId]); }
                 tlis.push(tag);
                 tlid.push(tagId);
 
@@ -137,9 +159,8 @@
                 if (opts.tagsContainer !== null) {
                     $(opts.tagsContainer).append($el);
                 } else {
-                    if (tagId > 1) {
-                        lastTagId = tagId - 1;
-                        lastTagObj = $("#" + $self.data("tm_rndid") + "_" + lastTagId);
+                    if (tlid.length > 1) {
+                        lastTagObj = $self.siblings("#" + $self.data("tm_rndid") + "_" + tlid[tlid.length - 2]);
                         lastTagObj.after($el);
                     } else {
                         $self.before($el);
@@ -154,7 +175,7 @@
 
                 privateMethods.refreshHiddenTagList.call($self);
 
-                if (!ignoreEvents) { $self.trigger('tm:pushed', tag); }
+                if (!ignoreEvents) { $self.trigger('tm:pushed', [tag, tagId]); }
 
                 privateMethods.showOrHide.call($self);
                 //if (tagManagerOptions.maxTags > 0 && tlis.length >= tagManagerOptions.maxTags) {
@@ -173,13 +194,13 @@
               tagId = tlid.pop();
 
               tagBeingRemoved = tlis[tlis.length - 1];
-              $self.trigger('tm:popping', tagBeingRemoved);
+              $self.trigger('tm:popping', [tagBeingRemoved, tagId]);
               tlis.pop();
 
               // console.log("TagIdToRemove: " + tagId);
               $("#" + $self.data("tm_rndid") + "_" + tagId).remove();
               privateMethods.refreshHiddenTagList.call($self);
-              $self.trigger('tm:popped', tagBeingRemoved);
+              $self.trigger('tm:popped', [tagBeingRemoved, tagId]);
               // console.log(tlis);
             }
         },
@@ -280,10 +301,15 @@
             e.preventDefault();
         },
 
-        prefill : function (pta) {
+        prefill: function (pta) {
             var $self = $(this);
+            var opts = $self.data('opts')
             $.each(pta, function (key, val) {
-                publicMethods.pushTag.call($self, val, true);
+                if (opts.externalTagId === true) {
+                    publicMethods.pushTag.call($self, val[opts.prefillValueFieldName], true, val[opts.prefillIdFieldName]);
+                } else {
+                    publicMethods.pushTag.call($self, val, true);
+                }
             });
         },
 
@@ -305,12 +331,12 @@
 
             if (-1 !== idx) {
                 tagBeingRemoved = tlis[idx];
-                $self.trigger('tm:splicing', tagBeingRemoved);
+                $self.trigger('tm:splicing', [tagBeingRemoved, tagId]);
                 $("#" + $self.data("tm_rndid") + "_" + tagId).remove();
                 tlis.splice(idx, 1);
                 tlid.splice(idx, 1);
                 privateMethods.refreshHiddenTagList.call($self);
-                $self.trigger('tm:spliced', tagBeingRemoved);
+                $self.trigger('tm:spliced', [tagBeingRemoved, tagId]);
                 // console.log(tlis);
             }
 
@@ -344,7 +370,7 @@
             opts.tagBaseClass = 'tm-tag';
             opts.inputBaseClass = 'tm-input';
 
-            if (!$.isFunction(opts.validator)) { opts.validator = null; };
+            if (!$.isFunction(opts.validator)) { opts.validator = null; }
 
             this.each(function() {
                 var $self = $(this), hiddenObj ='', rndid ='', albet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -428,6 +454,13 @@
                                 privateMethods.killEvent(e);
                             }
                         }
+                    });
+                }
+
+                // on tag pop fill back the tag's content to the input field
+                if (opts.fillInputOnTagRemove) {
+                    $self.on('tm:popped', function(e, tag) {
+                        $(this).val(tag);
                     });
                 }
 
