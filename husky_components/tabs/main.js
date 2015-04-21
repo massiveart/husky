@@ -15,12 +15,12 @@
  *      - data: if no url is provided
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
- *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - preselect - either true (for url) or position / name  (see preselector for more information)
  *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
- *          - title: compares items title against whats defined in options.preselect
+ *          - name: compares items name against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
  *      - preSelectEvent.enabled - when enabled triggers the item pre select event
@@ -266,10 +266,7 @@ define(function() {
         },
 
         generateIds: function(data) {
-            if (!data.id) {
-                data.id = this.getRandId();
-            }
-            this.sandbox.util.foreach(data.items, function(item) {
+            this.sandbox.util.foreach(data, function(item) {
                 if (!item.id) {
                     item.id = this.getRandId();
                 }
@@ -298,10 +295,10 @@ define(function() {
             this.items = [];
             this.domItems = {};
 
-            this.sandbox.util.foreach(data.items, function(item, index) {
+            this.sandbox.util.foreach(data, function(item, index) {
                 this.items[item.id] = item;
                 $item = this.sandbox.dom.createElement(
-                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>'
+                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.name) + '</a></li>'
                 );
                 this.sandbox.dom.append($list, $item);
 
@@ -316,7 +313,7 @@ define(function() {
                 if (!!this.options.preselect) {
                     if ((this.options.preselector === 'url' && !!data.url && data.url === item.action) ||
                         (this.options.preselector === 'position' && (index + 1).toString() === this.options.preselect.toString()) ||
-                        (this.options.preselector === 'title' && item.title === this.options.preselect)) {
+                        (this.options.preselector === 'name' && item.name === this.options.preselect)) {
                         this.sandbox.dom.addClass($item, 'is-selected');
                         selectedItem = item;
                     }
@@ -335,5 +332,4 @@ define(function() {
             this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }
     };
-
 });
