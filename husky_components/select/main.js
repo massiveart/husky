@@ -37,7 +37,7 @@
  * @param {String} [options.direction] 'bottom', 'top', or 'auto' pop up direction of the drop down.
  * @param {String} [options.resultKey] key in result set - default is empty and the _embedded property of the result set will be taken
  * @param {String} [options.url] url to load data from
- * @param {Boolean} [options.isNative] should use native select 
+ * @param {Boolean} [options.isNative] should use native select
  */
 
 define([], function() {
@@ -89,7 +89,8 @@ define([], function() {
             editableFieldKey: 'editableindex',
             typeRowSelector: '.type-row',
             contentInnerSelector: '.content-inner',
-            toggleClass: '.toggle-icon'
+            toggleClass: '.toggle-icon',
+            formElementSelector: '.form-element'
         },
 
         templates = {
@@ -573,7 +574,7 @@ define([], function() {
 
             // change label
             this.changeLabel();
-            
+
             if (!this.selectedElements.length) {
                 this.triggerDeselect(selectedId);
             } else {
@@ -952,6 +953,8 @@ define([], function() {
                 this.sandbox.dom.find(
                     constants.contentInnerSelector),
                 $row);
+
+            this.sandbox.dom.focus(this.sandbox.dom.find(constants.formElementSelector, $row));
         },
 
         /**
