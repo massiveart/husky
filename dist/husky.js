@@ -35656,6 +35656,11 @@ define('__component__$toolbar@husky',[],function() {
                 if (!!item['class']) {
                     classArray.push(item['class']);
                 }
+
+                if (item.hidden) {
+                    classArray.push('hidden');
+                }
+
                 if (item.disabled) {
                     classArray.push('disabled');
                 }
@@ -43413,6 +43418,10 @@ define('__component__$dropzone@husky',[], function () {
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
                     previewsContainer: this.sandbox.dom.find('.' + constants.uploadedItemContainerClass, this.$dropzone)[0],
+                    accept: function(file, done) {
+                        console.log(file);
+                        done();
+                    },
                     init: function () {
                         // store dropzone context
                         that.dropzone = this;

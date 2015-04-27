@@ -970,6 +970,11 @@ define(function() {
                 if (!!item['class']) {
                     classArray.push(item['class']);
                 }
+
+                if (item.hidden) {
+                    classArray.push('hidden');
+                }
+
                 if (item.disabled) {
                     classArray.push('disabled');
                 }

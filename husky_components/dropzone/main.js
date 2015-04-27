@@ -386,6 +386,10 @@ define([], function () {
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
                     previewsContainer: this.sandbox.dom.find('.' + constants.uploadedItemContainerClass, this.$dropzone)[0],
+                    accept: function(file, done) {
+                        console.log(file);
+                        done();
+                    },
                     init: function () {
                         // store dropzone context
                         that.dropzone = this;
