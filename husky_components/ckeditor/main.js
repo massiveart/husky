@@ -27,12 +27,8 @@ define([], function() {
             instanceName: null,
             tableEnabled: true,
             linksEnabled: true,
-            scriptEnabled: true,
-            iframeEnabled: true,
             pasteFromWord: true,
-            height: null,
-            maxHeight: null,
-            enterMode: null
+            extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
         },
 
         /**
@@ -123,18 +119,9 @@ define([], function() {
                 config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
             }
 
-
-            // extra allowed
-            var extraAllowedContent = '';
-
-            // extra allowed content iframe
-            if (this.options.iframeEnabled === true) {
-                extraAllowedContent += ' iframe(*)[src,border,frameborder,width,height,style,allowfullscreen,name,marginheight,marginwidth,seamless,srcdoc];';
-            }
-
-            // extra allowed content iframe
-            if (this.options.scriptEnabled === true) {
-                extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
+            // Styles
+            if (!!config.stylesSet && config.stylesSet.length > 0) {
+                config.toolbar.push({ name: 'styles', items: [ 'Styles' ] });
             }
 
             config.toolbar.push({ name: 'code', items: [ 'Source' ] });
@@ -150,12 +137,7 @@ define([], function() {
             delete config.element;
             delete config.linksEnabled;
             delete config.tableEnabled;
-            delete config.scriptEnabled;
-            delete config.iframeEnabled;
             delete config.maxHeight;
-
-            // allow img tags to have any class (*) and any attribute [*]
-            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title];' + extraAllowedContent;
 
             return config;
         };

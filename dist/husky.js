@@ -2074,7 +2074,7 @@ define("requirejs", function(){});
 // the stack via arguments.caller.callee and Firefox dies if
 // you try to trace through "use strict" call chains. (#13335)
 // Support: Firefox 18+
-//"use strict";
+//
 var
 	// The deferred used on DOM ready
 	readyList,
@@ -14719,7 +14719,7 @@ define("backbone", ["underscore","jquery"], (function (global) {
   java, location, Components, FileUtils */
 
 define('text',['module'], function (module) {
-    'use strict';
+    
 
     var text, fs, Cc, Ci, xpcIsWindows,
         progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
@@ -15101,7 +15101,7 @@ define('text',['module'], function (module) {
 });
 
 define('aura/ext/debug', [],function() {
-  'use strict';
+  
 
   return {
     name: 'debug',
@@ -15690,7 +15690,7 @@ define('aura/ext/debug', [],function() {
 }();
 
 define('aura/ext/mediator', ['eventemitter','underscore'],function () {
-  'use strict';
+  
 
   return {
     name: 'mediator',
@@ -15814,7 +15814,7 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
 
 define('aura/ext/components', [],function() {
 
-  'use strict';
+  
 
   return function(app) {
 
@@ -21832,7 +21832,7 @@ define("jqueryAdapter", function(){});
 */
 
 (function (exportCallback) {
-    "use strict";
+    
 
 var UriTemplateError = (function () {
 
@@ -22691,7 +22691,7 @@ var UriTemplate = (function () {
     exportCallback(UriTemplate);
 
 }(function (UriTemplate) {
-        "use strict";
+        
         // export UriTemplate, when module is present, or pass it to window or global
         if (typeof module !== "undefined") {
             module.exports = UriTemplate;
@@ -22718,7 +22718,7 @@ var UriTemplate = (function () {
 
 (function($) {
     var _ = function() {
-        "use strict";
+        
         return {
             isMsie: function() {
                 return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
@@ -22840,7 +22840,7 @@ var UriTemplate = (function () {
     }();
     var VERSION = "0.10.5";
     var tokenizers = function() {
-        "use strict";
+        
         return {
             nonword: nonword,
             whitespace: whitespace,
@@ -22871,7 +22871,7 @@ var UriTemplate = (function () {
         }
     }();
     var LruCache = function() {
-        "use strict";
+        
         function LruCache(maxSize) {
             this.maxSize = _.isNumber(maxSize) ? maxSize : 100;
             this.reset();
@@ -22938,7 +22938,7 @@ var UriTemplate = (function () {
         return LruCache;
     }();
     var PersistentStorage = function() {
-        "use strict";
+        
         var ls, methods;
         try {
             ls = window.localStorage;
@@ -23018,7 +23018,7 @@ var UriTemplate = (function () {
         }
     }();
     var Transport = function() {
-        "use strict";
+        
         var pendingRequestsCount = 0, pendingRequests = {}, maxPendingRequests = 6, sharedCache = new LruCache(10);
         function Transport(o) {
             o = o || {};
@@ -23105,7 +23105,7 @@ var UriTemplate = (function () {
         }
     }();
     var SearchIndex = function() {
-        "use strict";
+        
         function SearchIndex(o) {
             o = o || {};
             if (!o.datumTokenizer || !o.queryTokenizer) {
@@ -23223,7 +23223,7 @@ var UriTemplate = (function () {
         }
     }();
     var oParser = function() {
-        "use strict";
+        
         return {
             local: getLocal,
             prefetch: getPrefetch,
@@ -23292,7 +23292,7 @@ var UriTemplate = (function () {
         }
     }();
     (function(root) {
-        "use strict";
+        
         var old, keys;
         old = root.Bloodhound;
         keys = {
@@ -23446,7 +23446,7 @@ var UriTemplate = (function () {
         };
     }();
     var css = function() {
-        "use strict";
+        
         var css = {
             wrapper: {
                 position: "relative",
@@ -23508,7 +23508,7 @@ var UriTemplate = (function () {
         return css;
     }();
     var EventBus = function() {
-        "use strict";
+        
         var namespace = "typeahead:";
         function EventBus(o) {
             if (!o || !o.el) {
@@ -23525,7 +23525,7 @@ var UriTemplate = (function () {
         return EventBus;
     }();
     var EventEmitter = function() {
-        "use strict";
+        
         var splitter = /\s+/, nextTick = getNextTick();
         return {
             onSync: onSync,
@@ -23615,7 +23615,7 @@ var UriTemplate = (function () {
         }
     }();
     var highlight = function(doc) {
-        "use strict";
+        
         var defaults = {
             node: null,
             pattern: null,
@@ -23667,7 +23667,7 @@ var UriTemplate = (function () {
         }
     }(window.document);
     var Input = function() {
-        "use strict";
+        
         var specialKeyCodeMap;
         specialKeyCodeMap = {
             9: "tab",
@@ -23862,7 +23862,7 @@ var UriTemplate = (function () {
         }
     }();
     var Dataset = function() {
-        "use strict";
+        
         var datasetKey = "ttDataset", valueKey = "ttValue", datumKey = "ttDatum";
         function Dataset(o) {
             o = o || {};
@@ -23996,7 +23996,7 @@ var UriTemplate = (function () {
         }
     }();
     var Dropdown = function() {
-        "use strict";
+        
         function Dropdown(o) {
             var that = this, onSuggestionClick, onSuggestionMouseEnter, onSuggestionMouseLeave;
             o = o || {};
@@ -24156,7 +24156,7 @@ var UriTemplate = (function () {
         }
     }();
     var Typeahead = function() {
-        "use strict";
+        
         var attrsKey = "ttAttrs";
         function Typeahead(o) {
             var $menu, $input, $hint;
@@ -24403,7 +24403,7 @@ var UriTemplate = (function () {
         }
     }();
     (function() {
-        "use strict";
+        
         var old, typeaheadKey, methods;
         old = $.fn.typeahead;
         typeaheadKey = "ttTypeahead";
@@ -26248,7 +26248,7 @@ define("dropzone", ["jquery"], (function (global) {
  * ========================================================== */
 (function($) {
 
-    "use strict";
+    
 
     var defaults = {
         prefilled: null,
@@ -26762,7 +26762,7 @@ define('type/husky-select',[
     'form/util'
 ], function(Default) {
 
-    'use strict';
+    
 
     return function($el, options) {
         var defaults = {
@@ -26853,7 +26853,7 @@ define('type/husky-input',[
     'type/default'
 ], function(Default) {
 
-    'use strict';
+    
 
     return function($el, options) {
         var defaults = {
@@ -27141,7 +27141,7 @@ define('bower_components/aura/lib/platform',[],function() {
 })();
 
 define('bower_components/aura/lib/logger',[], function() {
-  'use strict';
+  
 
   var noop    = function() {},
       console = window.console || {};
@@ -27784,7 +27784,7 @@ define('husky',[
     'bower_components/aura/lib/aura'
 ], function(Aura) {
 
-    'use strict';
+    
 
     // husky - subclass of aurajs
     function Husky(config) {
@@ -27867,7 +27867,7 @@ define('husky',[
 
 define('__component__$navigation@husky',[],function() {
 
-    'use strict';
+    
 
     var templates = {
             /** component skeleton */
@@ -28876,7 +28876,7 @@ define('__component__$navigation@husky',[],function() {
  */
 define('__component__$column-options@husky',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             url: null,
@@ -29302,7 +29302,7 @@ define('__component__$column-options@husky',[],function() {
  */
 define('husky_components/datagrid/decorators/table-view',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             editable: false,
@@ -30751,7 +30751,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
  */
 define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             large: false,
@@ -31113,7 +31113,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
  */
 define('husky_components/datagrid/decorators/group-view',[],function () {
 
-    'use strict';
+    
 
     var defaults = {
 
@@ -31361,7 +31361,7 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
  */
 define('husky_components/datagrid/decorators/dropdown-pagination',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
@@ -31719,7 +31719,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  */
 (function() {
 
-    'use strict';
+    
 
     define('__component__$datagrid@husky',[
         'husky_components/datagrid/decorators/table-view',
@@ -33553,7 +33553,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
 define('__component__$dropdown@husky',[], function() {
 
-    'use strict';
+    
 
     var moduleName = 'Husky.Ui.DropDown',
         defaults = {
@@ -33853,7 +33853,7 @@ define('__component__$dropdown@husky',[], function() {
 
 define('__component__$matrix@husky',[],function() {
 
-    'use strict';
+    
 
     var sandbox,
         activeClass = 'is-active';
@@ -34104,7 +34104,7 @@ define('__component__$matrix@husky',[],function() {
  */
 define('__component__$search@husky',[], function() {
 
-    'use strict';
+    
 
     var templates = {
             skeleton: [
@@ -34359,7 +34359,7 @@ define('__component__$search@husky',[], function() {
 
 define('__component__$tabs@husky',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             url: null,
@@ -34702,7 +34702,7 @@ define('__component__$tabs@husky',[],function() {
  */
 define('__component__$toolbar@husky',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             url: null,
@@ -35793,7 +35793,7 @@ define('__component__$toolbar@husky',[],function() {
 
 define('__component__$auto-complete@husky',[], function() {
 
-    'use strict';
+    
 
     /**
      * Default values for options
@@ -36464,7 +36464,7 @@ define('__component__$auto-complete@husky',[], function() {
  */
 define('__component__$auto-complete-list@husky',[], function() {
 
-        'use strict';
+        
 
         /**
          * Default values for options
@@ -37177,7 +37177,7 @@ define('__component__$auto-complete-list@husky',[], function() {
  */
 define('__component__$dependent-select@husky',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             url: null,
@@ -37459,7 +37459,7 @@ define('__component__$dependent-select@husky',[],function() {
 
 define('__component__$select@husky',[], function() {
 
-    'use strict';
+    
 
     var translations = {
             addItem: 'select.add-item',
@@ -38690,7 +38690,7 @@ define('__component__$select@husky',[], function() {
 
 define('__component__$password-fields@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
         instanceName: 'undefined',
@@ -38846,7 +38846,7 @@ define('__component__$password-fields@husky',[], function() {
  */
 define('__component__$column-navigation@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             url: null,
@@ -40231,7 +40231,7 @@ define('__component__$column-navigation@husky',[], function() {
  */
 define('__component__$loader@husky',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
         size: '40px',
@@ -40341,19 +40341,15 @@ define('__component__$loader@husky',[],function() {
  */
 define('__component__$ckeditor@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             initializedCallback: null,
             instanceName: null,
             tableEnabled: true,
             linksEnabled: true,
-            scriptEnabled: true,
-            iframeEnabled: true,
             pasteFromWord: true,
-            height: null,
-            maxHeight: null,
-            enterMode: null
+            extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
         },
 
         /**
@@ -40444,18 +40440,9 @@ define('__component__$ckeditor@husky',[], function() {
                 config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
             }
 
-
-            // extra allowed
-            var extraAllowedContent = '';
-
-            // extra allowed content iframe
-            if (this.options.iframeEnabled === true) {
-                extraAllowedContent += ' iframe(*)[src,border,frameborder,width,height,style,allowfullscreen,name,marginheight,marginwidth,seamless,srcdoc];';
-            }
-
-            // extra allowed content iframe
-            if (this.options.scriptEnabled === true) {
-                extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
+            // Styles
+            if (!!config.stylesSet && config.stylesSet.length > 0) {
+                config.toolbar.push({ name: 'styles', items: [ 'Styles' ] });
             }
 
             config.toolbar.push({ name: 'code', items: [ 'Source' ] });
@@ -40471,12 +40458,7 @@ define('__component__$ckeditor@husky',[], function() {
             delete config.element;
             delete config.linksEnabled;
             delete config.tableEnabled;
-            delete config.scriptEnabled;
-            delete config.iframeEnabled;
             delete config.maxHeight;
-
-            // allow img tags to have any class (*) and any attribute [*]
-            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title];' + extraAllowedContent;
 
             return config;
         };
@@ -40635,7 +40617,7 @@ define('__component__$ckeditor@husky',[], function() {
  */
 define('__component__$overlay@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             trigger: 'click',
@@ -41703,7 +41685,7 @@ define('__component__$overlay@husky',[], function() {
  */
 define('__component__$label@husky',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
         instanceName: 'undefined',
@@ -41938,7 +41920,7 @@ define('__component__$label@husky',[],function() {
  */
 define('__component__$matcher@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -42527,7 +42509,7 @@ define('__component__$matcher@husky',[], function() {
  */
 define('__component__$process@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -42787,7 +42769,7 @@ define('__component__$process@husky',[], function() {
  */
 define('__component__$toggler@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -43031,7 +43013,7 @@ define('__component__$toggler@husky',[], function() {
  */
 define('__component__$dropzone@husky',[], function () {
 
-    'use strict';
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -43584,7 +43566,7 @@ define('__component__$dropzone@husky',[], function () {
  */
 define('__component__$input@husky',[], function() {
 
-    'use strict';
+    
 
     var defaults = {
             instanceName: 'undefined',
@@ -44136,7 +44118,7 @@ define('__component__$data-navigation@husky',[
     'husky_components/data-navigation/list-view'
 ], function(View) {
 
-    'use strict';
+    
 
     var defaultOptions = {
             url: null,
@@ -44840,7 +44822,7 @@ define('__component__$data-navigation@husky',[
  */
 (function() {
 
-    'use strict';
+    
 
     if (window.Backbone) {
         define('backbone', [], function() {
@@ -44956,7 +44938,7 @@ define('__component__$data-navigation@husky',[
 
 (function() {
 
-    'use strict';
+    
 
     define('husky_extensions/cache-factory',[], {
         name: 'cacheFactory',
@@ -45056,7 +45038,7 @@ define('__component__$data-navigation@husky',[
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: {
@@ -45098,8 +45080,11 @@ define('__component__$data-navigation@husky',[
                     // callback when editor is ready
                     init: function(selector, callback, config) {
 
-                        var configuration = app.sandbox.util.extend(true, {}, config, getConfig.call()),
+                        var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config),
                             $editor;
+
+                        console.log('===============');
+                        console.log(configuration.extraPlugins);
 
                         if (!!callback && typeof callback === 'function') {
                             $editor = $(selector).ckeditor(callback, configuration);
@@ -45190,7 +45175,7 @@ define('__component__$data-navigation@husky',[
  */
 define('husky_extensions/collection',[],function() {
 
-    'use strict';
+    
 
     // simplified backbone collection
     var Collection = {
@@ -46090,7 +46075,7 @@ define('husky_extensions/collection',[],function() {
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: { "jquery-minicolors": 'bower_components/jquery-minicolors/jquery.minicolors' },
@@ -46126,7 +46111,7 @@ define('husky_extensions/collection',[],function() {
  */
 (function() {
 
-    'use strict';
+    
 
     define('husky_extensions/confirm',{
 
@@ -48794,7 +48779,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: {
@@ -48966,7 +48951,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: { 'dropzone': 'bower_components/dropzone/dropzone' },
@@ -49006,7 +48991,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: {
@@ -49199,7 +49184,7 @@ define("datepicker-zh-TW", function(){});
 
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: {
@@ -49238,7 +49223,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: { "form": 'bower_components/husky-validation/dist/validation' }
@@ -49384,7 +49369,7 @@ define("datepicker-zh-TW", function(){});
  */
 (function() {
 
-    'use strict';
+    
 
     define('husky_extensions/infinite-scroll',[],function() {
 
@@ -49449,7 +49434,7 @@ define("datepicker-zh-TW", function(){});
  */
 define('husky_extensions/itembox',[],function() {
 
-    'use strict';
+    
 
     var defaults = {
             instanceName: null,
@@ -50102,7 +50087,7 @@ define('husky_extensions/itembox',[],function() {
  */
 (function() {
 
-    'use strict';
+    
 
     if (window.jQuery) {
         define('jquery', [], function() {
@@ -50673,7 +50658,7 @@ define('husky_extensions/itembox',[],function() {
  */
 define('husky_extensions/model',[],function() {
 
-    'use strict';
+    
 
     // simplified backbone model
     var Model = {
@@ -50709,7 +50694,7 @@ define('husky_extensions/model',[],function() {
  */
 (function() {
 
-    'use strict';
+    
 
     if (window.TagsManager) {
         define('tagsManager', [], function() {
@@ -50748,7 +50733,7 @@ define('husky_extensions/model',[],function() {
  */
 define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
-    'use strict';
+    
 
     function TemplateManager(options) {
         this.options = _.defaults(options || {}, {
@@ -50873,7 +50858,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
  */
 (function() {
 
-    'use strict';
+    
 
     if (window.Typeahead) {
         define('typeahead', [], function() {
@@ -50936,7 +50921,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
  */
 (function() {
 
-    'use strict';
+    
 
     require.config({
         paths: { "uri-template": 'bower_components/massiveart-uritemplate/uritemplate' }
@@ -50978,7 +50963,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
  */
 define('husky_extensions/util',[],function() {
 
-    'use strict';
+    
 
     return {
         name: 'Util',
