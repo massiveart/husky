@@ -26,7 +26,7 @@ define([], function() {
             initializedCallback: null,
             instanceName: null,
             tableEnabled: true,
-            linksEnabled: true,
+            linkEnabled: true,
             pasteFromWord: true,
             extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
         },
@@ -89,7 +89,7 @@ define([], function() {
             }
 
             // activate embed links
-            if (this.options.linksEnabled === true) {
+            if (this.options.linkEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
             }
@@ -135,7 +135,7 @@ define([], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
-            delete config.linksEnabled;
+            delete config.linkEnabled;
             delete config.tableEnabled;
             delete config.maxHeight;
 

@@ -40347,7 +40347,7 @@ define('__component__$ckeditor@husky',[], function() {
             initializedCallback: null,
             instanceName: null,
             tableEnabled: true,
-            linksEnabled: true,
+            linkEnabled: true,
             pasteFromWord: true,
             extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
         },
@@ -40410,7 +40410,7 @@ define('__component__$ckeditor@husky',[], function() {
             }
 
             // activate embed links
-            if (this.options.linksEnabled === true) {
+            if (this.options.linkEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
             }
@@ -40456,7 +40456,7 @@ define('__component__$ckeditor@husky',[], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
-            delete config.linksEnabled;
+            delete config.linkEnabled;
             delete config.tableEnabled;
             delete config.maxHeight;
 
@@ -45082,7 +45082,6 @@ define('__component__$data-navigation@husky',[
 
                         var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config),
                             $editor;
-
                         if (!!callback && typeof callback === 'function') {
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {

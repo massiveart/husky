@@ -53,7 +53,6 @@
 
                         var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config),
                             $editor;
-
                         if (!!callback && typeof callback === 'function') {
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {
