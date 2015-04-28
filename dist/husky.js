@@ -40349,6 +40349,7 @@ define('__component__$ckeditor@husky',[], function() {
             tableEnabled: true,
             linkEnabled: true,
             pasteFromWord: true,
+            height: 200,
             extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
         },
 
@@ -40431,7 +40432,7 @@ define('__component__$ckeditor@husky',[], function() {
                 config.autoGrow_maxHeight = this.options.maxHeight;
                 // if height bigger maxHeight height = maxHeight
                 if (config.height > config.autoGrow_maxHeight) {
-                    config.autoGrow_maxHeight = config.height;
+                    config.height = config.autoGrow_maxHeight;
                 }
             }
 
