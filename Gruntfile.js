@@ -26,7 +26,6 @@ module.exports = function(grunt) {
         rJSConfig = getConfig(grunt.option('dev')),
         rJSConfigDev = getConfig(true);
 
-
     // project configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -61,18 +60,15 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-                jshintrc: '.jshintrc'
-            }
-        },
-        karma: {
-            unit: {
-                configFile: 'karma.conf.js',
-                autoWatch: true
+                jshintrc: '.jshintrc',
+                reporter: require('jshint-stylish')
             },
-            travis: {
-                configFile: 'karma.travis.conf.js',
-                autoWatch: true
-            }
+            all: [
+                'Gruntfile.js',
+                './husky_components/**/*.js',
+                './husky_extensions/**/*.js',
+                './lib/husky.js'
+            ]
         },
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
@@ -102,14 +98,14 @@ module.exports = function(grunt) {
             options: { banner: '<%= meta.banner %>' },
             dist: {
                 src: ['js/{,*/}*.js'],
-                dest: 'dist/<%= pkg.name %>.js'
+                dest: 'dist/husky.js'
             }
         },
         cssmin: {
             options: { banner: '<%= meta.banner %>' },
             compress: {
                 files: {
-                    'dist/<%= pkg.name %>.min.css': ['.tmp/{,*/}*.css']
+                    'dist/husky.min.css': ['.tmp/{,*/}*.css']
                 }
             }
         },
@@ -195,17 +191,6 @@ module.exports = function(grunt) {
                         cwd: '.bower_components/aura/lib/',
                         src: ['**'],
                         dest: 'bower_components/aura/lib/'
-                    },
-                    // backbone
-                    {
-                        expand: true,
-                        flatten: true,
-                        src: [
-                            '.bower_components/backbone/backbone.js',
-                            '.bower_components/backbone/backbone-min.js',
-                            '.bower_components/backbone/backbone-min.map'
-                        ],
-                        dest: 'bower_components/backbone/'
                     },
                     // eventemitter2
                     {
@@ -381,16 +366,6 @@ module.exports = function(grunt) {
         }
     });
 
-    // register tasks
-    grunt.registerTask('test', [
-        'karma:unit'
-    ]);
-
-    // Travis CI task.
-    grunt.registerTask('travis', [
-        'karma:travis'
-    ]);
-
     grunt.registerTask('build', [
         'clean:tmp',
         'clean:dist',
@@ -398,7 +373,14 @@ module.exports = function(grunt) {
         'requirejs:dev',
         'compass',
         'cssmin',
-        'copy:dist',
+        'copy:dist'
+    ]);
+
+    grunt.registerTask('jshint', [
+        'jshint'
+    ]);
+
+    grunt.registerTask('build:docs', [
         'yuidoc'
     ]);
 
