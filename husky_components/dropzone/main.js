@@ -312,8 +312,7 @@ define([], function () {
                 // set height of components element to prevent the site from jumping
                 this.sandbox.dom.height(this.$el, this.sandbox.dom.outerHeight(this.$el));
 
-                var $container = this.sandbox.dom.createElement('<div/>'),
-                    coordinates = this.getOverlayCoordinates();
+                var $container = this.sandbox.dom.createElement('<div/>');
                 this.sandbox.dom.append(this.$el, $container);
                 this.sandbox.start([
                     {
@@ -327,8 +326,6 @@ define([], function () {
                             instanceName: 'dropzone-' + this.options.instanceName,
                             skin: 'dropzone',
                             smallHeader: true,
-                            top: coordinates.top,
-                            left: coordinates.left,
                             cancelCallback: function() {
                                 this.sandbox.dom.append(this.$el, this.$dropzone);
                                 this.sandbox.dom.height(this.$el, '');
@@ -339,18 +336,6 @@ define([], function () {
                 ]);
                 this.overlayOpened = true;
             }
-        },
-
-        /**
-         * Returns the positon of the element relative to the browser window
-         * @returns {{top: Number|Null, left: Number|Null}}
-         */
-        getOverlayCoordinates: function() {
-            var orientation = this.sandbox.dom.get(this.$el, 0).getBoundingClientRect();
-            return {
-                top: (orientation.top > 0) ? orientation.top : null,
-                left: (orientation.left > 0) ? orientation.left : null
-            };
         },
 
         /**
