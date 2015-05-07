@@ -32,7 +32,7 @@ define([], function() {
             pasteFromWord: true,
             height: null,
             maxHeight: null,
-            enterMode: null
+            enterMode: 'p'
         },
 
         /**
