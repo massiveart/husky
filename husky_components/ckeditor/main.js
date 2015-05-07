@@ -123,7 +123,6 @@ define([], function() {
                 config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
             }
 
-
             // extra allowed
             var extraAllowedContent = '';
 
