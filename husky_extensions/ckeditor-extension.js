@@ -34,7 +34,9 @@
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
                 extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
+                extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]',
                 resize_enabled: false,
+                enterMode: 'P',
                 uiColor: '#ffffff',
                 skin: 'husky'
             };

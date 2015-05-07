@@ -25,11 +25,10 @@ define([], function() {
     var defaults = {
             initializedCallback: null,
             instanceName: null,
-            tableEnabled: true,
-            linkEnabled: true,
+            table: true,
+            link: true,
             pasteFromWord: true,
-            height: 200,
-            extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
+            height: 200
         },
 
         /**
@@ -90,13 +89,13 @@ define([], function() {
             }
 
             // activate embed links
-            if (this.options.linkEnabled === true) {
+            if (this.options.link === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
             }
 
             // activate tables
-            if (this.options.tableEnabled === true) {
+            if (this.options.table === true) {
                 config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
             }
 
@@ -136,8 +135,8 @@ define([], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
-            delete config.linkEnabled;
-            delete config.tableEnabled;
+            delete config.link;
+            delete config.table;
             delete config.maxHeight;
 
             return config;
