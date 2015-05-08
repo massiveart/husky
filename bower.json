@@ -1,6 +1,6 @@
 {
   "name": "husky",
-  "version": "develop",
+  "version": "0.12.0",
   "main": "js/husky.js",
   "dependencies": {
     "backbone": "~1.0.0",

@@ -40446,7 +40446,7 @@ define('__component__$ckeditor@husky',[], function() {
             if (!!this.options.enterMode) {
                 config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
             }
-            
+
             // extra allowed
             var extraAllowedContent = '';
 
