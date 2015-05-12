@@ -43851,6 +43851,7 @@ define('__component__$input@husky',[], function() {
             this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
                 this.setDatepickerValueAttr(event.date);
             }.bind(this));
+
             this.updateValue();
 
             this.bindDatepickerDomEvents();
@@ -43970,7 +43971,11 @@ define('__component__$input@husky',[], function() {
          * data attribute
          */
         updateValue: function() {
-            this.setValue(this.sandbox.dom.data(this.$el, 'value'));
+            if (!!this.options.value) {
+                this.setValue(this.options.value);
+            } else {
+                this.setValue(this.sandbox.dom.data(this.$el, 'value'));
+            }
         }
     };
 
