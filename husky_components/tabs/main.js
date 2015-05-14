@@ -231,7 +231,7 @@ define(function() {
                         this.sandbox.logger.log('data could not be loaded:', data);
                     }.bind(this));
             } else if (!!this.options.data) {
-                this.render((this.options.data));
+                this.render(this.options.data);
             } else {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
