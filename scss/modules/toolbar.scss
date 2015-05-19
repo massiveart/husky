@@ -78,7 +78,8 @@ $toolbarSmallHeight: 20px;
             border-width: 1px;
         }
         &:last-child {
-            border-radius: 0 $borderRadius $borderRadius 0;
+            border-top-right-radius: $borderRadius !important;
+            border-bottom-right-radius: $borderRadius !important;
         }
         &:only-child {
             border-radius: $borderRadius;
