@@ -38,6 +38,7 @@
  * @param {String} [options.resultKey] key in result set - default is empty and the _embedded property of the result set will be taken
  * @param {String} [options.url] url to load data from
  * @param {Boolean} [options.isNative] should use native select
+ * @param {Boolean} [options.showToolTip] Show tool-tip on hover - only works for single-selects
  */
 
 define([], function() {
@@ -71,6 +72,7 @@ define([], function() {
             editable: false,
             direction: 'auto',
             resultKey: '',
+            showToolTip: false,
             translations: translations,
             isNative: false
         },
@@ -90,7 +92,8 @@ define([], function() {
             typeRowSelector: '.type-row',
             contentInnerSelector: '.content-inner',
             toggleClass: '.toggle-icon',
-            formElementSelector: '.form-element'
+            formElementSelector: '.form-element',
+            selectContainerSelector: '.husky-select-container'
         },
 
         templates = {
@@ -323,7 +326,6 @@ define([], function() {
         },
 
         render: function() {
-
             // add husky-select class to component
             this.sandbox.dom.addClass(this.$el, constants.selectClass);
 
@@ -426,7 +428,9 @@ define([], function() {
                 idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
-                this.options.preSelectedElements.indexOf(value) >= 0) {
+                this.options.preSelectedElements.indexOf(value) >= 0
+            ) {
+                this.setToolTip(value);
                 $item = this.sandbox.dom.createElement(this.sandbox.util.template(
                     template.call(
                         this,
@@ -578,7 +582,7 @@ define([], function() {
             if (!this.selectedElements.length) {
                 this.triggerDeselect(selectedId);
             } else {
-                this.triggerSelect(selectedId);
+                this.triggerSelect(selectedId, selectedValue);
             }
         },
 
@@ -921,6 +925,21 @@ define([], function() {
         },
 
         /**
+         * Sets tooltip (the title attribute of container)
+         * if options.showToolTip is true and multipleSelect is false
+         *
+         * @param string value
+         */
+        setToolTip: function(value) {
+            if (this.options.showToolTip === true &&
+                this.options.multipleSelect === false
+            ) {
+                var $container = this.$find(constants.selectContainerSelector);
+                this.sandbox.dom.attr($container, 'title', value);
+            }
+        },
+
+        /**
          * Callback for close of overlay with cancel button
          */
         onCloseWithCancel: function() {
@@ -1056,13 +1075,15 @@ define([], function() {
             if (index >= 0) {
                 this.triggerDeselect(key);
             } else {
-                this.triggerSelect(key);
+                this.triggerSelect(key, value);
             }
             this.sandbox.dom.trigger(this.$el, 'change');
         },
 
         // triggers select callback or emits event
-        triggerSelect: function(key) {
+        triggerSelect: function(key, selectedValue) {
+            this.setToolTip(selectedValue);
+
             // callback, if defined
             if (!!this.options.selectCallback) {
                 this.options.selectCallback.call(this, key);
