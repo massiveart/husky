@@ -85,18 +85,27 @@ define([], function() {
 
             // activate paste from Word
             if (this.options.pasteFromWord === true) {
-                config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
+                config.toolbar.push({
+                    name: 'paste',
+                    items: [ 'PasteFromWord' ]
+                });
             }
 
             // activate embed links
             if (this.options.link === true) {
-                config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
+                config.toolbar.push({
+                    name: 'links',
+                    items: [ 'Link', 'Unlink' ]
+                });
                 config.linkShowTargetTab = false;
             }
 
             // activate tables
             if (this.options.table === true) {
-                config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
+                config.toolbar.push({
+                    name: 'insert',
+                    items: [ 'Table' ]
+                });
             }
 
             // set height
@@ -121,7 +130,10 @@ define([], function() {
 
             // Styles
             if (!!config.stylesSet && config.stylesSet.length > 0) {
-                config.toolbar.push({ name: 'styles', items: [ 'Styles' ] });
+                config.toolbar.push({
+                    name: 'styles',
+                    items: [ 'Styles' ]
+                });
             }
 
             config.toolbar.push({ name: 'code', items: [ 'Source' ] });
