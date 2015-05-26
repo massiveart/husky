@@ -34,7 +34,7 @@
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
                 extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
-                extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]',
+                extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]',
                 resize_enabled: false,
                 enterMode: 'P',
                 uiColor: '#ffffff',
