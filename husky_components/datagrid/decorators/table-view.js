@@ -1070,7 +1070,6 @@ define(function() {
             $cell = this.table.rows[recordId].cells[attribute].$el;
             $inputField = this.sandbox.dom.find('.' + constants.editableInputClass, $cell);
             $inputWrapper = this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell);
-            this.sandbox.dom.data($inputField, 'edit', 'on');
 
             this.sandbox.dom.show($inputWrapper);
             this.sandbox.dom.focus($inputField);
@@ -1083,13 +1082,12 @@ define(function() {
          */
         editableInputKeyHandler: function(event) {
             // on enter
-            if (event.keyCode === 13 && this.sandbox.dom.data(event.currentTarget, 'edit') === 'on') {
+            if (event.keyCode === 13) {
                 this.sandbox.dom.stopPropagation(event);
 
                 var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
                     recordId = this.sandbox.dom.data($parent, 'id');
 
-                this.sandbox.dom.data(event.currentTarget, 'edit', 'off');
                 this.editRow(recordId);
             }
         },
@@ -1099,13 +1097,12 @@ define(function() {
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function(event) {
-            if (!!this.isFocusoutHandlerEnabled && this.sandbox.dom.data(event.currentTarget, 'edit') === 'on') {
+            if (!!this.isFocusoutHandlerEnabled) {
                 this.sandbox.dom.stopPropagation(event);
 
                 var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
                     recordId = this.sandbox.dom.data($parent, 'id');
 
-                this.sandbox.dom.data(event.currentTarget, 'edit', 'off');
                 this.editRow(recordId);
             }
         },
