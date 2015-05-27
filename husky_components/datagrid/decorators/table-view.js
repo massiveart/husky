@@ -1100,10 +1100,9 @@ define(function() {
             if (!!this.isFocusoutHandlerEnabled) {
                 this.sandbox.dom.stopPropagation(event);
 
-                var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
-                    recordId = this.sandbox.dom.data($parent, 'id');
-
-                this.editRow(recordId);
+                var e = jQuery.Event('keypress');
+                e.keyCode = 13;
+                this.sandbox.dom.trigger(event.currentTarget, e);
             }
         },
 
