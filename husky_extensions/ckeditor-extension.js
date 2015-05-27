@@ -34,7 +34,9 @@
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
                 extraPlugins: 'justify,format,sourcearea,link,table,pastefromword,autogrow',
+                extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]',
                 resize_enabled: false,
+                enterMode: 'P',
                 uiColor: '#ffffff',
                 skin: 'husky'
             };
@@ -51,9 +53,8 @@
                     // callback when editor is ready
                     init: function(selector, callback, config) {
 
-                        var configuration = app.sandbox.util.extend(true, {}, config, getConfig.call()),
+                        var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config),
                             $editor;
-
                         if (!!callback && typeof callback === 'function') {
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {
