@@ -76,7 +76,7 @@ define(function() {
         },
 
         /** templates container */
-            templates = {
+        templates = {
             skeleton: [
                 '<div class="husky-toolbar">',
                 '</div>'
@@ -151,9 +151,9 @@ define(function() {
          * @event husky.toolbar.[INSTANCE_NAME.]item.hide
          * @param {string} button The id of the button
          */
-         ITEM_HIDE = function() {
+        ITEM_HIDE = function() {
             return createEventName.call(this, 'item.hide');
-         },
+        },
 
         /**
          * event to show a button
@@ -161,9 +161,9 @@ define(function() {
          * @event husky.toolbar.[INSTANCE_NAME.]item.show
          * @param {string} button The id of the button
          */
-         ITEM_SHOW = function() {
+        ITEM_SHOW = function() {
             return createEventName.call(this, 'item.show');
-         },
+        },
 
         /**
          * event to mark a subitem
@@ -171,9 +171,9 @@ define(function() {
          * @event husky.toolbar.[INSTANCE_NAME.]item.mark
          * @param {string} button The id of the button
          */
-         ITEM_MARK = function() {
+        ITEM_MARK = function() {
             return createEventName.call(this, 'item.mark');
-         },
+        },
 
         /**
          * event to change a buttons default title and default icon
@@ -182,7 +182,7 @@ define(function() {
          * @param {string} button The id of the button
          * @param {object} object with a icon and title
          */
-         BUTTON_SET = function() {
+        BUTTON_SET = function() {
             return createEventName.call(this, 'button.set');
         },
 
@@ -194,7 +194,7 @@ define(function() {
          * @param {array} items The items to set
          * @param {integer} itemId The id or the index of the item to set selected - optional
          */
-         ITEMS_SET = function() {
+        ITEMS_SET = function() {
             return createEventName.call(this, 'items.set');
         },
 
@@ -266,7 +266,7 @@ define(function() {
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
                 if (!!this.items[button]) {
-                    this.items[button].initialized.then(function () {
+                    this.items[button].initialized.then(function() {
                         var index = getItemIndexById.call(this, id, this.items[button]);
                         changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
                         this.sandbox.emit(ITEM_MARK.call(this), this.items[button].items[index].id);
@@ -338,7 +338,7 @@ define(function() {
                 this.sandbox.dom.addClass($item, 'highlight-animation');
 
                 // remove class after effect has finished
-                this.sandbox.dom.on($item,'animationend webkitAnimationEnd oanimationend MSAnimationEnd', function(ev) {
+                this.sandbox.dom.on($item, 'animationend webkitAnimationEnd oanimationend MSAnimationEnd', function(ev) {
                     this.sandbox.dom.removeClass(ev.currentTarget, 'highlight-animation');
                 }.bind(this));
             }
@@ -366,9 +366,9 @@ define(function() {
          * Shows a button
          * @param $button
          */
-         showItem = function($button) {
+        showItem = function($button) {
             this.sandbox.dom.removeClass($button, 'hidden');
-         },
+        },
 
         /**
          * Sets a button into loading state
@@ -484,8 +484,8 @@ define(function() {
                 return;
             }
             hideDropdowns.call(this);
-            if (!!item.parentId && !!this.items[item.parentId].itemsOption
-                && this.items[item.parentId].itemsOption.markable === true) {
+            if (!!item.parentId && !!this.items[item.parentId].itemsOption &&
+                this.items[item.parentId].itemsOption.markable === true) {
                 uniqueMarkItem.call(this, item.id);
             }
             if (!item.disabled) {
@@ -647,7 +647,7 @@ define(function() {
         setButtonWidth = function(listItem, parent) {
             var maxwidth = 0, i, length;
             if (parent.type === 'select') {
-                for(i = -1, length = parent.items.length; ++i < length;) {
+                for (i = -1, length = parent.items.length; ++i < length;) {
                     changeMainListItem.call(this, listItem, parent.items[i]);
                     if (this.sandbox.dom.width(listItem) > maxwidth) {
                         maxwidth = this.sandbox.dom.width(listItem);
@@ -785,7 +785,7 @@ define(function() {
                     data[i].position = 9000;
                 }
             }
-            data = data.sort(function(a, b){
+            data = data.sort(function(a, b) {
                 return a.position - b.position;
             });
 
@@ -970,6 +970,11 @@ define(function() {
                 if (!!item['class']) {
                     classArray.push(item['class']);
                 }
+
+                if (item.hidden) {
+                    classArray.push('hidden');
+                }
+
                 if (item.disabled) {
                     classArray.push('disabled');
                 }
