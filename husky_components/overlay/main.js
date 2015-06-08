@@ -607,6 +607,7 @@ define([], function() {
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
+            this.overlay.$content.css('height', '');
 
             this.sandbox.emit(CLOSED.call(this));
 
@@ -815,7 +816,8 @@ define([], function() {
 
             for (var i = -1, length = this.slides[slide].tabs.length; ++i < length;) {
                 this.overlay.slides[slide].tabs.push({
-                    title: this.slides[slide].tabs[i].title,
+                    id: i,
+                    name: this.slides[slide].tabs[i].title,
                     $el: this.sandbox.dom.createElement(this.slides[slide].tabs[i].data)
                 });
                 this.sandbox.dom.hide(this.overlay.slides[slide].tabs[i].$el);
@@ -838,7 +840,7 @@ define([], function() {
                     name: 'tabs@husky',
                     options: {
                         el: $element,
-                        data: {items: this.overlay.slides[slide].tabs},
+                        data: this.overlay.slides[slide].tabs,
                         instanceName: 'overlay' + this.options.instanceName,
                         skin: 'overlay'
                     }

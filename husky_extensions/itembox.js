@@ -509,6 +509,20 @@ define(function() {
             },
 
             /**
+             * Remove item by id
+             * @param {int} itemId
+             */
+            removeItemById: function(itemId) {
+                var $removeItem = this.sandbox.dom.find('li[data-id=' + itemId + ']', this.$el);
+
+                this.sandbox.dom.remove($removeItem);
+                this.removeHandler(itemId);
+
+                this.updateOrder();
+                this.updateVisibility();
+            },
+
+            /**
              * DOM event handler for removing an item from the list
              * @param event
              */

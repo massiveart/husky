@@ -48,7 +48,10 @@
 
 <script>
     require.config({
-        baseUrl: '../../'
+        baseUrl: '../../',
+        paths: {
+            "data-navigation": "husky_components/data-navigation"
+        }
     });
 
     require(['lib/husky'], function(Husky) {

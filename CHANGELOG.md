@@ -1,6 +1,9 @@
 CHANGELOGS:
 ===========
 
+2015/04/20 v0.11.0
+==================
+
  - update ckeditor:
    - version 4.4.7 update
    - add subscript and numbered list to ckeditor toolbar

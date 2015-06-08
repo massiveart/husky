@@ -1,0 +1,33 @@
+{
+    "id": "1",
+    "name": "Long title is very longy long",
+    "_links" : {
+        "children": {
+            "href": "http://husky.lo:7878/admin/api/collections/1"
+        }
+    },
+    "_embedded": {
+        "items": [
+            {
+                "id": 6,
+                "name": "Collection 6",
+                "hasSub": false,
+                "_links" : {
+                    "children": {
+                        "href": "http://husky.lo:7878/admin/api/collections/6"
+                    }
+                }
+            },
+            {
+                "id": 7,
+                "name": "Collection 7",
+                "hasSub": true,
+                "_links" : {
+                    "children": {
+                        "href": "http://husky.lo:7878/admin/api/collections/7"
+                    }
+                }
+            }
+        ]
+    }
+}

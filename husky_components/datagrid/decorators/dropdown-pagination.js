@@ -299,6 +299,7 @@ define(function() {
                         setParentDropDown: true,
                         instanceName: this.datagrid.options.instanceName + '-pagination-dropdown',
                         alignment: 'right',
+                        verticalAlignment: this.options.verticalAlignment,
                         data: data
                     }
                 }
@@ -326,6 +327,7 @@ define(function() {
                         setParentDropDown: true,
                         instanceName: this.datagrid.options.instanceName + '-pagination-dropdown-show',
                         alignment: 'left',
+                        verticalAlignment: this.options.verticalAlignment,
                         data: data
                     }
                 }
