@@ -233,6 +233,8 @@ define(function() {
             // merge defaults with options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
+            this.editStatuses = {};
+
             this.bindCustomEvents();
             this.setVariables();
         },
@@ -794,10 +796,9 @@ define(function() {
          * @returns {String|Object} html or a dom object
          */
         getEditableCellContent: function(content) {
-            var returnHTML = this.sandbox.util.template(templates.editableCellContent)({
+            return this.sandbox.util.template(templates.editableCellContent)({
                 value: content
             });
-            return returnHTML;
         },
 
         /**
@@ -1074,6 +1075,8 @@ define(function() {
             this.sandbox.dom.show($inputWrapper);
             this.sandbox.dom.focus($inputField);
             this.sandbox.dom.select($inputField);
+
+            this.editStatuses[recordId] = true;
         },
 
         /**
@@ -1083,12 +1086,7 @@ define(function() {
         editableInputKeyHandler: function(event) {
             // on enter
             if (event.keyCode === 13) {
-                this.sandbox.dom.stopPropagation(event);
-
-                var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
-                    recordId = this.sandbox.dom.data($parent, 'id');
-
-                this.editRow(recordId);
+                this.editableInputEventHandler(event);
             }
         },
 
@@ -1098,12 +1096,21 @@ define(function() {
          */
         editableInputFocusoutHandler: function(event) {
             if (!!this.isFocusoutHandlerEnabled) {
-                this.sandbox.dom.stopPropagation(event);
-
-                var e = jQuery.Event('keypress');
-                e.keyCode = 13;
-                this.sandbox.dom.trigger(event.currentTarget, e);
+                this.editableInputEventHandler(event);
             }
+        },
+
+        editableInputEventHandler: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+
+            var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
+                recordId = this.sandbox.dom.data($parent, 'id');
+
+            if (!!this.editStatuses[recordId]) {
+                this.editRow(recordId);
+            }
+
+            this.editStatuses[recordId] = false;
         },
 
         /**

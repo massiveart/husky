@@ -29529,6 +29529,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             // merge defaults with options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
+            this.editStatuses = {};
+
             this.bindCustomEvents();
             this.setVariables();
         },
@@ -30090,10 +30092,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @returns {String|Object} html or a dom object
          */
         getEditableCellContent: function(content) {
-            var returnHTML = this.sandbox.util.template(templates.editableCellContent)({
+            return this.sandbox.util.template(templates.editableCellContent)({
                 value: content
             });
-            return returnHTML;
         },
 
         /**
@@ -30370,6 +30371,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.sandbox.dom.show($inputWrapper);
             this.sandbox.dom.focus($inputField);
             this.sandbox.dom.select($inputField);
+
+            this.editStatuses[recordId] = true;
         },
 
         /**
@@ -30379,12 +30382,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         editableInputKeyHandler: function(event) {
             // on enter
             if (event.keyCode === 13) {
-                this.sandbox.dom.stopPropagation(event);
-
-                var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
-                    recordId = this.sandbox.dom.data($parent, 'id');
-
-                this.editRow(recordId);
+                this.editableInputEventHandler(event);
             }
         },
 
@@ -30394,13 +30392,21 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         editableInputFocusoutHandler: function(event) {
             if (!!this.isFocusoutHandlerEnabled) {
-                this.sandbox.dom.stopPropagation(event);
+                this.editableInputEventHandler(event);
+            }
+        },
 
-                var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
-                    recordId = this.sandbox.dom.data($parent, 'id');
+        editableInputEventHandler: function(event) {
+            this.sandbox.dom.stopPropagation(event);
 
+            var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
+                recordId = this.sandbox.dom.data($parent, 'id');
+
+            if (!!this.editStatuses[recordId]) {
                 this.editRow(recordId);
             }
+
+            this.editStatuses[recordId] = false;
         },
 
         /**
