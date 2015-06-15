@@ -72,12 +72,14 @@ $toolbarSmallHeight: 20px;
         border-color: $grayLighter2;
         border-width: 1px 1px 1px 0;
 
-        &:first-child {
+        &:first-child,
+        &:first-child.hidden + .toolbar-item {
             border-radius: $borderRadius 0 0 $borderRadius;
             border-width: 1px;
         }
         &:last-child {
-            border-radius: 0 $borderRadius $borderRadius 0;
+            border-top-right-radius: $borderRadius !important;
+            border-bottom-right-radius: $borderRadius !important;
         }
         &:only-child {
             border-radius: $borderRadius;
@@ -217,7 +219,7 @@ $toolbarSmallHeight: 20px;
     }
 }
 
-// Compass 1.0.1 specificity bug 
+// Compass 1.0.1 specificity bug
 .toolbar-item .icon + .title:not(:empty) {
     padding-left: 10px;
 }
