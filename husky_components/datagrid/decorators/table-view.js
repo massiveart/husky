@@ -1326,6 +1326,7 @@ define(function() {
         deselectAllRecords: function() {
             this.datagrid.deselectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', false);
+            this.updateSelectAll();
         },
 
         /**
@@ -1342,7 +1343,6 @@ define(function() {
          * @param select {Boolean} true to select false to deselect
          */
         toggleSelectRecord: function(id, select) {
-            var areAllSelected;
             if (select === true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
                 // ensure that checkboxes are checked
@@ -1356,11 +1356,8 @@ define(function() {
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                 );
             }
-            // check or uncheck checkboxes in the header
-            if (!!this.table.header) {
-                areAllSelected = this.datagrid.getSelectedItemIds.call(this.datagrid).length === this.data.embedded.length;
-                this.toggleSelectAllItem(areAllSelected);
-            }
+
+            this.updateSelectAll();
         },
 
         /**
@@ -1371,6 +1368,17 @@ define(function() {
             if (!!this.table.header) {
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.header.$el), 'checked', select
+                );
+            }
+        },
+
+        /**
+         * Updates the select all item depending on the given data and selections
+         */
+        updateSelectAll: function() {
+            if (!!this.table.header) {
+                this.toggleSelectAllItem(
+                    this.datagrid.getSelectedItemIds.call(this.datagrid).length === this.data.embedded.length
                 );
             }
         },
