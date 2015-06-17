@@ -8,7 +8,7 @@ define(['husky'], function(husky) {
         beforeEach(function() {
             var flag = false;
             runs(function() {
-                app = husky({ debug: { enable: true }});
+                app = husky({ debug: { enable: false }});
                 app.start(document.body).then(function() {
                     app.sandbox.start([
                         { name: 'password-fields@husky', options: { el: 'body', instanceName: 'test-instance' } }

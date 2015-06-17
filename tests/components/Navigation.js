@@ -1,4 +1,4 @@
-define(['husky'], function(husky) {
+define(['husky', 'sinon'], function(husky, sinon) {
 
     'use strict';
 
@@ -41,7 +41,7 @@ define(['husky'], function(husky) {
             ]);
 
             runs(function() {
-                app = husky({ debug: { enable: true }});
+                app = husky({ debug: { enable: false }});
 
                 app.start(document.body).then(function() {
 
