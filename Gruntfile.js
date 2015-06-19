@@ -20,6 +20,8 @@ module.exports = function(grunt) {
             _c.include = _c.include.concat(auraExtensions);
             _c.optimize = !!dev ? "none" : "uglify";
             _c.out = "dist/" + (!!dev ? "husky.js" : "husky.min.js");
+            _c.useStrict = dev;
+
             return _c;
         },
 

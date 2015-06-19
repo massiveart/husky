@@ -1,9 +1,9 @@
 {
   "name": "husky",
-  "version": "develop",
+  "version": "0.14.0",
   "main": "js/husky.js",
   "dependencies": {
-    "backbone": "~1.0.0",
+    "backbone": "1.1.*",
     "underscore": "~1.5.1",
     "aura": "https://github.com/massiveart/aura.git#master",
     "husky-validation": "0.6.*",
