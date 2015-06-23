@@ -232,7 +232,7 @@ define([], function() {
                 // this error come when editor dom element don't exists
                 // check if dom element exist else remove the instance from object
                 // should also fix memory leak that the instances are not deleted from CKEDITOR
-                if (instance.window.getFrame()) {
+                if (!!instance.window &&  instance.window.getFrame()) {
                     instance.destroy();
                 } else {
                     delete CKEDITOR.instances[this.options.instanceName];
