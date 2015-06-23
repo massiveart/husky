@@ -229,9 +229,9 @@ define([], function() {
             if (!!instance) {
                 // FIXME HACK
                 // this hack fix 'clearCustomData' not null on template change
-                // this error come when editor dom element don't exists
-                // check if dom element exist else remove the instance from object
-                // should also fix memory leak that the instances are not deleted from CKEDITOR
+                // it occurs if the editor dom element not exists
+                // check if dom element exist then destroy instance else remove the instance from global object
+                // this should also fix memory leak that the instances are not deleted from global CKEDITOR
                 if (!!instance.window && instance.window.getFrame()) {
                     instance.destroy();
                 } else {
