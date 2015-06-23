@@ -35752,6 +35752,11 @@ define('__component__$toolbar@husky',[],function() {
                                     data = data[item.itemsOption.resultKey];
                                 }
 
+                                // add items if present
+                                if(!!item.items) {
+                                    data = data.concat(item.items);
+                                }
+
                                 handleRequestedItems.call(this, data, item.id);
                                 dfd.resolve();
                             }.bind(this))
