@@ -72,6 +72,10 @@ define([
                     var value = typeGetter.default.call(this),
                         dateTime = Globalize.parseDate(value, this.options.timeFormat);
 
+                    if (value === '') {
+                        return value;
+                    }
+
                     return Globalize.format(dateTime, 'HH:mm:ss');
                 },
                 date: function() {
