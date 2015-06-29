@@ -33291,8 +33291,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.loading();
                 this.load({
                     url: url,
-                    success: function() {
-                        this.sandbox.emit(UPDATED.call(this));
+                    success: function(data) {
+                        this.sandbox.emit(UPDATED.call(this), data);
                     }.bind(this)
                 });
             },
