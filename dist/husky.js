@@ -34898,6 +34898,16 @@ define('__component__$toolbar@husky',[],function() {
         },
 
         /**
+         * event to unmark a subitem
+         *
+         * @event husky.toolbar.[INSTANCE_NAME.]item.unmark
+         * @param {string} button The id of the button
+         */
+        ITEM_UNMARK = function() {
+            return createEventName.call(this, 'item.unmark');
+        },
+
+        /**
          * event to change a buttons default title and default icon
          *
          * @event husky.toolbar.[INSTANCE_NAME.]button.set
@@ -34985,6 +34995,8 @@ define('__component__$toolbar@husky',[],function() {
             }.bind(this));
 
             this.sandbox.on(ITEM_MARK.call(this), uniqueMarkItem.bind(this));
+
+            this.sandbox.on(ITEM_UNMARK.call(this), unmarkItem.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
                 if (!!this.items[button]) {
@@ -35358,6 +35370,16 @@ define('__component__$toolbar@husky',[],function() {
                 }.bind(this));
                 // mark passed element
                 this.sandbox.dom.addClass(this.items[itemId].$el, constants.markedClass);
+            }
+        },
+
+        /**
+         * Unmark an item by removing the marked class from the item
+         * @param itemId {Number|String} the id of the item
+         */
+        unmarkItem = function(itemId){
+            if (!!this.items[itemId] && !!this.items[itemId].parentId) {
+                this.sandbox.dom.removeClass(this.items[itemId].$el, constants.markedClass);
             }
         },
 
