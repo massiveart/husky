@@ -276,7 +276,6 @@ define([], function() {
             this.sandbox.dom.addClass(this.$el, constants.colorpickerClass);
             this.changeColorPreview(this.sandbox.dom.val(this.input.$input));
             this.sandbox.colorpicker.init(this.input.$input, this.sandbox.util.extend(true, {}, {
-                defaultValue: this.sandbox.dom.val(this.input.$input),
                 change: this.changeColorPreview.bind(this)
             }, this.options.colorPickerOptions));
         },
