@@ -686,7 +686,7 @@ define(function() {
          * @param buttonId
          */
         handleRequestedItems = function(requestedItems, buttonId) {
-            var id, title, icon, callback, i, length;
+            var id, title, icon, callback, divider, i, length;
             this.items[buttonId].items = [];
 
             //for loop sets the the items[button].items - array together
@@ -711,8 +711,15 @@ define(function() {
                 if (!!requestedItems[i].icon) {
                     icon = requestedItems[i].icon;
                 }
+
                 if (!!requestedItems[i].callback) {
                     callback = requestedItems[i].callback;
+                }
+
+                if (!!requestedItems[i].divider) {
+                    divider = requestedItems[i].divider;
+                } else {
+                    divider = false;
                 }
 
                 this.items[buttonId].items[i] = {
@@ -720,6 +727,7 @@ define(function() {
                     title: title,
                     icon: icon,
                     callback: callback,
+                    divider: divider,
                     _original: requestedItems[i]
                 };
             }
