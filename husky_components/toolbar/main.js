@@ -1053,7 +1053,7 @@ define(function() {
                                 }
 
                                 // add items if present
-                                if(!!item.items) {
+                                if (!!item.items) {
                                     data = data.concat(item.items);
                                 }
 
