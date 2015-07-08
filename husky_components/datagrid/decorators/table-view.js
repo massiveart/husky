@@ -23,7 +23,6 @@
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
- * @param {Boolean} [options.stickyHeader] true to make the table header sticky
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
  * @param {Boolean} [options.rowClickSelect] if true the row gets selected on click and the row-click event is emitted on double-click
  *
@@ -55,7 +54,6 @@ define(function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
-            stickyHeader: false,
             icons: [],
             removeIcon: 'trash-o',
             croppedMaxLength: 35,
@@ -65,7 +63,6 @@ define(function() {
 
         constants = {
             fullWidthClass: 'fullwidth',
-            stickyHeaderClass: 'sticky-header',
             selectedRowClass: 'selected',
             isSelectableClass: 'is-selectable',
             sortableClass: 'is-sortable',
@@ -359,10 +356,6 @@ define(function() {
             } else {
                 this.underflowHandler();
             }
-            if (this.options.stickyHeader === true) {
-                this.setHeaderCellWidthFromClone();
-                this.fixContainerMaxHeight();
-            }
         },
 
         /**
@@ -390,9 +383,6 @@ define(function() {
         addViewClasses: function() {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
-            if (this.options.stickyHeader === true) {
-                this.sandbox.dom.addClass(this.$el, constants.stickyHeaderClass);
-            }
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
@@ -429,9 +419,6 @@ define(function() {
             this.renderHeaderSelectItem();
             this.renderHeaderCells();
             this.renderHeaderRemoveItem();
-            if (this.options.stickyHeader === true) {
-                this.cloneHeader();
-            }
             this.sandbox.dom.append(this.table.$el, this.table.header.$el);
         },
 
@@ -554,6 +541,7 @@ define(function() {
                 if (norender === true) {
                     return this.sandbox.dom.html($cell);
                 }
+                this.sandbox.dom.addClass($cell, constants.checkboxCellClass);
                 this.sandbox.dom.prepend(this.table.rows[id].$el, $cell);
             }
         },
@@ -741,7 +729,7 @@ define(function() {
                     content,
                     column.type,
                     Object.keys(this.table.rows).length,
-                    record.hasOwnProperty('id') ? record['id'] : null
+                    record.hasOwnProperty('id') ? record.id : null
                 );
             }
             if (this.options.editable === true && column.editable === true) {
@@ -866,9 +854,6 @@ define(function() {
             if (this.containerIsOverflown() === true) {
                 this.sandbox.dom.addClass(this.$el, constants.overflowClass);
             }
-            if (this.options.stickyHeader === true) {
-                this.sandbox.dom.width(this.table.header.$el, this.sandbox.dom.width(this.table.$container));
-            }
         },
 
         /**
@@ -881,9 +866,6 @@ define(function() {
                 }
                 if (this.containerIsOverflown() === false) {
                     this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
-                }
-                if (this.options.stickyHeader === true) {
-                    this.sandbox.dom.width(this.table.header.$el, '');
                 }
             }
         },
@@ -964,7 +946,6 @@ define(function() {
             this.sandbox.dom.on(this.table.$body.find('img'), 'load', function() {
                 $(this).parent().find('.fa-coffee').remove();
             });
-            this.sandbox.dom.on(this.table.$container, 'scroll', this.containerScrollHandler.bind(this));
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
         },
 
@@ -985,22 +966,6 @@ define(function() {
                         'max-width': this.sandbox.dom.outerWidth(cloneTh) + 'px'
                     });
                 }.bind(this));
-            }
-        },
-
-        /**
-         * Sets the max-height of the container to the maximum available space
-         */
-        fixContainerMaxHeight: function() {
-            this.sandbox.dom.css(this.table.$container, 'max-height', this.datagrid.getRemainingViewHeight.call(this.datagrid));
-        },
-
-        /**
-         * Gets executed when the table-container gets scrolled
-         */
-        containerScrollHandler: function() {
-            if (this.options.stickyHeader === true) {
-                this.sandbox.dom.scrollLeft(this.table.header.$el, this.sandbox.dom.scrollLeft(this.table.$container));
             }
         },
 

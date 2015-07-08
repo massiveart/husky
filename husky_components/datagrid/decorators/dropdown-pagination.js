@@ -241,12 +241,11 @@ define(function() {
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
-                description = this.sandbox.translate(translations.show) +
-                ' <strong>' + this.data.embedded.length + '</strong> ' +
-                this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
+                description = this.data.embedded.length;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
                 }));
+                this.sandbox.dom.append(this.$paginationContainer, '<span></span>')
                 this.sandbox.dom.append(this.$paginationContainer, $showElements);
             }
 
@@ -315,7 +314,7 @@ define(function() {
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 data.push({
                     id: this.options.showElementsSteps[i],
-                    name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
+                    name: this.options.showElementsSteps[i]
                 });
             }
 

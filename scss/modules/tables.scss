@@ -12,26 +12,22 @@ table {
     th,
     td {
         text-align: left;
-        padding: 8px 10px;
+        padding: 0 10px;
         vertical-align: top;
+        min-width: 50px;
+        border-right: 1px solid $baseBackgroundColor;
     }
 
     tr {
-        border-bottom: 1px solid $grayLighter;
         height: 50px;
     }
 
     thead {
-
-        tr {
-            height: 30px;
-        }
-
         th {
             vertical-align: bottom;
             color: $grayLight;
-            font-size: 16px;
             font-weight: normal;
+            line-height: 50px;
 
             a {
                 color: $black;
@@ -43,9 +39,8 @@ table {
             }
 
         }
-
         tr {
-            border-bottom: 2px solid $grayLighter;
+            background: $grayLighterer;
         }
     }
 
@@ -57,6 +52,12 @@ table {
               max-height: 50px;
               max-width: 50px;
             }
+        }
+        tr:nth-child(2n+1) {
+            background: $white;
+        }
+        tr:nth-child(2n) {
+            background: $grayLightest2;
         }
     }
 

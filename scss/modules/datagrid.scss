@@ -1,5 +1,4 @@
 .husky-datagrid {
-    $fullWidthPaddingLeft: 50px;
     $overflowIconSpacing: 30px;
 
     position: relative;
@@ -17,54 +16,10 @@
     -ms-user-select: none;
     user-select: none;
 
-    &.sticky-header {
-      padding-top: 30px;
-      table {
-        thead {
-          position: absolute;
-          top: 0px;
-          left: 0px;
-          overflow: hidden;
-        }
-        .header-clone {
-          position: static;
-          top: auto;
-          left: auto;
-          visibility: hidden;
-          .checkbox-cell * {
-            display: none;
-          }
-          .row-remover {
-            height: 0;
-          }
-          th {
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            & * {
-              height: 1px;
-            }
-          }
-          tr {
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            height: 1px;
-            border: none;
-          }
-        }
-      }
-    }
-
     &.overflow {
       padding-right: $overflowIconSpacing;
       & + .pagination-wrapper {
         padding-right: $overflowIconSpacing;
-      }
-      &.fullwidth + .pagination-wrapper {
-        padding-right: $overflowIconSpacing + 20px;
       }
       td, th {
         max-width: 500px;
@@ -81,18 +36,6 @@
       right: 5px;
       margin-top: -28px;
       top: 50%;
-    }
-
-    &.fullwidth {
-      th:first-child,
-      td:first-child {
-        padding-left: $fullWidthPaddingLeft;
-      }
-
-      & + .pagination-wrapper {
-        padding-left: $fullWidthPaddingLeft - 10px;
-        padding-right: 20px;
-      }
     }
 
     &.white-box {
@@ -184,6 +127,10 @@
     }
     .checkbox-cell {
           width: 20px;
+          text-align: center;
+          .custom-checkbox {
+            margin: 0;
+          }
         }
         .checkbox-placeholder {
           display: inline-block;
@@ -204,7 +151,6 @@
       display: block;
     }
     tr {
-      height: 30px;
       padding-top: 10px;
       border-color: $grayLighter;
         th {
@@ -245,10 +191,6 @@
       width: 10px;
       padding-left: 3px;
     }
-
-        .table-container {
-            width: 100%;
-        }
     }
 
     tbody {
@@ -269,10 +211,6 @@
         }
       }
       /** after render effect (end) **/
-
-      tr:last-child {
-            border-width: 2px;
-        }
       .child-wrapper {
         .toggle-icon {
           margin-right: 10px;
@@ -329,7 +267,9 @@
     }
 
     .table-container {
-      overflow: auto;
+      width: 100%;
+      overflow: hidden;
+      border-radius: $borderRadius;
 
       &.no-head {
         thead {

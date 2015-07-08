@@ -31,11 +31,11 @@
         margin: 0;
         display: inline-block;
         list-style: none;
-        border-top: 1px solid $grayLighter;
-        border-bottom: 1px solid $grayLighter;
+        border: 1px solid $grayLighter;
         padding: 0 10px;
         line-height: 28px;
         height: 30px;
+        margin: 0 2px;
       }
 
       .pagination-prev {

@@ -40,8 +40,7 @@ require(['lib/husky'], function(Husky) {
                             fullWidth: true, // uncomment for full-width mode
                             contentContainer: '#content',
                             highlightSelected: true,
-                            croppedMaxLength: 5,
-                            stickyHeader: true
+                            croppedMaxLength: 5
                         },
                         thumbnail: {
                         }
