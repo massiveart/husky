@@ -169,15 +169,21 @@
                         'group': 1,
                         'position': 5,
                         'itemsOption': {
-                            'url': 'items.json',
-                            'titleAttribute': 'title',
+                            'url': 'http://husky.lo:7878/admin/api/dropdown',
+                            'titleAttribute': 'name',
                             'idAttribute': 'id',
                             'translate': true,
                             'languageNamespace': 'toolbar.',
                             'callback': function(item) {
                                 console.log(item, 'This is a test callback');
                             }
-                        }
+                        },
+                        items: [
+                            {
+                                id: 'edit',
+                                name: 'edit'
+                            }
+                        ]
                     },
                     {
                         id: 'search',
@@ -262,6 +268,7 @@
                     name: 'toolbar@husky',
                     options: {
                         el: '#toolbar2',
+                        itemsRequestKey: 'items',
                         instanceName: 'contact',
                         groups: [
                             {
