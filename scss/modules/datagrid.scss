@@ -4,283 +4,287 @@
     position: relative;
     padding-top: 10px;
 
-  .husky-table {
-    position: relative;
-    top: 0px;
-    left: 0px;
-
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    &.overflow {
-      padding-right: $overflowIconSpacing;
-      & + .pagination-wrapper {
-        padding-right: $overflowIconSpacing;
-      }
-      td, th {
-        max-width: 500px;
-        overflow: hidden;
-      }
-    }
-    &.overflow:after {
-      @extend .fa;
-      display: block;
-      content: $fa-var-arrow-right;
-      color: $grayLight;
-      font-size: 16px;
-      position: absolute;
-      right: 5px;
-      margin-top: -28px;
-      top: 50%;
-    }
-
-    &.white-box {
-      padding: 0 20px;
-      overflow: hidden;
-      .table-container {
-        margin-bottom: -1px;
-      }
-      tbody {
-        tr:first-child {
-          height: 49px;
-        }
-        tr:last-child {
-          border-bottom: none;
-        }
-        td {
-          padding-left: 0;
-          padding-right: 0;
-        }
-      }
-      .empty-list {
-        border: none;
-      }
-    }
-
-    &.minimal {
-      padding: 0;
-      tbody {
-        td {
-          img {
-            height: 30px;
-          }
-        }
-      }
-    }
-
-    &.is-selectable {
-      .table {
-        tr {
-          cursor: pointer;
-          &:hover > td {
-            background-color: #fff;
-          }
-        }
-
-        thead tr {
-          cursor: auto;
-        }
-      }
-    }
-
-    /** After render effect (start) **/
-    &.rendering {
-      table {
-        tbody tr {
-          opacity: 0.3;
-        }
-      }
-    }
-    /** After render effect (end) **/
-  }
-
-  table {
-    white-space: nowrap;
-    .fit {
-      width: 1%; //table-cells with width 1% have the behaviour that they fit the content inside them
-    }
-    td {
-      .input-wrapper {
+    .husky-table {
         position: relative;
         top: 0px;
         left: 0px;
-        width: 100%;
-        margin: -$inputHeight 0 0 -4px;
-        height: $inputHeight;
-        display: none;
-      }
-      .editable-input {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        padding: 0 7px;
-      }
-      // Remove when validation type for serverside validation is implemented
-      .server-validation-error .editable-input {
-        border-color: $red !important;
-        border-width: 2px !important;
-      }
-    }
-    .checkbox-cell {
-          width: 20px;
-          text-align: center;
-          .custom-checkbox {
-            margin: 0;
-          }
-        }
-        .checkbox-placeholder {
-          display: inline-block;
-          width: 12px;
-          height: 15px;
-        }
-    }
-  .row-remover {
-    display: block;
-    cursor: pointer;
-  }
 
-  thead {
-    .cell-content {
-      display: block;
-    }
-    .row-remover {
-      display: block;
-    }
-    tr {
-      padding-top: 10px;
-      border-color: $grayLighter;
-        th {
-            padding-top: 0;
-            font-weight: normal;
-            white-space: nowrap;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
 
-            &.is-sortable {
-                color: black;
-                cursor: pointer;
-                padding-right: 20px;
-                &.is-loading {
-                  padding-right: 10px;
+        &.overflow {
+            padding-right: $overflowIconSpacing;
+            & + .pagination-wrapper {
+                padding-right: $overflowIconSpacing;
+            }
+            td, th {
+                max-width: 500px;
+                overflow: hidden;
+            }
+        }
+        &.overflow:after {
+            @extend .fa;
+            display: block;
+            content: $fa-var-arrow-right;
+            color: $grayLight;
+            font-size: 16px;
+            position: absolute;
+            right: 5px;
+            margin-top: -28px;
+            top: 50%;
+        }
+
+        &.white-box {
+            overflow: hidden;
+            .table-container {
+                margin-bottom: -1px;
+            }
+            .row {
+                td:first-child {
+                    padding-left: 20px;
+                }
+                td:last-child {
+                    padding-right: 20px;
                 }
             }
-          &.sorted-asc {
-            font-weight: bold;
-            .cell-content::after {
-              @extend .fa;
-              margin-left: 5px;
-              content: $fa-var-caret-up;
-              font-size: $smallFontSize;
+            tbody {
+                tr:first-child {
+                    height: 49px;
+                }
+                tr:last-child {
+                    border-bottom: none;
+                }
+                td {
+                    padding-left: 0;
+                    padding-right: 0;
+                }
             }
-          }
-          &.sorted-desc {
-            font-weight: bold;
-            .cell-content::after {
-              @extend .fa;
-              margin-left: 5px;
-              content: $fa-var-caret-down;
-              font-size: $smallFontSize;
+            .empty-list {
+                border: none;
             }
-          }
+        }
+
+        &.minimal {
+            padding: 0;
+            tbody {
+                td {
+                    img {
+                        height: 30px;
+                    }
+                }
+            }
+        }
+
+        &.is-selectable {
+            .table {
+                tr {
+                    cursor: pointer;
+                }
+
+                thead tr {
+                    cursor: auto;
+                }
+            }
+        }
+
+        /** After render effect (start) **/
+        &.rendering {
+            table {
+                tbody tr {
+                    opacity: 0.3;
+                }
+            }
+        }
+        /** After render effect (end) **/
+    }
+
+    table {
+        white-space: nowrap;
+        .fit {
+            width: 1%; //table-cells with width 1% have the behaviour that they fit the content inside them
+        }
+        td {
+            .input-wrapper {
+                position: relative;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                margin: -$inputHeight 0 0 -4px;
+                height: $inputHeight;
+                display: none;
+            }
+            .editable-input {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                padding: 0 7px;
+            }
+            // Remove when validation type for serverside validation is implemented
+            .server-validation-error .editable-input {
+                border-color: $red !important;
+                border-width: 2px !important;
+            }
+        }
+        .checkbox-cell {
+            width: 20px;
+            text-align: center;
+            .custom-checkbox {
+                margin: 0;
+            }
+        }
+        .checkbox-placeholder {
+            display: inline-block;
+            width: 12px;
+            height: 15px;
         }
     }
-    .header-loader {
-      display: inline-block;
-      width: 10px;
-      padding-left: 3px;
+    .row-remover {
+        display: block;
+        cursor: pointer;
     }
+
+    thead {
+        .cell-content {
+            display: block;
+        }
+        .row-remover {
+            display: block;
+        }
+        tr {
+            padding-top: 10px;
+            border-color: $grayLighter;
+            th {
+                padding-top: 0;
+                font-weight: normal;
+                white-space: nowrap;
+
+                &.is-sortable {
+                    color: black;
+                    cursor: pointer;
+                    &.is-loading {
+                        padding-right: 10px;
+                    }
+                    .cell-content::after {
+                        @extend .fa;
+                        margin-left: 5px;
+                        font-size: $smallFontSize;
+                        float: right;
+                        line-height: 50px;
+                    }
+                }
+                &.sorted-asc {
+                    font-weight: bold;
+                    .cell-content::after {
+                        content: $fa-var-caret-up;
+                    }
+                }
+                &.sorted-desc {
+                    font-weight: bold;
+                    .cell-content::after {
+                        content: $fa-var-caret-down;
+                    }
+                }
+            }
+        }
+        .header-loader {
+            display: inline-block;
+            width: 10px;
+            padding-left: 3px;
+        }
     }
 
     tbody {
 
-      /** after render effect (start) **/
-      tr {
-        opacity: 1;
-        $transitonDuration: 250ms;
-        $transitionDelay: 60ms;
-        $transitonOffset: 40ms;
-        @for $i from 1 through 20 {
-          &:nth-child(#{$i}) {
-            @include single-transition(opacity, $transitonDuration, ($transitionDelay + $i * $transitonOffset));
-          }
+        /** after render effect (start) **/
+        tr {
+            opacity: 1;
+            $transitonDuration: 250ms;
+            $transitionDelay: 60ms;
+            $transitonOffset: 40ms;
+            @for $i from 1 through 20 {
+                &:nth-child(#{$i}) {
+                    @include single-transition(opacity, $transitonDuration, ($transitionDelay + $i * $transitonOffset));
+                }
+            }
+            &:nth-child(n+20) {
+                @include single-transition(opacity, $transitonDuration, ($transitionDelay + 21 * $transitonOffset));
+            }
         }
-        &:nth-child(n+20) {
-          @include single-transition(opacity, $transitonDuration, ($transitionDelay + 21 * $transitonOffset));
+        /** after render effect (end) **/
+        .child-wrapper {
+            .toggle-icon {
+                margin-right: 10px;
+            }
+            .custom-checkbox {
+                margin-right: 12px;
+            }
         }
-      }
-      /** after render effect (end) **/
-      .child-wrapper {
-        .toggle-icon {
-          margin-right: 10px;
+        tr:hover {
+            .grid-icon {
+                opacity: 1;
+            }
         }
-        .custom-checkbox {
-          margin-right: 12px;
+
+        tr.selected {
+            background: $white;
         }
-      }
-      tr:hover {
+
         .grid-icon {
-          opacity: 1;
-        }
-      }
-
-      tr.selected{
-          background: $white;
-      }
-
-      .grid-icon {
-        width: 30px;
-        height: 20px;
-        cursor: pointer;
-        color: $white;
-        background: $blue;
-        text-align: center;
-        border-radius: $borderRadiusSmall;
-        margin-left: 10px;
-        display: inline-block;
-        opacity: 0;
-        @include single-transition(opacity, 100ms, ease-in, 200ms);
-        &.right {
-          float: right;
-        }
-      }
-
-      .grid-image {
-        position: relative;
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        line-height: 50px;
-
-        img {
-          position: absolute;
-          top: 0;
-          left: 0;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            color: $white;
+            background: $blue;
+            text-align: center;
+            border-radius: $borderRadiusSmall;
+            margin-left: 10px;
+            display: inline-block;
+            opacity: 0;
+            @include single-transition(opacity, 100ms, ease-in, 200ms);
+            &.right {
+                float: right;
+            }
         }
 
-        .fa-coffee {
-          color: #ccc;
-          font-size: 1.6em;
+        .grid-image {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .fa-coffee {
+                color: #ccc;
+                font-size: 1.6em;
+            }
         }
-      }
     }
 
     .table-container {
-      width: 100%;
-      overflow: hidden;
-      border-radius: $borderRadius;
+        width: 100%;
+        overflow: hidden;
+        border-radius: $borderRadius;
 
-      &.no-head {
-        thead {
-          display: none;
+        &.no-head {
+            thead {
+                display: none;
+            }
+            tbody {
+                tr:last-child {
+                    border-bottom: none;
+                }
+            }
         }
-        tbody {
-          tr:last-child {
-            border-bottom: none;
-          }
-        }
-      }
     }
 
     .datagrid-loader {
@@ -302,26 +306,26 @@
     }
 
     .empty-list {
-      text-align: center;
-      color: $grayLighter;
-      padding: 20px 0;
-      border-bottom: 2px solid $grayLighter;
+        text-align: center;
+        color: $grayLighter;
+        padding: 20px 0;
+        background: $white;
 
-      .icon {
-        display: block;
-        font-size: 50px;
-        padding-bottom: 5px;
-      }
-      span {
-        display: block;
-      }
+        .icon {
+            display: block;
+            font-size: 50px;
+            padding-bottom: 5px;
+        }
+        span {
+            display: block;
+        }
     }
 
     .selected-elements {
         display: block;
         padding-bottom: 10px;
         &.indent {
-            padding-left: 50px;
+            padding-left: 60px;
         }
     }
 
@@ -337,7 +341,6 @@
         }
     }
 }
-
 
 .editable .husky-validate-error {
     .husky-input {
