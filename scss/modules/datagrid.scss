@@ -245,7 +245,7 @@
 
     .table-container {
         width: 100%;
-        overflow: hidden;
+        overflow: auto;
         border-radius: $borderRadius;
 
         &.no-head {

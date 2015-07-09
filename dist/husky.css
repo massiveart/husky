@@ -7366,39 +7366,39 @@ table {
 .table tr {
   height: 50px;
 }
-/* line 25, ../scss/modules/tables.scss */
+/* line 22, ../scss/modules/tables.scss */
+.table tr td:last-child {
+  border-right: none;
+}
+/* line 28, ../scss/modules/tables.scss */
 .table thead th {
   vertical-align: bottom;
   color: #999;
   font-weight: normal;
   line-height: 50px;
 }
-/* line 31, ../scss/modules/tables.scss */
+/* line 34, ../scss/modules/tables.scss */
 .table thead th a {
   color: #000;
   text-decoration: none;
 }
-/* line 35, ../scss/modules/tables.scss */
+/* line 38, ../scss/modules/tables.scss */
 .table thead th a .selected {
   font-weight: bold;
 }
-/* line 41, ../scss/modules/tables.scss */
+/* line 44, ../scss/modules/tables.scss */
 .table thead tr {
   background: #ddd;
 }
-/* line 47, ../scss/modules/tables.scss */
+/* line 50, ../scss/modules/tables.scss */
 .table tbody td {
   vertical-align: middle;
   font-family: Helvetica, Arial;
 }
-/* line 50, ../scss/modules/tables.scss */
+/* line 53, ../scss/modules/tables.scss */
 .table tbody td img {
   max-height: 50px;
   max-width: 50px;
-}
-/* line 55, ../scss/modules/tables.scss */
-.table tbody tr {
-  border-left: 2px solid transparent;
 }
 /* line 58, ../scss/modules/tables.scss */
 .table tbody tr:nth-child(2n+1) {
@@ -7408,15 +7408,37 @@ table {
 .table tbody tr:nth-child(2n) {
   background: #f6f6f6;
 }
-/* line 64, ../scss/modules/tables.scss */
-.table tbody tr:hover, .table tbody tr.selected:hover {
-  border-color: #52B6CA;
+/* line 65, ../scss/modules/tables.scss */
+.table tbody tr:hover td:first-child, .table tbody tr.selected:hover td:first-child {
+  position: relative;
 }
 /* line 67, ../scss/modules/tables.scss */
-.table tbody tr.selected {
-  border-color: #ddd;
+.table tbody tr:hover td:first-child::before, .table tbody tr.selected:hover td:first-child::before {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 100%;
+  background: #52B6CA;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
-/* line 73, ../scss/modules/tables.scss */
+/* line 80, ../scss/modules/tables.scss */
+.table tbody tr.selected td:first-child {
+  position: relative;
+}
+/* line 82, ../scss/modules/tables.scss */
+.table tbody tr.selected td:first-child::before {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 100%;
+  background: #ddd;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+/* line 97, ../scss/modules/tables.scss */
 .table .thumb img {
   vertical-align: middle;
 }
@@ -9700,7 +9722,7 @@ a.btn-black, a.btn-highlight {
 /* line 246, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container {
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
   border-radius: 3px;
 }
 /* line 252, ../scss/modules/datagrid.scss */
