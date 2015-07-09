@@ -23,7 +23,6 @@
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
- * @param {Boolean} [options.rowClickSelect] if true the row gets selected on click and the row-click event is emitted on double-click
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -55,8 +54,7 @@ define(function() {
             icons: [],
             removeIcon: 'trash-o',
             croppedMaxLength: 35,
-            openPathToSelectedChildren: false,
-            rowClickSelect: false
+            openPathToSelectedChildren: false
         },
 
         constants = {
@@ -887,12 +885,10 @@ define(function() {
                 '.' + constants.checkboxClass + ', .' + constants.radioClass
             );
             // handle click on body row
-            if (this.options.rowClickSelect === false) {
-                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
-            } else {
-                this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
-                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowSelectHandler.bind(this), '.' + constants.rowClass);
-            }
+            this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
+            // handle dblclick on body row
+            this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowDblClickHandler.bind(this), '.' + constants.rowClass);
+
             // remove row event
             if (this.options.removeRow === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.removeItemClickHandler.bind(this), '.' + constants.rowRemoverClass);
@@ -1174,6 +1170,16 @@ define(function() {
         },
 
         /**
+         * Handles the dblclick on a body row
+         * @param event {Object} the event object
+         */
+        bodyRowDblClickHandler: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            this.emitRowDblClickEvent(event);
+        },
+
+        /**
          * Emits the row clicked event
          * @param event {Object} the original click event
          */
@@ -1188,6 +1194,16 @@ define(function() {
                     this.rowClicked = false;
                 }.bind(this), 500);
             }
+        },
+
+        /**
+         * Emits the row dblclicked event
+         * @param event {Object} the original event
+         */
+        emitRowDblClickEvent: function(event) {
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id'),
+                parameter = recordId || event;
+            this.datagrid.emitItemDblClickedEvent.call(this.datagrid, parameter);
         },
 
         /**
@@ -1212,19 +1228,6 @@ define(function() {
                 isChecked = this.sandbox.dom.is(event.target, ':checked');
             if (this.options.selectItem.type === selectItems.CHECKBOX) {
                 this.toggleSelectRecord(recordId, isChecked);
-            } else if (this.options.selectItem.type === selectItems.RADIO) {
-                this.uniqueSelectRecord(recordId);
-            }
-        },
-
-        /**
-         * Handles the click on a body row if the options rowClickSelect is set to true
-         * @param event
-         */
-        bodyRowSelectHandler: function(event) {
-            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-            if (this.options.selectItem.type === selectItems.CHECKBOX) {
-                this.toggleSelectRecord(recordId, !this.datagrid.itemIsSelected(recordId));
             } else if (this.options.selectItem.type === selectItems.RADIO) {
                 this.uniqueSelectRecord(recordId);
             }

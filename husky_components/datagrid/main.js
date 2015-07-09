@@ -262,6 +262,15 @@
             },
 
             /**
+             * raised when clicked on an item
+             * @event husky.datagrid.item.click
+             * @param {String} id of item that was clicked
+             */
+            ITEM_DBLCLICK = function() {
+                return this.createEventName('item.dblclick');
+            },
+
+            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
@@ -1377,8 +1386,16 @@
              */
             emitItemClickedEvent: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-
                 this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[itemIndex]);
+            },
+
+            /**
+             * Emits the item dblclicked event
+             * @param id {Number|String} id to emit with the event
+             */
+            emitItemDblClickedEvent: function(id) {
+                var itemIndex = this.getRecordIndexById(id);
+                this.sandbox.emit(ITEM_DBLCLICK.call(this), id, this.data.embedded[itemIndex]);
             },
 
             /**

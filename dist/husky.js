@@ -29337,7 +29337,6 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
- * @param {Boolean} [options.rowClickSelect] if true the row gets selected on click and the row-click event is emitted on double-click
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -29369,8 +29368,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             icons: [],
             removeIcon: 'trash-o',
             croppedMaxLength: 35,
-            openPathToSelectedChildren: false,
-            rowClickSelect: false
+            openPathToSelectedChildren: false
         },
 
         constants = {
@@ -30201,12 +30199,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 '.' + constants.checkboxClass + ', .' + constants.radioClass
             );
             // handle click on body row
-            if (this.options.rowClickSelect === false) {
-                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
-            } else {
-                this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
-                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowSelectHandler.bind(this), '.' + constants.rowClass);
-            }
+            this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
+            // handle dblclick on body row
+            this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowDblClickHandler.bind(this), '.' + constants.rowClass);
+
             // remove row event
             if (this.options.removeRow === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.removeItemClickHandler.bind(this), '.' + constants.rowRemoverClass);
@@ -30488,6 +30484,16 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
+         * Handles the dblclick on a body row
+         * @param event {Object} the event object
+         */
+        bodyRowDblClickHandler: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            this.emitRowDblClickEvent(event);
+        },
+
+        /**
          * Emits the row clicked event
          * @param event {Object} the original click event
          */
@@ -30502,6 +30508,16 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.rowClicked = false;
                 }.bind(this), 500);
             }
+        },
+
+        /**
+         * Emits the row dblclicked event
+         * @param event {Object} the original event
+         */
+        emitRowDblClickEvent: function(event) {
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id'),
+                parameter = recordId || event;
+            this.datagrid.emitItemDblClickedEvent.call(this.datagrid, parameter);
         },
 
         /**
@@ -30526,19 +30542,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 isChecked = this.sandbox.dom.is(event.target, ':checked');
             if (this.options.selectItem.type === selectItems.CHECKBOX) {
                 this.toggleSelectRecord(recordId, isChecked);
-            } else if (this.options.selectItem.type === selectItems.RADIO) {
-                this.uniqueSelectRecord(recordId);
-            }
-        },
-
-        /**
-         * Handles the click on a body row if the options rowClickSelect is set to true
-         * @param event
-         */
-        bodyRowSelectHandler: function(event) {
-            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-            if (this.options.selectItem.type === selectItems.CHECKBOX) {
-                this.toggleSelectRecord(recordId, !this.datagrid.itemIsSelected(recordId));
             } else if (this.options.selectItem.type === selectItems.RADIO) {
                 this.uniqueSelectRecord(recordId);
             }
@@ -31734,6 +31737,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             },
 
             /**
+             * raised when clicked on an item
+             * @event husky.datagrid.item.click
+             * @param {String} id of item that was clicked
+             */
+            ITEM_DBLCLICK = function() {
+                return this.createEventName('item.dblclick');
+            },
+
+            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
@@ -32849,8 +32861,16 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             emitItemClickedEvent: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-
                 this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[itemIndex]);
+            },
+
+            /**
+             * Emits the item dblclicked event
+             * @param id {Number|String} id to emit with the event
+             */
+            emitItemDblClickedEvent: function(id) {
+                var itemIndex = this.getRecordIndexById(id);
+                this.sandbox.emit(ITEM_DBLCLICK.call(this), id, this.data.embedded[itemIndex]);
             },
 
             /**
@@ -35061,8 +35081,11 @@ define('__component__$toolbar@husky',[],function() {
 
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
-
                 if (item.divider) {
+                    // prevent divider when not enough items
+                    if (this.items[parent.id].items.length <= 2) {
+                        return
+                    }
                     this.sandbox.dom.append($list, '<li class="divider"></li>');
                     return;
                 }
@@ -35138,7 +35161,7 @@ define('__component__$toolbar@husky',[],function() {
          * @param buttonId
          */
         handleRequestedItems = function(requestedItems, buttonId) {
-            var id, title, icon, callback, i, length;
+            var id, title, icon, callback, divider, i, length;
             this.items[buttonId].items = [];
 
             //for loop sets the the items[button].items - array together
@@ -35163,8 +35186,15 @@ define('__component__$toolbar@husky',[],function() {
                 if (!!requestedItems[i].icon) {
                     icon = requestedItems[i].icon;
                 }
+
                 if (!!requestedItems[i].callback) {
                     callback = requestedItems[i].callback;
+                }
+
+                if (!!requestedItems[i].divider) {
+                    divider = requestedItems[i].divider;
+                } else {
+                    divider = false;
                 }
 
                 this.items[buttonId].items[i] = {
@@ -35172,6 +35202,7 @@ define('__component__$toolbar@husky',[],function() {
                     title: title,
                     icon: icon,
                     callback: callback,
+                    divider: divider,
                     _original: requestedItems[i]
                 };
             }
