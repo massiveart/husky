@@ -35351,6 +35351,11 @@ define('__component__$toolbar@husky',[],function() {
             this.sandbox.util.foreach(parent.items, function(item) {
 
                 if (item.divider) {
+
+                    // prevent first item divider
+                    if(this.items[parent.id].items.length === 0) {
+                        return
+                    }
                     this.sandbox.dom.append($list, '<li class="divider"></li>');
                     return;
                 }
