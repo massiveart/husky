@@ -119,32 +119,6 @@ require(['lib/husky'], function(Husky) {
             {
                 name: 'datagrid@husky',
                 options: {
-                    url: 'http://husky.lo:7878/admin/api/datagrid/groups',
-                    view: 'group',
-                    pagination: false,
-                    searchInstanceName: 'test',
-                    el: '#thumbnails-datagrid',
-                    instanceName: 'grid-thumbnails',
-                    selectedCounter: false,
-                    matchings: [
-                        {
-                            name: 'title',
-                            type: 'title'
-                        },
-                        {
-                            name: 'mediaNumber',
-                            type: 'count'
-                        },
-                        {
-                            name: 'thumbnails',
-                            type: 'thumbnails'
-                        }
-                    ]
-                }
-            },
-            {
-                name: 'datagrid@husky',
-                options: {
                     url: 'http://husky.lo:7878/admin/api/datagrid/children?depth=0',
                     el: '#children-datagrid',
                     instanceName: 'children-grid',
@@ -330,7 +304,6 @@ require(['lib/husky'], function(Husky) {
                         table: {
                             openPathToSelectedChildren: true,
                             showHead: false,
-                            cssClass: 'white-box',
                             selectItem: {
                                 type: 'checkbox',
                                 inFirstCell: true
@@ -369,7 +342,6 @@ require(['lib/husky'], function(Husky) {
                     viewOptions: {
                         table: {
                             showHead: false,
-                            cssClass: 'white-box',
                             selectItem: {
                                 type: 'checkbox',
                                 inFirstCell: true

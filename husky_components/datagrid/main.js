@@ -38,9 +38,8 @@
     define([
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
-        'husky_components/datagrid/decorators/group-view',
         'husky_components/datagrid/decorators/dropdown-pagination'
-    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination) {
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
         /**
          *    Default values for options
@@ -89,8 +88,7 @@
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView,
-                    group: groupView
+                    thumbnail: thumbnailView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination

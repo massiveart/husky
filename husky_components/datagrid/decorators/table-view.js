@@ -9,7 +9,6 @@
  * @param {Boolean} [options.selectItem.inFirstCell] If true checkbox is in the first cell. If true checkbox gets its own cell
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
- * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
  * @param {Array} [options.icons] array of icons to display
@@ -19,7 +18,7 @@
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
- * @param {String|Number} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
+ * @param {String|Number} [options.cssClass] css-class to give the the components element
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
@@ -39,7 +38,6 @@ define(function() {
 
     var defaults = {
             editable: false,
-            fullWidth: false,
             removeRow: false,
             selectItem: {
                 type: 'checkbox',
@@ -62,7 +60,6 @@ define(function() {
         },
 
         constants = {
-            fullWidthClass: 'fullwidth',
             selectedRowClass: 'selected',
             isSelectableClass: 'is-selectable',
             sortableClass: 'is-sortable',
@@ -78,6 +75,8 @@ define(function() {
             rowClass: 'row',
             thumbSrcKey: 'url',
             thumbAltKey: 'alt',
+            evenClass: 'even',
+            oddClass: 'odd',
             headerCellClass: 'header-cell',
             ascSortedClass: 'sorted-asc',
             descSortedClass: 'sorted-desc',
@@ -97,11 +96,12 @@ define(function() {
             collapsedIcon: 'fa-caret-right',
             expandedIcon: 'fa-caret-down',
             checkboxCellClass: 'checkbox-cell',
+            thumbnailCellClass: 'thumbnail-cell',
             textContainerClass: 'cell-content',
             renderingClass: 'rendering',
             headerCloneClass: 'header-clone',
             counterIndentClass: 'indent',
-            childIndent: 25 //px
+            childIndent: 28 //px
         },
 
         selectItems = {
@@ -279,9 +279,6 @@ define(function() {
             this.sandbox.dom.append($container, this.$el);
             this.addViewClasses();
             this.data = data;
-            if (this.options.fullWidth === true) {
-                this.indentSelectedCounter();
-            }
             this.renderTable();
             this.bindDomEvents();
             if (this.datagrid.options.resizeListeners === true) {
@@ -297,29 +294,10 @@ define(function() {
         },
 
         /**
-         * Indents the datagrid's selected-counter
-         */
-        indentSelectedCounter: function() {
-            if (this.datagrid.options.selectedCounter === true) {
-                this.sandbox.dom.addClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
-            }
-        },
-
-        /**
-         * Removes the indent of the selected-counter
-         */
-        removeIndentSelectedCounter: function() {
-            if (this.datagrid.options.selectedCounter === true) {
-                this.sandbox.dom.removeClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
-            }
-        },
-
-        /**
          * Destroys the view
          */
         destroy: function() {
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
-            this.removeIndentSelectedCounter();
             this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
@@ -331,6 +309,7 @@ define(function() {
         addRecord: function(record) {
             this.removeEmptyIndicator();
             this.renderBodyRow(record, this.options.addRowTop);
+            this.setAlternateClasses();
         },
 
         /**
@@ -383,9 +362,6 @@ define(function() {
         addViewClasses: function() {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
-            if (this.options.fullWidth === true) {
-                this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
-            }
             if ((this.options.highlightSelected === true || !!this.options.selectItem) && this.options.editable !== true) {
                 this.sandbox.dom.addClass(this.$el, constants.isSelectableClass);
             }
@@ -406,6 +382,7 @@ define(function() {
             }
             this.renderBody();
             this.sandbox.dom.append(this.table.$container, this.table.$el);
+            this.setAlternateClasses();
         },
 
         /**
@@ -420,15 +397,6 @@ define(function() {
             this.renderHeaderCells();
             this.renderHeaderRemoveItem();
             this.sandbox.dom.append(this.table.$el, this.table.header.$el);
-        },
-
-        /**
-         * Creates a clone for the actual header
-         */
-        cloneHeader: function() {
-            this.table.header.$clone = this.sandbox.dom.clone(this.table.header.$el);
-            this.sandbox.dom.addClass(this.table.header.$clone, constants.headerCloneClass);
-            this.sandbox.dom.append(this.table.$el, this.table.header.$clone);
         },
 
         /**
@@ -686,6 +654,10 @@ define(function() {
             if (!!column.class && typeof column.class === 'string') {
                 this.sandbox.dom.addClass($cell, column.class);
             }
+            if (column.type === this.datagrid.types.THUMBNAILS) {
+                this.sandbox.dom.addClass($cell, constants.thumbnailCellClass);
+                this.sandbox.dom.addClass($cell, constants.cellFitClass);
+            }
 
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
@@ -752,7 +724,7 @@ define(function() {
          */
         wrapChildrenCellContent: function(content, record) {
             var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
-                $icon;
+                $icon, paddingLeft = 0;
             // if has children
             if (!!record[this.datagrid.options.childrenPropertyName]) {
                 this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
@@ -765,11 +737,18 @@ define(function() {
             // if has parent
             if (this.hasParent(record)) {
                 this.table.rows[record.id].level = this.table.rows[record.parent].level + 1;
-                // give that child an indent, children love indents
+                paddingLeft = constants.childIndent * (this.table.rows[record.id].level - 1);
+            }
+            if (this.datagrid.options.onlySelectLeaves == true && this.table.rows[record.id].hasChildren == true) {
+                paddingLeft += 40;
+            }
+            // give that child an indent, children love indents
+            if (!!paddingLeft) {
                 this.sandbox.dom.css($wrappedContent, {
-                    'padding-left': constants.childIndent * (this.table.rows[record.id].level - 1) + 'px'
+                    'padding-left': paddingLeft + 'px'
                 });
             }
+
             this.sandbox.dom.append($wrappedContent, content);
             return $wrappedContent;
         },
@@ -999,6 +978,9 @@ define(function() {
          */
         sortItemClickHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
+            if (this.sandbox.dom.hasClass(event.currentTarget, constants.headerLoadingClass)) {
+                return false;
+            }
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 direction = 'asc';
             if (this.datagrid.sort.attribute === attribute && this.datagrid.sort.direction === direction) {
@@ -1184,9 +1166,6 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
             if (!!recordId && !!this.table.rows && !!this.table.rows[recordId]) {
-                if (this.options.highlightSelected === true) {
-                    this.uniqueHighlightRecord(recordId);
-                }
                 if (!!this.table.rows[recordId].hasChildren) {
                     this.toggleChildren(recordId);
                 }
@@ -1256,6 +1235,10 @@ define(function() {
          * @param event {Object} the event object
          */
         allSelectItemChangeHandler: function(event) {
+            if (this.data.total == 0) {
+                this.sandbox.dom.prop(event.target, 'checked', false);
+                return false;
+            }
             this.sandbox.dom.stopPropagation(event);
             var isChecked = this.sandbox.dom.is(event.target, ':checked');
             if (isChecked === true) {
@@ -1266,23 +1249,12 @@ define(function() {
         },
 
         /**
-         * Highlights a record an unhighlights all other rows
-         * @param id {Number|String} the id of the record to highlight
-         */
-        uniqueHighlightRecord: function(id) {
-            this.sandbox.dom.removeClass(
-                this.sandbox.dom.find('.' + constants.rowClass + '.' + constants.selectedRowClass, this.table.$body),
-                constants.selectedRowClass
-            );
-            this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
-        },
-
-        /**
          * Selejcts all records
          */
         selectAllRecords: function() {
             this.datagrid.selectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', true);
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.' + constants.rowClass, this.table.$body), constants.selectedRowClass);
         },
 
         /**
@@ -1291,6 +1263,7 @@ define(function() {
         deselectAllRecords: function() {
             this.datagrid.deselectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', false);
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.' + constants.rowClass, this.table.$body), constants.selectedRowClass);
             this.updateSelectAll();
         },
 
@@ -1314,12 +1287,14 @@ define(function() {
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
                 );
+                this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
             } else {
                 this.datagrid.setItemUnselected.call(this.datagrid, id);
                 // ensure that checkboxes are unchecked
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                 );
+                this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
             }
 
             this.updateSelectAll();
@@ -1415,6 +1390,7 @@ define(function() {
             }.bind(this));
             this.table.rows[recordId].childrenExpanded = false;
             this.changeChildrenToggleIcon(recordId, false);
+            this.setAlternateClasses();
         },
 
         /**
@@ -1429,6 +1405,7 @@ define(function() {
             }.bind(this));
             this.table.rows[recordId].childrenExpanded = true;
             this.changeChildrenToggleIcon(recordId, true);
+            this.setAlternateClasses();
         },
 
         /**
@@ -1454,6 +1431,23 @@ define(function() {
                     this.showChildren(parentId);
                 }
             }
+        },
+
+        /**
+         * Sets an even- and odd-class alternatly to all visible rows
+         */
+        setAlternateClasses: function() {
+            var $rows = this.sandbox.dom.find('.' + constants.rowClass, this.table.$body);
+            this.sandbox.dom.removeClass($rows, constants.evenClass);
+            this.sandbox.dom.removeClass($rows, constants.oddClass);
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.filter($rows, ':visible:even'),
+                constants.evenClass
+            );
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.filter($rows, ':visible:odd'),
+                constants.oddClass
+            );
         }
     };
 });

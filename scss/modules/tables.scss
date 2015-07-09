@@ -14,8 +14,7 @@ table {
         text-align: left;
         padding: 0 10px;
         vertical-align: top;
-        min-width: 50px;
-        border-right: 1px solid $baseBackgroundColor;
+        border-right: 1px solid $grayLightMedium2;
     }
 
     tr {
@@ -53,11 +52,20 @@ table {
               max-width: 50px;
             }
         }
+        tr {
+            border-left: 2px solid transparent;
+        }
         tr:nth-child(2n+1) {
             background: $white;
         }
         tr:nth-child(2n) {
             background: $grayLightest2;
+        }
+        tr:hover, tr.selected:hover {
+            border-color: $blue;
+        }
+        tr.selected {
+            border-color: $grayLighterer;
         }
     }
 

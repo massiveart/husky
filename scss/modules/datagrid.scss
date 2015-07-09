@@ -1,3 +1,7 @@
+//
+// Datagrid
+// --------------------------------------------------
+
 .husky-datagrid {
     $overflowIconSpacing: 30px;
 
@@ -8,13 +12,7 @@
         position: relative;
         top: 0px;
         left: 0px;
-
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+        @include user-select(none);
 
         &.overflow {
             padding-right: $overflowIconSpacing;
@@ -25,46 +23,16 @@
                 max-width: 500px;
                 overflow: hidden;
             }
-        }
-        &.overflow:after {
-            @extend .fa;
-            display: block;
-            content: $fa-var-arrow-right;
-            color: $grayLight;
-            font-size: 16px;
-            position: absolute;
-            right: 5px;
-            margin-top: -28px;
-            top: 50%;
-        }
-
-        &.white-box {
-            overflow: hidden;
-            .table-container {
-                margin-bottom: -1px;
-            }
-            .row {
-                td:first-child {
-                    padding-left: 20px;
-                }
-                td:last-child {
-                    padding-right: 20px;
-                }
-            }
-            tbody {
-                tr:first-child {
-                    height: 49px;
-                }
-                tr:last-child {
-                    border-bottom: none;
-                }
-                td {
-                    padding-left: 0;
-                    padding-right: 0;
-                }
-            }
-            .empty-list {
-                border: none;
+            &:after {
+                @extend .fa;
+                display: block;
+                content: $fa-var-arrow-right;
+                color: $grayLight;
+                font-size: 16px;
+                position: absolute;
+                right: 5px;
+                margin-top: -28px;
+                top: 50%;
             }
         }
 
@@ -100,107 +68,109 @@
             }
         }
         /** After render effect (end) **/
-    }
 
-    table {
-        white-space: nowrap;
         .fit {
             width: 1%; //table-cells with width 1% have the behaviour that they fit the content inside them
         }
-        td {
-            .input-wrapper {
-                position: relative;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                margin: -$inputHeight 0 0 -4px;
-                height: $inputHeight;
-                display: none;
-            }
-            .editable-input {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                padding: 0 7px;
-            }
-            // Remove when validation type for serverside validation is implemented
-            .server-validation-error .editable-input {
-                border-color: $red !important;
-                border-width: 2px !important;
-            }
-        }
+
         .checkbox-cell {
             width: 20px;
             text-align: center;
-            .custom-checkbox {
-                margin: 0;
-            }
+        }
+        .thumbnail-cell {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .custom-checkbox {
+            margin: 0 8px;
         }
         .checkbox-placeholder {
             display: inline-block;
             width: 12px;
             height: 15px;
         }
+
+        .row-remover {
+            display: block;
+            cursor: pointer;
+        }
+
+        .header-loader {
+            display: inline-block;
+            width: 0;
+            padding-left: 5px;
+            margin-right: -5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            margin: -$inputHeight 0 0 -4px;
+            height: $inputHeight;
+            display: none;
+        }
+        .editable-input {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 0 7px;
+        }
+
+        // Remove when validation type for serverside validation is implemented
+        .server-validation-error .editable-input {
+            border-color: $red !important;
+            border-width: 2px !important;
+        }
     }
-    .row-remover {
-        display: block;
-        cursor: pointer;
+
+    .table {
+        white-space: nowrap;
     }
 
     thead {
         .cell-content {
             display: block;
         }
-        .row-remover {
-            display: block;
-        }
-        tr {
-            padding-top: 10px;
-            border-color: $grayLighter;
-            th {
-                padding-top: 0;
-                font-weight: normal;
-                white-space: nowrap;
-
-                &.is-sortable {
-                    color: black;
-                    cursor: pointer;
-                    &.is-loading {
-                        padding-right: 10px;
-                    }
-                    .cell-content::after {
-                        @extend .fa;
-                        margin-left: 5px;
-                        font-size: $smallFontSize;
-                        float: right;
-                        line-height: 50px;
-                    }
-                }
-                &.sorted-asc {
-                    font-weight: bold;
-                    .cell-content::after {
-                        content: $fa-var-caret-up;
-                    }
-                }
-                &.sorted-desc {
-                    font-weight: bold;
-                    .cell-content::after {
-                        content: $fa-var-caret-down;
-                    }
-                }
+        .is-sortable {
+            color: black;
+            cursor: pointer;
+            .cell-content {
+                margin-right: 5px;
+            }
+            &.is-loading .cell-content {
+                margin-right: 0;
+            }
+            &.is-loading .cell-content:after {
+                margin-right: 5px;
+            }
+            .cell-content::after {
+                @extend .fa;
+                margin-left: 5px;
+                font-size: $smallFontSize;
+                float: right;
+                line-height: 50px;
             }
         }
-        .header-loader {
-            display: inline-block;
-            width: 10px;
-            padding-left: 3px;
+        .sorted-asc {
+            font-weight: bold;
+            .cell-content::after {
+                content: $fa-var-caret-up;
+            }
+        }
+        .sorted-desc {
+            font-weight: bold;
+            .cell-content::after {
+                content: $fa-var-caret-down;
+            }
         }
     }
 
     tbody {
 
         /** after render effect (start) **/
-        tr {
+        .row {
             opacity: 1;
             $transitonDuration: 250ms;
             $transitionDelay: 60ms;
@@ -213,24 +183,27 @@
             &:nth-child(n+20) {
                 @include single-transition(opacity, $transitonDuration, ($transitionDelay + 21 * $transitonOffset));
             }
+            &.even {
+                background: $white;
+            }
+            &.odd {
+                background: $grayLightest2;
+            }
         }
         /** after render effect (end) **/
+
         .child-wrapper {
             .toggle-icon {
-                margin-right: 10px;
+                margin-right: 9px;
             }
             .custom-checkbox {
-                margin-right: 12px;
+                margin-right: 16px;
             }
         }
-        tr:hover {
+        .row:hover {
             .grid-icon {
                 opacity: 1;
             }
-        }
-
-        tr.selected {
-            background: $white;
         }
 
         .grid-icon {

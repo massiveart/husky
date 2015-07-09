@@ -29323,7 +29323,6 @@ define('__component__$column-options@husky',[],function() {
  * @param {Boolean} [options.selectItem.inFirstCell] If true checkbox is in the first cell. If true checkbox gets its own cell
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
- * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
  * @param {Array} [options.icons] array of icons to display
@@ -29333,7 +29332,7 @@ define('__component__$column-options@husky',[],function() {
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
- * @param {String|Number} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
+ * @param {String|Number} [options.cssClass] css-class to give the the components element
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
@@ -29353,7 +29352,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
     var defaults = {
             editable: false,
-            fullWidth: false,
             removeRow: false,
             selectItem: {
                 type: 'checkbox',
@@ -29376,7 +29374,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         constants = {
-            fullWidthClass: 'fullwidth',
             selectedRowClass: 'selected',
             isSelectableClass: 'is-selectable',
             sortableClass: 'is-sortable',
@@ -29392,6 +29389,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             rowClass: 'row',
             thumbSrcKey: 'url',
             thumbAltKey: 'alt',
+            evenClass: 'even',
+            oddClass: 'odd',
             headerCellClass: 'header-cell',
             ascSortedClass: 'sorted-asc',
             descSortedClass: 'sorted-desc',
@@ -29411,11 +29410,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             collapsedIcon: 'fa-caret-right',
             expandedIcon: 'fa-caret-down',
             checkboxCellClass: 'checkbox-cell',
+            thumbnailCellClass: 'thumbnail-cell',
             textContainerClass: 'cell-content',
             renderingClass: 'rendering',
             headerCloneClass: 'header-clone',
             counterIndentClass: 'indent',
-            childIndent: 25 //px
+            childIndent: 28 //px
         },
 
         selectItems = {
@@ -29593,9 +29593,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.sandbox.dom.append($container, this.$el);
             this.addViewClasses();
             this.data = data;
-            if (this.options.fullWidth === true) {
-                this.indentSelectedCounter();
-            }
             this.renderTable();
             this.bindDomEvents();
             if (this.datagrid.options.resizeListeners === true) {
@@ -29611,29 +29608,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
-         * Indents the datagrid's selected-counter
-         */
-        indentSelectedCounter: function() {
-            if (this.datagrid.options.selectedCounter === true) {
-                this.sandbox.dom.addClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
-            }
-        },
-
-        /**
-         * Removes the indent of the selected-counter
-         */
-        removeIndentSelectedCounter: function() {
-            if (this.datagrid.options.selectedCounter === true) {
-                this.sandbox.dom.removeClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
-            }
-        },
-
-        /**
          * Destroys the view
          */
         destroy: function() {
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
-            this.removeIndentSelectedCounter();
             this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
@@ -29645,6 +29623,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         addRecord: function(record) {
             this.removeEmptyIndicator();
             this.renderBodyRow(record, this.options.addRowTop);
+            this.setAlternateClasses();
         },
 
         /**
@@ -29697,9 +29676,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         addViewClasses: function() {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
-            if (this.options.fullWidth === true) {
-                this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
-            }
             if ((this.options.highlightSelected === true || !!this.options.selectItem) && this.options.editable !== true) {
                 this.sandbox.dom.addClass(this.$el, constants.isSelectableClass);
             }
@@ -29720,6 +29696,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
             this.renderBody();
             this.sandbox.dom.append(this.table.$container, this.table.$el);
+            this.setAlternateClasses();
         },
 
         /**
@@ -29734,15 +29711,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.renderHeaderCells();
             this.renderHeaderRemoveItem();
             this.sandbox.dom.append(this.table.$el, this.table.header.$el);
-        },
-
-        /**
-         * Creates a clone for the actual header
-         */
-        cloneHeader: function() {
-            this.table.header.$clone = this.sandbox.dom.clone(this.table.header.$el);
-            this.sandbox.dom.addClass(this.table.header.$clone, constants.headerCloneClass);
-            this.sandbox.dom.append(this.table.$el, this.table.header.$clone);
         },
 
         /**
@@ -30000,6 +29968,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (!!column.class && typeof column.class === 'string') {
                 this.sandbox.dom.addClass($cell, column.class);
             }
+            if (column.type === this.datagrid.types.THUMBNAILS) {
+                this.sandbox.dom.addClass($cell, constants.thumbnailCellClass);
+                this.sandbox.dom.addClass($cell, constants.cellFitClass);
+            }
 
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
@@ -30066,7 +30038,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         wrapChildrenCellContent: function(content, record) {
             var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
-                $icon;
+                $icon, paddingLeft = 0;
             // if has children
             if (!!record[this.datagrid.options.childrenPropertyName]) {
                 this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
@@ -30079,11 +30051,18 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             // if has parent
             if (this.hasParent(record)) {
                 this.table.rows[record.id].level = this.table.rows[record.parent].level + 1;
-                // give that child an indent, children love indents
+                paddingLeft = constants.childIndent * (this.table.rows[record.id].level - 1);
+            }
+            if (this.datagrid.options.onlySelectLeaves == true && this.table.rows[record.id].hasChildren == true) {
+                paddingLeft += 40;
+            }
+            // give that child an indent, children love indents
+            if (!!paddingLeft) {
                 this.sandbox.dom.css($wrappedContent, {
-                    'padding-left': constants.childIndent * (this.table.rows[record.id].level - 1) + 'px'
+                    'padding-left': paddingLeft + 'px'
                 });
             }
+
             this.sandbox.dom.append($wrappedContent, content);
             return $wrappedContent;
         },
@@ -30313,6 +30292,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         sortItemClickHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
+            if (this.sandbox.dom.hasClass(event.currentTarget, constants.headerLoadingClass)) {
+                return false;
+            }
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 direction = 'asc';
             if (this.datagrid.sort.attribute === attribute && this.datagrid.sort.direction === direction) {
@@ -30498,9 +30480,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
             if (!!recordId && !!this.table.rows && !!this.table.rows[recordId]) {
-                if (this.options.highlightSelected === true) {
-                    this.uniqueHighlightRecord(recordId);
-                }
                 if (!!this.table.rows[recordId].hasChildren) {
                     this.toggleChildren(recordId);
                 }
@@ -30570,6 +30549,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event {Object} the event object
          */
         allSelectItemChangeHandler: function(event) {
+            if (this.data.total == 0) {
+                this.sandbox.dom.prop(event.target, 'checked', false);
+                return false;
+            }
             this.sandbox.dom.stopPropagation(event);
             var isChecked = this.sandbox.dom.is(event.target, ':checked');
             if (isChecked === true) {
@@ -30580,23 +30563,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
-         * Highlights a record an unhighlights all other rows
-         * @param id {Number|String} the id of the record to highlight
-         */
-        uniqueHighlightRecord: function(id) {
-            this.sandbox.dom.removeClass(
-                this.sandbox.dom.find('.' + constants.rowClass + '.' + constants.selectedRowClass, this.table.$body),
-                constants.selectedRowClass
-            );
-            this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
-        },
-
-        /**
          * Selejcts all records
          */
         selectAllRecords: function() {
             this.datagrid.selectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', true);
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.' + constants.rowClass, this.table.$body), constants.selectedRowClass);
         },
 
         /**
@@ -30605,6 +30577,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         deselectAllRecords: function() {
             this.datagrid.deselectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', false);
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.' + constants.rowClass, this.table.$body), constants.selectedRowClass);
             this.updateSelectAll();
         },
 
@@ -30628,12 +30601,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
                 );
+                this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
             } else {
                 this.datagrid.setItemUnselected.call(this.datagrid, id);
                 // ensure that checkboxes are unchecked
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                 );
+                this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
             }
 
             this.updateSelectAll();
@@ -30729,6 +30704,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }.bind(this));
             this.table.rows[recordId].childrenExpanded = false;
             this.changeChildrenToggleIcon(recordId, false);
+            this.setAlternateClasses();
         },
 
         /**
@@ -30743,6 +30719,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }.bind(this));
             this.table.rows[recordId].childrenExpanded = true;
             this.changeChildrenToggleIcon(recordId, true);
+            this.setAlternateClasses();
         },
 
         /**
@@ -30768,6 +30745,23 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.showChildren(parentId);
                 }
             }
+        },
+
+        /**
+         * Sets an even- and odd-class alternatly to all visible rows
+         */
+        setAlternateClasses: function() {
+            var $rows = this.sandbox.dom.find('.' + constants.rowClass, this.table.$body);
+            this.sandbox.dom.removeClass($rows, constants.evenClass);
+            this.sandbox.dom.removeClass($rows, constants.oddClass);
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.filter($rows, ':visible:even'),
+                constants.evenClass
+            );
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.filter($rows, ':visible:odd'),
+                constants.oddClass
+            );
         }
     };
 });
@@ -31138,252 +31132,6 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 });
 
 /**
- * @class GroupView (Datagrid Decorator)
- * @constructor
- *
- * @param {Object} [options] Configuration object
- *
- * @param {Boolean} [rendered] property used by the datagrid-main class
- * @param {Function} [initialize] function which gets called once at the start of the view
- * @param {Function} [render] function to render data
- * @param {Function} [destroy] function to destroy the view and unbind events
- */
-define('husky_components/datagrid/decorators/group-view',[],function () {
-
-    'use strict';
-
-    var defaults = {
-
-        },
-
-        constants = {
-            containerClass: 'husky-groups',
-            elementsKey: 'public.elements',
-            thumbnailClass: 'thumbnail',
-            thumbnailContainerClass: 'thumbnails',
-            groupClass: 'grid-group',
-            titleClass: 'title',
-            additionClass: 'addition',
-            firstPictureClass: 'first',
-            secondPictureClass: 'second',
-            thirdPictureClass: 'third',
-            emptyThumbnailClass: 'empty',
-            emptyThumbnailIcon: 'coffee'
-        },
-
-        templates = {
-            thumbnail: [
-                '<div class="'+ constants.thumbnailClass +'">',
-                '   <img src="<%= src %>" alt="<%= title %>" title="<%= title %>"/>',
-                '</div>'
-            ].join(''),
-            emptyThumbnail: [
-                '<div class="'+ constants.thumbnailClass +' '+ constants.emptyThumbnailClass +'">',
-                '   <span class="fa-'+ constants.emptyThumbnailIcon +'"></span>',
-                '</div>'
-            ].join(''),
-            group: [
-                '<div class="'+ constants.groupClass +'">',
-                '   <div class="'+ constants.thumbnailContainerClass +'"></div>',
-                '   <span class="'+ constants.titleClass +'"><%= title %></span>',
-                '   <span class="'+ constants.additionClass +'"><%= addition %></span>',
-                '</div>'
-            ].join('')
-        };
-
-    return {
-
-        /**
-         * Initializes the view, gets called only once
-         * @param {Object} context The context of the datagrid class
-         * @param {Object} options The options used by the view
-         */
-        initialize: function (context, options) {
-            // context of the datagrid-component
-            this.datagrid = context;
-
-            // make sandbox available in this-context
-            this.sandbox = this.datagrid.sandbox;
-
-            // merge defaults with options
-            this.options = this.sandbox.util.extend(true, {}, defaults, options);
-
-            this.setVariables();
-        },
-
-        /**
-         * Sets the starting variables for the view
-         */
-        setVariables: function () {
-            this.rendered = false;
-            this.data = null;
-            this.$el = null;
-
-            // global array to store groups
-            this.groups = {};
-        },
-
-        /**
-         * Method to render data in this view
-         */
-        render: function (data, $container) {
-            this.$el = this.sandbox.dom.createElement('<div class="' + constants.containerClass + '"/>');
-            this.sandbox.dom.append($container, this.$el);
-            this.data = data;
-
-            this.renderGroups(this.data.embedded);
-
-            this.rendered = true;
-        },
-
-        /**
-         * Destroys the view
-         */
-        destroy: function () {
-            this.sandbox.dom.remove(this.$el);
-        },
-
-        /**
-         * Picks out the important data and passes it to
-         * a render-method
-         * @param groups {Array} the groups to render
-         * @param prepend {Boolean} if true groups get prepended
-         */
-        renderGroups: function(groups, prepend) {
-            var thumbnails, title, addition;
-
-            this.sandbox.util.foreach(groups, function(group) {
-                thumbnails = [];
-                title = addition = '';
-
-                this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
-                    var argument, result,
-                        type = matching.type;
-
-                    // prepare data for processing
-                    if (matching.type === this.datagrid.types.COUNT) {
-                        argument = this.sandbox.translate(constants.elementsKey);
-                    } else if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        type = null; // do not apply default processor on thumbnails
-                    }
-
-                    // process
-                    result = this.datagrid.processContentFilter.call(this.datagrid,
-                        matching.attribute,
-                        group[matching.attribute],
-                        type,
-                        argument
-                    );
-
-                    // set data
-                    if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        thumbnails = result;
-                    } else if (matching.type === this.datagrid.types.TITLE) {
-                        title = result;
-                    } else if(matching.type === this.datagrid.types.COUNT) {
-                        addition += result;
-                    }
-                }.bind(this));
-
-                // render the important data
-                this.renderGroup(group.id, thumbnails, title, addition, prepend);
-            }.bind(this));
-        },
-
-        /**
-         * Renders a single group
-         * @param id {Number|String} the id of the group
-         * @param thumbnails {Array} the array with thumbnails
-         * @param title {String} the group title
-         * @param addition {String} the addition of the group
-         * @param prepend {Boolean} if true the group gets prepended
-         */
-        renderGroup: function(id, thumbnails, title, addition, prepend) {
-            var $thumbnails = [],
-                $group = this.sandbox.dom.createElement(this.sandbox.util.template(templates.group)({
-                title: title,
-                addition: addition
-            }));
-
-            // render all thumbnails
-            if (!!thumbnails && thumbnails.length > 0) {
-                this.sandbox.util.foreach(thumbnails, function (thumbnail) {
-                    $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
-                        src: thumbnail.url,
-                        title: thumbnail.title
-                    })));
-                }.bind(this));
-            } else {
-                $thumbnails.push(this.sandbox.dom.createElement(templates.emptyThumbnail));
-            }
-
-            // add classes to thumbnails
-            !!$thumbnails[0] && this.sandbox.dom.addClass($thumbnails[0], constants.firstPictureClass);
-            !!$thumbnails[1] && this.sandbox.dom.addClass($thumbnails[1], constants.secondPictureClass);
-            !!$thumbnails[2] && this.sandbox.dom.addClass($thumbnails[2], constants.thirdPictureClass);
-            // append thumbnails to group
-            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.thumbnailContainerClass, $group), $thumbnails);
-
-            this.groups[id] = $group;
-            if (prepend === true) {
-                this.sandbox.dom.prepend(this.$el, $group);
-            } else {
-                this.sandbox.dom.append(this.$el, $group);
-            }
-            this.bindGroupDomEvents(id);
-        },
-
-        /**
-         * Binds dom events on a group
-         * @param id {Number|String} id of the group
-         */
-        bindGroupDomEvents: function(id) {
-            // bring clicked thumbnails to front
-            this.sandbox.dom.on(this.groups[id], 'click', function(event) {
-                this.showThumbnail(id, this.sandbox.dom.$(event.currentTarget), event);
-            }.bind(this), '.' + constants.thumbnailClass);
-
-            this.sandbox.dom.on(this.groups[id], 'click', function() {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
-            }.bind(this));
-        },
-
-        /**
-         * Brings a given thumbnail of a group to the front
-         * @param id {Number|String} id of the group
-         * @param $thumbnail {Object} thumbnail
-         */
-        showThumbnail: function(id, $thumbnail, event) {
-            if (!this.sandbox.dom.hasClass($thumbnail, constants.firstPictureClass)) {
-                this.sandbox.dom.stopPropagation(event);
-                var cssClass,
-                    $first = this.sandbox.dom.find('.' + constants.thumbnailClass + '.' + constants.firstPictureClass, this.groups[id]);
-
-                if (this.sandbox.dom.hasClass($thumbnail, constants.secondPictureClass)) {
-                    cssClass = constants.secondPictureClass;
-                } else {
-                    cssClass = constants.thirdPictureClass;
-                }
-
-                this.sandbox.dom.removeClass($thumbnail, cssClass);
-                this.sandbox.dom.removeClass($first, constants.firstPictureClass);
-                this.sandbox.dom.addClass($thumbnail, constants.firstPictureClass);
-                this.sandbox.dom.addClass($first, cssClass);
-            }
-        },
-
-        /**
-         * Adds a record to the view
-         * @param record
-         * @public
-         */
-        addRecord: function(record) {
-            this.renderGroups([record], true);
-        }
-    };
-});
-
-/**
  * @class DropdownPagination (Datagrid Decorator)
  * @constructor
  *
@@ -31440,6 +31188,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
             showElements: [
                 '<div class="show-elements">',
+                '<span class="text"><%= text %>:</span>',
                 '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
                 '<%= desc %>',
                 '<span class="dropdown-toggle"></span>',
@@ -31628,7 +31377,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             if (this.data.total > this.options.showElementsSteps[0]) {
                 description = this.data.embedded.length;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
-                    'desc': description
+                    'desc': description,
+                    'text': translations.elementsPerPage
                 }));
                 this.sandbox.dom.append(this.$paginationContainer, '<span></span>')
                 this.sandbox.dom.append(this.$paginationContainer, $showElements);
@@ -31760,9 +31510,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
     define('__component__$datagrid@husky',[
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
-        'husky_components/datagrid/decorators/group-view',
         'husky_components/datagrid/decorators/dropdown-pagination'
-    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination) {
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
         /**
          *    Default values for options
@@ -31811,8 +31560,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView,
-                    group: groupView
+                    thumbnail: thumbnailView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination
@@ -50378,6 +50126,10 @@ define('husky_extensions/itembox',[],function() {
 
             app.core.dom.is = function(selector, type) {
                 return $(selector).is(type);
+            };
+
+            app.core.dom.filter = function(selector, filter) {
+                return $(selector).filter(filter);
             };
 
             app.core.dom.isArray = function(selector) {
