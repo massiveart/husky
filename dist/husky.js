@@ -35352,8 +35352,8 @@ define('__component__$toolbar@husky',[],function() {
 
                 if (item.divider) {
 
-                    // prevent first item divider
-                    if(this.items[parent.id].items.length === 0) {
+                    // prevent divider when not enough items
+                    if(this.items[parent.id].items.length <= 2) {
                         return
                     }
                     this.sandbox.dom.append($list, '<li class="divider"></li>');
