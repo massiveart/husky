@@ -7,7 +7,6 @@
 
     position: relative;
     padding-top: 10px;
-    color: $black;
 
     .husky-table {
         position: relative;
@@ -100,12 +99,6 @@
             padding: 0 7px;
         }
 
-        .has-action,
-        .has-action .cell-content {
-            color: $black;
-            cursor: pointer;
-        }
-
         .has-action:hover, .has-action.selected:hover {
             td:first-child {
                 position: relative;
@@ -131,6 +124,7 @@
 
     .table {
         white-space: nowrap;
+        color: $black;
     }
 
     thead {
@@ -193,8 +187,17 @@
             &.odd {
                 background: $grayLightest2;
             }
-            &.inactive {
+            &.has-action {
+                cursor: pointer;
                 .cell-content {
+                    color: $black;
+                    cursor: pointer;
+                }
+            }
+            &.inactive {
+                cursor: auto;
+                .cell-content {
+                    cursor: auto;
                     color: $grayLight;
                 }
             }
