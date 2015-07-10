@@ -48,18 +48,6 @@
             }
         }
 
-        &.is-selectable {
-            .table {
-                tr {
-                    cursor: pointer;
-                }
-
-                thead tr {
-                    cursor: auto;
-                }
-            }
-        }
-
         /** After render effect (start) **/
         &.rendering {
             table {
@@ -115,6 +103,7 @@
         .has-action,
         .has-action .cell-content {
             color: $black;
+            cursor: pointer;
         }
 
         .has-action:hover, .has-action.selected:hover {
