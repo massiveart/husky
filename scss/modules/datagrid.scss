@@ -7,6 +7,7 @@
 
     position: relative;
     padding-top: 10px;
+    color: $black;
 
     .husky-table {
         position: relative;
@@ -111,7 +112,12 @@
             padding: 0 7px;
         }
 
-        .has-hover:hover, .has-hover.selected:hover {
+        .has-action,
+        .has-action .cell-content {
+            color: $black;
+        }
+
+        .has-action:hover, .has-action.selected:hover {
             td:first-child {
                 position: relative;
                 &::before {
@@ -197,6 +203,11 @@
             }
             &.odd {
                 background: $grayLightest2;
+            }
+            &.inactive {
+                .cell-content {
+                    color: $grayLight;
+                }
             }
         }
         /** after render effect (end) **/
