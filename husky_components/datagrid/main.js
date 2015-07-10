@@ -30,6 +30,8 @@
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {Boolean} [options.selectedCounter] If true a counter will be displayed which shows how much elements have been selected
  * @param {String} [options.selectedCounterText] translation key or text used in the selected-counter
+ * @param {Function} [options.clickCallback] callback for clicking an item - first parameter item id, second parameter the dataset of the clicked item
+ * @param {Function} [options.actionCallback] action callback. E.g. executed on double-click in table-view - first parameter item id, second parameter the dataset of the clicked item
  */
 (function() {
 
@@ -71,7 +73,9 @@
                 resultKey: 'items',
                 selectedCounter: false,
                 selectedCounterText: 'public.elements-selected',
-                viewSpacingBottom: 110
+                viewSpacingBottom: 110,
+                clickCallback: null,
+                actionCallback: null
             },
 
             types = {
@@ -253,30 +257,21 @@
             },
 
             /**
-             * raised when clicked on an item
-             * @event husky.datagrid.item.click
-             * @param {String} id of item that was clicked
-             */
-            ITEM_CLICK = function() {
-                return this.createEventName('item.click');
-            },
-
-            /**
-             * raised when clicked on an item
-             * @event husky.datagrid.item.click
-             * @param {String} id of item that was clicked
-             */
-            ITEM_DBLCLICK = function() {
-                return this.createEventName('item.dblclick');
-            },
-
-            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
             ITEM_SELECT = function() {
                 return this.createEventName('item.select');
+            },
+
+            /**
+             * raised when clicked on an item
+             * @event husky.datagrid.item.click
+             * @param {String} id of item that was clicked
+             */
+            ITEM_CLICK = function() {
+                return this.createEventName('item.click');
             },
 
             /**
@@ -1381,21 +1376,24 @@
             },
 
             /**
-             * Emits the item clicked event
-             * @param id {Number|String} id to emit with the event
+             * calls the clickCallback for an item
+             * @param id {Number|String} the id of the item
              */
-            emitItemClickedEvent: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
-                this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[itemIndex]);
+            itemClicked: function(id) {
+                if (typeof this.options.clickCallback === 'function') {
+                    this.options.clickCallback(id, this.data.embedded[this.getRecordIndexById(id)]);
+                }
+                this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[this.getRecordIndexById(id)]);
             },
 
             /**
-             * Emits the item dblclicked event
-             * @param id {Number|String} id to emit with the event
+             * calls the actionCallback for an item
+             * @param id {Number|String} the id of the item
              */
-            emitItemDblClickedEvent: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
-                this.sandbox.emit(ITEM_DBLCLICK.call(this), id, this.data.embedded[itemIndex]);
+            itemAction: function(id) {
+                if (typeof this.options.actionCallback === 'function') {
+                    this.options.actionCallback(id, this.data.embedded[this.getRecordIndexById(id)]);
+                }
             },
 
             /**

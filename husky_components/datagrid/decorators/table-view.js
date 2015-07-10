@@ -23,6 +23,8 @@
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
+ * @param {String} [options.actionIcon] the icon which gets shown in the action click button
+ * @param {String|Number} [options.actionIconColumn] the column to add the action icon to. Null for firs column
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -53,6 +55,8 @@ define(function() {
             highlightSelected: false,
             icons: [],
             removeIcon: 'trash-o',
+            actionIcon: 'pencil',
+            actionIconColumn: null,
             croppedMaxLength: 35,
             openPathToSelectedChildren: false
         },
@@ -97,8 +101,7 @@ define(function() {
             thumbnailCellClass: 'thumbnail-cell',
             textContainerClass: 'cell-content',
             renderingClass: 'rendering',
-            headerCloneClass: 'header-clone',
-            counterIndentClass: 'indent',
+            hoverClass: 'has-hover',
             childIndent: 28 //px
         },
 
@@ -276,6 +279,7 @@ define(function() {
             this.$el = this.sandbox.dom.createElement(templates.skeleton);
             this.sandbox.dom.append($container, this.$el);
             this.addViewClasses();
+            this.addActionIcon();
             this.data = data;
             this.renderTable();
             this.bindDomEvents();
@@ -352,6 +356,7 @@ define(function() {
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
             this.cropBreakPoint = null;
+            this.icons = this.options.icons;
         },
 
         /**
@@ -362,6 +367,21 @@ define(function() {
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
             if ((this.options.highlightSelected === true || !!this.options.selectItem) && this.options.editable !== true) {
                 this.sandbox.dom.addClass(this.$el, constants.isSelectableClass);
+            }
+        },
+
+        /**
+         * Adds an action-icon to into the first column
+         */
+        addActionIcon: function() {
+            if (typeof this.datagrid.options.actionCallback === 'function' &&
+                !!this.datagrid.matchings && this.datagrid.matchings.length > 0) {
+                this.icons.push({
+                    icon: this.options.actionIcon,
+                    column: this.options.actionIconColumn || this.datagrid.matchings[0].attribute,
+                    align: 'left',
+                    callback: this.datagrid.itemAction.bind(this.datagrid)
+                });
             }
         },
 
@@ -544,6 +564,12 @@ define(function() {
                 hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
                 level: 1
             };
+
+            if (typeof this.datagrid.options.clickCallback === 'function' ||
+                typeof this.datagrid.options.actionCallback === 'function' ||
+                this.table.rows[record.id].hasChildren === true) {
+                this.sandbox.dom.addClass($row, constants.hoverClass);
+            }
 
             this.renderRowSelectItem(record.id);
             this.renderBodyCellsForRow(record);
@@ -774,7 +800,7 @@ define(function() {
          */
         addIconsToCellContent: function(content, column) {
             var iconStr;
-            this.sandbox.util.foreach(this.options.icons, function(icon, index) {
+            this.sandbox.util.foreach(this.icons, function(icon, index) {
                 if (icon.column === column.attribute) {
                     iconStr = this.sandbox.util.template(templates.icon)({
                         icon: icon.icon,
@@ -922,26 +948,6 @@ define(function() {
                 $(this).parent().find('.fa-coffee').remove();
             });
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
-        },
-
-        /**
-         * Gets the width of the cells in the header clone and applies them to the actual header
-         */
-        setHeaderCellWidthFromClone: function() {
-            if (!!this.table.header && !!this.table.header.$clone.length) {
-                var cloneThs = this.sandbox.dom.find('th', this.table.header.$clone),
-                    originalThs = this.sandbox.dom.find('th', this.table.header.$el);
-                this.sandbox.dom.width(this.table.header.$row, this.sandbox.dom.width(
-                    this.sandbox.dom.find('tr', this.table.header.$clone)
-                ));
-                this.sandbox.util.foreach(cloneThs, function(cloneTh, index) {
-                    // min- and max-width because for table-cells normal width has no effect
-                    this.sandbox.dom.css(originalThs[index], {
-                        'min-width': this.sandbox.dom.outerWidth(cloneTh) + 'px',
-                        'max-width': this.sandbox.dom.outerWidth(cloneTh) + 'px'
-                    });
-                }.bind(this));
-            }
         },
 
         /**
@@ -1166,7 +1172,7 @@ define(function() {
                     this.toggleChildren(recordId);
                 }
             }
-            this.emitRowClickedEvent(event);
+            this.rowClickCallback(event);
         },
 
         /**
@@ -1175,20 +1181,18 @@ define(function() {
          */
         bodyRowDblClickHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
-            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-            this.emitRowDblClickEvent(event);
+            this.rowActionCallback(event);
         },
 
         /**
-         * Emits the row clicked event
+         * Calls the item-clicked callback
          * @param event {Object} the original click event
          */
-        emitRowClickedEvent: function(event) {
+        rowClickCallback: function(event) {
             if (this.rowClicked === false) {
                 this.rowClicked = true;
-                var recordId = this.sandbox.dom.data(event.currentTarget, 'id'),
-                    parameter = recordId || event;
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, parameter);
+                var recordId = this.sandbox.dom.data(event.currentTarget, 'id');;
+                this.datagrid.itemClicked.call(this.datagrid, recordId);
                 // delay to prevent multiple emits on double click
                 this.sandbox.util.delay(function() {
                     this.rowClicked = false;
@@ -1197,13 +1201,12 @@ define(function() {
         },
 
         /**
-         * Emits the row dblclicked event
+         * Calls the row-action callback
          * @param event {Object} the original event
          */
-        emitRowDblClickEvent: function(event) {
-            var recordId = this.sandbox.dom.data(event.currentTarget, 'id'),
-                parameter = recordId || event;
-            this.datagrid.emitItemDblClickedEvent.call(this.datagrid, parameter);
+        rowActionCallback: function(event) {
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            this.datagrid.itemAction.call(this.datagrid, recordId);
         },
 
         /**

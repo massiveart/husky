@@ -15,10 +15,10 @@
     "disabled":false,
     "default":false,
     "sortable":true,
-    "type":"title",
+    "type":"number",
     "width":"25%",
     "minWidth":"",
-    "editable":true
+    "editable":false
 },
 {
     "name":"content2",
@@ -26,10 +26,10 @@
     "disabled":false,
     "default":false,
     "sortable":true,
-    "type":"number",
+    "type":"title",
     "width":"25%",
     "minWidth":"",
-    "editable":false
+    "editable":true
 },
 {
     "name":"content3",

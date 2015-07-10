@@ -55,7 +55,7 @@ define(function() {
 
             showElements: [
                 '<div class="show-elements">',
-                '<span class="text"><%= text %>:</span>',
+                '<span class="text"><%= translate(text) %>:</span>',
                 '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
                 '<%= desc %>',
                 '<span class="dropdown-toggle"></span>',
@@ -244,8 +244,9 @@ define(function() {
             if (this.data.total > this.options.showElementsSteps[0]) {
                 description = this.data.embedded.length;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
-                    'desc': description,
-                    'text': translations.elementsPerPage
+                    desc: description,
+                    text: translations.elementsPerPage,
+                    translate: this.sandbox.translate
                 }));
                 this.sandbox.dom.append(this.$paginationContainer, '<span></span>')
                 this.sandbox.dom.append(this.$paginationContainer, $showElements);
