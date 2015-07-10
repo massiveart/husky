@@ -8607,17 +8607,18 @@ a.btn-black, a.btn-highlight {
   width: 20px;
   padding: 3px;
   margin: 0;
+  border: none;
 }
-/* line 28, ../scss/modules/matrix.scss */
+/* line 29, ../scss/modules/matrix.scss */
 .table.matrix td.all {
   text-align: left;
   padding-left: 16px;
 }
-/* line 32, ../scss/modules/matrix.scss */
+/* line 33, ../scss/modules/matrix.scss */
 .table.matrix td.section {
   color: #999;
 }
-/* line 37, ../scss/modules/matrix.scss */
+/* line 38, ../scss/modules/matrix.scss */
 .table.matrix .matrix-icon {
   border: 1px solid #000;
   color: #000;
@@ -8628,7 +8629,7 @@ a.btn-black, a.btn-highlight {
   display: inline-block;
   text-align: center;
 }
-/* line 50, ../scss/modules/matrix.scss */
+/* line 51, ../scss/modules/matrix.scss */
 .table.matrix .matrix-icon.is-active {
   color: #fff;
   border-color: #5DC774;
