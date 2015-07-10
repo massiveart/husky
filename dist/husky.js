@@ -29415,7 +29415,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             thumbnailCellClass: 'thumbnail-cell',
             textContainerClass: 'cell-content',
             renderingClass: 'rendering',
-            hoverClass: 'has-hover',
+            actionClass: 'has-action',
+            inactiveClass: 'inactive',
             childIndent: 28 //px
         },
 
@@ -29882,7 +29883,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (typeof this.datagrid.options.clickCallback === 'function' ||
                 typeof this.datagrid.options.actionCallback === 'function' ||
                 this.table.rows[record.id].hasChildren === true) {
-                this.sandbox.dom.addClass($row, constants.hoverClass);
+                this.sandbox.dom.addClass($row, constants.actionClass);
+            }
+            if (typeof this.datagrid.options.clickCallback !== 'function' &&
+                this.table.rows[record.id].hasChildren === false) {
+                this.sandbox.dom.addClass($row, constants.inactiveClass);
             }
 
             this.renderRowSelectItem(record.id);
