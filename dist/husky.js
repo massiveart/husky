@@ -33680,7 +33680,6 @@ define('__component__$dropdown@husky',[], function() {
                 dropdownClasses.push('dropdown-shadow');
             }
 
-
             this.$dropDown = this.sandbox.dom.createElement('<div/>', {
                 'class': dropdownClasses.join(' ')
             });
