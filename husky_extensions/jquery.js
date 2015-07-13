@@ -203,6 +203,10 @@
                 return $(selector).is(type);
             };
 
+            app.core.dom.filter = function(selector, filter) {
+                return $(selector).filter(filter);
+            };
+
             app.core.dom.isArray = function(selector) {
                 return $.isArray(selector);
             };

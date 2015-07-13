@@ -40,8 +40,7 @@ require(['lib/husky'], function(Husky) {
                             fullWidth: true, // uncomment for full-width mode
                             contentContainer: '#content',
                             highlightSelected: true,
-                            croppedMaxLength: 5,
-                            stickyHeader: true
+                            croppedMaxLength: 5
                         },
                         thumbnail: {
                         }
@@ -53,7 +52,13 @@ require(['lib/husky'], function(Husky) {
                     el: '#datagrid',
                     matchings: 'http://husky.lo:7878/admin/api/datagrid/fields',
                     selectedCounter: true,
-                    selectedCounterText: 'selected elements'
+                    selectedCounterText: 'selected elements',
+                    clickCallback: function(item, data) {
+                        app.logger.log('Husky.Ui.DataGrid item click: ' + item, data);
+                    },
+                    actionCallback: function(item, data) {
+                        app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
+                    }
                 }
             },
             {
@@ -113,32 +118,6 @@ require(['lib/husky'], function(Husky) {
                             sortable: true,
                             name: 'date',
                             type: 'date'
-                        }
-                    ]
-                }
-            },
-            {
-                name: 'datagrid@husky',
-                options: {
-                    url: 'http://husky.lo:7878/admin/api/datagrid/groups',
-                    view: 'group',
-                    pagination: false,
-                    searchInstanceName: 'test',
-                    el: '#thumbnails-datagrid',
-                    instanceName: 'grid-thumbnails',
-                    selectedCounter: false,
-                    matchings: [
-                        {
-                            name: 'title',
-                            type: 'title'
-                        },
-                        {
-                            name: 'mediaNumber',
-                            type: 'count'
-                        },
-                        {
-                            name: 'thumbnails',
-                            type: 'thumbnails'
                         }
                     ]
                 }
@@ -331,7 +310,6 @@ require(['lib/husky'], function(Husky) {
                         table: {
                             openPathToSelectedChildren: true,
                             showHead: false,
-                            cssClass: 'white-box',
                             selectItem: {
                                 type: 'checkbox',
                                 inFirstCell: true
@@ -370,7 +348,6 @@ require(['lib/husky'], function(Husky) {
                     viewOptions: {
                         table: {
                             showHead: false,
-                            cssClass: 'white-box',
                             selectItem: {
                                 type: 'checkbox',
                                 inFirstCell: true
@@ -550,10 +527,6 @@ require(['lib/husky'], function(Husky) {
 
             app.sandbox.on('husky.datagrid.item.deselect', function(item) {
                 app.logger.log('Husky.Ui.DataGrid item deselect: ' + item);
-            });
-
-            app.sandbox.on('husky.datagrid.item.click', function(item) {
-                app.logger.log('Husky.Ui.DataGrid item click: ' + item);
             });
 
 
