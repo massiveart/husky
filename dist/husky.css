@@ -8153,20 +8153,21 @@ a.btn-black, a.btn-highlight {
   text-align: left;
   padding-right: 30px;
   min-width: 60px;
+  cursor: pointer;
 }
-/* line 25, ../scss/modules/tabs.scss */
+/* line 26, ../scss/modules/tabs.scss */
 .tabs-container ul li a {
   color: black;
   text-decoration: none;
   font-size: 14px;
   outline: 0;
 }
-/* line 33, ../scss/modules/tabs.scss */
+/* line 34, ../scss/modules/tabs.scss */
 .tabs-container ul li.is-selected a {
   color: #52B6CA;
   font-weight: bold;
 }
-/* line 41, ../scss/modules/tabs.scss */
+/* line 42, ../scss/modules/tabs.scss */
 .tabs-container .marker {
   height: 2px;
   background: #52B6CA;
@@ -8175,34 +8176,34 @@ a.btn-black, a.btn-highlight {
   width: 0px;
   left: 0px;
 }
-/* line 50, ../scss/modules/tabs.scss */
+/* line 51, ../scss/modules/tabs.scss */
 .tabs-container .marker.animate {
   -moz-transition: left 350ms ease, width 350ms ease;
   -o-transition: left 350ms ease, width 350ms ease;
   -webkit-transition: left 350ms ease, width 350ms ease;
   transition: left 350ms ease, width 350ms ease;
 }
-/* line 60, ../scss/modules/tabs.scss */
+/* line 61, ../scss/modules/tabs.scss */
 .tabs-container.deactivated ul li a, .tabs-container.deactivated ul li a:hover {
   color: #999;
   cursor: default;
 }
-/* line 64, ../scss/modules/tabs.scss */
+/* line 65, ../scss/modules/tabs.scss */
 .tabs-container.deactivated ul li.is-selected a {
   color: #52B6CA;
 }
-/* line 73, ../scss/modules/tabs.scss */
+/* line 74, ../scss/modules/tabs.scss */
 .tabs-container.overlay {
   background-color: transparent;
   padding: 10px 0 0 20px;
 }
-/* line 78, ../scss/modules/tabs.scss */
+/* line 79, ../scss/modules/tabs.scss */
 .tabs-container.overlay ul {
   padding: 0;
   margin: 0;
   white-space: nowrap;
 }
-/* line 82, ../scss/modules/tabs.scss */
+/* line 83, ../scss/modules/tabs.scss */
 .tabs-container.overlay ul li {
   line-height: 30px;
   height: 30px;
@@ -8211,15 +8212,15 @@ a.btn-black, a.btn-highlight {
   text-align: center;
   min-width: 0;
 }
-/* line 89, ../scss/modules/tabs.scss */
+/* line 90, ../scss/modules/tabs.scss */
 .tabs-container.overlay ul li a {
   font-size: 14px;
 }
-/* line 92, ../scss/modules/tabs.scss */
+/* line 93, ../scss/modules/tabs.scss */
 .tabs-container.overlay ul li.is-selected {
   background-color: #fff;
 }
-/* line 98, ../scss/modules/tabs.scss */
+/* line 99, ../scss/modules/tabs.scss */
 .tabs-container.overlay .marker {
   display: none;
 }
