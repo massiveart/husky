@@ -20,8 +20,8 @@
             margin: 20px;
         }
         .blueBackground {
-            padding: 30px 10px;
             background: #52B6CA;
+            padding: 0 50px;
         }
     </style>
 </head>
@@ -58,7 +58,7 @@
         <div id="toolbar4"></div>
     </div>
     <div class="grid-row">
-        <h3>blueish</h3>
+        <h3>Big skin</h3>
         <div class="blueBackground">
             <div id="toolbar5"></div>
         </div>
@@ -406,7 +406,7 @@
                     options: {
                         el: '#toolbar5',
                         instanceName: 'contact3',
-                        skin: 'blueish',
+                        skin: 'big',
                         groups: [
                             {
                                 id: 1,
@@ -422,6 +422,7 @@
                                 icon: 'floppy-o',
                                 class: 'highlight',
                                 group: 1,
+                                title: 'Save',
                                 id: 'loadit',
                                 callback: function() {
                                     app.sandbox.emit('husky.toolbar.contact3.item.loading', 'loadit');
@@ -434,13 +435,14 @@
                             {
                                 icon: 'pencil',
                                 group: 1,
-                                title: 'Overview',
+                                title: 'Standard Page',
                                 type: 'select',
-                                items: [{title: 'Overview'}, {title: 'Landing'}]
+                                items: [{title: 'Standard Page'}, {title: 'Overview'}, {title: 'Landing'}]
                             },
                             {
                                 icon: 'gear',
                                 group: 1,
+                                title: 'Settings',
                                 items: [{title: 'do something'}]
                             },
                             {
@@ -469,7 +471,7 @@
                         instanceName: 'contact6',
                         hasSearch: true,
                         searchAlign: 'right',
-                        skin: 'blueish',
+                        skin: 'big',
                         groups: [
                             {
                                 id: 1,
