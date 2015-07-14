@@ -40,7 +40,7 @@
             <div class="btn fit inline" id="disable">Disable "Add user" and "Edit" button</div>
             <div class="btn fit inline" id="enable">Enable "Add user" and "Edit" button</div>
             <div class="btn fit inline" id="changeItem">Change current item of state</div>
-            <div class="btn fit inline" id="collapse">Collapse/Expand toolbar</div>
+            <div class="btn fit inline" id="collapse">Collapse/Expand</div>
         </div>
         <div id="toolbar2"></div>
     </div>
@@ -56,6 +56,7 @@
         <div class="actions">
             <div class="btn fit inline" id="disableSave">Disable "Save" button</div>
             <div class="btn fit inline" id="enableSave">Enable "Save" button</div>
+            <div class="btn fit inline" id="collapse2">Collapse/Expand</div>
         </div>
         <div class="blueBackground">
             <div id="toolbar5"></div>
@@ -86,8 +87,6 @@
                     {
                         'id': '1',
                         'icon': 'plus-circle',
-                        'disabledIcon': 'gear',
-                        'iconSize': 'large',
                         'class': 'highlight',
                         'position': 1,
                         'callback': function() {
@@ -103,12 +102,10 @@
                     {
                         'id': 'edit',
                         'icon': 'gear',
-                        'iconSize': 'large',
-                        'disabledIcon': 'plus-circle',
                         'title': '',
                         'group': 2,
                         'position': 2,
-                        'items': [
+                        'dropdownItems': [
                             {
                                 'title': 'Refresh',
                                 'callback': function() {
@@ -129,9 +126,9 @@
                         'group': 2,
                         'title': 'Publish',
                         'position': 2,
-                        'type': 'select',
-                        'itemsOption': {
-                            markable: true
+                        'dropdownOptions': {
+                            markSelected: true,
+                            changeButton: true
                         }
                     },
                     {
@@ -156,7 +153,6 @@
                         'icon': 'gear',
                         'title': 'Something else',
                         'group': 1,
-                        'hideTitle': true,
                         'position': 4
                     },
                     {
@@ -169,17 +165,16 @@
                         'title': 'Export',
                         'group': 1,
                         'position': 5,
-                        'itemsOption': {
+                        'hidden': true,
+                        'dropdownOptions': {
                             'url': 'http://husky.lo:7878/admin/api/dropdown',
                             'titleAttribute': 'name',
                             'idAttribute': 'id',
-                            'translate': true,
-                            'languageNamespace': 'toolbar.',
                             'callback': function(item) {
                                 console.log(item, 'This is a test callback');
                             }
                         },
-                        items: [
+                        dropdownItems: [
                             {
                                 id: 'edit',
                                 name: 'edit'
@@ -194,10 +189,10 @@
                     {
                         id: 'marked',
                         icon: 'th-large',
-                        itemsOption: {
-                            markable: true
+                        dropdownOptions: {
+                            markSelected: true
                         },
-                        items: [
+                        dropdownItems: [
                             {
                                 id: 'small-thumbnails',
                                 title: 'small thumbnails',
@@ -229,6 +224,7 @@
                     'id': 'publish',
                     'title': 'Publish',
                     'icon': 'husky-publish',
+                    'marked': true,
                     'callback': function() {
                         console.log("publish it");
                     }
@@ -251,7 +247,8 @@
                 }
             ],
 
-        collapsed = false;
+        collapsed = false,
+        collapsed2 = false;
         App = app;
         app.start().then(function() {
             app.logger.log('Aura started...');
@@ -269,7 +266,7 @@
                     name: 'toolbar@husky',
                     options: {
                         el: '#toolbar2',
-                        itemsRequestKey: 'items',
+                        dropdownItemsKey: 'dropdownItems',
                         instanceName: 'contact',
                         groups: [
                             {
@@ -285,7 +282,7 @@
                                 align: 'right'
                             }
                         ],
-                        data: testData
+                        buttons: testData
                     }
                 },
                 {
@@ -302,13 +299,13 @@
                                 align: 'left'
                             }
                         ],
-                        data: [
+                        buttons: [
                             {
                                 icon: 'plus-circle',
                                 class: 'highlight',
                                 title: 'add',
                                 group: 1,
-                                items: [
+                                dropdownItems: [
                                     {title: 'action 1'},
                                     {title: 'action 2'}
                                 ]
@@ -336,7 +333,7 @@
                             {
                                 icon: 'gear',
                                 group: 1,
-                                items: [
+                                dropdownItems: [
                                     {title: 'action 1', disabled: true},
                                     {title: 'action 2', disabled: true},
                                     {title: 'action 3'}
@@ -361,7 +358,7 @@
                                 align: 'left'
                             }
                         ],
-                        data: [
+                        buttons: [
                             {
                                 icon: 'plus-circle',
                                 class: 'highlight',
@@ -418,7 +415,7 @@
                                 align: 'right'
                             }
                         ],
-                        data: [
+                        buttons: [
                             {
                                 icon: 'floppy-o',
                                 group: 1,
@@ -426,40 +423,44 @@
                                 id: 'loadit',
                                 callback: function() {
                                     app.sandbox.emit('husky.toolbar.contact3.item.loading', 'loadit');
-
-                                    setTimeout(function() {
-                                        //app.sandbox.emit('husky.toolbar.contact3.item.disable', 'loadit', true);
-                                    }, 2000)
                                 }
                             },
                             {
                                 icon: 'pencil',
                                 group: 1,
                                 title: 'Standard Page',
-                                type: 'select',
-                                items: [{title: 'Standard Page'}, {title: 'Overview'}, {title: 'Landing'}]
+                                dropdownItems: [{title: 'Standard Page', marked: true}, {title: 'Overview'}, {title: 'Landing'}],
+                                dropdownOptions: {
+                                    changeButton: true,
+                                    markSelected: true
+                                }
                             },
                             {
                                 icon: 'gear',
                                 group: 1,
                                 title: 'Settings',
-                                items: [{title: 'do something'}]
+                                dropdownItems: [{title: 'do something'}]
                             },
                             {
                                 'id': 'state',
                                 'icon': 'husky-publish',
                                 'group': 1,
                                 'title': 'Publish',
-                                'type': 'select',
-                                items: stateItems
+                                dropdownItems: stateItems,
+                                dropdownOptions: {
+                                    changeButton: true,
+                                    markSelected: true
+                                }
                             },
                             {
                                 'id': 'locale',
                                 title: 'DE',
-                                type: 'select',
                                 group: 2,
                                 class: 'highlight-white',
-                                items: [{title: 'EN'}, {title: 'EN_US'}, {title: 'DE_AT'}]
+                                dropdownItems: [{title: 'EN'}, {title: 'EN_US'}, {title: 'DE_AT'}],
+                                dropdownOptions: {
+                                    changeButton: true
+                                }
                             }
                         ]
                     }
@@ -478,7 +479,7 @@
                                 align: 'left'
                             }
                         ],
-                        data: [
+                        buttons: [
                             {
                                 icon: 'plus-circle',
                                 group: 1
@@ -546,6 +547,16 @@
                 } else {
                     app.sandbox.emit('husky.toolbar.contact.expand');
                     collapsed = false;
+                }
+            });
+
+            $('#collapse2').on('click', function() {
+                if (collapsed2 === false) {
+                    app.sandbox.emit('husky.toolbar.contact3.collapse');
+                    collapsed2 = true;
+                } else {
+                    app.sandbox.emit('husky.toolbar.contact3.expand');
+                    collapsed2 = false;
                 }
             });
         });

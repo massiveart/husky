@@ -29,16 +29,13 @@ $toolbarBigHeight: 50px;
                 position: relative;
                 top: -2px;
             }
-            .icon + .title {
-                position: relative;
-                top: -1px;
-            }
             .title {
                 font-size: 9px;
             }
             .item-loader {
                 height: 14px;
                 margin-top: ($toolbarSmallHeight - 2px)/2 - 7px;
+                margin-left: -2px;
             }
         }
     }
@@ -123,7 +120,7 @@ $toolbarBigHeight: 50px;
             }
         }
         .icon ~ .dropdown-toggle::after {
-            top: -2px;
+            top: -3px;
         }
 
         &.dropdown {
@@ -195,6 +192,12 @@ $toolbarBigHeight: 50px;
 
             ul.toolbar-dropdown-menu {
                 display: block;
+            }
+        }
+
+        &.is-loading {
+            .title, .icon, .dropdown-toggle {
+                display: none;
             }
         }
 
@@ -359,9 +362,33 @@ $toolbarBigHeight: 50px;
                 border-top-color: $milkeyBlue;
             }
         }
+
+        &.highlight-white {
+            background-color: $white;
+            height: $toolbarHeight;
+            line-height: $toolbarHeight;
+            padding: 0 10px;
+            border-radius: $borderRadius;
+            margin-top: ($toolbarBigHeight - $toolbarHeight)/2;
+            .title {
+                text-align: left;
+                color: $black;
+                line-height: $toolbarHeight;
+            }
+            .dropdown-toggle::after {
+                border-top-color: $black;
+            }
+            &:last-child, &:first-child {
+                border-radius: $borderRadius;
+            }
+        }
     }
 
     .toolbar-search {
         padding-top: 10px;
+    }
+
+    .item-loader {
+        margin-top: ($toolbarBigHeight)/2 - 10px;
     }
 }
