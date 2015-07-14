@@ -23,6 +23,9 @@
             background: #52B6CA;
             padding: 0 50px;
         }
+        .actions .btn {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -32,22 +35,13 @@
 
 <div class="grid">
     <div class="grid-row">
-        <div class="btn pointer grid-col-8 align-center" id="disable">Disable "Add user" and "Edit" button</div>
-    </div>
-    <div class="grid-row">
-        <div class="btn pointer grid-col-8 align-center" id="enable">Enable "Add user" and "Edit" button</div>
-    </div>
-    <div class="grid-row">
-        <div class="btn pointer grid-col-8 align-center" id="changeItem">Change current item of state</div>
-    </div>
-    <div class="grid-row">
-        <div class="btn pointer grid-col-8 align-center" id="collapse">Collapse/Expand toolbar</div>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="grid-row">
         <h3>default</h3>
+        <div class="actions">
+            <div class="btn fit inline" id="disable">Disable "Add user" and "Edit" button</div>
+            <div class="btn fit inline" id="enable">Enable "Add user" and "Edit" button</div>
+            <div class="btn fit inline" id="changeItem">Change current item of state</div>
+            <div class="btn fit inline" id="collapse">Collapse/Expand toolbar</div>
+        </div>
         <div id="toolbar2"></div>
     </div>
     <div class="grid-row">
@@ -59,6 +53,10 @@
     </div>
     <div class="grid-row">
         <h3>Big skin</h3>
+        <div class="actions">
+            <div class="btn fit inline" id="disableSave">Disable "Save" button</div>
+            <div class="btn fit inline" id="enableSave">Enable "Save" button</div>
+        </div>
         <div class="blueBackground">
             <div id="toolbar5"></div>
         </div>
@@ -423,7 +421,6 @@
                         data: [
                             {
                                 icon: 'floppy-o',
-                                class: 'highlight',
                                 group: 1,
                                 title: 'Save',
                                 id: 'loadit',
@@ -431,7 +428,7 @@
                                     app.sandbox.emit('husky.toolbar.contact3.item.loading', 'loadit');
 
                                     setTimeout(function() {
-                                        app.sandbox.emit('husky.toolbar.contact3.item.disable', 'loadit', true);
+                                        //app.sandbox.emit('husky.toolbar.contact3.item.disable', 'loadit', true);
                                     }, 2000)
                                 }
                             },
@@ -484,7 +481,6 @@
                         data: [
                             {
                                 icon: 'plus-circle',
-                                class: 'highlight-white',
                                 group: 1
                             },
                             {
@@ -524,11 +520,19 @@
                 })
             });
 
+            $('#disableSave').on('click', function() {
+                app.sandbox.emit('husky.toolbar.contact3.item.disable', 'loadit', false);
+            });
+
             $('#enable').on('click', function() {
                 app.sandbox.emit('husky.toolbar.contact.item.enable', '1');
                 app.sandbox.emit('husky.toolbar.contact.item.enable', 'edit');
 
                 app.sandbox.emit('husky.toolbar.contact.item.show', '5');
+            });
+
+            $('#enableSave').on('click', function() {
+                app.sandbox.emit('husky.toolbar.contact3.item.enable', 'loadit', true);
             });
 
             $('#changeItem').on('click', function() {

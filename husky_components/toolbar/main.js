@@ -451,7 +451,6 @@ define(function() {
                         // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                         // on every click remove sub-menu
-                        event.stopImmediatePropagation();
                         this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
                     }
                 }

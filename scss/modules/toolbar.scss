@@ -29,10 +29,13 @@ $toolbarBigHeight: 50px;
                 position: relative;
                 top: -2px;
             }
+            .icon + .title {
+                position: relative;
+                top: -1px;
+            }
             .title {
                 font-size: 9px;
             }
-
             .item-loader {
                 height: 14px;
                 margin-top: ($toolbarSmallHeight - 2px)/2 - 7px;
@@ -75,8 +78,8 @@ $toolbarBigHeight: 50px;
                 border-width: 1px;
             }
             &:last-child {
-                border-top-right-radius: $borderRadius !important;
-                border-bottom-right-radius: $borderRadius !important;
+                border-top-right-radius: $borderRadius;
+                border-bottom-right-radius: $borderRadius;
             }
             &:only-child {
                 border-radius: $borderRadius;
@@ -103,16 +106,24 @@ $toolbarBigHeight: 50px;
             padding-right: 0px;
             display: inline-block;
         }
+        .icon + .title {
+            margin-top: -4px;
+        }
 
         .title {
             font-size: $smallFontSize;
             display: inline-block;
             vertical-align: middle;
-            margin-top: -2px;
         }
 
         .dropdown-toggle {
             display: none;
+            &::after {
+                top: 0;
+            }
+        }
+        .icon ~ .dropdown-toggle::after {
+            top: -2px;
         }
 
         &.dropdown {
@@ -304,16 +315,53 @@ $toolbarBigHeight: 50px;
 
     .group {
         height: $toolbarBigHeight;
+        .toolbar-item:first-child {
+            border-left: 1px solid $milkeyBlue;
+            border-radius: 0;
+        }
+        .toolbar-item:last-child {
+            border-radius: 0;
+        }
     }
 
     .toolbar-item {
         border: none;
+        border-right: 1px solid $milkeyBlue;
+        padding: 0 20px;
+        border-radius: 0;
         .icon, .title {
             color: $white;
             line-height: $toolbarBigHeight;
         }
+        .icon {
+            font-size: 20px;
+        }
+        .icon + .title {
+            margin-top: -6px;
+        }
         .dropdown-toggle::after {
             border-top-color: $white;
+            margin-left: 20px;
         }
+        &.is-selected,
+        &.is-expanded,
+        &:hover {
+            background: $milkeyBlue;
+        }
+
+        &.disabled,
+        &.disabled:hover {
+            background: transparent;
+            .icon, .title {
+                color: $milkeyBlue;
+            }
+            .dropdown-toggle::after {
+                border-top-color: $milkeyBlue;
+            }
+        }
+    }
+
+    .toolbar-search {
+        padding-top: 10px;
     }
 }
