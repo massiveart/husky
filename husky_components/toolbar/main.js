@@ -303,10 +303,9 @@ define(function() {
                 if (!!this.items[button]) {
                     if (items.length > 0) {
                         deleteDropdown.call(this, this.items[button]);
-                        this.sandbox.dom.show(this.sandbox.dom.find('.dropdown-toggle', this.items[button].$el));
+                        this.sandbox.dom.removeAttr(this.sandbox.dom.find('.dropdown-toggle', this.items[button].$el), 'style');
                         this.items[button].dropdownItems = items;
                         createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
-                        setButtonWidth.call(this, this.items[button].$el, this.items[button]);
                         if (!!itemId) {
                             this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
                         }
@@ -339,7 +338,7 @@ define(function() {
             // in case of item has state loading, restore original state
             if (item.loading) {
                 item.loading = false;
-                this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
+                //this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.removeClass($item, 'is-loading');
                 this.sandbox.dom.width($item, '');
@@ -430,20 +429,24 @@ define(function() {
                 item = this.items[id],
                 visible;
             if (!!this.sandbox.dom.find('.dropdown-toggle', $list).length) {
-                if (!item || !item.disabled) {
-                    if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
-                        visible = true;
-                    }
-                    hideDropdowns.call(this);
+                // abort if disabled or dropdown-arrow wasn't clicked and but the onlyOnClickOnArrow option was true
+                if (!item || item.disabled ||
+                    (item.dropdownOptions.onlyOnClickOnArrow === true && !this.sandbox.dom.hasClass(event.target, 'dropdown-toggle'))) {
+                    return false;
+                }
 
-                    if (!visible) {
-                        this.sandbox.dom.addClass($list, 'is-expanded');
+                if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
+                    visible = true;
+                }
+                hideDropdowns.call(this);
 
-                        // TODO: check if dropdown overlaps screen: set ul to .right-aligned
+                if (!visible) {
+                    this.sandbox.dom.addClass($list, 'is-expanded');
 
-                        // on every click remove sub-menu
-                        this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
-                    }
+                    // TODO: check if dropdown overlaps screen: set ul to .right-aligned
+
+                    // on every click remove sub-menu
+                    this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
                 }
             }
         },
@@ -483,9 +486,10 @@ define(function() {
             var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')],
                 $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null;
 
-            // stop if item has subitems
-            if ((!!item.dropdownItems && item.dropdownItems.length > 0) || item.loading) {
-                return;
+            // stop if loading or the dropdown gets opened
+            if (item.loading || (!!item.dropdownOptions && item.dropdownOptions.onlyOnClickOnArrow !== true) ||
+                this.sandbox.dom.hasClass(event.target, 'dropdown-toggle')) {
+                return false;
             }
             hideDropdowns.call(this);
             if (!!item.parentId && !!this.items[item.parentId].dropdownOptions &&
@@ -649,25 +653,6 @@ define(function() {
         },
 
         /**
-         * set width for button with dropdown-items
-         * @param listItem
-         * @param parent
-         */
-        setButtonWidth = function(listItem, parent) {
-            var maxwidth = 0, i, length;
-            if (!!parent.dropdownOptions.changeButton) {
-                for (i = -1, length = parent.dropdownItems.length; ++i < length;) {
-                    changeMainListItem.call(this, listItem, parent.dropdownItems[i]);
-                    if (this.sandbox.dom.width(listItem) > maxwidth) {
-                        maxwidth = this.sandbox.dom.width(listItem);
-                    }
-                }
-                //set button back to default
-                changeMainListItem.call(this, listItem, parent);
-            }
-        },
-
-        /**
          * Handles requested items
          * @param requestedItems
          * @param buttonId
@@ -758,8 +743,6 @@ define(function() {
                 } else {
                     this.sandbox.dom.removeAttr(this.sandbox.dom.find('.title', button.$el), 'style');
                 }
-
-                setButtonWidth.call(this, button.$el, button);
             }
         },
 
@@ -992,6 +975,7 @@ define(function() {
 
                     // add dropdown-toggle element (hidden at default)
                     this.sandbox.dom.append($listItem, this.sandbox.dom.createElement('<span class="dropdown-toggle" />'));
+                    this.sandbox.dom.hide(this.sandbox.dom.find('.dropdown-toggle', $listItem));
 
                     //add tooltip to item
                     if (this.options.showTitleAsTooltip === true) {
@@ -1025,7 +1009,7 @@ define(function() {
                     } else {
                         // now create subitems
                         if (!!item.dropdownItems) {
-                            this.sandbox.dom.show(this.sandbox.dom.find('.dropdown-toggle', $listItem));
+                            this.sandbox.dom.removeAttr(this.sandbox.dom.find('.dropdown-toggle', $listItem), 'style');
                             createDropdownMenu.call(this, $listItem, item);
                         }
                         dfd.resolve();
@@ -1036,9 +1020,6 @@ define(function() {
                 this.sandbox.dom.append(addTo, $listItem);
 
                 //set width for buttons with dropdowns
-                if (!!item.dropdownItems) {
-                    setButtonWidth.call(this, $listItem, item);
-                }
                 this.items[item.id].$el = $listItem;
 
             }.bind(this));

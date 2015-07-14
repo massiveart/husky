@@ -57,6 +57,7 @@
             <div class="btn fit inline" id="disableSave">Disable "Save" button</div>
             <div class="btn fit inline" id="enableSave">Enable "Save" button</div>
             <div class="btn fit inline" id="collapse2">Collapse/Expand</div>
+            <div class="btn fit inline" id="load">Load button</div>
         </div>
         <div class="blueBackground">
             <div id="toolbar5"></div>
@@ -421,11 +422,16 @@
                                 group: 1,
                                 title: 'Save',
                                 id: 'loadit',
+                                dropdownItems: [{title: 'Save and new'}, {title: 'Save and back'}, {title: 'Save and stay'}],
+                                dropdownOptions: {
+                                    onlyOnClickOnArrow: true
+                                },
                                 callback: function() {
                                     app.sandbox.emit('husky.toolbar.contact3.item.loading', 'loadit');
                                 }
                             },
                             {
+                                id: 'template',
                                 icon: 'pencil',
                                 group: 1,
                                 title: 'Standard Page',
@@ -558,6 +564,10 @@
                     app.sandbox.emit('husky.toolbar.contact3.expand');
                     collapsed2 = false;
                 }
+            });
+
+            $('#load').on('click', function() {
+                app.sandbox.emit('husky.toolbar.contact3.item.loading', 'template');
             });
         });
     });

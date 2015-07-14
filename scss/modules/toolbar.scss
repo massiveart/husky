@@ -114,12 +114,12 @@ $toolbarBigHeight: 50px;
         }
 
         .dropdown-toggle {
-            display: none;
-            &::after {
-                top: 0;
-            }
+            display: inline-block;
+            top: 0;
+            padding-right: 5px;
+            margin-right: -5px;
         }
-        .icon ~ .dropdown-toggle::after {
+        .icon ~ .dropdown-toggle {
             top: -3px;
         }
 
@@ -196,7 +196,7 @@ $toolbarBigHeight: 50px;
         }
 
         &.is-loading {
-            .title, .icon, .dropdown-toggle {
+            .title, .icon, .dropdown-toggle, .dropdown-toggle::after {
                 display: none;
             }
         }
@@ -344,7 +344,11 @@ $toolbarBigHeight: 50px;
         }
         .dropdown-toggle::after {
             border-top-color: $white;
-            margin-left: 20px;
+        }
+        .dropdown-toggle {
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-right: -20px;
         }
         &.is-selected,
         &.is-expanded,
