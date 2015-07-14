@@ -228,7 +228,7 @@ define(function() {
 
         /** events bound to dom */
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.$el, 'click', toggleItem.bind(this), '.dropdown-toggle');
+            this.sandbox.dom.on(this.$el, 'click', toggleItem.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
         },
 
@@ -299,7 +299,7 @@ define(function() {
                 if (!!this.items[button]) {
                     if (items.length > 0) {
                         deleteDropdown.call(this, this.items[button]);
-                        this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                        this.sandbox.dom.show(this.sandbox.dom.find('.dropdown-toggle', this.items[button].$el));
                         this.items[button].items = items;
                         createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
                         setButtonWidth.call(this, this.items[button].$el, this.items[button]);
@@ -308,7 +308,7 @@ define(function() {
                         }
                     } else {
                         deleteDropdown.call(this, this.items[button]);
-                        this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                        this.sandbox.dom.hide(this.sandbox.dom.find('.dropdown-toggle', this.items[button].$el));
                     }
                 }
             }.bind(this));
@@ -434,24 +434,26 @@ define(function() {
             event.preventDefault();
             event.stopPropagation();
 
-            var $list = this.sandbox.dom.parent(event.currentTarget),
+            var $list = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($list, 'id'),
                 item = this.items[id],
                 visible;
+            if (!!this.sandbox.dom.find('.dropdown-toggle', $list).length) {
+                if (!item || !item.disabled) {
+                    if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
+                        visible = true;
+                    }
+                    hideDropdowns.call(this);
 
-            if (!item || !item.disabled) {
-                if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
-                    visible = true;
-                }
-                hideDropdowns.call(this);
+                    if (!visible) {
+                        this.sandbox.dom.addClass($list, 'is-expanded');
 
-                if (!visible) {
-                    this.sandbox.dom.addClass($list, 'is-expanded');
+                        // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
-                    // TODO: check if dropdown overlaps screen: set ul to .right-aligned
-
-                    // on every click remove sub-menu
-                    this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
+                        // on every click remove sub-menu
+                        event.stopImmediatePropagation();
+                        this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
+                    }
                 }
             }
         },
@@ -851,7 +853,7 @@ define(function() {
             if (!!button.items) {
                 // remove the related stuff
                 this.sandbox.dom.remove(this.sandbox.dom.find('.toolbar-dropdown-menu', button.$el));
-                this.sandbox.dom.removeClass(this.sandbox.dom.children(button.$el, 'a'), 'dropdown-toggle');
+                this.sandbox.dom.hide(this.sandbox.dom.find('.dropdown-toggle', button.$el));
 
                 // delete JS related stuff
                 for (var i = -1, length = button.items.length; ++i < length;) {
@@ -973,7 +975,7 @@ define(function() {
         render: function(data) {
 
             var classArray, addTo,
-                $listItem, $listLink,
+                $listItem,
                 title;
 
             // if has search is set in options push a search item and it's own group
@@ -1030,20 +1032,19 @@ define(function() {
 
                     insertSearch.call(this, $listItem);
                 } else {
-
-                    $listLink = this.sandbox.dom.createElement('<a href="#" />');
-                    this.sandbox.dom.append($listItem, $listLink);
-
                     // create icon span
-                    this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item, !item.disabled) + '" />');
+                    this.sandbox.dom.append($listItem, '<span class="' + createIconSupportClass.call(this, item, !item.disabled) + '" />');
 
                     // create title span
                     title = item.title ? item.title : '';
                     if (item.hideTitle === true || this.options.showTitleAsTooltip === true) {
-                        this.sandbox.dom.append($listLink, '<span style="display:none" class="title">' + title + '</span>');
+                        this.sandbox.dom.append($listItem, '<span style="display:none" class="title">' + title + '</span>');
                     } else {
-                        this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
+                        this.sandbox.dom.append($listItem, '<span class="title">' + title + '</span>');
                     }
+
+                    // add dropdown-toggle element (hidden at default)
+                    this.sandbox.dom.append($listItem, this.sandbox.dom.createElement('<span class="dropdown-toggle" />'));
 
                     //add tooltip to item
                     if (this.options.showTitleAsTooltip === true) {
@@ -1077,7 +1078,7 @@ define(function() {
                     } else {
                         // now create subitems
                         if (!!item.items) {
-                            this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
+                            this.sandbox.dom.show(this.sandbox.dom.find('.dropdown-toggle', $listItem));
                             createDropdownMenu.call(this, $listItem, item);
                         }
                         dfd.resolve();

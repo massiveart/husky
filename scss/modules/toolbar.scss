@@ -24,16 +24,13 @@ $toolbarBigHeight: 50px;
             line-height: $toolbarSmallHeight;
             min-width: 30px;
 
-            a  {
-                line-height: $toolbarSmallHeight - 3px;
-                min-width: 30px;
-
-                .icon, &.icon {
-                    font-size: 10px;
-                }
-                .title {
-                    font-size: 9px;
-                }
+            .icon {
+                font-size: 10px;
+                position: relative;
+                top: -2px;
+            }
+            .title {
+                font-size: 9px;
             }
 
             .item-loader {
@@ -97,16 +94,32 @@ $toolbarBigHeight: 50px;
         height: 100%;
         line-height: $toolbarHeight;
         text-align: center;
+        color: black;
+        cursor: pointer;
+        padding: 0 10px;
+
+        .icon {
+            font-size: 16px;
+            padding-right: 0px;
+            display: inline-block;
+        }
+
+        .title {
+            font-size: $smallFontSize;
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -2px;
+        }
+
+        .dropdown-toggle {
+            display: none;
+        }
 
         &.dropdown {
             position: relative;
             display: block;
             list-style: none;
             float: left;
-        }
-
-        .dropdown-toggle::after {
-            top: -3px;
         }
 
         .item-loader {
@@ -119,14 +132,7 @@ $toolbarBigHeight: 50px;
         &.disabled {
             background-color: inherit;
             cursor: default;
-            a {
-                cursor: default;
-                color: $grayLight;
-            }
-        }
-
-        &.hidden {
-            display: none;
+            color: $grayLight;
         }
 
         &.highlight {
@@ -137,11 +143,7 @@ $toolbarBigHeight: 50px;
             &.disabled {
                 background-color: $grayLighter;
                 border-color: transparent;
-                cursor: default;
-                a {
-                    cursor: default;
-                    color: $grayDark;
-                }
+                color: $grayDark;
             }
 
             &:hover {
@@ -151,7 +153,7 @@ $toolbarBigHeight: 50px;
                 background-color: lighten($highlightColor, 5%);
             }
 
-            & > a {
+            & > span {
                 color: $white;
 
                 &.dropdown-toggle::after {
@@ -191,32 +193,6 @@ $toolbarBigHeight: 50px;
         &:active {
             background-color: darken($grayLighter, 3%);
         }
-
-        /** link styling **/
-        a {
-            text-align: center;
-            color: black;
-            padding: 0 10px 0 8px;
-            display: table;
-            text-decoration: none;
-            height: 100%;
-            line-height: $toolbarHeight;
-            outline: none;
-            width: 100%;
-            min-width: 50px;
-
-            .icon, &.icon {
-                font-size: 16px;
-                padding-right: 0px;
-                display: inline-block;
-            }
-
-            .title {
-                font-size: $smallFontSize;
-                display: table-cell;
-                vertical-align: middle;
-            }
-        }
     }
 
     // Compass 1.0.1 specificity bug
@@ -233,7 +209,6 @@ $toolbarBigHeight: 50px;
         display: none;
         position: absolute;
         top: 100%;
-        z-index: 1000;
         left: 0;
         min-width: 160px;
         list-style: none;
@@ -241,7 +216,7 @@ $toolbarBigHeight: 50px;
 
         padding: 5px 0;
         margin-top: -7px;
-        margin-left: 0px;
+        margin-left: 0;
         z-index: 2000;
 
         @include standard-box-shadow(2px);
@@ -261,8 +236,8 @@ $toolbarBigHeight: 50px;
             position: relative;
             top: 0;
             left: 0;
-
             padding: 0 20px;
+            text-align: left;
 
             a {
                 color: black;
