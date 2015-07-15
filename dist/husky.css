@@ -9650,27 +9650,28 @@ a.btn-black, a.btn-highlight {
 }
 /* line 295, ../scss/modules/datagrid.scss */
 .husky-datagrid .selected-elements {
+  margin-top: -10px;
   display: block;
   padding-bottom: 10px;
 }
-/* line 298, ../scss/modules/datagrid.scss */
+/* line 299, ../scss/modules/datagrid.scss */
 .husky-datagrid .selected-elements.indent {
   padding-left: 60px;
 }
-/* line 303, ../scss/modules/datagrid.scss */
+/* line 304, ../scss/modules/datagrid.scss */
 .husky-datagrid .medium-loader {
   overflow: hidden;
   height: 0px;
   transition: all 200ms;
   margin-top: 0px;
 }
-/* line 309, ../scss/modules/datagrid.scss */
+/* line 310, ../scss/modules/datagrid.scss */
 .husky-datagrid .medium-loader.show {
   height: 70px;
   margin-top: 10px;
 }
 
-/* line 318, ../scss/modules/datagrid.scss */
+/* line 319, ../scss/modules/datagrid.scss */
 .editable .husky-validate-error .husky-input input {
   height: 30px;
   margin-top: -30px;
