@@ -201,7 +201,7 @@
                     '</div>'
                 ].join(''),
                 selectedCounter: [
-                    '<span class="selected-elements smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
+                    '<span class="selected-elements invisible smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
                 ].join('')
             },
 
@@ -1419,6 +1419,11 @@
             updateSelectedCounter: function(number) {
                 if (this.options.selectedCounter === true) {
                     this.sandbox.dom.html(this.$find('.selected-elements .number'), number);
+                    if (number === 0) {
+                        this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
+                    } else {
+                        this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
+                    }
                 }
             },
 
