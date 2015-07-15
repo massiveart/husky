@@ -167,34 +167,21 @@
 
     tbody {
 
-        /** after render effect (start) **/
         .row {
-            opacity: 1;
-            $transitonDuration: 250ms;
-            $transitionDelay: 60ms;
-            $transitonOffset: 40ms;
-            @for $i from 1 through 20 {
-                &:nth-child(#{$i}) {
-                    @include single-transition(opacity, $transitonDuration, ($transitionDelay + $i * $transitonOffset));
-                }
-            }
-            &:nth-child(n+20) {
-                @include single-transition(opacity, $transitonDuration, ($transitionDelay + 21 * $transitonOffset));
-            }
             &.even {
                 background: $white;
             }
             &.odd {
                 background: $grayLightest2;
             }
-            &.has-action {
+            &.has-action, td.has-action {
                 cursor: pointer;
                 .cell-content {
                     color: $black;
                     cursor: pointer;
                 }
             }
-            &.inactive {
+            &.inactive, td.inactive {
                 cursor: auto;
                 .cell-content {
                     cursor: auto;
@@ -202,7 +189,6 @@
                 }
             }
         }
-        /** after render effect (end) **/
 
         .child-wrapper {
             .toggle-icon {

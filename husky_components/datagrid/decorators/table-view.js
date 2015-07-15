@@ -381,7 +381,7 @@ define(function() {
                     icon: this.options.actionIcon,
                     column: this.options.actionIconColumn || this.datagrid.matchings[0].attribute,
                     align: 'left',
-                    callback: this.datagrid.itemAction.bind(this.datagrid)
+                    actionIcon: true
                 });
             }
         },
@@ -665,7 +665,7 @@ define(function() {
          */
         renderBodyCell: function(record, column, index) {
             var $cell = this.sandbox.dom.createElement(templates.cell),
-                content = this.getCellContent(record, column),
+                content = this.getCellContent(record, column, $cell),
                 selectItem, isCroppable = false;
             if (!!this.datagrid.options.childrenPropertyName && index === 0) {
                 content = this.wrapChildrenCellContent(content, record);
@@ -714,9 +714,10 @@ define(function() {
          * Gets the actual content for a cell
          * @param record {Object} the record to get the content for
          * @param column {Object} the column for which the content should be returned
+         * @param $cell {Object} the cell-dom-element
          * @returns {String|Object} the dom object for the cell content or html
          */
-        getCellContent: function(record, column) {
+        getCellContent: function(record, column, $cell) {
             var content = record[column.attribute];
             if (!!column.type && column.type === this.datagrid.types.THUMBNAILS) {
                 content = this.datagrid.manipulateContent(content, column.type, this.options.thumbnailFormat);
@@ -741,7 +742,7 @@ define(function() {
                 });
             }
             if (!!this.icons) {
-                content = this.addIconsToCellContent(content, column);
+                content = this.addIconsToCellContent(content, column, $cell);
             }
             return content;
         },
@@ -801,9 +802,10 @@ define(function() {
          * Adds icons to a cell content
          * @param content {String|Object} html or a dom object. If its a string icons get added to the string, if its an object it gets appended
          * @param column {Object} the column data object
+         * @param $cell {Object} the cell-dom-element
          * @returns content {String|Object} html or a dom object
          */
-        addIconsToCellContent: function(content, column) {
+        addIconsToCellContent: function(content, column, $cell) {
             var iconStr;
             this.sandbox.util.foreach(this.icons, function(icon, index) {
                 if (icon.column === column.attribute) {
@@ -816,6 +818,9 @@ define(function() {
                         this.sandbox.dom.append(content, iconStr);
                     } else if (typeof content === 'string') {
                         content += iconStr;
+                    }
+                    if (icon.actionIcon === true) {
+                        this.sandbox.dom.addClass($cell, constants.actionClass);
                     }
                 }
             }.bind(this));
@@ -919,6 +924,8 @@ define(function() {
             this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
             // handle dblclick on body row
             this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowDblClickHandler.bind(this), '.' + constants.rowClass);
+            // action callback on click on table-cell with has-action class
+            this.sandbox.dom.on(this.table.$body, 'click', this.cellActionCallback.bind(this), 'td.' + constants.actionClass);
 
             // remove row event
             if (this.options.removeRow === true) {
@@ -971,10 +978,10 @@ define(function() {
          * @param event {Object} the event object
          */
         iconClickHandler: function(event) {
-            event.stopPropagation();
             var icon = this.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
             if (typeof recordId !== 'undefined' && !!icon && typeof icon.callback === 'function') {
+                event.stopPropagation();
                 icon.callback(recordId);
             }
         },
@@ -1211,6 +1218,15 @@ define(function() {
          */
         rowActionCallback: function(event) {
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            this.datagrid.itemAction.call(this.datagrid, recordId);
+        },
+
+        /**
+         * Calls the row-action callback
+         * @param event {Object} the original event
+         */
+        cellActionCallback: function(event) {
+            var recordId = this.sandbox.dom.data(this.sandbox.dom.parent(event.currentTarget), 'id');
             this.datagrid.itemAction.call(this.datagrid, recordId);
         },
 

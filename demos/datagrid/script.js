@@ -42,8 +42,7 @@ require(['lib/husky'], function(Husky) {
                             highlightSelected: true,
                             croppedMaxLength: 5
                         },
-                        thumbnail: {
-                        }
+                        thumbnail: {}
                     },
                     sortable: true,
                     searchInstanceName: 'test',
@@ -53,9 +52,9 @@ require(['lib/husky'], function(Husky) {
                     matchings: 'http://husky.lo:7878/admin/api/datagrid/fields',
                     selectedCounter: true,
                     selectedCounterText: 'selected elements',
-                    clickCallback: function(item, data) {
+                    /*clickCallback: function(item, data) {
                         app.logger.log('Husky.Ui.DataGrid item click: ' + item, data);
-                    },
+                    },*/
                     actionCallback: function(item, data) {
                         app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
                     }
