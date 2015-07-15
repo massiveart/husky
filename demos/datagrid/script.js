@@ -42,8 +42,7 @@ require(['lib/husky'], function(Husky) {
                             highlightSelected: true,
                             croppedMaxLength: 5
                         },
-                        thumbnail: {
-                        }
+                        thumbnail: {}
                     },
                     sortable: true,
                     searchInstanceName: 'test',
