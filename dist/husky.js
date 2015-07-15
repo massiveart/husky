@@ -31701,7 +31701,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     '</div>'
                 ].join(''),
                 selectedCounter: [
-                    '<span class="selected-elements invisible smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
+                    '<span class="selected-elements smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
                 ].join('')
             },
 
@@ -32151,7 +32151,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 this.sandbox.util.load(params.url)
                     .then(function(response) {
-                        this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
+                        this.updateSelectedCounter();
                         if (this.isLoading === true) {
                             this.stopLoading();
                         }
@@ -32233,7 +32233,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.sandbox.dom.append(this.$element, this.sandbox.util.template(templates.selectedCounter)({
                     text: this.sandbox.translate(this.options.selectedCounterText)
                 }));
-                this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
+                this.updateSelectedCounter();
             },
 
             /**
@@ -32241,7 +32241,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             renderView: function() {
                 this.gridViews[this.viewId].render(this.data, this.$element);
-                this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
+                this.updateSelectedCounter();
                 this.sandbox.emit(VIEW_RENDERED.call(this));
             },
 
@@ -32914,12 +32914,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
             /**
              * Updates the selected-elements counter
-             * @param {String|number} number - the number of selected items
              */
-            updateSelectedCounter: function(number) {
+            updateSelectedCounter: function() {
                 if (this.options.selectedCounter === true) {
-                    this.sandbox.dom.html(this.$find('.selected-elements .number'), number);
-                    if (number === 0) {
+                    this.sandbox.dom.html(this.$find('.selected-elements .number'), this.getSelectedItemIds().length);
+                    if (this.getSelectedItemIds().length === 0) {
                         this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                     } else {
                         this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
