@@ -9,7 +9,6 @@ $toolbarBigHeight: 50px;
 /*styles related to the whole container*/
 .husky-toolbar {
     @include clear-float;
-
     .toolbar-search {
         display: inline-block;
         float: left;
@@ -318,12 +317,26 @@ $toolbarBigHeight: 50px;
 
     .group {
         height: $toolbarBigHeight;
+        float: none;
+        display: inline-block;
+        margin-bottom: -5px;
         .toolbar-item:first-child {
             border-left: 1px solid $milkeyBlue;
             border-radius: 0;
         }
         .toolbar-item:last-child {
             border-radius: 0;
+        }
+
+        &:first-child {
+            .toolbar-item:first-child {
+                border-left: none;
+            }
+        }
+        &:last-child {
+            .toolbar-item:last-child {
+                border-right: none;
+            }
         }
     }
 
@@ -374,6 +387,7 @@ $toolbarBigHeight: 50px;
             padding: 0 10px;
             border-radius: $borderRadius;
             margin-top: ($toolbarBigHeight - $toolbarHeight)/2;
+            margin-right: 10px;
             .title {
                 text-align: left;
                 color: $black;

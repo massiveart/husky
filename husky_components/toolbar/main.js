@@ -20,7 +20,6 @@
  * @param {Object} [options.searchOptions] options to pass to search component
  * @param {Object} [options.small] if true the toolbar is displayed smaller
  * @param {boolean} [options.hasSearch] if true a search item gets inserted in its own group at the end. A search item can also be added manually through the data
- * @param {String} [options.searchAlign] "right" or "left" to align the search if it's added automatically via the hasSearch option
  * @param {String} [options.skin] custom skin-class to add to the component
  * @param {Boolean} [options.showTitleAsTooltip] shows the title of the button only as tooltip
  *
@@ -55,7 +54,6 @@ define(function() {
             dropdownItemsKey: '_embedded',
             searchOptions: null,
             hasSearch: false,
-            searchAlign: 'right',
             groups: [
                 {
                     id: 1,
@@ -91,10 +89,29 @@ define(function() {
         /**
          * triggered when toolbar is initialized and ready to use
          *
-         * @event husky.toolbar.[INSTANCE_NAME.]initialized
+         * @event husky.toolbar.[INSTANCE_NAME].initialized
          */
         INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
+        },
+
+
+        /**
+         * triggered when when a dropdown gets opened
+         *
+         * @event husky.toolbar.[INSTANCE_NAME].dropdown-opened
+         */
+        DROPDOWN_OPENED = function() {
+            return createEventName.call(this, 'dropdown.opened');
+        },
+
+        /**
+         * triggered when when a dropdown gets opened
+         *
+         * @event husky.toolbar.[INSTANCE_NAME].dropdown-opened
+         */
+        DROPDOWN_CLOSED = function() {
+            return createEventName.call(this, 'dropdown.closed');
         },
 
         /**
@@ -447,6 +464,8 @@ define(function() {
 
                     // on every click remove sub-menu
                     this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
+
+                    this.sandbox.emit(DROPDOWN_OPENED.call(this));
                 }
             }
         },
@@ -471,6 +490,7 @@ define(function() {
          */
         hideDropdowns = function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+            this.sandbox.emit(DROPDOWN_CLOSED.call(this));
         },
 
         /**
@@ -849,15 +869,10 @@ define(function() {
             // add own group for search item
             var searchGroup = {
                 id: 'search',
-                align: this.options.searchAlign
+                align: 'right'
             };
 
-            // this statement ensures that the the automatically added search always floats on the right of the rest
-            if (this.options.searchAlign === 'left') {
-                this.options.groups.push(searchGroup);
-            } else {
-                this.options.groups.unshift(searchGroup);
-            }
+            this.options.groups.push(searchGroup);
 
             // push search item
             data.push({

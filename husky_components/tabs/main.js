@@ -188,10 +188,14 @@ define(function() {
 
         showItem = function(item) {
             this.sandbox.dom.show(this.domItems[item]);
+            this.sandbox.dom.removeClass(this.$marker, 'animate');
+            setMarker.call(this);
         },
 
         hideItem = function(item) {
             this.sandbox.dom.hide(this.domItems[item]);
+            this.sandbox.dom.removeClass(this.$marker, 'animate');
+            setMarker.call(this);
         },
 
         bindDOMEvents = function() {
