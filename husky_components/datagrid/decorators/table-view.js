@@ -980,9 +980,10 @@ define(function() {
         iconClickHandler: function(event) {
             var icon = this.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+
             if (typeof recordId !== 'undefined' && !!icon && typeof icon.callback === 'function') {
                 event.stopPropagation();
-                icon.callback(recordId);
+                icon.callback(recordId, this.datagrid.getRecordById(recordId));
             }
         },
 
