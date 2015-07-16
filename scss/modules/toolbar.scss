@@ -11,7 +11,6 @@ $toolbarBigHeight: 50px;
     @include clear-float;
     .toolbar-search {
         display: inline-block;
-        float: left;
     }
 
     &.small {
@@ -86,9 +85,9 @@ $toolbarBigHeight: 50px;
     /** styles for the toolbar-items **/
     .toolbar-item {
         min-width: 50px;
-        float: left;
         position: relative;
-        display: block;
+        display: inline-block;
+        vertical-align: top;
         list-style: none;
         height: 100%;
         line-height: $toolbarHeight;
@@ -319,24 +318,13 @@ $toolbarBigHeight: 50px;
         height: $toolbarBigHeight;
         float: none;
         display: inline-block;
-        margin-bottom: -5px;
+        vertical-align: top;
         .toolbar-item:first-child {
             border-left: 1px solid $milkeyBlue;
             border-radius: 0;
         }
         .toolbar-item:last-child {
             border-radius: 0;
-        }
-
-        &:first-child {
-            .toolbar-item:first-child {
-                border-left: none;
-            }
-        }
-        &:last-child {
-            .toolbar-item:last-child {
-                border-right: none;
-            }
         }
     }
 
