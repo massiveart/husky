@@ -29404,6 +29404,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             editedErrorClass: 'server-validation-error',
             newRecordId: 'newrecord',
             gridIconClass: 'grid-icon',
+            gridBatchClass: 'grid-batch',
             gridImageClass: 'grid-image',
             childWrapperClass: 'child-wrapper',
             parentClass: 'children-toggler',
@@ -29460,6 +29461,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             icon: [
                 '<span class="' + constants.gridIconClass + ' <%= align %>" data-icon-index="<%= index %>">',
                 '   <span class="fa-<%= icon %>"></span>',
+                '</span>'
+            ].join(''),
+            batch: [
+                '<span class="' + constants.gridBatchClass + ' <%= cssClass %>">',
+                '   <% if(!!icon) { %><span class="fa-<%= icon %>"></span><% } %>',
+                '   <% if(!!title) { %><%= title %><% } %>',
                 '</span>'
             ].join(''),
             checkbox: [
@@ -29672,6 +29679,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.tableCropped = false;
             this.cropBreakPoint = null;
             this.icons = this.sandbox.util.extend(true, [], this.options.icons);
+            this.batches = this.sandbox.util.extend(true, [], this.options.batches);
         },
 
         /**
@@ -30056,6 +30064,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 });
             }
             if (!!this.icons) {
+                content = this.addBatchesToCellContent(content, column, record);
                 content = this.addIconsToCellContent(content, column, $cell);
             }
             return content;
@@ -30138,6 +30147,39 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     }
                 }
             }.bind(this));
+
+            return content;
+        },
+
+        /**
+         * Adds batches to a cell content
+         * @param content {String|Object} html or a dom object. If its a string icons get added to the string, if its an object it gets appended
+         * @param column {Object} the column data object
+         * @param record {Object} record which will be rendered
+         * @returns content {String|Object} html or a dom object
+         */
+        addBatchesToCellContent: function(content, column, record) {
+            var batchStr;
+            this.sandbox.util.foreach(this.batches, function(batch) {
+                if (batch.column === column.attribute) {
+                    if (!!batch.callback) {
+                        batch = batch.callback(record, batch);
+                    }
+
+                    if (!batch) {
+                        return;
+                    }
+
+                    batchStr = this.sandbox.util.template(templates.batch)(
+                        this.sandbox.util.extend(true, {cssClass: null, title: null, icon: null}, batch));
+                    if (typeof content === 'object') {
+                        this.sandbox.dom.prepend(content, batchStr);
+                    } else if (typeof content === 'string') {
+                        content = batchStr + content;
+                    }
+                }
+            }.bind(this));
+
             return content;
         },
 
@@ -30294,9 +30336,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         iconClickHandler: function(event) {
             var icon = this.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+
             if (typeof recordId !== 'undefined' && !!icon && typeof icon.callback === 'function') {
                 event.stopPropagation();
-                icon.callback(recordId);
+                icon.callback(recordId, this.datagrid.getRecordById(recordId));
             }
         },
 
