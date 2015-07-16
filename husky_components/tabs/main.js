@@ -157,7 +157,8 @@ define(function() {
                 if (!!item) {
                     this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
                     this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
-
+                    this.sandbox.dom.addClass(this.$marker, 'animate');
+                    setMarker.call(this);
                     // callback
                     if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
                         item.callback.call(this, item);
@@ -169,6 +170,14 @@ define(function() {
                 }
             } else {
                 return false;
+            }
+        },
+
+        setMarker = function() {
+            var $selected = this.$find('li.is-selected');
+            if (!!$selected.length) {
+                this.sandbox.dom.width(this.$marker, this.sandbox.dom.outerWidth($selected));
+                this.sandbox.dom.css(this.$marker, {'left': this.sandbox.dom.position($selected).left + 'px'});
             }
         },
 
@@ -214,8 +223,8 @@ define(function() {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            this.$el = this.sandbox.dom.$(this.options.el);
             this.active = true;
+            this.$marker = null;
 
             this.items = [];
             this.domItems = {};
@@ -290,6 +299,9 @@ define(function() {
             //add skin class
             this.sandbox.dom.addClass($element, this.options.skin);
 
+            this.$marker = this.sandbox.dom.createElement('<div class="marker"></div>');
+            this.sandbox.dom.append($element, this.$marker);
+
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
 
@@ -320,7 +332,6 @@ define(function() {
                     }
                 }
                 this.domItems[item.id] = $item;
-
             }.bind(this));
 
             // force selection of first element
@@ -328,7 +339,7 @@ define(function() {
                 selectedItem = this.options.data[0];
                 this.sandbox.dom.addClass(this.sandbox.dom.find('li', $list).eq(0), 'is-selected');
             }
-
+            setMarker.call(this);
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }

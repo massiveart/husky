@@ -487,7 +487,7 @@ define(function() {
                 $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null;
 
             // stop if loading or the dropdown gets opened
-            if (item.loading || (!!item.dropdownOptions && item.dropdownOptions.onlyOnClickOnArrow !== true) ||
+            if (item.loading || (!!item.dropdownItems && item.dropdownOptions.onlyOnClickOnArrow !== true) ||
                 this.sandbox.dom.hasClass(event.target, 'dropdown-toggle')) {
                 return false;
             }
@@ -542,7 +542,6 @@ define(function() {
          * @param item
          */
         changeMainListItem = function(listElement, item) {
-            // first get title
             var listItems = this.sandbox.dom.find('span', listElement);
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0), '');
@@ -551,6 +550,7 @@ define(function() {
                 }
             }
             if (!!item.title) {
+                item.title = this.sandbox.translate(item.title);
                 this.sandbox.dom.html(listItems.eq(1), item.title);
             }
         },
@@ -674,6 +674,9 @@ define(function() {
                     title = requestedItems[i][this.items[buttonId].dropdownOptions.titleAttribute];
                 } else if (!!requestedItems[i].title) {
                     title = requestedItems[i].title;
+                }
+                if (!!this.items[buttonId].dropdownOptions.languageNamespace) {
+                    title += this.items[buttonId].dropdownOptions.languageNamespace + title;
                 }
                 title = this.sandbox.translate(title);
 
@@ -928,6 +931,7 @@ define(function() {
             // create all elements
             this.sandbox.util.foreach(data, function(item) {
                 item = this.sandbox.util.extend(true, {}, item, itemDefaults);
+                item.title = this.sandbox.translate(item.title);
 
                 // check id for uniqueness
                 checkItemId.call(this, item);

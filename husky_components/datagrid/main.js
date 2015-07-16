@@ -30,6 +30,9 @@
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {Boolean} [options.selectedCounter] If true a counter will be displayed which shows how much elements have been selected
  * @param {String} [options.selectedCounterText] translation key or text used in the selected-counter
+ * @param {Function} [options.clickCallback] callback for clicking an item - first parameter item id, second parameter the dataset of the clicked item
+ * @param {Function} [options.actionCallback] action callback. E.g. executed on double-click in table-view - first parameter item id, second parameter the dataset of the clicked item
+ * @param {Function} [options.idKey] the name of the id property
  */
 (function() {
 
@@ -38,9 +41,8 @@
     define([
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
-        'husky_components/datagrid/decorators/group-view',
         'husky_components/datagrid/decorators/dropdown-pagination'
-    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination) {
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
         /**
          *    Default values for options
@@ -72,7 +74,10 @@
                 resultKey: 'items',
                 selectedCounter: false,
                 selectedCounterText: 'public.elements-selected',
-                viewSpacingBottom: 110
+                viewSpacingBottom: 110,
+                clickCallback: null,
+                actionCallback: null,
+                idKey: 'id'
             },
 
             types = {
@@ -89,8 +94,7 @@
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView,
-                    group: groupView
+                    thumbnail: thumbnailView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination
@@ -255,21 +259,21 @@
             },
 
             /**
-             * raised when clicked on an item
-             * @event husky.datagrid.item.click
-             * @param {String} id of item that was clicked
-             */
-            ITEM_CLICK = function() {
-                return this.createEventName('item.click');
-            },
-
-            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
             ITEM_SELECT = function() {
                 return this.createEventName('item.select');
+            },
+
+            /**
+             * raised when clicked on an item
+             * @event husky.datagrid.item.click
+             * @param {String} id of item that was clicked
+             */
+            ITEM_CLICK = function() {
+                return this.createEventName('item.click');
             },
 
             /**
@@ -698,7 +702,7 @@
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
                         this.requestFields.push(matching.name);
-                    } else if (matching.name === 'id') {
+                    } else if (matching.name === this.options.idKey) {
                         this.requestFields.push(matching.name);
                     }
                     // always load the id (never ever even think about not loading the id)
@@ -1374,13 +1378,24 @@
             },
 
             /**
-             * Emits the item clicked event
-             * @param id {Number|String} id to emit with the event
+             * calls the clickCallback for an item
+             * @param id {Number|String} the id of the item
              */
-            emitItemClickedEvent: function(id) {
-                var itemIndex = this.getRecordIndexById(id);
+            itemClicked: function(id) {
+                if (typeof this.options.clickCallback === 'function') {
+                    this.options.clickCallback(id, this.data.embedded[this.getRecordIndexById(id)]);
+                }
+                this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[this.getRecordIndexById(id)]);
+            },
 
-                this.sandbox.emit(ITEM_CLICK.call(this), id, this.data.embedded[itemIndex]);
+            /**
+             * calls the actionCallback for an item
+             * @param id {Number|String} the id of the item
+             */
+            itemAction: function(id) {
+                if (typeof this.options.actionCallback === 'function') {
+                    this.options.actionCallback(id, this.data.embedded[this.getRecordIndexById(id)]);
+                }
             },
 
             /**

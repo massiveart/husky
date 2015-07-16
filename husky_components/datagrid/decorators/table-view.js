@@ -9,7 +9,6 @@
  * @param {Boolean} [options.selectItem.inFirstCell] If true checkbox is in the first cell. If true checkbox gets its own cell
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
- * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
  * @param {Array} [options.icons] array of icons to display
@@ -19,13 +18,13 @@
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
- * @param {String|Number} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
+ * @param {String|Number} [options.cssClass] css-class to give the the components element
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  * @param {String} [options.removeIcon] icon to use for the remove-row item
  * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
- * @param {Boolean} [options.stickyHeader] true to make the table header sticky
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
- * @param {Boolean} [options.rowClickSelect] if true the row gets selected on click and the row-click event is emitted on double-click
+ * @param {String} [options.actionIcon] the icon which gets shown in the action click button
+ * @param {String|Number} [options.actionIconColumn] the column to add the action icon to. Null for firs column
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -40,7 +39,6 @@ define(function() {
 
     var defaults = {
             editable: false,
-            fullWidth: false,
             removeRow: false,
             selectItem: {
                 type: 'checkbox',
@@ -55,17 +53,15 @@ define(function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
-            stickyHeader: false,
             icons: [],
             removeIcon: 'trash-o',
+            actionIcon: 'pencil',
+            actionIconColumn: null,
             croppedMaxLength: 35,
-            openPathToSelectedChildren: false,
-            rowClickSelect: false
+            openPathToSelectedChildren: false
         },
 
         constants = {
-            fullWidthClass: 'fullwidth',
-            stickyHeaderClass: 'sticky-header',
             selectedRowClass: 'selected',
             isSelectableClass: 'is-selectable',
             sortableClass: 'is-sortable',
@@ -81,6 +77,8 @@ define(function() {
             rowClass: 'row',
             thumbSrcKey: 'url',
             thumbAltKey: 'alt',
+            evenClass: 'even',
+            oddClass: 'odd',
             headerCellClass: 'header-cell',
             ascSortedClass: 'sorted-asc',
             descSortedClass: 'sorted-desc',
@@ -100,11 +98,12 @@ define(function() {
             collapsedIcon: 'fa-caret-right',
             expandedIcon: 'fa-caret-down',
             checkboxCellClass: 'checkbox-cell',
+            thumbnailCellClass: 'thumbnail-cell',
             textContainerClass: 'cell-content',
             renderingClass: 'rendering',
-            headerCloneClass: 'header-clone',
-            counterIndentClass: 'indent',
-            childIndent: 25 //px
+            actionClass: 'has-action',
+            inactiveClass: 'inactive',
+            childIndent: 28 //px
         },
 
         selectItems = {
@@ -281,10 +280,8 @@ define(function() {
             this.$el = this.sandbox.dom.createElement(templates.skeleton);
             this.sandbox.dom.append($container, this.$el);
             this.addViewClasses();
+            this.addActionIcon();
             this.data = data;
-            if (this.options.fullWidth === true) {
-                this.indentSelectedCounter();
-            }
             this.renderTable();
             this.bindDomEvents();
             if (this.datagrid.options.resizeListeners === true) {
@@ -300,29 +297,10 @@ define(function() {
         },
 
         /**
-         * Indents the datagrid's selected-counter
-         */
-        indentSelectedCounter: function() {
-            if (this.datagrid.options.selectedCounter === true) {
-                this.sandbox.dom.addClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
-            }
-        },
-
-        /**
-         * Removes the indent of the selected-counter
-         */
-        removeIndentSelectedCounter: function() {
-            if (this.datagrid.options.selectedCounter === true) {
-                this.sandbox.dom.removeClass(this.datagrid.$find('.selected-elements'), constants.counterIndentClass);
-            }
-        },
-
-        /**
          * Destroys the view
          */
         destroy: function() {
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
-            this.removeIndentSelectedCounter();
             this.sandbox.dom.remove(this.$el);
             this.setVariables();
         },
@@ -334,6 +312,7 @@ define(function() {
         addRecord: function(record) {
             this.removeEmptyIndicator();
             this.renderBodyRow(record, this.options.addRowTop);
+            this.setAlternateClasses();
         },
 
         /**
@@ -359,10 +338,6 @@ define(function() {
             } else {
                 this.underflowHandler();
             }
-            if (this.options.stickyHeader === true) {
-                this.setHeaderCellWidthFromClone();
-                this.fixContainerMaxHeight();
-            }
         },
 
         /**
@@ -382,6 +357,7 @@ define(function() {
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
             this.cropBreakPoint = null;
+            this.icons = this.sandbox.util.extend(true, [], this.options.icons);
         },
 
         /**
@@ -390,14 +366,23 @@ define(function() {
         addViewClasses: function() {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
-            if (this.options.stickyHeader === true) {
-                this.sandbox.dom.addClass(this.$el, constants.stickyHeaderClass);
-            }
-            if (this.options.fullWidth === true) {
-                this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
-            }
             if ((this.options.highlightSelected === true || !!this.options.selectItem) && this.options.editable !== true) {
                 this.sandbox.dom.addClass(this.$el, constants.isSelectableClass);
+            }
+        },
+
+        /**
+         * Adds an action-icon to into the first column
+         */
+        addActionIcon: function() {
+            if (typeof this.datagrid.options.actionCallback === 'function' &&
+                !!this.datagrid.matchings && this.datagrid.matchings.length > 0) {
+                this.icons.push({
+                    icon: this.options.actionIcon,
+                    column: this.options.actionIconColumn || this.datagrid.matchings[0].attribute,
+                    align: 'left',
+                    callback: this.datagrid.itemAction.bind(this.datagrid)
+                });
             }
         },
 
@@ -416,6 +401,7 @@ define(function() {
             }
             this.renderBody();
             this.sandbox.dom.append(this.table.$container, this.table.$el);
+            this.setAlternateClasses();
         },
 
         /**
@@ -429,19 +415,7 @@ define(function() {
             this.renderHeaderSelectItem();
             this.renderHeaderCells();
             this.renderHeaderRemoveItem();
-            if (this.options.stickyHeader === true) {
-                this.cloneHeader();
-            }
             this.sandbox.dom.append(this.table.$el, this.table.header.$el);
-        },
-
-        /**
-         * Creates a clone for the actual header
-         */
-        cloneHeader: function() {
-            this.table.header.$clone = this.sandbox.dom.clone(this.table.header.$el);
-            this.sandbox.dom.addClass(this.table.header.$clone, constants.headerCloneClass);
-            this.sandbox.dom.append(this.table.$el, this.table.header.$clone);
         },
 
         /**
@@ -554,6 +528,7 @@ define(function() {
                 if (norender === true) {
                     return this.sandbox.dom.html($cell);
                 }
+                this.sandbox.dom.addClass($cell, constants.checkboxCellClass);
                 this.sandbox.dom.prepend(this.table.rows[id].$el, $cell);
             }
         },
@@ -590,6 +565,16 @@ define(function() {
                 hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
                 level: 1
             };
+
+            if (typeof this.datagrid.options.clickCallback === 'function' ||
+                typeof this.datagrid.options.actionCallback === 'function' ||
+                this.table.rows[record.id].hasChildren === true) {
+                this.sandbox.dom.addClass($row, constants.actionClass);
+            }
+            if (typeof this.datagrid.options.clickCallback !== 'function' &&
+                this.table.rows[record.id].hasChildren === false) {
+                this.sandbox.dom.addClass($row, constants.inactiveClass);
+            }
 
             this.renderRowSelectItem(record.id);
             this.renderBodyCellsForRow(record);
@@ -698,6 +683,10 @@ define(function() {
             if (!!column.class && typeof column.class === 'string') {
                 this.sandbox.dom.addClass($cell, column.class);
             }
+            if (column.type === this.datagrid.types.THUMBNAILS) {
+                this.sandbox.dom.addClass($cell, constants.thumbnailCellClass);
+                this.sandbox.dom.addClass($cell, constants.cellFitClass);
+            }
 
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
@@ -741,7 +730,7 @@ define(function() {
                     content,
                     column.type,
                     Object.keys(this.table.rows).length,
-                    record.hasOwnProperty('id') ? record['id'] : null
+                    record.hasOwnProperty('id') ? record.id : null
                 );
             }
             if (this.options.editable === true && column.editable === true) {
@@ -751,7 +740,7 @@ define(function() {
                     content: content
                 });
             }
-            if (!!this.options.icons) {
+            if (!!this.icons) {
                 content = this.addIconsToCellContent(content, column);
             }
             return content;
@@ -764,7 +753,7 @@ define(function() {
          */
         wrapChildrenCellContent: function(content, record) {
             var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
-                $icon;
+                $icon, paddingLeft = 0;
             // if has children
             if (!!record[this.datagrid.options.childrenPropertyName]) {
                 this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
@@ -777,11 +766,18 @@ define(function() {
             // if has parent
             if (this.hasParent(record)) {
                 this.table.rows[record.id].level = this.table.rows[record.parent].level + 1;
-                // give that child an indent, children love indents
+                paddingLeft = constants.childIndent * (this.table.rows[record.id].level - 1);
+            }
+            if (this.datagrid.options.onlySelectLeaves == true && this.table.rows[record.id].hasChildren == true) {
+                paddingLeft += 40;
+            }
+            // give that child an indent, children love indents
+            if (!!paddingLeft) {
                 this.sandbox.dom.css($wrappedContent, {
-                    'padding-left': constants.childIndent * (this.table.rows[record.id].level - 1) + 'px'
+                    'padding-left': paddingLeft + 'px'
                 });
             }
+
             this.sandbox.dom.append($wrappedContent, content);
             return $wrappedContent;
         },
@@ -809,7 +805,7 @@ define(function() {
          */
         addIconsToCellContent: function(content, column) {
             var iconStr;
-            this.sandbox.util.foreach(this.options.icons, function(icon, index) {
+            this.sandbox.util.foreach(this.icons, function(icon, index) {
                 if (icon.column === column.attribute) {
                     iconStr = this.sandbox.util.template(templates.icon)({
                         icon: icon.icon,
@@ -866,9 +862,6 @@ define(function() {
             if (this.containerIsOverflown() === true) {
                 this.sandbox.dom.addClass(this.$el, constants.overflowClass);
             }
-            if (this.options.stickyHeader === true) {
-                this.sandbox.dom.width(this.table.header.$el, this.sandbox.dom.width(this.table.$container));
-            }
         },
 
         /**
@@ -881,9 +874,6 @@ define(function() {
                 }
                 if (this.containerIsOverflown() === false) {
                     this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
-                }
-                if (this.options.stickyHeader === true) {
-                    this.sandbox.dom.width(this.table.header.$el, '');
                 }
             }
         },
@@ -926,12 +916,10 @@ define(function() {
                 '.' + constants.checkboxClass + ', .' + constants.radioClass
             );
             // handle click on body row
-            if (this.options.rowClickSelect === false) {
-                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
-            } else {
-                this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
-                this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowSelectHandler.bind(this), '.' + constants.rowClass);
-            }
+            this.sandbox.dom.on(this.table.$body, 'click', this.bodyRowClickHandler.bind(this), '.' + constants.rowClass);
+            // handle dblclick on body row
+            this.sandbox.dom.on(this.table.$body, 'dblclick', this.bodyRowDblClickHandler.bind(this), '.' + constants.rowClass);
+
             // remove row event
             if (this.options.removeRow === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.removeItemClickHandler.bind(this), '.' + constants.rowRemoverClass);
@@ -954,7 +942,7 @@ define(function() {
                 this.sandbox.dom.on(this.table.$body, 'focusout', this.editableInputFocusoutHandler.bind(this), '.' + constants.editableInputClass);
                 this.sandbox.dom.on(this.table.$body, 'keypress', this.editableInputKeyHandler.bind(this), '.' + constants.editableInputClass);
             }
-            if (!!this.options.icons) {
+            if (!!this.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
             }
             this.sandbox.dom.on(this.table.$body.find('img'), 'error', function() {
@@ -964,44 +952,7 @@ define(function() {
             this.sandbox.dom.on(this.table.$body.find('img'), 'load', function() {
                 $(this).parent().find('.fa-coffee').remove();
             });
-            this.sandbox.dom.on(this.table.$container, 'scroll', this.containerScrollHandler.bind(this));
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
-        },
-
-        /**
-         * Gets the width of the cells in the header clone and applies them to the actual header
-         */
-        setHeaderCellWidthFromClone: function() {
-            if (!!this.table.header && !!this.table.header.$clone.length) {
-                var cloneThs = this.sandbox.dom.find('th', this.table.header.$clone),
-                    originalThs = this.sandbox.dom.find('th', this.table.header.$el);
-                this.sandbox.dom.width(this.table.header.$row, this.sandbox.dom.width(
-                    this.sandbox.dom.find('tr', this.table.header.$clone)
-                ));
-                this.sandbox.util.foreach(cloneThs, function(cloneTh, index) {
-                    // min- and max-width because for table-cells normal width has no effect
-                    this.sandbox.dom.css(originalThs[index], {
-                        'min-width': this.sandbox.dom.outerWidth(cloneTh) + 'px',
-                        'max-width': this.sandbox.dom.outerWidth(cloneTh) + 'px'
-                    });
-                }.bind(this));
-            }
-        },
-
-        /**
-         * Sets the max-height of the container to the maximum available space
-         */
-        fixContainerMaxHeight: function() {
-            this.sandbox.dom.css(this.table.$container, 'max-height', this.datagrid.getRemainingViewHeight.call(this.datagrid));
-        },
-
-        /**
-         * Gets executed when the table-container gets scrolled
-         */
-        containerScrollHandler: function() {
-            if (this.options.stickyHeader === true) {
-                this.sandbox.dom.scrollLeft(this.table.header.$el, this.sandbox.dom.scrollLeft(this.table.$container));
-            }
         },
 
         /**
@@ -1021,7 +972,7 @@ define(function() {
          */
         iconClickHandler: function(event) {
             event.stopPropagation();
-            var icon = this.options.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
+            var icon = this.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
             if (typeof recordId !== 'undefined' && !!icon && typeof icon.callback === 'function') {
                 icon.callback(recordId);
@@ -1034,6 +985,9 @@ define(function() {
          */
         sortItemClickHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
+            if (this.sandbox.dom.hasClass(event.currentTarget, constants.headerLoadingClass)) {
+                return false;
+            }
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 direction = 'asc';
             if (this.datagrid.sort.attribute === attribute && this.datagrid.sort.direction === direction) {
@@ -1219,31 +1173,45 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
             if (!!recordId && !!this.table.rows && !!this.table.rows[recordId]) {
-                if (this.options.highlightSelected === true) {
-                    this.uniqueHighlightRecord(recordId);
-                }
                 if (!!this.table.rows[recordId].hasChildren) {
                     this.toggleChildren(recordId);
                 }
             }
-            this.emitRowClickedEvent(event);
+            this.rowClickCallback(event);
         },
 
         /**
-         * Emits the row clicked event
+         * Handles the dblclick on a body row
+         * @param event {Object} the event object
+         */
+        bodyRowDblClickHandler: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+            this.rowActionCallback(event);
+        },
+
+        /**
+         * Calls the item-clicked callback
          * @param event {Object} the original click event
          */
-        emitRowClickedEvent: function(event) {
+        rowClickCallback: function(event) {
             if (this.rowClicked === false) {
                 this.rowClicked = true;
-                var recordId = this.sandbox.dom.data(event.currentTarget, 'id'),
-                    parameter = recordId || event;
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, parameter);
+                var recordId = this.sandbox.dom.data(event.currentTarget, 'id');;
+                this.datagrid.itemClicked.call(this.datagrid, recordId);
                 // delay to prevent multiple emits on double click
                 this.sandbox.util.delay(function() {
                     this.rowClicked = false;
                 }.bind(this), 500);
             }
+        },
+
+        /**
+         * Calls the row-action callback
+         * @param event {Object} the original event
+         */
+        rowActionCallback: function(event) {
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            this.datagrid.itemAction.call(this.datagrid, recordId);
         },
 
         /**
@@ -1274,23 +1242,14 @@ define(function() {
         },
 
         /**
-         * Handles the click on a body row if the options rowClickSelect is set to true
-         * @param event
-         */
-        bodyRowSelectHandler: function(event) {
-            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-            if (this.options.selectItem.type === selectItems.CHECKBOX) {
-                this.toggleSelectRecord(recordId, !this.datagrid.itemIsSelected(recordId));
-            } else if (this.options.selectItem.type === selectItems.RADIO) {
-                this.uniqueSelectRecord(recordId);
-            }
-        },
-
-        /**
          * Handles the change event of a select item in the header
          * @param event {Object} the event object
          */
         allSelectItemChangeHandler: function(event) {
+            if (this.data.total == 0) {
+                this.sandbox.dom.prop(event.target, 'checked', false);
+                return false;
+            }
             this.sandbox.dom.stopPropagation(event);
             var isChecked = this.sandbox.dom.is(event.target, ':checked');
             if (isChecked === true) {
@@ -1301,23 +1260,12 @@ define(function() {
         },
 
         /**
-         * Highlights a record an unhighlights all other rows
-         * @param id {Number|String} the id of the record to highlight
-         */
-        uniqueHighlightRecord: function(id) {
-            this.sandbox.dom.removeClass(
-                this.sandbox.dom.find('.' + constants.rowClass + '.' + constants.selectedRowClass, this.table.$body),
-                constants.selectedRowClass
-            );
-            this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
-        },
-
-        /**
          * Selejcts all records
          */
         selectAllRecords: function() {
             this.datagrid.selectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', true);
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.' + constants.rowClass, this.table.$body), constants.selectedRowClass);
         },
 
         /**
@@ -1326,6 +1274,7 @@ define(function() {
         deselectAllRecords: function() {
             this.datagrid.deselectAllItems.call(this.datagrid);
             this.sandbox.dom.prop(this.sandbox.dom.find('.' + constants.checkboxClass, this.table.$body), 'checked', false);
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.' + constants.rowClass, this.table.$body), constants.selectedRowClass);
             this.updateSelectAll();
         },
 
@@ -1349,12 +1298,14 @@ define(function() {
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
                 );
+                this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
             } else {
                 this.datagrid.setItemUnselected.call(this.datagrid, id);
                 // ensure that checkboxes are unchecked
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                 );
+                this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
             }
 
             this.updateSelectAll();
@@ -1450,6 +1401,7 @@ define(function() {
             }.bind(this));
             this.table.rows[recordId].childrenExpanded = false;
             this.changeChildrenToggleIcon(recordId, false);
+            this.setAlternateClasses();
         },
 
         /**
@@ -1464,6 +1416,7 @@ define(function() {
             }.bind(this));
             this.table.rows[recordId].childrenExpanded = true;
             this.changeChildrenToggleIcon(recordId, true);
+            this.setAlternateClasses();
         },
 
         /**
@@ -1489,6 +1442,23 @@ define(function() {
                     this.showChildren(parentId);
                 }
             }
+        },
+
+        /**
+         * Sets an even- and odd-class alternatly to all visible rows
+         */
+        setAlternateClasses: function() {
+            var $rows = this.sandbox.dom.find('.' + constants.rowClass, this.table.$body);
+            this.sandbox.dom.removeClass($rows, constants.evenClass);
+            this.sandbox.dom.removeClass($rows, constants.oddClass);
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.filter($rows, ':visible:even'),
+                constants.evenClass
+            );
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.filter($rows, ':visible:odd'),
+                constants.oddClass
+            );
         }
     };
 });

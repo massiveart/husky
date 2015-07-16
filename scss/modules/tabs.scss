@@ -3,11 +3,10 @@
 // --------------------------------------------------
 
 .tabs-container {
-    $tabsHeight: 30px;
-
+    $tabsHeight: 50px;
     background-color: $white;
-    border-bottom: 1px solid $baseBackgroundColor;
-    padding: 20px 50px 0 50px;
+    padding: 0 50px;
+    position: relative;
 
     ul {
         padding: 0;
@@ -19,27 +18,44 @@
             list-style-type: none;
             line-height: $tabsHeight;
             height: $tabsHeight;
-            padding: 0 10px;
-            text-align: center;
-            border-radius: $borderRadius $borderRadius 0 0;
+            text-align: left;
+            padding-right: 30px;
+            min-width: 60px;
+            cursor: pointer;
 
             a {
                 color: black;
                 text-decoration: none;
                 font-size: $baseFontSize;
+                outline: 0;
             }
 
             &.is-selected {
-                background-color: $baseBackgroundColor;
-
                 a {
-                    color: $highlightColor;
+                    color: $blue;
                     font-weight: bold;
                 }
             }
         }
     }
 
+    .marker {
+        $transitionDuration: 350ms;
+        height: 2px;
+        background: $blue;
+        position: absolute;
+        bottom: 0;
+        width: 0px;
+        left: 0px;
+
+        &.animate {
+            @include transition(left $transitionDuration ease, width $transitionDuration ease);
+        }
+    }
+
+    /**
+    *** Deactivated Skin
+    **/
     &.deactivated {
         ul li {
             a, a:hover {
@@ -47,7 +63,7 @@
                 cursor: default;
             }
             &.is-selected a {
-                color: $highlightColor;
+                color: $blue;
             }
         }
     }
@@ -56,17 +72,33 @@
     *** Overlay Skin
     **/
     &.overlay {
+        $tabsHeight: 30px;
         background-color: transparent;
-        border-bottom: none;
         padding: 10px 0 0 20px;
+
         ul {
+            padding: 0;
+            margin: 0;
+            white-space: nowrap;
             li {
+                line-height: $tabsHeight;
+                height: $tabsHeight;
+                padding: 0 10px;
+                border-radius: $borderRadius $borderRadius 0 0;
+                text-align: center;
+                min-width: 0;
+                a {
+                    font-size: $baseFontSize;
+                }
                 &.is-selected {
-                  background-color: $white;
+                    background-color: $white;
                 }
             }
         }
 
+        .marker {
+            display: none;
+        }
     }
 }
 

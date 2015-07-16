@@ -23,11 +23,13 @@
             width: 20px;
             padding: 3px;
             margin: 0;
+            border: none;
         }
 
         &.all {
             text-align: left;
             padding-left: 16px;
+            color: $black;
         }
         &.section {
             color: $grayLight;

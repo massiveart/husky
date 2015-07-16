@@ -253,7 +253,7 @@ define(function() {
 
             if (!!this.options.selectable) {
                 this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
-                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                    this.datagrid.itemAction.call(this.datagrid, id);
                     this.selectItem(id);
                 }.bind(this));
             }
@@ -301,7 +301,7 @@ define(function() {
                     this.datagrid.setItemSelected.call(this.datagrid, id);
                 }
             } else {
-                this.datagrid.emitItemClickedEvent(id);
+                this.datagrid.itemAction(id);
             }
         },
 
