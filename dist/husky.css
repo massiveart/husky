@@ -9559,7 +9559,7 @@ a.btn-black, a.btn-highlight {
   opacity: 1;
 }
 /* line 207, ../scss/modules/datagrid.scss */
-.husky-datagrid tbody .grid-batch {
+.husky-datagrid tbody .grid-badge {
   background: #52B6CA;
   padding: 2px 2px;
   margin-right: 5px;
