@@ -383,8 +383,7 @@ define(function() {
          * Adds an action-icon to into the first column
          */
         addActionIcon: function() {
-            if (typeof this.datagrid.options.actionCallback === 'function' &&
-                !!this.datagrid.matchings && this.datagrid.matchings.length > 0) {
+            if (typeof this.datagrid.options.actionCallback === 'function' && !!this.datagrid.matchings && this.datagrid.matchings.length > 0) {
                 this.icons.push({
                     icon: this.options.actionIcon,
                     column: this.options.actionIconColumn || this.datagrid.matchings[0].attribute,
@@ -750,9 +749,13 @@ define(function() {
                 });
             }
             if (!!this.icons) {
-                content = this.addBatchesToCellContent(content, column, record);
                 content = this.addIconsToCellContent(content, column, $cell);
             }
+
+            if (!!this.batches) {
+                content = this.addBatchesToCellContent(content, column, record);
+            }
+
             return content;
         },
 
@@ -857,7 +860,8 @@ define(function() {
                     }
 
                     batchStr = this.sandbox.util.template(templates.batch)(
-                        this.sandbox.util.extend(true, {cssClass: null, title: null, icon: null}, batch));
+                        this.sandbox.util.extend(true, {cssClass: null, title: null, icon: null}, batch)
+                    );
                     if (typeof content === 'object') {
                         this.sandbox.dom.prepend(content, batchStr);
                     } else if (typeof content === 'string') {
@@ -1246,7 +1250,8 @@ define(function() {
         rowClickCallback: function(event) {
             if (this.rowClicked === false) {
                 this.rowClicked = true;
-                var recordId = this.sandbox.dom.data(event.currentTarget, 'id');;
+                var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+                ;
                 this.datagrid.itemClicked.call(this.datagrid, recordId);
                 // delay to prevent multiple emits on double click
                 this.sandbox.util.delay(function() {
