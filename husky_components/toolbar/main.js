@@ -99,7 +99,7 @@ define(function() {
         /**
          * triggered when when a dropdown gets opened
          *
-         * @event husky.toolbar.[INSTANCE_NAME].dropdown-opened
+         * @event husky.toolbar.[INSTANCE_NAME].dropdown.opened
          */
         DROPDOWN_OPENED = function() {
             return createEventName.call(this, 'dropdown.opened');
@@ -108,10 +108,19 @@ define(function() {
         /**
          * triggered when when a dropdown gets opened
          *
-         * @event husky.toolbar.[INSTANCE_NAME].dropdown-opened
+         * @event husky.toolbar.[INSTANCE_NAME].dropdown.closed
          */
         DROPDOWN_CLOSED = function() {
             return createEventName.call(this, 'dropdown.closed');
+        },
+
+        /**
+         * triggered when the icon or the title of a button gets changed
+         *
+         * @event husky.toolbar.[INSTANCE_NAME].title.changed
+         */
+        BUTTON_CHANGED = function() {
+            return createEventName.call(this, 'button.changed');
         },
 
         /**
@@ -233,6 +242,7 @@ define(function() {
          * event to collapse the toolbar
          *
          * @event husky.toolbar.[INSTANCE_NAME.].collapse
+         *  @param {function} callback to execute after collapsing
          */
         COLLAPSE = function() {
             return createEventName.call(this, 'collapse');
@@ -242,6 +252,7 @@ define(function() {
          * event to expand the toolbar
          *
          * @event husky.toolbar.[INSTANCE_NAME.].expand
+         * @param {function} callback to execute after expanding
          */
         EXPAND = function() {
             return createEventName.call(this, 'expand');
@@ -285,12 +296,18 @@ define(function() {
                 }
             }.bind(this));
 
-            this.sandbox.on(COLLAPSE.call(this), function() {
+            this.sandbox.on(COLLAPSE.call(this), function(callback) {
                 collapseAll.call(this);
+                if (typeof callback === 'function') {
+                    callback();
+                }
             }.bind(this));
 
-            this.sandbox.on(EXPAND.call(this), function() {
+            this.sandbox.on(EXPAND.call(this), function(callback) {
                 expandAll.call(this);
+                if (typeof callback === 'function') {
+                    callback();
+                }
             }.bind(this));
 
             this.sandbox.on(ITEM_MARK.call(this), uniqueMarkItem.bind(this));
@@ -459,7 +476,7 @@ define(function() {
 
                 if (!visible) {
                     this.sandbox.dom.addClass($list, 'is-expanded');
-
+                    this.sandbox.dom.show(this.sandbox.dom.find('.toolbar-dropdown-menu', $list));
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                     // on every click remove sub-menu
@@ -490,6 +507,7 @@ define(function() {
          */
         hideDropdowns = function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+            this.sandbox.dom.hide(this.$find('.toolbar-dropdown-menu'));
             this.sandbox.emit(DROPDOWN_CLOSED.call(this));
         },
 
@@ -562,17 +580,19 @@ define(function() {
          * @param item
          */
         changeMainListItem = function(listElement, item) {
-            var listItems = this.sandbox.dom.find('span', listElement);
+            var listItems = this.sandbox.dom.find('span', listElement),
+                itemId = this.sandbox.dom.data(listElement).id;
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0), '');
-                if (item.icon !== false) {
-                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
-                }
+                this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
+                this.items[itemId].icon = item.icon;
             }
             if (!!item.title) {
                 item.title = this.sandbox.translate(item.title);
                 this.sandbox.dom.html(listItems.eq(1), item.title);
+                this.items[itemId].icon = item.title;
             }
+            this.sandbox.emit(BUTTON_CHANGED.call(this));
         },
 
         /**
@@ -754,7 +774,7 @@ define(function() {
 
 
         /**
-         * Expands a given button
+         * Expands or collapses a given button
          * @param button {Object}
          * @param collapse {Boolean} if true button gets collapsed
          */
