@@ -28,7 +28,7 @@ require(['lib/husky'], function(Husky) {
                     },
                     viewOptions: {
                         table: {
-                            batches: [
+                            badges: [
                                 {
                                     column: 'content1',
                                     icon: 'check'
