@@ -1008,6 +1008,14 @@ define(function() {
                     // create icon span
                     this.sandbox.dom.append($listItem, '<span class="' + createIconSupportClass.call(this, item) + '" />');
 
+                    // create content span
+                    if (!!item.content) {
+                        var $contentSpan = this.sandbox.dom.createElement('<span class="content"/>');
+                        this.sandbox.dom.append($contentSpan, item.content);
+                        this.sandbox.dom.append($listItem, $contentSpan);
+                        this.sandbox.start($contentSpan);
+                    }
+
                     // create title span
                     title = item.title ? item.title : '';
                     this.sandbox.dom.append($listItem, '<span class="title">' + title + '</span>');
