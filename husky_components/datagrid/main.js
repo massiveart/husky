@@ -820,6 +820,7 @@
                         }
                         this.destroy();
                         this.parseData(response);
+                        this.getSortingFromUrl(this.currentUrl);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
                             params.success(response);
@@ -828,6 +829,22 @@
                     .fail(function(status, error) {
                         this.sandbox.logger.error(status, error);
                     }.bind(this));
+            },
+
+            /**
+             * Parses the sorting params from the url
+             * @param url
+             */
+            getSortingFromUrl: function(url) {
+                if (url.indexOf('sortOrder') > -1 && url.indexOf('sortBy') > -1) {
+                    var attribute = this.sandbox.util.getParameterByName('sortBy', url),
+                        direction = this.sandbox.util.getParameterByName('sortOrder', url);
+
+                    if (!!attribute && !!direction) {
+                        this.sort.attribute = attribute;
+                        this.sort.direction = direction;
+                    }
+                }
             },
 
             /**

@@ -19,7 +19,7 @@ require(['lib/husky'], function(Husky) {
             {
                 name: 'datagrid@husky',
                 options: {
-                    url: 'http://husky.lo:7878/admin/api/datagrid',
+                    url: 'http://husky.lo:7878/admin/api/datagrid?pageSize=4&sortBy=content1&sortOrder=desc',
                     preselected: ["1", "2"],
                     paginationOptions: {
                         dropdown: {

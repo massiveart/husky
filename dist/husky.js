@@ -32368,6 +32368,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         }
                         this.destroy();
                         this.parseData(response);
+                        this.getSortingFromUrl(this.currentUrl);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
                             params.success(response);
@@ -32376,6 +32377,22 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     .fail(function(status, error) {
                         this.sandbox.logger.error(status, error);
                     }.bind(this));
+            },
+
+            /**
+             * Parses the sorting params from the url
+             * @param url
+             */
+            getSortingFromUrl: function(url) {
+                if (url.indexOf('sortOrder') > -1 && url.indexOf('sortBy') > -1) {
+                    var attribute = this.sandbox.util.getParameterByName('sortBy', url),
+                        direction = this.sandbox.util.getParameterByName('sortOrder', url);
+
+                    if (!!attribute && !!direction) {
+                        this.sort.attribute = attribute;
+                        this.sort.direction = direction;
+                    }
+                }
             },
 
             /**
@@ -51122,6 +51139,19 @@ define('husky_extensions/util',[],function() {
                     parent = [];
                 }
                 return $.extend(true, parent, object);
+            };
+
+            /**
+             * Returns a parameter value from a given url
+             * @param name {string} name of the parameter to search for
+             * @param url {string}
+             * @returns {string}
+             */
+            app.core.util.getParameterByName =  function(name, url) {
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(url);
+                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             };
 
 			app.core.util.template = _.template;
