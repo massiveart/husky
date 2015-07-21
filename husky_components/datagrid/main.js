@@ -242,6 +242,14 @@
             },
 
             /**
+             * raised when the data is initially loaded
+             * @event husky.datagrid.loaded
+             */
+            LOADED = function() {
+                return this.createEventName('loaded');
+            },
+
+            /**
              * raised when item is deselected
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
@@ -601,7 +609,10 @@
 
                     this.loading();
                     this.load({
-                        url: url
+                        url: url,
+                        success: function(data) {
+                            this.sandbox.emit(LOADED.call(this), data);
+                        }.bind(this)
                     });
                 } else if (!!this.options.data) {
                     this.sandbox.logger.log('load data from array');
@@ -1779,8 +1790,8 @@
 
                         this.load({
                             url: url,
-                            success: function() {
-                                this.sandbox.emit(UPDATED.call(this));
+                            success: function(data) {
+                                this.sandbox.emit(UPDATED.call(this), data);
                             }.bind(this)
                         });
                     }
