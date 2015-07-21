@@ -131,24 +131,26 @@
         .cell-content {
             display: block;
         }
+        .header-cell {
+            position: relative;
+        }
         .is-sortable {
             color: black;
             cursor: pointer;
             .cell-content {
-                margin-right: 5px;
-            }
-            &.is-loading .cell-content {
-                margin-right: 0;
-            }
-            &.is-loading .cell-content:after {
-                margin-right: 5px;
+                margin-right: 30px;
             }
             .cell-content::after {
                 @extend .fa;
-                margin-left: 5px;
                 font-size: $smallFontSize;
-                float: right;
                 line-height: 50px;
+                text-align: right;
+                padding-right: 10px;
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                box-sizing: border-box;
             }
         }
         .sorted-asc {
