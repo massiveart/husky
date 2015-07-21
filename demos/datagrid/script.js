@@ -28,6 +28,16 @@ require(['lib/husky'], function(Husky) {
                     },
                     viewOptions: {
                         table: {
+                            badges: [
+                                {
+                                    column: 'content1',
+                                    icon: 'check'
+                                },
+                                {
+                                    column: 'date',
+                                    title: 'de'
+                                }
+                            ],
                             selectItem: {
                                 type: 'checkbox'
                             },
