@@ -11,9 +11,11 @@
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  *
- * @param {Object} [options.externalDecorators] Defines available external decorators
+ * @param {Object} [options.externalDecorators] Defines available external view and pagination decorators
  * @param {Object} [options.externalDecorators.views] Defines available external view-decorators
+ *          (Usage: ...rators.views.view-id = /path/to/view-module-file)
  * @param {Object} [options.externalDecorators.paginations] Defines available external pagination-decorators
+ *          (Usage: ...rators.paginations.pagination-id = /path/to/pagination-module-file)
  *
  * @param {Boolean} [options.sortable] Defines if records are sortable
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
@@ -957,7 +959,7 @@
             },
 
             /**
-             * Gets the view and starts the rendering of the data
+             * Load view decorator to given viewId and initialize it
              * @param viewId {String} the identifier of the decorator
              */
             loadAndInitializeView: function(viewId) {
@@ -989,6 +991,9 @@
                 return def;
             },
 
+            /**
+             * Initialize the current set view decorator. Log an error message to console if the view is not valid
+             */
             initializeViewDecorator: function(){
                 if (this.isViewValid(this.gridViews[this.viewId])) {
                     // merge view options with passed ones
@@ -1014,27 +1019,27 @@
             },
 
             /**
-             * Gets the Pagination and initializes it
+             * Load pagination decorator to given paginationId and initialize it
              * @param {String} paginationId the identifier of the pagination
              */
             loadAndInitializePagination: function(paginationId) {
                 this.paginationId = paginationId;
                 var def = this.sandbox.data.deferred();
 
-                // if pagination is not already loaded, load it
-                if (!!this.paginations[this.paginationId]) {
+                // no pagination set or pagination allready loaded
+                if (!paginationId || !!this.paginations[this.paginationId]) {
                     def.resolve();
                 }
 
+                // load husky decorator
                 else if (!!this.decorators.paginations[this.paginationId]) {
-                    // load husky decorator
                     this.paginations[this.paginationId] = this.decorators.paginations[this.paginationId];
                     this.initializePaginationDecorator();
                     def.resolve();
                 }
 
+                // not an husky decorator, try to load external decorator
                 else {
-                    // not an husky decorator, try to load external decorator
                     var path = this.options.externalDecorators.paginations[this.paginationId];
                     require([path], function(pagination) {
                         this.decorators.paginations[this.paginationId] = pagination;
@@ -1046,6 +1051,9 @@
                 return def;
             },
 
+            /**
+             * Initialize the current set pagination decorator. Log an error message to console if the view is not valid
+             */
             initializePaginationDecorator: function() {
                 if (this.isPaginationValid(this.paginations[this.paginationId])) {
                     this.paginations[this.paginationId]

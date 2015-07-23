@@ -20,72 +20,6 @@ require(['lib/husky'], function(Husky) {
             name: 'datagrid@husky',
             options: {
                 url: 'http://husky.lo:7878/admin/api/datagrid',
-                resultKey: 'items',
-                spreselected: ["1", "2"],
-
-                view: 'contact',
-
-                externalDecorators: {
-                    views: {
-                        contact: 'decorators/contact-view.js'
-                    }
-                },
-
-                sortable: true,
-                searchInstanceName: 'test',
-                searchFields: ['fullName'],
-                columnOptionsInstanceName: '',
-                el: '#datagrid-external-decorators',
-                instanceName: 'datagrid-external',
-                matchings: 'http://husky.lo:7878/admin/api/datagrid/fields',
-                selectedCounter: true,
-                selectedCounterText: 'selected elements',
-
-                /*
-                viewOptions: {
-                 table: {
-                 badges: [
-                 {
-                 column: 'content1',
-                 icon: 'check'
-                 },
-                 {
-                 column: 'date',
-                 title: 'de'
-                 }
-                 ],
-                 selectItem: {
-                 type: 'checkbox'
-                 },
-                 className: "myClass",
-                 removeItem: true,
-                 editable: true,
-                 validation: true,
-                 addRowTop: true,
-                 showHead: true, // false to hide table-head
-                 fullWidth: true, // uncomment for full-width mode
-                 contentContainer: '#content',
-                 highlightSelected: true,
-                 croppedMaxLength: 5
-                 },
-                 thumbnail: {}
-
-                 },
-                 */
-
-                clickCallback: function(item, data) {
-                    app.logger.log('Husky.Ui.DataGrid item click: ' + item, data);
-                },
-                actionCallback: function(item, data) {
-                    app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
-                }
-            }
-        },
-        /*
-        {
-            name: 'datagrid@husky',
-            options: {
-                url: 'http://husky.lo:7878/admin/api/datagrid',
                 preselected: ["1", "2"],
                 paginationOptions: {
                     dropdown: {
@@ -136,6 +70,7 @@ require(['lib/husky'], function(Husky) {
                 }
             }
         },
+
         {
             name: 'datagrid@husky',
             options: {
@@ -535,8 +470,39 @@ require(['lib/husky'], function(Husky) {
                     }
                 ]
             }
+        },
+        {
+            name: 'datagrid@husky',
+            options: {
+                url: 'http://husky.lo:7878/admin/api/datagrid',
+                preselected: ["1", "2"],
+
+                view: 'external',
+
+                externalDecorators: {
+                    views: {
+                        external: 'decorators/external-view.js'
+                    }
+                },
+
+                sortable: true,
+                searchInstanceName: 'test',
+                searchFields: ['fullName'],
+                columnOptionsInstanceName: '',
+                el: '#datagrid-external',
+                instanceName: 'datagrid-external',
+                matchings: 'http://husky.lo:7878/admin/api/datagrid/fields',
+                selectedCounter: true,
+                selectedCounterText: 'selected elements',
+
+                clickCallback: function(item, data) {
+                    app.logger.log('Husky.Ui.DataGrid item click: ' + item, data);
+                },
+                actionCallback: function(item, data) {
+                    app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
+                }
+            }
         }
-        */
     ]).then(function() {
         App = app;
         app.logger.log('Aura started...');
