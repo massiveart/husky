@@ -32123,7 +32123,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 // Should only be be called once
                 this.bindCustomEvents();
 
-                this.initRender();
+                this.initializeDecoratorsAndRender();
 
                 this.sandbox.emit(INITIALIZED.call(this));
             },
@@ -32426,14 +32426,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             /**
              * Gets the view and a load to get data and render it
              */
-            initRender: function() {
+            initializeDecoratorsAndRender: function() {
                 this.bindDOMEvents();
                 this.renderMediumLoader();
                 if (this.options.selectedCounter === true) {
                     this.renderSelectedCounter();
                 }
-                this.getPaginationDecorator(this.paginationId);
-                this.getViewDecorator(this.viewId);
+                this.loadAndInitializePagination(this.paginationId);
+                this.loadAndInitializeView(this.viewId);
                 this.evaluateMatchings();
             },
 
@@ -32504,7 +32504,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Gets the view and starts the rendering of the data
              * @param viewId {String} the identifier of the decorator
              */
-            getViewDecorator: function(viewId) {
+            loadAndInitializeView: function(viewId) {
                 // TODO: dynamically load a decorator from external source if local decorator doesn't exist
                 this.viewId = viewId;
 
@@ -32541,7 +32541,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Gets the Pagination and initializes it
              * @param {String} paginationId the identifier of the pagination
              */
-            getPaginationDecorator: function(paginationId) {
+            loadAndInitializePagination: function(paginationId) {
                 // todo: dynamically load a decorator if local decorator doesn't exist
                 if (!!paginationId) {
                     this.paginationId = paginationId;
@@ -32568,7 +32568,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 // only change if view or if options are passed (could be passed to the same view)
                 if (view !== this.viewId || !!options) {
                     this.destroy();
-                    this.getViewDecorator(view);
+                    this.loadAndInitializeView(view);
                     this.extendViewOptions(options);
                     this.render();
                 }
@@ -32581,7 +32581,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             changePagination: function(pagination) {
                 if (pagination !== this.paginationId) {
                     this.destroy();
-                    this.getPaginationDecorator(pagination);
+                    this.loadAndInitializePagination(pagination);
                     this.render();
                 }
             },

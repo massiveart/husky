@@ -4,12 +4,17 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
- * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
+ * @param {String} [options.resultKey=items] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
  * @param {String} [options.view='table'] name of the view to use
+ * @param {Object} [options.viewOptions] Configuration Object for the view
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
- * @param {Object} [options.viewOptions] Configuration Object for the view
+ *
+ * @param {Object} [options.externalDecorators] Defines available external decorators
+ * @param {Object} [options.externalDecorators.views] Defines available external view-decorators
+ * @param {Object} [options.externalDecorators.paginations] Defines available external pagination-decorators
+ *
  * @param {Boolean} [options.sortable] Defines if records are sortable
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
@@ -29,10 +34,10 @@
  * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {Boolean} [options.selectedCounter] If true a counter will be displayed which shows how much elements have been selected
- * @param {String} [options.selectedCounterText] translation key or text used in the selected-counter
+ * @param {String} [options.selectedCounterText=public.elements-selected] translation key or text used in the selected-counter
  * @param {Function} [options.clickCallback] callback for clicking an item - first parameter item id, second parameter the dataset of the clicked item
  * @param {Function} [options.actionCallback] action callback. E.g. executed on double-click in table-view - first parameter item id, second parameter the dataset of the clicked item
- * @param {Function} [options.idKey] the name of the id property
+ * @param {Function} [options.idKey=id] the name of the id property
  */
 (function() {
 
@@ -44,10 +49,10 @@
         'husky_components/datagrid/decorators/dropdown-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
-        /**
-         *    Default values for options
-         */
-        var defaults = {
+            /**
+            *    Default values for options
+            */
+            var defaults = {
                 view: 'table',
                 viewOptions: {
                     table: {},
@@ -57,6 +62,7 @@
                 paginationOptions: {
                     dropdown: {}
                 },
+
                 contentFilters: null,
                 sortable: true,
                 matchings: [],
@@ -207,7 +213,8 @@
 
             namespace = 'husky.datagrid.',
 
-        /* TRIGGERS EVENTS */
+
+            /* TRIGGERS EVENTS */
 
             /**
              * raised after initialization has finished
@@ -572,11 +579,8 @@
                     direction: null
                 };
 
-                // Should only be be called once
-                this.bindCustomEvents();
-
-                this.initRender();
-
+                this.bindCustomEvents(); // Should only be be called once
+                this.initializeDecoratorsAndRender();
                 this.sandbox.emit(INITIALIZED.call(this));
             },
 
@@ -622,8 +626,6 @@
             /**
              * Checks if matchings/fields are given as url or array.
              * If a url is given the appropriate fields are fetched.
-             *
-             * @param {Array} matchings array with matchings
              */
             evaluateMatchings: function() {
                 var matchings = this.options.matchings;
@@ -878,15 +880,17 @@
             /**
              * Gets the view and a load to get data and render it
              */
-            initRender: function() {
+            initializeDecoratorsAndRender: function() {
                 this.bindDOMEvents();
                 this.renderMediumLoader();
                 if (this.options.selectedCounter === true) {
                     this.renderSelectedCounter();
                 }
-                this.getPaginationDecorator(this.paginationId);
-                this.getViewDecorator(this.viewId);
-                this.evaluateMatchings();
+                this.loadAndInitializePagination(this.paginationId).then(function() {
+                    this.loadAndInitializeView(this.viewId).then(function() {
+                        this.evaluateMatchings();
+                    }.bind(this));
+                }.bind(this));
             },
 
             /**
@@ -956,21 +960,41 @@
              * Gets the view and starts the rendering of the data
              * @param viewId {String} the identifier of the decorator
              */
-            getViewDecorator: function(viewId) {
-                // TODO: dynamically load a decorator from external source if local decorator doesn't exist
+            loadAndInitializeView: function(viewId) {
                 this.viewId = viewId;
+                var def = this.sandbox.data.deferred();
 
-                // if view is not already loaded, load it
-                if (!this.gridViews[this.viewId]) {
+                // view allready loaded
+                if (!!this.gridViews[this.viewId]) {
+                    def.resolve();
+                }
+
+                // load husky decorator
+                else if (!!this.decorators.views[this.viewId]) {
                     this.gridViews[this.viewId] = this.decorators.views[this.viewId];
-                    var isViewValid = this.isViewValid(this.gridViews[this.viewId]);
+                    this.initializeViewDecorator();
+                    def.resolve();
+                }
 
-                    if (isViewValid === true) {
-                        // merge view options with passed ones
-                        this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
-                    } else {
-                        this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
-                    }
+                // not an husky decorator, try to load external decorator
+                else {
+                    var path = this.options.externalDecorators.views[this.viewId];
+                    require([path], function(view) {
+                        this.gridViews[this.viewId] = view;
+                        this.initializeViewDecorator();
+                        def.resolve();
+                    }.bind(this));
+                }
+
+                return def;
+            },
+
+            initializeViewDecorator: function(){
+                if (this.isViewValid(this.gridViews[this.viewId])) {
+                    // merge view options with passed ones
+                    this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
+                } else {
+                    this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
                 }
             },
 
@@ -980,34 +1004,55 @@
              * @returns {boolean} returns true if the view is usable
              */
             isViewValid: function(view) {
-                var bool = true;
-                if (typeof view.initialize === 'undefined' ||
+                if (!view ||
+                    typeof view.initialize === 'undefined' ||
                     typeof view.render === 'undefined' ||
                     typeof view.destroy === 'undefined') {
-                    bool = false;
+                    return false;
                 }
-                return bool;
+                return true;
             },
 
             /**
              * Gets the Pagination and initializes it
              * @param {String} paginationId the identifier of the pagination
              */
-            getPaginationDecorator: function(paginationId) {
-                // todo: dynamically load a decorator if local decorator doesn't exist
-                if (!!paginationId) {
-                    this.paginationId = paginationId;
+            loadAndInitializePagination: function(paginationId) {
+                this.paginationId = paginationId;
+                var def = this.sandbox.data.deferred();
 
-                    // load the pagination if not already loaded
-                    if (!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId] = this.decorators.paginations[this.paginationId];
-                        var paginationIsValid = this.isPaginationValid(this.paginations[this.paginationId]);
-                        if (paginationIsValid === true) {
-                            this.paginations[this.paginationId].initialize(this, this.options.paginationOptions[this.paginationId]);
-                        } else {
-                            this.sandbox.logger.log('Error: Pagination does not meet the configured requirements. See the documentation');
-                        }
-                    }
+                // if pagination is not already loaded, load it
+                if (!!this.paginations[this.paginationId]) {
+                    def.resolve();
+                }
+
+                else if (!!this.decorators.paginations[this.paginationId]) {
+                    // load husky decorator
+                    this.paginations[this.paginationId] = this.decorators.paginations[this.paginationId];
+                    this.initializePaginationDecorator();
+                    def.resolve();
+                }
+
+                else {
+                    // not an husky decorator, try to load external decorator
+                    var path = this.options.externalDecorators.paginations[this.paginationId];
+                    require([path], function(pagination) {
+                        this.decorators.paginations[this.paginationId] = pagination;
+                        this.initializePaginationDecorator();
+                        def.resolve();
+                    }.bind(this));
+                }
+
+                return def;
+            },
+
+            initializePaginationDecorator: function() {
+                if (this.isPaginationValid(this.paginations[this.paginationId])) {
+                    this.paginations[this.paginationId]
+                        .initialize(this, this.options.paginationOptions[this.paginationId]);
+                } else {
+                    this.sandbox.logger
+                        .log('Error: Pagination does not meet the configured requirements. See the documentation');
                 }
             },
 
@@ -1020,9 +1065,10 @@
                 // only change if view or if options are passed (could be passed to the same view)
                 if (view !== this.viewId || !!options) {
                     this.destroy();
-                    this.getViewDecorator(view);
-                    this.extendViewOptions(options);
-                    this.render();
+                    this.loadAndInitializeView(view).then(function() {
+                        this.extendViewOptions(options);
+                        this.render();
+                    }.bind(this));
                 }
             },
 
@@ -1033,8 +1079,9 @@
             changePagination: function(pagination) {
                 if (pagination !== this.paginationId) {
                     this.destroy();
-                    this.getPaginationDecorator(pagination);
-                    this.render();
+                    this.loadAndInitializePagination(pagination).then(function(){
+                        this.render();
+                    });
                 }
             },
 
@@ -1055,14 +1102,14 @@
              * @returns {boolean} returns true if the pagination is usable
              */
             isPaginationValid: function(pagination) {
-                var bool = true;
-                if (typeof pagination.initialize === 'undefined' ||
+                if (!pagination ||
+                    typeof pagination.initialize === 'undefined' ||
                     typeof pagination.render === 'undefined' ||
                     typeof pagination.getLimit === 'undefined' ||
                     typeof pagination.destroy === 'undefined') {
-                    bool = false;
+                    return false;
                 }
-                return bool;
+                return true;
             },
 
             /**
