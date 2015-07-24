@@ -22,6 +22,7 @@
  * @param {boolean} [options.hasSearch] if true a search item gets inserted in its own group at the end. A search item can also be added manually through the data
  * @param {String} [options.skin] custom skin-class to add to the component
  * @param {Boolean} [options.showTitleAsTooltip] shows the title of the button only as tooltip
+ * @param {Boolean} [options.showTitle] if false doesn't display the title
  *
  * @param {Object} [options.groups] array of groups with id and align to specify groups to put items in
  * @param {String|Number} [options.groups.id] the id of the group
@@ -62,7 +63,8 @@ define(function() {
             ],
             skin: 'default',
             small: false,
-            showTitleAsTooltip: false
+            showTitleAsTooltip: false,
+            showTitle: true
         },
 
         itemDefaults = {
@@ -260,6 +262,9 @@ define(function() {
 
         /** events bound to dom */
         bindDOMEvents = function() {
+            this.sandbox.dom.on(this.$el, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this), 'li .content');
             this.sandbox.dom.on(this.$el, 'click', toggleItem.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
         },
@@ -522,7 +527,13 @@ define(function() {
             this.sandbox.dom.preventDefault(event);
 
             var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')],
-                $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null;
+                $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null,
+                $content = this.sandbox.dom.find('.content', this.items[item.id].$el);
+
+            // forward click event to icon content
+            if (!!$content.length) {
+                this.sandbox.dom.click(this.sandbox.dom.children($content));
+            }
 
             // stop if loading or the dropdown gets opened
             if (item.loading || (!!item.dropdownItems && item.dropdownOptions.onlyOnClickOnArrow !== true) ||
@@ -637,6 +648,7 @@ define(function() {
 
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.dropdownItems, function(dropdownItem) {
+                dropdownItem.title = this.sandbox.translate(dropdownItem.title);
                 if (dropdownItem.divider) {
                     // prevent divider when not enough items
                     if (this.items[parent.id].dropdownItems.length <= 2) {
@@ -1017,7 +1029,7 @@ define(function() {
                     }
 
                     // create title span
-                    title = item.title ? item.title : '';
+                    title = (!!item.title && this.options.showTitle === true) ? item.title : '';
                     this.sandbox.dom.append($listItem, '<span class="title">' + title + '</span>');
 
                     // add dropdown-toggle element (hidden at default)
