@@ -1,5 +1,8 @@
 require.config({
-    baseUrl: '../../'
+    baseUrl: '../../',
+    paths: {
+        externalView: 'demos/datagrid/decorators/external-view'
+    }
 });
 
 var App;
@@ -476,15 +479,7 @@ require(['lib/husky'], function(Husky) {
             options: {
                 url: 'http://husky.lo:7878/admin/api/datagrid',
                 preselected: ["1", "2"],
-
-                view: 'external',
-
-                externalDecorators: {
-                    views: {
-                        external: 'decorators/external-view.js'
-                    }
-                },
-
+                view: 'externalView', //path is configured with require.config.paths (see above)
                 sortable: true,
                 searchInstanceName: 'test',
                 searchFields: ['fullName'],

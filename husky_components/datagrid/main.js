@@ -6,16 +6,12 @@
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.resultKey=items] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {String} [options.view='table'] name of the view to use
+ * @param {String} [options.view='table'] name of the view to use.
+ *                  external views can be used by configuring the path to decorator-js with require.config.paths
  * @param {Object} [options.viewOptions] Configuration Object for the view
- * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
+ * @param {Boolean|String} [options.pagination=dropdown] name the the pagination to use. If false no pagination will be initialized
+ *                  external paginations can be used by configuring path to decorator-js with require.config.paths
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
- *
- * @param {Object} [options.externalDecorators] Defines available external view and pagination decorators
- * @param {Object} [options.externalDecorators.views] Defines available external view-decorators
- *          (Usage: ...rators.views.view-id = /path/to/view-module-file)
- * @param {Object} [options.externalDecorators.paginations] Defines available external pagination-decorators
- *          (Usage: ...rators.paginations.pagination-id = /path/to/pagination-module-file)
  *
  * @param {Boolean} [options.sortable] Defines if records are sortable
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
@@ -980,8 +976,7 @@
 
                 // not an husky decorator, try to load external decorator
                 else {
-                    var path = this.options.externalDecorators.views[this.viewId];
-                    require([path], function(view) {
+                    require([viewId], function(view) {
                         this.gridViews[this.viewId] = view;
                         this.initializeViewDecorator();
                         def.resolve();
@@ -1040,8 +1035,7 @@
 
                 // not an husky decorator, try to load external decorator
                 else {
-                    var path = this.options.externalDecorators.paginations[this.paginationId];
-                    require([path], function(pagination) {
+                    require([paginationId], function(pagination) {
                         this.decorators.paginations[this.paginationId] = pagination;
                         this.initializePaginationDecorator();
                         def.resolve();
