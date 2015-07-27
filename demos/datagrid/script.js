@@ -422,19 +422,20 @@ require(['lib/husky'], function(Husky) {
                     groups: [
                         {
                             id: '1',
-                            align: 'right'
+                            align: 'left'
                         },
                         {
                             id: '0',
-                            align: 'right'
+                            align: 'left'
                         }
                     ],
-                    data: [
+                    buttons: [
                         {
                             id: 'add',
                             icon: 'plus-circle',
                             class: 'highlight',
                             group: '0',
+                            position: 3,
                             callback: function() {
                                 app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
                             }.bind(this)
@@ -443,6 +444,7 @@ require(['lib/husky'], function(Husky) {
                             id: 'delete',
                             icon: 'trash-o',
                             group: '1',
+                            position: 2,
                             callback: function() {
                                 app.sandbox.emit('sulu.list-toolbar.delete');
                             }.bind(this)
@@ -451,7 +453,8 @@ require(['lib/husky'], function(Husky) {
                             id: 'settings',
                             icon: 'gear',
                             group: '1',
-                            items: [
+                            position: 1,
+                            dropdownItems: [
                                 {
                                     title: 'import',
                                     disabled: true
