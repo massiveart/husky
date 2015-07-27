@@ -1,6 +1,12 @@
 CHANGELOGS:
 ===========
 
+Dev-develop
+==================
+- toolbar
+    - new blueish style
+    - options changes
+
 2015/04/20 v0.11.0
 ==================
 
