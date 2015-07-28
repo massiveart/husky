@@ -377,7 +377,7 @@ define(function() {
             // in case of item has state loading, restore original state
             if (item.loading) {
                 item.loading = false;
-                //this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.removeClass($item, 'is-loading');
                 this.sandbox.dom.width($item, '');
