@@ -4,18 +4,18 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
- * @param {String} [options.resultKey=items] the name of the data-array in the embedded in the response
- * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {String} [options.view='table'] name of the view to use.
+ * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
+ * @param {String} [options.defaultMeasureUnit] the unit that should be taken
+ * @param {String} [options.view] name of the view to use.
  *                  external views can be used by configuring the path to decorator-js with require.config.paths
  * @param {Object} [options.viewOptions] Configuration Object for the view
- * @param {Boolean|String} [options.pagination=dropdown] name the the pagination to use. If false no pagination will be initialized
+ * @param {Boolean|String} [options.pagination] name the the pagination to use. If false no pagination will be initialized
  *                  external paginations can be used by configuring path to decorator-js with require.config.paths
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  *
  * @param {Boolean} [options.sortable] Defines if records are sortable
- * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
- * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
+ * @param {String} [options.searchInstanceName] if set, a listener will be set for the corresponding search events
+ * @param {String} [options.columnOptionsInstanceName] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
@@ -32,10 +32,10 @@
  * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {Boolean} [options.selectedCounter] If true a counter will be displayed which shows how much elements have been selected
- * @param {String} [options.selectedCounterText=public.elements-selected] translation key or text used in the selected-counter
+ * @param {String} [options.selectedCounterText] translation key or text used in the selected-counter
  * @param {Function} [options.clickCallback] callback for clicking an item - first parameter item id, second parameter the dataset of the clicked item
  * @param {Function} [options.actionCallback] action callback. E.g. executed on double-click in table-view - first parameter item id, second parameter the dataset of the clicked item
- * @param {Function} [options.idKey=id] the name of the id property
+ * @param {Function} [options.idKey] the name of the id property
  */
 (function() {
 
@@ -47,9 +47,8 @@
         'husky_components/datagrid/decorators/dropdown-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
-            /**
-            *    Default values for options
-            */
+            /* Default values for options */
+
             var defaults = {
                 view: 'table',
                 viewOptions: {
