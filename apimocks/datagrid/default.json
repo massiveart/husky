@@ -1,7 +1,7 @@
 {
     "_links": {
         "self": {
-            "href": "http://husky.lo:7878/admin/api/datagrid?pageSize=4"
+            "href": "http://husky.lo:7878/admin/api/datagrid?pageSize=4&sortBy=content1&sortOrder=desc"
         },
         "first": {
             "href": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4"
