@@ -302,6 +302,7 @@ require(['lib/husky'], function(Husky) {
                         name: 'children',
                         disabled: true
                     },
+<<<<<<< HEAD
                     {
                         name: 'parent',
                         disabled: true
@@ -364,6 +365,109 @@ require(['lib/husky'], function(Husky) {
                         selectItem: {
                             type: 'checkbox',
                             inFirstCell: true
+=======
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/empty',
+                    el: '#empty-datagrid2',
+                    instanceName: 'empty-datagrid2',
+                    pagination: false,
+                    resultKey: 'items',
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'toolbar@husky',
+                options: {
+                    el: '#toolbar',
+                    instanceName: 'test',
+                    hasSearch: true,
+                    groups: [
+                        {
+                            id: '1',
+                            align: 'left'
+                        },
+                        {
+                            id: '0',
+                            align: 'left'
+                        }
+                    ],
+                    buttons: [
+                        {
+                            id: 'add',
+                            icon: 'plus-circle',
+                            class: 'highlight',
+                            group: '0',
+                            position: 3,
+                            callback: function() {
+                                app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
+                            }.bind(this)
+                        },
+                        {
+                            id: 'delete',
+                            icon: 'trash-o',
+                            group: '1',
+                            position: 2,
+                            callback: function() {
+                                app.sandbox.emit('sulu.list-toolbar.delete');
+                            }.bind(this)
+                        },
+                        {
+                            id: 'settings',
+                            icon: 'gear',
+                            group: '1',
+                            position: 1,
+                            dropdownItems: [
+                                {
+                                    title: 'import',
+                                    disabled: true
+                                },
+                                {
+                                    title: 'export',
+                                    disabled: true
+                                }
+                            ]
+>>>>>>> ab9a6cff02543d78fc912684df05602ed9161c81
                         }
                     }
                 },

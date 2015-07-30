@@ -6,7 +6,6 @@
     $overflowIconSpacing: 30px;
 
     position: relative;
-    padding-top: 10px;
 
     .husky-table {
         position: relative;
@@ -308,11 +307,16 @@
     }
 
     .selected-elements {
-        margin-top: -10px;
         display: block;
-        padding-bottom: 10px;
+        height: 20px;
+        @include transition(height 200ms);
+        overflow: hidden;
         &.indent {
             padding-left: 60px;
+        }
+        &.invisible {
+            visibility: visible;
+            height: 0px;
         }
     }
 

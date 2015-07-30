@@ -165,7 +165,7 @@ define(function() {
         /**
          * raised when navigation was un-collapsed
          * @event husky.navigation.uncollapsed
-         * @param {Number} width The width of the un-collapsed navigation
+         * @param {Number} width The width of thewidth un-collapsed navigation
          */
         EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
 
@@ -995,6 +995,7 @@ define(function() {
             }
 
             this.sandbox.dom.addClass(this.$el, 'data-navigation-opened');
+            this.sandbox.dom.width(this.$el, '');
             this.sandbox.util.delay(function() {
                 $element.addClass('expanded');
             }, 0);
