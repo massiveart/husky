@@ -31552,18 +31552,18 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  *
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
- * @param {String} [options.resultKey=items] the name of the data-array in the embedded in the response
- * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {String} [options.view='table'] name of the view to use.
+ * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
+ * @param {String} [options.defaultMeasureUnit] the unit that should be taken
+ * @param {String} [options.view] name of the view to use.
  *                  external views can be used by configuring the path to decorator-js with require.config.paths
  * @param {Object} [options.viewOptions] Configuration Object for the view
- * @param {Boolean|String} [options.pagination=dropdown] name the the pagination to use. If false no pagination will be initialized
+ * @param {Boolean|String} [options.pagination] name the the pagination to use. If false no pagination will be initialized
  *                  external paginations can be used by configuring path to decorator-js with require.config.paths
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  *
  * @param {Boolean} [options.sortable] Defines if records are sortable
- * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
- * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
+ * @param {String} [options.searchInstanceName] if set, a listener will be set for the corresponding search events
+ * @param {String} [options.columnOptionsInstanceName] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
@@ -31580,10 +31580,10 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {Boolean} [options.selectedCounter] If true a counter will be displayed which shows how much elements have been selected
- * @param {String} [options.selectedCounterText=public.elements-selected] translation key or text used in the selected-counter
+ * @param {String} [options.selectedCounterText] translation key or text used in the selected-counter
  * @param {Function} [options.clickCallback] callback for clicking an item - first parameter item id, second parameter the dataset of the clicked item
  * @param {Function} [options.actionCallback] action callback. E.g. executed on double-click in table-view - first parameter item id, second parameter the dataset of the clicked item
- * @param {Function} [options.idKey=id] the name of the id property
+ * @param {Function} [options.idKey] the name of the id property
  */
 (function() {
 
@@ -31595,9 +31595,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         'husky_components/datagrid/decorators/dropdown-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
-            /**
-            *    Default values for options
-            */
+            /* Default values for options */
+
             var defaults = {
                 view: 'table',
                 viewOptions: {
@@ -32134,8 +32133,19 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 };
 
                 this.bindCustomEvents(); // Should only be be called once
-                this.initializeDecoratorsAndRender();
-                this.sandbox.emit(INITIALIZED.call(this));
+                this.bindDOMEvents();
+                this.renderMediumLoader();
+                if (this.options.selectedCounter === true) {
+                    this.renderSelectedCounter();
+                }
+
+                this.loadAndInitializeDecorators().then(function() {
+                    this.loadAndEvaluateMatchings().then(function() {
+                        this.loadAndRenderData();
+                        this.sandbox.emit(INITIALIZED.call(this));
+                    }.bind(this));
+                }.bind(this));
+
             },
 
             remove: function() {
@@ -32146,7 +32156,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             /**
              * Gets the data either via the url or the array
              */
-            getData: function() {
+            loadAndRenderData: function() {
                 var url;
                 if (!!this.options.url) {
                     url = this.options.url;
@@ -32184,7 +32194,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Checks if matchings/fields are given as url or array.
              * If a url is given the appropriate fields are fetched.
              */
-            evaluateMatchings: function() {
+            loadAndEvaluateMatchings: function() {
+                var def = this.sandbox.data.deferred();
+
                 var matchings = this.options.matchings;
                 if (typeof(matchings) === 'string') {
                     // Load matchings/fields from url
@@ -32193,13 +32205,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         url: matchings,
                         success: function(response) {
                             this.filterMatchings(response);
-                            this.getData();
+                            def.resolve();
                         }.bind(this)
                     });
                 } else {
                     this.filterMatchings(matchings);
-                    this.getData();
+                    def.resolve();
                 }
+                return def;
             },
 
             /**
@@ -32454,17 +32467,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             /**
              * Gets the view and a load to get data and render it
              */
-            initializeDecoratorsAndRender: function() {
-                this.bindDOMEvents();
-                this.renderMediumLoader();
-                if (this.options.selectedCounter === true) {
-                    this.renderSelectedCounter();
-                }
+            loadAndInitializeDecorators: function() {
+                var def = this.sandbox.data.deferred();
                 this.loadAndInitializePagination(this.paginationId).then(function() {
                     this.loadAndInitializeView(this.viewId).then(function() {
-                        this.evaluateMatchings();
+                        def.resolve();
                     }.bind(this));
                 }.bind(this));
+                return def;
             },
 
             /**
