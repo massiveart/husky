@@ -585,8 +585,19 @@
                 };
 
                 this.bindCustomEvents(); // Should only be be called once
-                this.initializeDecoratorsAndRender();
-                this.sandbox.emit(INITIALIZED.call(this));
+                this.bindDOMEvents();
+                this.renderMediumLoader();
+                if (this.options.selectedCounter === true) {
+                    this.renderSelectedCounter();
+                }
+
+                this.loadAndInitializeDecorators().then(function() {
+                    this.loadAndEvaluateMatchings().then(function() {
+                        this.loadAndRenderData();
+                        this.sandbox.emit(INITIALIZED.call(this));
+                    }.bind(this));
+                }.bind(this));
+
             },
 
             remove: function() {
@@ -597,7 +608,7 @@
             /**
              * Gets the data either via the url or the array
              */
-            getData: function() {
+            loadAndRenderData: function() {
                 var url;
                 if (!!this.options.url) {
                     url = this.options.url;
@@ -635,7 +646,9 @@
              * Checks if matchings/fields are given as url or array.
              * If a url is given the appropriate fields are fetched.
              */
-            evaluateMatchings: function() {
+            loadAndEvaluateMatchings: function() {
+                var def = this.sandbox.data.deferred();
+
                 var matchings = this.options.matchings;
                 if (typeof(matchings) === 'string') {
                     // Load matchings/fields from url
@@ -644,13 +657,14 @@
                         url: matchings,
                         success: function(response) {
                             this.filterMatchings(response);
-                            this.getData();
+                            def.resolve();
                         }.bind(this)
                     });
                 } else {
                     this.filterMatchings(matchings);
-                    this.getData();
+                    def.resolve();
                 }
+                return def;
             },
 
             /**
@@ -905,17 +919,14 @@
             /**
              * Gets the view and a load to get data and render it
              */
-            initializeDecoratorsAndRender: function() {
-                this.bindDOMEvents();
-                this.renderMediumLoader();
-                if (this.options.selectedCounter === true) {
-                    this.renderSelectedCounter();
-                }
+            loadAndInitializeDecorators: function() {
+                var def = this.sandbox.data.deferred();
                 this.loadAndInitializePagination(this.paginationId).then(function() {
                     this.loadAndInitializeView(this.viewId).then(function() {
-                        this.evaluateMatchings();
+                        def.resolve();
                     }.bind(this));
                 }.bind(this));
+                return def;
             },
 
             /**
