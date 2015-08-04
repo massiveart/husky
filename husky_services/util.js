@@ -13,20 +13,21 @@ define(function() {
 
     var instance = null,
 
-    /**
-     * Replace rules for escape html function
-     * @type {{}}
-     */
-    entityMap = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
-    };
+        /**
+         * Replace rules for escape html function
+         * @type {{}}
+         */
+        entityMap = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': '&quot;',
+            "'": '&#39;',
+            "/": '&#x2F;'
+        };
 
-    function Util() {}
+    function Util() {
+    }
 
     // for comparing arrays
     Util.prototype.compare = function(a, b) {
@@ -129,7 +130,7 @@ define(function() {
             delimiter = '...';
         }
 
-        substrLength = Math.floor((maxLength - delimiter.length)/2);
+        substrLength = Math.floor((maxLength - delimiter.length) / 2);
         return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
     },
 
@@ -183,6 +184,18 @@ define(function() {
         return _.union.apply(this, arguments);
     };
 
+    Util.prototype.each = $.each;
+
+    Util.prototype.ajax = $.ajax;
+
+    Util.prototype.ajaxError = function(callback) {
+        $(document).ajaxError(callback);
+    };
+
+    Util.prototype.when = function(deferreds) {
+        return $.when(deferreds);
+    };
+
     Util.prototype.deepCopy = function(object) {
         var parent = {};
 
@@ -200,7 +213,7 @@ define(function() {
      * @param url {string}
      * @returns {string}
      */
-    Util.prototype.getParameterByName =  function(name, url) {
+    Util.prototype.getParameterByName = function(name, url) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(url);
