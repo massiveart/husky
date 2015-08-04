@@ -35410,16 +35410,12 @@ define('__component__$toolbar@husky',[],function() {
             }
 
             //now generate the dropdown
-<<<<<<< HEAD
-            this.sandbox.emit(ITEMS_SET.call(this), buttonId, this.items[buttonId].dropdownItems);
-=======
             this.sandbox.emit(
                 ITEMS_SET.call(this),
                 buttonId,
-                this.items[buttonId].items,
-                this.items[buttonId].itemsOption.preSelected
+                this.items[buttonId].dropdownItems,
+                this.items[buttonId].dropdownOptions.preSelected
             );
->>>>>>> 759b38e8ce82447cdfb684fabf76569094297b30
         },
 
         /**
