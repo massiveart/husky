@@ -27089,7 +27089,7 @@ define('services/husky/util',[],function() {
             settings.dataType = dataType;
         }
 
-        app.sandbox.util.ajax(settings);
+        this.ajax(settings);
 
         return deferred.promise();
     };
@@ -27097,7 +27097,7 @@ define('services/husky/util',[],function() {
     Util.prototype.save = function(url, type, data) {
         var deferred = $.Deferred();
 
-        app.sandbox.util.ajax({
+        this.ajax({
 
             headers: {
                 'Content-Type': 'application/json'
@@ -27232,6 +27232,41 @@ define('services/husky/util',[],function() {
     };
 
     return Util.getInstance();
+});
+
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+define('services/husky/mediator',[],function() {
+
+    'use strict';
+
+    var instance = null;
+
+    function Mediator() {}
+
+    Mediator.getInstance = function() {
+        if (instance == null) {
+            instance = new Mediator();
+        }
+        return instance;
+    };
+
+    Mediator.prototype.on = window.Husky.on;
+
+    Mediator.prototype.once = window.Husky.once;
+
+    Mediator.prototype.off = window.Husky.off;
+
+    Mediator.prototype.emit = window.Husky.on;
+
+    return Mediator.getInstance();
 });
 
 define('bower_components/aura/lib/platform',[],function() {
@@ -28086,6 +28121,10 @@ define('husky',[
         app.use('./husky_extensions/itembox');
         app.use('./husky_extensions/cache-factory');
         app.use('./husky_extensions/infinite-scroll');
+
+        app.use(function(app) {
+            window.Husky = app.sandboxes.create('husky-sandbox');
+        });
     }
 
     // subclass extends superclass

@@ -1,8 +1,7 @@
 require.config({
     baseUrl: '../../',
     paths: {
-        externalView: 'demos/datagrid/decorators/external-view',
-        'services/husky/util': 'husky_services/util'
+        externalView: 'demos/datagrid/decorators/external-view'
     }
 });
 

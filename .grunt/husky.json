@@ -26,6 +26,7 @@
             "type/husky-input": "husky_components/input/input-type",
 
             "services/husky/util": "husky_services/util",
+            "services/husky/mediator": "husky_services/mediator",
 
             "bootstrap-datepicker": "bower_components/bootstrap-datepicker/bootstrap-datepicker",
             "datepicker-ar": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az",
@@ -140,6 +141,7 @@
             "type/husky-input",
 
             "services/husky/util",
+            "services/husky/mediator",
 
             "husky",
             "__component__$navigation@husky",
