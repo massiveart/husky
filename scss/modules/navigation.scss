@@ -66,10 +66,6 @@ $fadeDuration: 100ms;
 .husky-navigation {
     float: left;
     height: 100%;
-
-    &.data-navigation-opened {
-        width: 300px !important;
-    }
 }
 
 .navigation {
@@ -80,7 +76,7 @@ $fadeDuration: 100ms;
     left: 0px;
     background-color: $navigationBackgroundColor;
     overflow-x: visible;
-    z-index: 101;
+    z-index: 250;
     float: left;
 
     .navigation-close-icon {

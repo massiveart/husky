@@ -25,6 +25,9 @@
             "type/husky-select": "husky_components/select/select-type",
             "type/husky-input": "husky_components/input/input-type",
 
+            "services/husky/util": "husky_services/util",
+            "services/husky/mediator": "husky_services/mediator",
+
             "bootstrap-datepicker": "bower_components/bootstrap-datepicker/bootstrap-datepicker",
             "datepicker-ar": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az",
             "datepicker-az": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.bg",
@@ -96,8 +99,6 @@
             "__component__$ckeditor@husky": "husky_components/ckeditor/main",
             "__component__$overlay@husky": "husky_components/overlay/main",
             "__component__$label@husky": "husky_components/label/main",
-            "__component__$matcher@husky": "husky_components/matcher/main",
-            "__component__$process@husky": "husky_components/process/main",
             "__component__$toggler@husky": "husky_components/toggler/main",
             "__component__$dropzone@husky": "husky_components/dropzone/main",
             "__component__$input@husky": "husky_components/input/main",
@@ -139,6 +140,9 @@
             "type/husky-select",
             "type/husky-input",
 
+            "services/husky/util",
+            "services/husky/mediator",
+
             "husky",
             "__component__$navigation@husky",
             "__component__$column-options@husky",
@@ -158,8 +162,6 @@
             "__component__$ckeditor@husky",
             "__component__$overlay@husky",
             "__component__$label@husky",
-            "__component__$matcher@husky",
-            "__component__$process@husky",
             "__component__$toggler@husky",
             "__component__$dropzone@husky",
             "__component__$input@husky",
