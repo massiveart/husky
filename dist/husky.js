@@ -35410,7 +35410,16 @@ define('__component__$toolbar@husky',[],function() {
             }
 
             //now generate the dropdown
+<<<<<<< HEAD
             this.sandbox.emit(ITEMS_SET.call(this), buttonId, this.items[buttonId].dropdownItems);
+=======
+            this.sandbox.emit(
+                ITEMS_SET.call(this),
+                buttonId,
+                this.items[buttonId].items,
+                this.items[buttonId].itemsOption.preSelected
+            );
+>>>>>>> 759b38e8ce82447cdfb684fabf76569094297b30
         },
 
         /**
@@ -40556,6 +40565,11 @@ define('__component__$ckeditor@husky',[], function() {
          * Binds Events to emit a custom changed event
          */
         bindChangeEvents: function() {
+            this.editor.on('dialogShow', function() {
+                this.sandbox.dom.addClass(this.sandbox.dom.parent('.cke_dialog_ui_button_ok'), 'sulu_ok_button');
+                this.sandbox.dom.addClass(this.sandbox.dom.parent('.cke_dialog_ui_button_cancel'), 'sulu_cancel_button');
+            }.bind(this));
+
             this.editor.on('change', function() {
                 this.emitChangedEvent();
             }.bind(this));

@@ -757,7 +757,12 @@ define(function() {
             }
 
             //now generate the dropdown
-            this.sandbox.emit(ITEMS_SET.call(this), buttonId, this.items[buttonId].dropdownItems);
+            this.sandbox.emit(
+                ITEMS_SET.call(this),
+                buttonId,
+                this.items[buttonId].dropdownItems,
+                this.items[buttonId].dropdownOptions.preSelected
+            );
         },
 
         /**
