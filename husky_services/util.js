@@ -48,6 +48,7 @@ define(function() {
                 s = 'null';
             }
         }
+
         return s;
     };
 
@@ -86,7 +87,6 @@ define(function() {
         if (typeof(dataType) !== 'undefined') {
             settings.dataType = dataType;
         }
-
         this.ajax(settings);
 
         return deferred.promise();
@@ -131,6 +131,7 @@ define(function() {
         }
 
         substrLength = Math.floor((maxLength - delimiter.length) / 2);
+
         return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
     },
 
@@ -169,6 +170,7 @@ define(function() {
                 return false;
             }
         }
+
         return true;
     };
 
@@ -202,6 +204,7 @@ define(function() {
         if ($.isArray(object)) {
             parent = [];
         }
+
         return $.extend(true, parent, object);
     };
 
@@ -238,6 +241,7 @@ define(function() {
         if (instance == null) {
             instance = new Util();
         }
+
         return instance;
     };
 
