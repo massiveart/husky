@@ -27195,8 +27195,8 @@ define('services/husky/util',[],function() {
         $(document).ajaxError(callback);
     };
 
-    Util.prototype.when = function(deferreds) {
-        return $.when(deferreds);
+    Util.prototype.when = function() {
+        return $.when.apply(null, arguments);
     };
 
     Util.prototype.deepCopy = function(object) {
