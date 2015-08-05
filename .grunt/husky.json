@@ -27,6 +27,7 @@
 
             "services/husky/util": "husky_services/util",
             "services/husky/mediator": "husky_services/mediator",
+            "services/husky/translator": "husky_services/translator",
 
             "bootstrap-datepicker": "bower_components/bootstrap-datepicker/bootstrap-datepicker",
             "datepicker-ar": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az",
@@ -142,6 +143,7 @@
 
             "services/husky/util",
             "services/husky/mediator",
+            "services/husky/translator",
 
             "husky",
             "__component__$navigation@husky",
