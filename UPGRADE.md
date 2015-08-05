@@ -15,3 +15,6 @@
         - 'changeButton' new instead of 'type: "select"'
         - 'translate' removed
         - 'languageNamespace' removed
+
+### Util-Extension
+- events 'husky.util.load.data' and 'husky.util.save.data' got removed
