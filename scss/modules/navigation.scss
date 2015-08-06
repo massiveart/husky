@@ -301,7 +301,6 @@ li.is-active {
             overflow: hidden;
             line-height: 28px;
             display: inline-block;
-            color: rgba(255, 255, 255, 0.75);
             min-height: 30px; /* prohibits height changes on select */
         }
     }
@@ -600,9 +599,6 @@ li a.navigation-settings-icon {
 
 .navigation-data-container {
     @include transition(width .4s ease-in-out);
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 200px;
     margin-left: 50px;
     height: 100%;
