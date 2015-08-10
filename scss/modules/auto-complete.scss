@@ -30,7 +30,6 @@
     position: relative;
     top: 0px;
     left: 0px;
-    margin-top: 10px;
     display: table;
     width: 100%;
     font-size: $smallFontSize;
@@ -57,7 +56,7 @@
 
 .twitter-typeahead {
     width: 100%;
-    
+
     input[type="text"] {
         border-radius: $borderRadius $borderRadius 0 0;
     }
@@ -106,7 +105,7 @@
     .border {
         height: 25px;
         white-space: nowrap;
-      
+
         .icon {
             display: inline-block;
             margin: 0 10px 0 10px;
