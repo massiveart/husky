@@ -1,9 +1,45 @@
-{"total": 1, "_embedded": {
-    "media": [
-        {
-            "id": 1,
-            "name": "Picture 1",
-            "category": "products"
-        }
-    ]
-}}
+{
+  "id": 6,
+  "locale": "de",
+  "collection": 1,
+  "size": 595834,
+  "mimeType": "image\/jpeg",
+  "title": "donald-duck-susse",
+  "version": 1,
+  "versions": {
+    "1": {
+      "url": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+      "version": 1,
+      "name": "donald-duck-susse.jpg",
+      "created": "2015-08-11T14:45:43+0200",
+      "changed": "2015-08-11T14:45:43+0200"
+    }
+  },
+  "name": "donald-duck-susse.jpg",
+  "type": {
+    "name": "image",
+    "id": 2
+  },
+  "isImage": true,
+  "isVideo": false,
+  "isAudio": false,
+  "isDocument": false,
+  "storageOptions": "{\"segment\":\"06\",\"fileName\":\"donald-duck-susse.jpg\"}",
+  "publishLanguages": [],
+  "contentLanguages": [],
+  "tags": [],
+  "thumbnails": {
+    "170x170": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "200x200": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "50x50": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "150x100": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "640x480": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg"
+  },
+  "url": "\/media\/6\/download\/handplant_regular.jpg?v=1",
+  "changed": "2015-08-11T14:45:43+0200",
+  "changer": "Adama Ministrator",
+  "created": "2015-08-11T14:45:43+0200",
+  "creator": "Adama Ministrator",
+  "properties": [],
+  "downloadCounter": 0
+}
