@@ -101,10 +101,10 @@
         font-size: 25px;
         text-align: center;
         display: block;
-        animation: ROTATE-ANIMATION 1s linear 0 infinite;
-        -webkit-animation: ROTATE-ANIMATION 1s linear 0 infinite;
-        -moz-animation: ROTATE-ANIMATION 1s linear 0 infinite;
-        -o-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+        animation: ROTATE-ANIMATION 1s linear infinite;
+        -webkit-animation: ROTATE-ANIMATION 1s linear infinite;
+        -moz-animation: ROTATE-ANIMATION 1s linear infinite;
+        -o-animation: ROTATE-ANIMATION 1s linear infinite;
       }
       .image {
         padding: 10px 10px 5px 10px;
@@ -178,6 +178,108 @@
 
     &.dropped {
       height: $dropzoneHeight;
+    }
+  }
+
+  &.overlay {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+
+    .dropzone-container {
+      width: 200px;
+      height: 200px;
+      background-color: $white;
+      opacity: 0;
+      @include centerBlock;
+
+      border-radius: 50%;
+      border: 1px dashed $grayLighter;
+      overflow: hidden;
+
+      @include transition(transform 200ms, opacity 200ms);
+      @include transform(translate(-50%, -50%) scale(0.8));
+
+      .description {
+        width: initial;
+        height: initial;
+        @include centerBlock;
+        
+        opacity: 1;
+        @include transition(opacity 100ms);
+
+        .title {
+          display: none;
+        }
+
+        .addition {
+          color: $gray;
+        }
+      }
+
+      .upload-items {
+        width: initial;
+        height: initial;
+        padding: 0;
+        @include centerBlock;
+
+        .item {
+          width: initial;
+          height: initial;
+          margin: 0;
+          border: none;
+
+          .loading-content{
+            padding: 0;
+
+            .icon {
+              display: none;
+            }
+
+            .file-size {
+              padding-top: 0;
+              padding-bottom: 6px;
+              font-size: 14px;
+              line-height: 14px;
+            }
+
+            .progress {
+              width: 80px;
+              height: 8px;
+              border-radius: 4px;
+            }
+          }
+
+          .success-content{
+            .image{
+              display: none;
+            }
+            .tick {
+              font-size: 72px;
+              line-height: 72px;
+            }
+          }
+        }
+      }
+    }
+
+    &:hover, &.dz-drag-hover, &.dropped {
+      .dropzone-container {
+        @include transform(translate(-50%, -50%) scale(1));
+        opacity: 0.8;
+      }
+    }
+
+    &.dz-drag-hover {
+      opacity: 1; // overwrite default
+    }
+
+    &.dropped{
+      .description {
+        margin: 0; // overwrite
+        opacity: 0;
+      }
     }
   }
 }
