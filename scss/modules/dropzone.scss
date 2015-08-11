@@ -195,7 +195,6 @@
       @include centerBlock;
 
       border-radius: 50%;
-      border: 1px dashed $grayLighter;
       overflow: hidden;
 
       @include transition(transform 200ms, opacity 200ms);
@@ -273,6 +272,9 @@
 
     &.dz-drag-hover {
       opacity: 1; // overwrite default
+      .dropzone-container {
+        border: 1px dashed $gray;
+      }
     }
 
     &.dropped {
