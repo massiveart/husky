@@ -8098,7 +8098,7 @@ a.btn-black, a.btn-highlight {
   line-height: 30px;
   vertical-align: middle;
   margin: auto;
-  background-color: transparent;
+  background-color: #fff;
   padding-left: 3px;
   text-decoration: none;
 }
