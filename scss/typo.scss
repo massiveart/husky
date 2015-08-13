@@ -63,6 +63,10 @@ h6 {
     margin: 0;
 }
 
+.component-title {
+    border-bottom: 2px solid $grayLighterer;
+    margin-bottom: 30px;
+}
 
 .compoundedHeadlines {
     :first-child {
