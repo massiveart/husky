@@ -169,6 +169,10 @@
     tbody {
 
         .row {
+            .cell-content {
+                display: inline-block;
+                vertical-align: middle;
+            }
             &.even {
                 background: $white;
             }
@@ -228,6 +232,7 @@
             border-radius: $borderRadiusSmall;
             margin-left: 10px;
             display: inline-block;
+            vertical-align: middle;
             opacity: 0;
             @include single-transition(opacity, 100ms, ease-in, 200ms);
             &.right {

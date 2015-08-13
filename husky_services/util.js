@@ -208,6 +208,20 @@ define(function() {
         return $.extend(true, parent, object);
     };
 
+    Util.prototype.arrayGetColumn = function(data, propertyName) {
+        if (Util.prototype.typeOf(data) === 'array' &&
+            data.length > 0 &&
+            Util.prototype.typeOf(data[0]) === 'object') {
+            var values = [];
+            Util.prototype.foreach(data, function(el) {
+                values.push(el[propertyName]);
+            }.bind(this));
+            return values;
+        } else {
+            return data;
+        }
+    };
+
     /**
      * Returns a parameter value from a given url
      * Found at http://stackoverflow.com/a/901144

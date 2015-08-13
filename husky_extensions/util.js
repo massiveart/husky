@@ -56,6 +56,8 @@ define(['services/husky/util'], function(Util) {
 			app.core.util.template = Util.template;
 
             app.core.util.escapeHtml = Util.escapeHtml;
+
+            app.core.util.arrayGetColumn = Util.arrayGetColumn;
         }
     };
 });
