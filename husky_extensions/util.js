@@ -58,6 +58,8 @@ define(['services/husky/util'], function(Util) {
             app.core.util.escapeHtml = Util.escapeHtml;
 
             app.core.util.arrayGetColumn = Util.arrayGetColumn;
+
+            app.core.util.removeFromArray = Util.removeFromArray;
         }
     };
 });
