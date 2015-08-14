@@ -878,36 +878,35 @@ h2 {
   line-height: 30px;
   margin: 0 0 20px 0;
 }
+/* line 44, ../scss/typo.scss */
+h2 .content-title {
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 30px;
+}
 
-/* line 45, ../scss/typo.scss */
+/* line 50, ../scss/typo.scss */
 h3 {
   font-size: 20px;
   line-height: 25px;
 }
 
-/* line 50, ../scss/typo.scss */
+/* line 55, ../scss/typo.scss */
 h4 {
   font-size: 18px;
   line-height: 20px;
 }
 
-/* line 55, ../scss/typo.scss */
+/* line 60, ../scss/typo.scss */
 h5 {
   font-size: 14px;
   line-height: 15px;
 }
 
-/* line 60, ../scss/typo.scss */
+/* line 65, ../scss/typo.scss */
 h6 {
   font-size: 12px;
   line-height: 15px;
   margin: 0;
-}
-
-/* line 66, ../scss/typo.scss */
-.content-title {
-  border-bottom: 2px solid #ddd;
-  margin-bottom: 30px;
 }
 
 /* line 72, ../scss/typo.scss */
