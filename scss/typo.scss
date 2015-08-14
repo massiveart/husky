@@ -40,6 +40,11 @@ h2 {
     font-size: 24px;
     line-height: 30px;
     margin: 0 0 20px 0;
+
+    .content-title {
+        border-bottom: 2px solid $grayLighterer;
+        margin-bottom: 30px;
+    }
 }
 
 h3 {
@@ -61,11 +66,6 @@ h6 {
     font-size: 12px;
     line-height: 15px;
     margin: 0;
-}
-
-.content-title {
-    border-bottom: 2px solid $grayLighterer;
-    margin-bottom: 30px;
 }
 
 .compoundedHeadlines {
