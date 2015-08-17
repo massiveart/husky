@@ -42087,6 +42087,7 @@ define('__component__$overlay@husky',[], function() {
  * @param {String} [options.type] type of the lable (WARNING, ERROR or SUCCESS)
  * @param {String|Object} [options.html] html-string or DOM-object to insert into the label
  * @param {String} [options.title] Title of the label (if html is null)
+ * @param {Number} [options.counter] Counter to display in the label
  * @param {String} [options.description] Description of the lable (if html is null)
  * @param {Boolean} [options.hasClose] if true close button gets appended to the label
  * @param {Boolean} [options.fadeOut] if true label fades out automatically
@@ -42104,6 +42105,7 @@ define('__component__$label@husky',[],function() {
         type: 'WARNING',
         html: null,
         title: null,
+        counter: 1,
         description: null,
         hasClose: true,
         fadeOut: true,
@@ -42121,6 +42123,7 @@ define('__component__$label@husky',[],function() {
     constants = {
         textClass: 'text',
         closeClass: 'close',
+        counterClass: 'counter',
         closeIconClass: 'fa-times-circle'
     },
 
@@ -42139,7 +42142,6 @@ define('__component__$label@husky',[],function() {
             labelClass: 'husky-label-warning'
         },
         SUCCESS: {
-            hasClose: false,
             fadeOutDelay: 2000,
             title: 'Success',
             labelClass: 'husky-label-success'
@@ -42149,32 +42151,34 @@ define('__component__$label@husky',[],function() {
     /**
      * generates template template
      */
-    template = {
-        basic: function(options) {
-            return [
-                '<div class="' + constants.textClass + '">',
-                '<strong>' + options.title + '</strong>',
-                '<span>' + options.description + '</span>',
-                '</div>'
-            ].join('');
-        },
-        closeButton: function() {
-            return [
-                '<div class="' + constants.closeClass + '">',
-                '<span class="' + constants.closeIconClass + '"></span>',
-                '</div>'
-            ].join('');
-        }
+    templates = {
+        basic: ['<div class="' + constants.textClass + '">',
+                '   <span class="' + constants.counterClass + '"><%= counter %></span>',
+                '   <strong><%= title %></strong>',
+                '   <span><%= description %></span>',
+                '</div>'].join(''),
+        closeButton: ['<div class="' + constants.closeClass + '">',
+                      '<span class="' + constants.closeIconClass + '"></span>',
+                      '</div>'].join('')
     },
 
     eventNamespace = 'husky.label.',
 
     /**
      * raised after initialization process
-     * @event husky.label.[INSTANCE_NAME.]initialized
+     * @event husky.label.[INSTANCE_NAME].initialized
      */
     INITIALIZED = function() {
         return createEventName.call(this, 'initialized');
+    },
+
+    /**
+     * listens on and refreshes the fade out delay
+     * @event husky.label.[INSTANCE_NAME].refresh
+     * @param {String|Number} counter The counter number to display
+     */
+    REFRESH = function() {
+        return createEventName.call(this, 'refresh');
     },
 
     /** returns normalized event names */
@@ -42191,15 +42195,16 @@ define('__component__$label@husky',[],function() {
 
             //merge defaults with defaults of type and options
             this.options = this.sandbox.util.extend(true, {}, defaults, typesDefaults[this.options.type], this.options);
-
+            this.fadeOutTimer = null;
             this.label = {
                 $el: null,
                 $content: null,
                 $close: null
             };
 
+            this.bindCustomEvents();
             this.render();
-            this.bindEvents();
+            this.bindDomEvents();
             this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
@@ -42208,7 +42213,7 @@ define('__component__$label@husky',[],function() {
         /**
          * Binds the events for the component
          */
-        bindEvents: function() {
+        bindDomEvents: function() {
             this.sandbox.dom.on(this.label.$close, 'click', function() {
                 this.fadeOut();
                 if (typeof this.options.closeCallback === 'function') {
@@ -42218,14 +42223,41 @@ define('__component__$label@husky',[],function() {
         },
 
         /**
+         * Bind custom aura events
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(REFRESH.call(this), this.refresh.bind(this));
+        },
+
+        /**
+         * Refreshes the fade out increases and rerenders the counter
+         */
+        refresh: function() {
+            this.options.counter += 1;
+            this.abortEffects();
+            this.label.$el.find('.' + constants.counterClass).html(this.options.counter);
+            this.updateCounterVisibility();
+            this.startEffects();
+        },
+
+        /**
          * Starts the fade-out effect
          */
         startEffects: function() {
             if (this.options.fadeOut === true) {
-                _.delay(function() {
+                this.fadeOutTimer = _.delay(function() {
                     this.fadeOut();
                 }.bind(this), this.options.fadeOutDelay);
             }
+        },
+
+        /**
+         * Cancles the fade-out effect
+         */
+        abortEffects: function() {
+            this.label.$el.stop();
+            this.label.$el.removeAttr('style');
+            clearTimeout(this.fadeOutTimer);
         },
 
         /**
@@ -42249,6 +42281,7 @@ define('__component__$label@husky',[],function() {
             this.renderContent();
             this.renderClose();
 
+            this.updateCounterVisibility();
             this.insertLabel();
         },
 
@@ -42266,7 +42299,11 @@ define('__component__$label@husky',[],function() {
             if (this.options.html !== null) {
                 this.label.$content = this.sandbox.dom.createElement(this.options.html);
             } else {
-                this.label.$content = this.sandbox.dom.createElement(template.basic(this.options));
+                this.label.$content = this.sandbox.dom.createElement(this.sandbox.util.template(templates.basic, {
+                    title: this.options.title,
+                    description: this.options.description,
+                    counter: this.options.counter
+                }));
             }
 
             //append content to main element
@@ -42274,11 +42311,22 @@ define('__component__$label@husky',[],function() {
         },
 
         /**
+         * Hides or shows the counter-object
+         */
+        updateCounterVisibility: function() {
+            if (this.options.counter > 1) {
+                this.sandbox.dom.show(this.label.$el.find('.' + constants.counterClass));
+            } else {
+                this.sandbox.dom.hide(this.label.$el.find('.' + constants.counterClass));
+            }
+        },
+
+        /**
          * Renders the close button
          */
         renderClose: function() {
             if (this.options.hasClose === true) {
-                this.label.$close = this.sandbox.dom.createElement(template.closeButton());
+                this.label.$close = this.sandbox.dom.createElement(templates.closeButton);
 
                 //append close to main element
                 this.sandbox.dom.append(this.label.$el, this.label.$close);
