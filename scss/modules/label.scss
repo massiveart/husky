@@ -27,6 +27,19 @@
         padding: 0 10px;
         font-size: 15px;
     }
+    .counter {
+        $radius: 10px;
+        display: inline-block;
+        width: 2 * $radius;
+        height: 2 * $radius;
+        border-radius: $radius;
+        border: 1px solid $white;
+        line-height: 2 * $radius;
+        text-align: center;
+        margin-left: -10px;
+        position: relative;
+        top: 1px;
+    }
 }
 
 .husky-label-error {

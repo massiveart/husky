@@ -9807,18 +9807,33 @@ a.btn-black, a.btn-highlight {
   padding: 0 10px;
   font-size: 15px;
 }
+/* line 30, ../scss/modules/label.scss */
+.husky-label-error .counter,
+.husky-label-warning .counter,
+.husky-label-success .counter {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  border: 1px solid #fff;
+  line-height: 20px;
+  text-align: center;
+  margin-left: -10px;
+  position: relative;
+  top: 1px;
+}
 
-/* line 32, ../scss/modules/label.scss */
+/* line 45, ../scss/modules/label.scss */
 .husky-label-error {
   background: #EA524E;
 }
 
-/* line 36, ../scss/modules/label.scss */
+/* line 49, ../scss/modules/label.scss */
 .husky-label-warning {
   background: #F2D212;
 }
 
-/* line 40, ../scss/modules/label.scss */
+/* line 53, ../scss/modules/label.scss */
 .husky-label-success {
   background: #5DC774;
 }
