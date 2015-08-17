@@ -84,9 +84,9 @@ define(function() {
      */
     templates = {
         basic: ['<div class="' + constants.textClass + '">',
-                '   <span class="' + constants.counterClass + '"><%= counter %></span>',
                 '   <strong><%= title %></strong>',
                 '   <span><%= description %></span>',
+                '   <div class="' + constants.counterClass + '"><%= counter %></div>',
                 '</div>'].join(''),
         closeButton: ['<div class="' + constants.closeClass + '">',
                       '<span class="' + constants.closeIconClass + '"></span>',
@@ -101,6 +101,14 @@ define(function() {
      */
     INITIALIZED = function() {
         return createEventName.call(this, 'initialized');
+    },
+
+    /**
+     * raised before destroy process
+     * @event husky.label.[INSTANCE_NAME].destroyed
+     */
+    DESTROYED = function() {
+        return createEventName.call(this, 'destroyed');
     },
 
     /**
@@ -139,6 +147,13 @@ define(function() {
             this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Destroy the component (aura hook)
+         */
+        destroy: function() {
+            this.sandbox.emit(DESTROYED.call(this));
         },
 
         /**

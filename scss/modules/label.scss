@@ -28,28 +28,39 @@
         font-size: 15px;
     }
     .counter {
-        $radius: 10px;
-        display: inline-block;
+        $radius: 7px;
         width: 2 * $radius;
         height: 2 * $radius;
         border-radius: $radius;
-        border: 1px solid $white;
         line-height: 2 * $radius;
         text-align: center;
-        margin-left: -10px;
-        position: relative;
-        top: 1px;
+        font-size: $reallySmallFontSize;
+        position: absolute;
+        top: 7px;
+        right: 30px;
+        background: $white;
+        color: $green;
+        font-weight: bold;
     }
 }
 
 .husky-label-error {
     background: $red;
+    .counter {
+        color: $red;
+    }
 }
 
 .husky-label-warning {
     background: $yellow;
+    .counter {
+        color: $yellow;
+    }
 }
 
 .husky-label-success {
     background: $green;
+    .counter {
+        color: $green;
+    }
 }

@@ -42173,6 +42173,14 @@ define('__component__$label@husky',[],function() {
     },
 
     /**
+     * raised before destroy process
+     * @event husky.label.[INSTANCE_NAME].destroyed
+     */
+    DESTROYED = function() {
+        return createEventName.call(this, 'destroyed');
+    },
+
+    /**
      * listens on and refreshes the fade out delay
      * @event husky.label.[INSTANCE_NAME].refresh
      * @param {String|Number} counter The counter number to display
@@ -42208,6 +42216,13 @@ define('__component__$label@husky',[],function() {
             this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Destroy the component (aura hook)
+         */
+        destroy: function() {
+            this.sandbox.emit(DESTROYED.call(this));
         },
 
         /**

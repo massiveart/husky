@@ -9811,31 +9811,45 @@ a.btn-black, a.btn-highlight {
 .husky-label-error .counter,
 .husky-label-warning .counter,
 .husky-label-success .counter {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  border: 1px solid #fff;
-  line-height: 20px;
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  line-height: 14px;
   text-align: center;
-  margin-left: -10px;
-  position: relative;
-  top: 1px;
+  font-size: 10px;
+  position: absolute;
+  top: 7px;
+  right: 30px;
+  background: #fff;
+  color: #5DC774;
+  font-weight: bold;
 }
 
-/* line 45, ../scss/modules/label.scss */
+/* line 47, ../scss/modules/label.scss */
 .husky-label-error {
   background: #EA524E;
 }
-
 /* line 49, ../scss/modules/label.scss */
+.husky-label-error .counter {
+  color: #EA524E;
+}
+
+/* line 54, ../scss/modules/label.scss */
 .husky-label-warning {
   background: #F2D212;
 }
+/* line 56, ../scss/modules/label.scss */
+.husky-label-warning .counter {
+  color: #F2D212;
+}
 
-/* line 53, ../scss/modules/label.scss */
+/* line 61, ../scss/modules/label.scss */
 .husky-label-success {
   background: #5DC774;
+}
+/* line 63, ../scss/modules/label.scss */
+.husky-label-success .counter {
+  color: #5DC774;
 }
 
 /* line 5, ../scss/modules/toggler.scss */
