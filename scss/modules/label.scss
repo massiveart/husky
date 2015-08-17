@@ -28,19 +28,24 @@
         font-size: 15px;
     }
     .counter {
-        $radius: 7px;
-        width: 2 * $radius;
-        height: 2 * $radius;
-        border-radius: $radius;
-        line-height: 2 * $radius;
-        text-align: center;
-        font-size: $reallySmallFontSize;
+        span {
+            display: inline-block;
+            vertical-align: middle;
+            $radius: 7px;
+            width: 2 * $radius;
+            height: 2 * $radius;
+            border-radius: $radius;
+            line-height: 2 * $radius;
+            text-align: center;
+            font-size: $reallySmallFontSize;
+            background: $white;
+            font-weight: bold;
+        }
         position: absolute;
-        top: 7px;
+        top: 0;
         right: 30px;
-        background: $white;
-        color: $green;
-        font-weight: bold;
+        height: 100%;
+        line-height: 28px;
     }
 }
 
