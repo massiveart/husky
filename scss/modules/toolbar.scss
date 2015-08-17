@@ -165,7 +165,7 @@ $toolbarBigHeight: 50px;
 
             &.disabled:hover,
             &.disabled {
-                background-color: $grayLighter;
+                background-color: $grayLighterer;
                 border-color: transparent;
                 color: $grayDark;
             }
@@ -191,20 +191,20 @@ $toolbarBigHeight: 50px;
         }
 
         &.highlight-gray {
-            background-color: $grayLighter;
+            background-color: $grayLighterer;
             border-color: transparent;
 
             &:hover {
-                background-color: $grayLighter;
+                background-color: $grayLighterer;
             }
             &:active {
-                background-color: $grayLighter;
+                background-color: $grayLighterer;
             }
 
         }
 
         &.is-expanded {
-            background-color: $grayLighter;
+            background-color: $grayLighterer;
 
             ul.toolbar-dropdown-menu {
                 display: block;
@@ -218,10 +218,10 @@ $toolbarBigHeight: 50px;
         }
 
         &:hover {
-            background-color: $grayLighter;
+            background-color: $grayLighterer;
         }
         &:active {
-            background-color: darken($grayLighter, 3%);
+            background-color: darken($grayLighterer, 3%);
         }
     }
 
@@ -233,7 +233,7 @@ $toolbarBigHeight: 50px;
     /**  dropdown styles **/
     .toolbar-dropdown-menu {
         background-color: white;
-        border: 1px solid $grayLighter;
+        border: 1px solid $borderColor;
         border-radius: $borderRadiusSmall;
 
         display: none;

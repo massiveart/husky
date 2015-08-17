@@ -33,7 +33,7 @@
     display: table;
     width: 100%;
     font-size: $smallFontSize;
-    border: 1px solid $grayLighter;
+    border: 1px solid $borderColor;
     border-radius: $borderRadius $borderRadius 0 0;
     background: $white;
 
@@ -71,7 +71,7 @@
 
 .tt-dropdown-menu {
     min-width: 100%;
-    border: 1px solid $grayLighter;
+    border: 1px solid $borderColor;
     margin-top: -1px;
     border-radius: $borderRadius;
     @extend .dropdown-shadow;
