@@ -42153,9 +42153,9 @@ define('__component__$label@husky',[],function() {
      */
     templates = {
         basic: ['<div class="' + constants.textClass + '">',
-                '   <span class="' + constants.counterClass + '"><%= counter %></span>',
                 '   <strong><%= title %></strong>',
                 '   <span><%= description %></span>',
+                '   <div class="' + constants.counterClass + '"><%= counter %></div>',
                 '</div>'].join(''),
         closeButton: ['<div class="' + constants.closeClass + '">',
                       '<span class="' + constants.closeIconClass + '"></span>',
