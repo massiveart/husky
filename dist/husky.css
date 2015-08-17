@@ -9815,7 +9815,7 @@ a.btn-black, a.btn-highlight {
   top: 0;
   right: 30px;
   height: 100%;
-  line-height: 30px;
+  line-height: 28px;
 }
 /* line 31, ../scss/modules/label.scss */
 .husky-label-error .counter span,

@@ -42105,7 +42105,7 @@ define('__component__$label@husky',[],function() {
         type: 'WARNING',
         html: null,
         title: null,
-        counter: 1,
+        counter: 12,
         description: null,
         hasClose: true,
         fadeOut: true,
@@ -42155,7 +42155,7 @@ define('__component__$label@husky',[],function() {
         basic: ['<div class="' + constants.textClass + '">',
                 '   <strong><%= title %></strong>',
                 '   <span><%= description %></span>',
-                '   <div class="' + constants.counterClass + '"><%= counter %></div>',
+                '   <div class="' + constants.counterClass + '"><span><%= counter %></span></div>',
                 '</div>'].join(''),
         closeButton: ['<div class="' + constants.closeClass + '">',
                       '<span class="' + constants.closeIconClass + '"></span>',
@@ -42213,7 +42213,7 @@ define('__component__$label@husky',[],function() {
             this.bindCustomEvents();
             this.render();
             this.bindDomEvents();
-            this.startEffects();
+            //this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
@@ -42250,7 +42250,7 @@ define('__component__$label@husky',[],function() {
         refresh: function() {
             this.options.counter += 1;
             this.abortEffects();
-            this.label.$el.find('.' + constants.counterClass).html(this.options.counter);
+            this.label.$el.find('.' + constants.counterClass + ' span').html(this.options.counter);
             this.updateCounterVisibility();
             this.startEffects();
         },
