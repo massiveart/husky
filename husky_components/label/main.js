@@ -36,7 +36,7 @@ define(function() {
         type: 'WARNING',
         html: null,
         title: null,
-        counter: 12,
+        counter: 1,
         description: null,
         hasClose: true,
         fadeOut: true,
@@ -144,7 +144,7 @@ define(function() {
             this.bindCustomEvents();
             this.render();
             this.bindDomEvents();
-            //this.startEffects();
+            this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
