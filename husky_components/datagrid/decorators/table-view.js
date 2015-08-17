@@ -388,6 +388,7 @@ define(function() {
                     icon: this.options.actionIcon,
                     column: this.options.actionIconColumn || this.datagrid.matchings[0].attribute,
                     align: 'left',
+                    callback: this.datagrid.options.actionCallback,
                     actionIcon: true
                 });
             }

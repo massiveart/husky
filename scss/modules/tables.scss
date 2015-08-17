@@ -21,6 +21,7 @@ table {
 
     tr {
         height: 50px;
+        border-left: 2px solid transparent;
         td:last-child {
             border-right: none;
         }
@@ -63,21 +64,8 @@ table {
         tr:nth-child(2n) {
             background: $grayLightest2;
         }
-
         tr.selected {
-            td:first-child {
-                position: relative;
-                &::before {
-                    content: "";
-                    display: block;
-                    width: 2px;
-                    height: 100%;
-                    background: $grayLighterer;
-                    position: absolute;
-                    top: 0px;
-                    left: 0px;
-                }
-            }
+            border-left-color: $grayLighterer;
         }
     }
 

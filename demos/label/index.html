@@ -57,6 +57,7 @@
                         el: '#errorLabel',
                         type: 'ERROR',
                         description: 'This is a neat error-label',
+                        instanceName: 'error',
                         closeCallback: function() {
                             console.log('You closed a husky-error-label');
                         }
@@ -67,6 +68,7 @@
                         options: {
                             el: '#successLabel',
                             type: 'SUCCESS',
+                            instanceName: 'success',
                             description: 'This is a neat success-label'
                         }
                     },
@@ -75,6 +77,7 @@
                         options: {
                             el: '#warningLabel',
                             type: 'WARNING',
+                            instanceName: 'warning',
                             description: 'This is a neat warning-label'
                         }
                     }
@@ -82,7 +85,7 @@
             app.logger.log('Aura started...');
         });
 
-
+        window.app = app;
     });
 </script>
 </body>
