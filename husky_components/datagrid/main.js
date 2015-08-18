@@ -1246,12 +1246,16 @@
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
                     this.dataGridWindowResize = this.windowResizeListener.bind(this);
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
+                    this.sandbox.dom.on(
+                        this.sandbox.dom.$window,
+                        'resize.' + this.createEventName('dom'),
+                        this.dataGridWindowResize
+                    );
                 }
             },
 
             unbindWindowResize: function() {
-                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize.' + this.createEventName('dom'));
             },
 
             /**

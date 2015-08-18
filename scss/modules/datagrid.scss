@@ -99,19 +99,7 @@
         }
 
         .has-action:hover, .has-action.selected:hover {
-            td:first-child {
-                position: relative;
-                &::before {
-                    content: "";
-                    display: block;
-                    width: 2px;
-                    height: 100%;
-                    background: $blue;
-                    position: absolute;
-                    top: 0px;
-                    left: 0px;
-                }
-            }
+            border-left-color: $blue;
         }
 
         // Remove when validation type for serverside validation is implemented

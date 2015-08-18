@@ -41,7 +41,7 @@ h2 {
     line-height: 30px;
     margin: 0 0 20px 0;
 
-    .content-title {
+    &.content-title {
         border-bottom: 2px solid $grayLighterer;
         margin-bottom: 30px;
     }

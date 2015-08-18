@@ -27,16 +27,45 @@
         padding: 0 10px;
         font-size: 15px;
     }
+    .counter {
+        span {
+            display: inline-block;
+            vertical-align: middle;
+            $radius: 7px;
+            width: 2 * $radius;
+            height: 2 * $radius;
+            border-radius: $radius;
+            line-height: 2 * $radius;
+            text-align: center;
+            font-size: $reallySmallFontSize;
+            background: $white;
+            font-weight: bold;
+        }
+        position: absolute;
+        top: 0;
+        right: 30px;
+        height: 100%;
+        line-height: 28px;
+    }
 }
 
 .husky-label-error {
     background: $red;
+    .counter {
+        color: $red;
+    }
 }
 
 .husky-label-warning {
     background: $yellow;
+    .counter {
+        color: $yellow;
+    }
 }
 
 .husky-label-success {
     background: $green;
+    .counter {
+        color: $green;
+    }
 }
