@@ -96,7 +96,7 @@
     .container {
         padding: 10px 20px 20px 20px;
         background: $grayLighterer;
-        border: 1px solid $grayLighter;
+        border: 1px solid $borderColor;
         @include standard-box-shadow(2px, rgba(0, 0, 0, 0.06));
 
         label {
@@ -156,7 +156,7 @@
     height: 100%;
     background: $white;
     border-radius: 0 0 $borderRadius $borderRadius;
-    border: 1px solid $grayLighter;
+    border: 1px solid $borderColor;
 
     .text {
         font-size: $smallFontSize;
@@ -168,7 +168,7 @@
         top: 0px;
         left: 0px;
         height: 50px;
-        border-bottom: 1px solid $grayLighterer;
+        border-bottom: 1px solid $borderColor;
         line-height: 50px;
         padding-left: 20px;
         padding-right: 20px;
@@ -192,7 +192,7 @@
                 color: $white;
             }
             &.border {
-                border: 1px solid $grayLighter;
+                border: 1px solid $borderColor;
                 box-sizing: initial;
                 height: 28px;
                 line-height: 28px;
@@ -254,7 +254,7 @@
             li {
                 font-size: $baseFontSize;
                 line-height: 50px;
-                border-bottom: 1px solid $grayLighter;
+                border-bottom: 1px solid $borderColor;
                 position: relative;
                 .icon {
                     cursor: move;

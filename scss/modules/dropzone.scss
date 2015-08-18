@@ -17,7 +17,7 @@
 
   width: 100%;
   height: auto;
-  border: 1px dashed $grayLighter;
+  border: 1px dashed $borderColor;
   border-radius: $borderRadius;
   cursor: pointer;
   @include single-transition(opacity, $transitionDuration);
@@ -126,7 +126,7 @@
       }
 
       &.dz-success {
-        border-color: $grayLighter;
+        border-color: $borderColor;
         background: transparent;
         .success-content {
           display: block;
