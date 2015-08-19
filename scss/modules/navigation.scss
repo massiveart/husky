@@ -258,7 +258,7 @@ li.is-active {
         padding-left: 54px;
         padding-right: 20px;
         padding-bottom: 20px;
-        padding-top: 10px;
+        padding-top: 0;
         z-index: 100;
         @include single-transition(opacity, $fadeDuration);
     }
