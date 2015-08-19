@@ -125,6 +125,8 @@ label {
     color: #999999;
     cursor: pointer;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &.large {
         font-size: 16px;

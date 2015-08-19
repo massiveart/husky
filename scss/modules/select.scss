@@ -55,8 +55,7 @@
     }
 
     .dropdown-list {
-        width: 100%;
-        /*display: inline-block;*/
+        min-width: 100%;
         position: absolute;
         top: 20px;
         left: 0px;
@@ -107,7 +106,7 @@
             }
 
             & > li {
-                padding: 0px 10px 0px 20px;
+                padding: 0px 20px 0px 20px;
                 clear: both;
                 height: 30px;
 
