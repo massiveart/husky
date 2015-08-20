@@ -199,6 +199,21 @@ label {
             }
         }
 
+        &:indeterminate,
+        &.is-indeterminate {
+            & + .icon {
+                background-color: $grayLight;
+                color: $white;
+                &::after {
+                    @extend .fa;
+                    display: inline-block;
+                    margin-top: -1px;
+                    margin-left: -1px;
+                    content: $checkboxIcon;
+                }
+            }
+        }
+
         & + .icon {
             // custom checkbox styling
             position: absolute;

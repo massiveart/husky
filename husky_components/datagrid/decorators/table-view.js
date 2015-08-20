@@ -571,6 +571,7 @@ define(function() {
                 childrenExpanded: false,
                 parent: hasParent ? record.parent : null,
                 hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
+                selectedChildren: 0,
                 level: 1
             };
 
@@ -1366,13 +1367,20 @@ define(function() {
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
                 );
                 this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
+                this.indeterminateSelectParents(id);
             } else {
                 this.datagrid.setItemUnselected.call(this.datagrid, id);
                 // ensure that checkboxes are unchecked
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                 );
+                if (this.table.rows[id].selectedChildren > 0) {
+                    this.sandbox.dom.prop(
+                        this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'indeterminate', true
+                    );
+                }
                 this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
+                this.indeterminateUnselectParents(id);
             }
 
             this.updateSelectAll();
@@ -1500,7 +1508,7 @@ define(function() {
          * @param id {Number|String} the id of the record
          */
         openParents: function(recordId) {
-            if (!!this.table && !!this.table.rows[recordId]) {
+            if (!!this.table.rows[recordId]) {
                 var parentId = this.table.rows[recordId].parent;
                 if (!!parentId) {
                     if (!!this.table.rows[parentId].parent) {
@@ -1508,6 +1516,40 @@ define(function() {
                     }
                     this.showChildren(parentId);
                 }
+            }
+        },
+
+        /**
+         * Marks the checkboxes of all parents as indeterminate (if they are not already checked)
+         * @param recordId {Number|String} the id of the record
+         */
+        indeterminateSelectParents: function(recordId) {
+            var parentId = this.table.rows[recordId].parent,
+                $checkbox;
+            if (!!parentId) {
+                this.table.rows[parentId].selectedChildren += 1;
+                $checkbox = this.table.rows[parentId].$el.find('.' + constants.checkboxClass);
+                if (!$checkbox.prop('checked')) {
+                    $checkbox.prop('indeterminate', true);
+                }
+                this.indeterminateSelectParents(parentId);
+            }
+        },
+
+        /**
+         * Unmarks the checkboxes of all parents as indeterminate
+         * @param recordId {Number|String} the id of the record
+         */
+        indeterminateUnselectParents: function(recordId) {
+            var parentId = this.table.rows[recordId].parent,
+                $checkbox;
+            if (!!parentId) {
+                this.table.rows[parentId].selectedChildren -= 1;
+                $checkbox = this.table.rows[parentId].$el.find('.' + constants.checkboxClass);
+                if (this.table.rows[parentId].selectedChildren === 0 && !!$checkbox.prop('indeterminate')) {
+                    $checkbox.prop('indeterminate', false);
+                }
+                this.indeterminateUnselectParents(parentId);
             }
         },
 
