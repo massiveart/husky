@@ -670,9 +670,11 @@ define([], function() {
          * @param disabled - indicates if item is disabled
          */
         renderRightInfo: function($item, data, disabled) {
-            var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item);
-            if (this.options.showActionIcon === true && !disabled) {
-                this.sandbox.dom.append($container, '<span class="' + this.getActionIcon(data) + ' action col-icon"></span>');
+            var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item),
+                actionIcon = this.getActionIcon(data);
+
+            if (this.options.showActionIcon === true && actionIcon && !disabled) {
+                this.sandbox.dom.append($container, '<span class="' + actionIcon + ' action col-icon"></span>');
             }
             if (!!data[this.options.hasSubName] && (!disabled || !this.options.disabledChildren)) {
                 this.sandbox.dom.append($container, '<span class="fa-chevron-right arrow inactive col-icon"></span>');
@@ -1395,6 +1397,7 @@ define([], function() {
             if (this.inOrderMode === true) {
                 return false;
             }
+
             if (this.sandbox.dom.hasClass(event.currentTarget, 'action') === true) {
                 $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
             } else {
