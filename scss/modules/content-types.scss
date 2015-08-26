@@ -182,6 +182,24 @@
             display: none;
         }
 
+        .selected-counter {
+            color: $grayLight;
+            font-size: $reallySmallFontSize;
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 70px;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -10px;
+            display: none;
+        }
+
         .icon {
             display: block;
             font-size: 16px;
@@ -206,11 +224,11 @@
             }
             &.left {
                 float: left;
-                margin-right: 20px;
+                margin-right: -40px;
             }
             &.right {
                 float: right;
-                margin-left: 20px;
+                margin-left: -40px;
             }
         }
 
@@ -231,9 +249,6 @@
         max-height: 255px;
         overflow: auto;
 
-        .loader {
-            padding: 50px 0;
-        }
         .items-list {
             list-style-type: none;
             margin: 0;
@@ -289,6 +304,26 @@
                 display: inline;
             }
             .position {
+                display: none;
+            }
+            .selected-counter {
+                display: none;
+            }
+        }
+    }
+
+    &.is-loading {
+        .header {
+            .loader {
+                display: block;
+            }
+            .no-content {
+                display: none;
+            }
+            .position {
+                display: none;
+            }
+            .selected-counter {
                 display: none;
             }
         }
