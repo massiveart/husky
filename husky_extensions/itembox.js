@@ -105,12 +105,6 @@ define(function() {
                 ].join('');
             },
 
-            noContent: function() {
-                return [
-                    '<div class="no-content">', this.sandbox.translate(this.options.translations.noContentSelected), '</div>'
-                ].join('');
-            },
-
             item: function(id, content) {
                 return [
                     '<li data-id="', id, '">',
