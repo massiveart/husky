@@ -44121,11 +44121,11 @@ define('__component__$data-navigation@husky',[
         },
 
         hideLoader: function() {
-            this.sandbox.emit('husky.loader.hide');
+            this.sandbox.dom.hide(this.sandbox.dom.find('.loader', this.$el));
         },
 
         showLoader: function() {
-            this.sandbox.emit('husky.loader.show');
+            this.sandbox.dom.show(this.sandbox.dom.find('.loader', this.$el));
         },
 
         /**
