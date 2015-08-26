@@ -85,7 +85,7 @@ define(function() {
                     '            <span class="num">0</span><span> ', this.sandbox.translate(this.options.translations.elementsSelected) ,'</span>',
                     '        </span>',
                     '        <span class="fa-cog icon right border', !!this.options.hideConfigButton ? ' hidden' : '', '" id="', this.ids.configButton, '"></span>',
-                    '        <span class="no-content">', this.sandbox.translate(this.options.translations.noContentSelected), '</span>',
+                    '        <span class="no-content-message">', this.sandbox.translate(this.options.translations.noContentSelected), '</span>',
                     '        <div class="position', !!this.options.hidePositionElement ? ' hidden' : '', '">',
                     '            <div class="husky-position" id="', this.ids.displayOption, '">',
                     '                <div class="top left ', (!this.options.displayOptions.leftTop ? 'inactive' : ''), '" data-position="leftTop"></div>',

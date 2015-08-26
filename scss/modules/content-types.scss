@@ -177,7 +177,7 @@
         text-align: center;
         @include clear-float;
 
-        .no-content {
+        .no-content-message {
             color: $grayLight;
             display: none;
         }
@@ -300,7 +300,7 @@
     &.no-content {
         padding-bottom: 0;
         .header {
-            .no-content {
+            .no-content-message {
                 display: inline;
             }
             .position {
@@ -317,7 +317,7 @@
             .loader {
                 display: block;
             }
-            .no-content {
+            .no-content-message {
                 display: none;
             }
             .position {
