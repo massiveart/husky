@@ -22,6 +22,7 @@
             cursor: move;
             color: $black;
             font-size: 16px;
+            border-radius: $borderRadius 0 0 $borderRadius;
             &::before {
                 @extend .fa;
                 content: $fa-var-ellipsis-v;
@@ -46,10 +47,10 @@
 
 .text-block {
     position: relative;
+    margin-bottom: 10px;
     background: $white;
     border: 1px solid $borderColor;
     border-radius: $borderRadius;
-    overflow: hidden;
 
     .head {
 

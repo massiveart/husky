@@ -27,78 +27,75 @@
 
 <div class="grid sortable">
     <div id="text-block-header-block" class="text-blocks-header" style="display: block;">
-        <div id="sort-text-blocks-block" tabindex="0" class="btn link text-blocks-toggle-btn pull-right">Collapse textblocks</div>
+        <div id="sort-text-blocks-block" tabindex="0" class="btn link text-blocks-toggle-btn pull-right">Collapse all textblocks
+        </div>
         <div id="edit-text-blocks-block" tabindex="0" class="btn link text-blocks-toggle-btn pull-right hidden">Edit
             text blocks
         </div>
         <div class="clear"></div>
     </div>
-    <div class="grid-row small" id="block">
-        <div class="text-block typ1-element block-element">
-            <div class="move"></div>
-            <div class="container grid">
-                <div class="text-block-controls">
-                    <div class="fa-eye-slash options-collapse"></div>
-                    <div class="fa-times options-remove"></div>
+    <div class="text-block typ1-element block-element">
+        <div class="move"></div>
+        <div class="container grid">
+            <div class="text-block-controls">
+                <div class="fa-eye-slash options-collapse"></div>
+                <div class="fa-times options-remove"></div>
+            </div>
+            <div class="block block-block grid-row small">
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-title0" class="pointer " title="">
+                        Title
+                    </label>
+
+                    <input id="block-title0" type="text"
+                           class="form-element preview-update trigger-save-button hide-in-sortmode husky-validate"
+                           data-mapper-property="title" placeholder="">
+
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
-                <div class="block block-block grid-row small">
-                    <div class="grid-col-12 floating form-group">
-                        <label for="block-title0" class="pointer " title="">
-                            Title
-                        </label>
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-textarea1" class="pointer " title="">
+                        Description
+                    </label>
 
-                        <input id="block-title0" type="text"
-                               class="form-element preview-update trigger-save-button hide-in-sortmode husky-validate"
-                               data-mapper-property="title" placeholder="">
+                    <textarea id="block-textarea1" class="form-element"></textarea>
 
-                        <div class="block-content" data-sort-mode-id="block-title0"></div>
-                    </div>
-                    <div class="grid-col-12 floating form-group">
-                        <label for="block-textarea1" class="pointer " title="">
-                            Description
-                        </label>
-
-                        <textarea id="block-textarea1" class="form-element"></textarea>
-
-                        <div class="block-content" data-sort-mode-id="block-title0"></div>
-                    </div>
-                    <div class="clear"></div>
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
+                <div class="clear"></div>
             </div>
         </div>
     </div>
 
-    <div class="grid-row small" id="block2">
-        <div class="text-block typ1-element block-element">
-            <div class="move"></div>
-            <div class="container grid">
-                <div class="text-block-controls">
-                    <div class="fa-eye-slash options-collapse"></div>
-                    <div class="fa-times options-remove"></div>
+    <div class="text-block typ1-element block-element">
+        <div class="move"></div>
+        <div class="container grid">
+            <div class="text-block-controls">
+                <div class="fa-eye-slash options-collapse"></div>
+                <div class="fa-times options-remove"></div>
+            </div>
+            <div class="block block-block grid-row small">
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-title2" class="pointer " title="">
+                        Title
+                    </label>
+
+                    <input id="block-title2" type="text"
+                           class="form-element preview-update trigger-save-button hide-in-sortmode husky-validate"
+                           data-mapper-property="title" placeholder="">
+
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
-                <div class="block block-block grid-row small">
-                    <div class="grid-col-12 floating form-group">
-                        <label for="block-title2" class="pointer " title="">
-                            Title
-                        </label>
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-textarea2" class="pointer " title="">
+                        Description
+                    </label>
 
-                        <input id="block-title2" type="text"
-                               class="form-element preview-update trigger-save-button hide-in-sortmode husky-validate"
-                               data-mapper-property="title" placeholder="">
+                    <textarea id="block-textarea2" class="form-element"></textarea>
 
-                        <div class="block-content" data-sort-mode-id="block-title0"></div>
-                    </div>
-                    <div class="grid-col-12 floating form-group">
-                        <label for="block-textarea2" class="pointer " title="">
-                            Description
-                        </label>
-
-                        <textarea id="block-textarea2" class="form-element"></textarea>
-
-                        <div class="block-content" data-sort-mode-id="block-title0"></div>
-                    </div>
-                    <div class="clear"></div>
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
+                <div class="clear"></div>
             </div>
         </div>
     </div>
