@@ -3,10 +3,10 @@
 // --------------------------------------------------
 
 .sortable {
-
     .text-block {
 
-        .container {
+        .container,
+        .collapsed-container {
             padding-left: 40px;
         }
 
@@ -77,8 +77,9 @@
         margin-right: 10px;
     }
 
-    .container {
-        padding: 10px 20px 20px 20px;
+    .container,
+    .collapsed-container{
+        padding: 20px;
         position: relative;
 
         label {
@@ -89,6 +90,57 @@
             max-width: 100%;
             min-width: 100%;
             width: 100%;
+        }
+    }
+
+    .collapsed-container {
+        color: $grayLight;
+        cursor: pointer;
+        padding-top: 10px;
+        display: none;
+        @include clear-float;
+        .title {
+            font-weight: bold;
+            font-style: oblique;
+            margin-bottom: 10px;
+        }
+        .image {
+            float: left;
+            margin-right: 10px;
+            height: 50px;
+            width: 50px;
+            overflow: hidden;
+        }
+        .text {
+            $font-size: $baseFontSize;
+            $line-height: $baseLineHeight;
+            $lines-to-show: 2;
+
+            display: block; /* Fallback for non-webkit */
+            display: -webkit-box;
+            padding-top: 3px;
+            height: 45px;
+            font-size: $font-size;
+            line-height: $line-height;
+            -webkit-line-clamp: $lines-to-show;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .type {
+            font-size: $smallFontSize;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+    }
+
+    &.collapsed {
+        .container {
+            display: none;
+        }
+        .collapsed-container {
+            display: block;
         }
     }
 }
