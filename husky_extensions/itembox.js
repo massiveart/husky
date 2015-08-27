@@ -453,6 +453,9 @@ define(function() {
                 if (typeof(reinitialize) === 'undefined') {
                     reinitialize = true;
                 }
+                if (typeof(scroll) === 'undefined') {
+                    scroll = true;
+                }
 
                 if (!this.$list) {
                     this.$list = createItemList.call(this);
