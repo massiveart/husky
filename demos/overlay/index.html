@@ -184,6 +184,15 @@
                                             type: 'cancel',
                                             inactive: false,
                                             align: 'left'
+                                        },
+                                        {
+                                            text: 'Clear',
+                                            inactive: false,
+                                            align: 'center',
+                                            classes: 'black-text',
+                                            callback: function() {
+                                                alert('HELLO');
+                                            }
                                         }
                                     ],
                                     closeCallback: function() {
@@ -194,7 +203,7 @@
                                     },
                                     okCallback: function(data) {
                                         console.log('You clicked on ok - another');
-                                        console.log('returned data ', data)
+                                        console.log('returned data ', data);
                                         console.log($(data).find('h3').text());
                                         app.sandbox.emit('husky.overlay.slides.slide-left');
                                         return false;
