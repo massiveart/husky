@@ -18,8 +18,8 @@
 
     require.config({
         paths: {
-            jquery: 'bower_components/jquery/jquery',
-            html5sortable: 'vendor/html5sortable/html5sortable'
+            'jquery': 'bower_components/jquery/jquery',
+            'html.sortable': 'bower_components/html.sortable/html.sortable'
         },
         shim: {
             jquery: { exports: '$' },
@@ -28,10 +28,10 @@
     });
 
 
-    define(['html5sortable'], function() {
+    define(['html.sortable'], function() {
 
         return {
-            name: 'html5sortable',
+            name: 'html.sortable',
 
             initialize: function(app) {
                 app.core.dom.sortable = function(selector, options) {
