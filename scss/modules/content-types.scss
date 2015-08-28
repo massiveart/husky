@@ -114,10 +114,13 @@
         }
         .image {
             float: left;
-            margin-right: 10px;
-            height: 50px;
-            width: 50px;
             overflow: hidden;
+            img {
+                display: block;
+                margin-right: 10px;
+                height: 50px;
+                width: 50px;
+            }
         }
         .text {
             $font-size: $baseFontSize;
@@ -140,6 +143,21 @@
             position: absolute;
             top: 10px;
             right: 20px;
+        }
+
+        &.empty {
+            &::before {
+                @extend .fa;
+                content: $fa-var-coffee;
+                display: block;
+                width: 50px;
+                height: 50px;
+                position: relative;
+                top: 10px;
+                left: 0;
+                color: $grayLighter;
+                font-size: 45px;
+            }
         }
     }
 
