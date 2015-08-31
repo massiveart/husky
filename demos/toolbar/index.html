@@ -23,6 +23,10 @@
             background: #52B6CA;
             padding: 0 50px;
         }
+        .darkBackground {
+            background: #20272E;
+            padding: 0 50px;
+        }
         .actions .btn {
             margin-bottom: 20px;
         }
@@ -66,6 +70,11 @@
     <div class="grid-row">
         <div class="blueBackground">
             <div id="toolbar6"></div>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="darkBackground">
+            <div id="toolbar7"></div>
         </div>
     </div>
 </div>
@@ -406,6 +415,7 @@
                         el: '#toolbar5',
                         instanceName: 'contact3',
                         skin: 'big',
+                        responsive: true,
                         groups: [
                             {
                                 id: 1,
@@ -478,6 +488,7 @@
                         instanceName: 'contact6',
                         hasSearch: true,
                         skin: 'big',
+                        responsive: true,
                         groups: [
                             {
                                 id: 1,
@@ -520,6 +531,59 @@
                         ]
                     }
                 },
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar7',
+                        instanceName: 'toolbar7',
+                        skin: 'big',
+                        responsive: true,
+                        buttons: [
+                            {
+                                id: 'display',
+                                icon: 'mobile',
+                                title: 'Smartphone',
+                                dropdownOptions: {
+                                    markSelected: true,
+                                    changeButton: true
+                                },
+                                dropdownItems: [
+                                    {
+                                        id: 'mobile',
+                                        icon: 'mobile',
+                                        title: 'Smartphone'
+                                    },
+                                    {
+                                        id: 'desktop',
+                                        icon: 'desktop',
+                                        title: 'Desktop'
+                                    },
+                                    {
+                                        id: 'tablet',
+                                        icon: 'tablet',
+                                        title: 'Tablet'
+                                    },
+                                    {
+                                        id: 'auto',
+                                        icon: 'mobile',
+                                        title: 'Auto'
+                                    }
+                                ]
+                            },
+                            {
+                                id: 'unpublished-content',
+                                content: '<div id="toggler1" data-aura-component="toggler@husky" data-aura-checked="true"></div>',
+                                title: 'Include unpublished content',
+                                group: 1
+                            },
+                            {
+                                id: 'relead',
+                                icon: 'refresh',
+                                title: 'Reload'
+                            }
+                        ]
+                    }
+                }
             ]);
 
             $('#disable').on('click', function() {
