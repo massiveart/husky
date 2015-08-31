@@ -45,6 +45,10 @@ h2 {
         border-bottom: 2px solid $grayLighterer;
         margin-bottom: 30px;
     }
+
+    &.light {
+        color: $grayLighter;
+    }
 }
 
 h3 {
