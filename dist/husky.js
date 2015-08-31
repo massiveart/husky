@@ -35671,7 +35671,7 @@ define('__component__$toolbar@husky',[],function() {
                     updatedOverflowClass.call(this);
                 }
             } else {
-                if (this.collapsed && this.$find('.husky-toolbar').width() >= this.expandedWidth) {
+                if (this.collapsed && this.$el.width() >= this.expandedWidth) {
                     expandAll.call(this);
                     this.expandedWidth = this.$find('.husky-toolbar').outerWidth();
                     updatedOverflowClass.call(this);
