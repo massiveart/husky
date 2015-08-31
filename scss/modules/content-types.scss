@@ -176,10 +176,22 @@
     }
 }
 
+.text-blocks-header {
+    line-height: 20px;
+    text-align: right;
+    margin-top: -35px;
+    position: relative;
+    z-index: 20;
+}
+
 .text-blocks-toggle-btn {
-    padding: 5px 0;
-    height: auto;
     font-size: $smallFontSize;
+    padding-bottom: 15px;
+    display: inline-block;
+    cursor: pointer;
+    &:focus {
+        outline: none;
+    }
 }
 
 .empty {
