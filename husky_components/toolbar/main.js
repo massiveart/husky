@@ -403,7 +403,7 @@ define(function() {
          * so the dropdown can be seen
          */
         lockToolbarScroll = function() {
-            var scrollPos = this.$el.scrollLeft;
+            var scrollPos = this.$el.scrollLeft();
             this.$el.css({overflow: 'visible'});
             this.$find('.husky-toolbar').css({
                 'margin-left': ((-1) * scrollPos) + 'px'
