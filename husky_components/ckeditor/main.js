@@ -28,7 +28,7 @@ define([], function() {
             table: true,
             link: true,
             pasteFromWord: true,
-            height: 200
+            height: 65
         },
 
         /**
@@ -226,23 +226,6 @@ define([], function() {
                     this.editor.destroy();
                 } else {
                     delete CKEDITOR.instances[this.editor.name];
-                }
-            }
-        },
-
-        remove: function() {
-            var instance = this.sandbox.ckeditor.getInstance(this.options.instanceName);
-
-            if (!!instance) {
-                // FIXME HACK
-                // this hack fix 'clearCustomData' not null on template change
-                // it occurs if the editor dom element not exists
-                // check if dom element exist then destroy instance else remove the instance from global object
-                // this should also fix memory leak that the instances are not deleted from global CKEDITOR
-                if (!!instance.window && instance.window.getFrame()) {
-                    instance.destroy();
-                } else {
-                    delete CKEDITOR.instances[this.options.instanceName];
                 }
             }
         }

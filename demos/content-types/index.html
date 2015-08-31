@@ -24,140 +24,216 @@
 </head>
 <body>
 <h1>Content types - style demo</h1>
-<div class="grid-row">
-    <div class="text-block">
-        <div class="head">
-            <label>Text block</label>
-            <div class="fa-times options-remove"></div>
-            <div class="options-change">
-                <span class="fa-gear"></span>
-                <span class="dropdown-toggle"></span>
-            </div>
+
+<div class="grid sortable">
+    <div id="text-block-header-block" class="text-blocks-header" style="display: block;">
+        <div id="sort-text-blocks-block" tabindex="0" class="btn link text-blocks-toggle-btn pull-right">Collapse all textblocks
         </div>
-        <div class="container">
-            <div class="grid-row form-group">
-                <label for="block1" class="pointer required">Title</label>
-                <input id="block1" type="text" class="form-element preview-update trigger-save-button husky-validate" data-mapper-property="title" data-validation-required="true">
-            </div>
-            <div class="grid-row no-spacing form-group">
-                <label for="block1text" class="pointer required">Article</label>
-                <textarea id="block1text" class="form-element"></textarea>
-            </div>
+        <div id="edit-text-blocks-block" tabindex="0" class="btn link text-blocks-toggle-btn pull-right hidden">Edit
+            text blocks
         </div>
+        <div class="clear"></div>
     </div>
-    <div class="text-block">
-        <div class="head">
-            <label>Text block</label>
-            <div class="fa-times options-remove"></div>
-            <div class="options-change">
-                <span class="fa-gear"></span>
-                <span class="dropdown-toggle"></span>
+    <div class="text-block typ1-element block-element">
+        <div class="move"></div>
+        <div class="container grid">
+            <div class="text-block-controls">
+                <div class="fa-eye-slash options-collapse"></div>
+                <div class="fa-times options-remove"></div>
             </div>
-        </div>
-        <div class="container">
-            <div class="grid-row form-group">
-                <label for="block2" class="pointer required">Title</label>
-                <input id="block2" type="text" class="form-element preview-update trigger-save-button husky-validate" data-mapper-property="title" data-validation-required="true">
-            </div>
-            <div class="grid-row no-spacing form-group">
-                <div class="grid-col-2">
-                    <label for="block2textMore" class="pointer required">Article</label>
-                    <textarea id="block2textMore" class="form-element"></textarea>
+            <div class="block block-block grid-row small">
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-title0" class="pointer " title="">
+                        Title
+                    </label>
+
+                    <input id="block-title0" type="text"
+                           class="form-element preview-update trigger-save-button hide-in-sortmode husky-validate"
+                           data-mapper-property="title" placeholder="">
+
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
-                <div class="grid-col-10">
-                    <label for="block2text" class="pointer required">Article</label>
-                    <textarea id="block2text" class="form-element"></textarea>
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-textarea1" class="pointer " title="">
+                        Description
+                    </label>
+
+                    <textarea id="block-textarea1" class="form-element"></textarea>
+
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
+                <div class="clear"></div>
             </div>
         </div>
     </div>
-    <div class="text-block-footer">
-        <div class="btn action small fit">
-            <div class="fa-plus-circle"></div>
-            <div class="text">Add text block</div>
+
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type">Block with image</div>
+            <div class="title">This is the title</div>
+            <div class="image">
+                <img src="http://lorempixel.com/50/50/"/>
+            </div>
+            <div class="text">Des is a gmahde Wiesn und i moan scho aa, Bladl Radler. Trachtnhuat Wurscht Blosmusi
+                Weißwiaschd nia Stubn a bissal measi, wolpern. Des is a gmahde Wiesn und i moan scho aa, Bladl Radler.
+                Trachtnhuat Wurscht Blosmusi Weißwiaschd nia Stubn a bissal measi, wolpern.</div>
         </div>
-        <span class="desc">(2 out of 10)</span>
     </div>
-    <div class="text-block-footer">
-        <div class="btn action small fit full">
-            <div class="fa-plus-circle"></div>
-            <div class="text">Add text block</div>
+
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type">Block with image</div>
+            <div class="title">This is the title</div>
+            <div class="image"></div>
+            <div class="text">Des is a gmahde Wiesn und i moan scho aa, Bladl Radler. Trachtnhuat Wurscht Blosmusi
+                Weißwiaschd nia Stubn a bissal measi, wolpern. Des is a gmahde Wiesn und i moan scho aa, Bladl Radler.
+                Trachtnhuat Wurscht Blosmusi Weißwiaschd nia Stubn a bissal measi, wolpern.</div>
         </div>
-        <span class="desc">(2 out of 10)</span>
     </div>
-</div>
-<div class="grid-row">
-    <h2 class="divider m-bottom-40">White box style</h2>
 
-    <div class="white-box">
-        <div class="header">
-            <span class="fa-plus-circle icon left action"></span>
-            <span class="fa-coffee icon left border"></span>
-            <span class="fa-coffee icon right action"></span>
-            <span class="fa-plus-circle icon right border"></span>
-            <div class="position">
-                <div class="husky-position">
-                    <div class="top left selected"></div>
-                    <div class="top middle"></div>
-                    <div class="top right"></div>
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type">Block with image</div>
+            <div class="title">This is the title</div>
+            <div class="image">
+                <img src="http://lorempixel.com/50/50/"/>
+            </div>
+            <div class="text hidden"></div>
+        </div>
+    </div>
 
-                    <div class="middle left"></div>
-                    <div class="middle middle inactive"></div>
-                    <div class="middle right"></div>
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type"></div>
+            <div class="title">This is the title</div>
+            <div class="image">
+                <img src="http://lorempixel.com/50/50/"/>
+            </div>
+            <div class="text">Des is a gmahde Wiesn und i moan scho aa, Bladl Radler. Trachtnhuat Wurscht Blosmusi
+                Weißwiaschd nia Stubn a bissal measi, wolpern. Des is a gmahde Wiesn und i moan scho aa, Bladl Radler.
+                Trachtnhuat Wurscht Blosmusi Weißwiaschd nia Stubn a bissal measi, wolpern.</div>
+        </div>
+    </div>
 
-                    <div class="bottom left"></div>
-                    <div class="bottom middle"></div>
-                    <div class="bottom right"></div>
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type">Block with image</div>
+            <div class="title">This is the title</div>
+            <div class="image"></div>
+            <div class="text hidden"></div>
+        </div>
+    </div>
+
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type">Block with image</div>
+            <div class="title"></div>
+            <div class="image">
+                <img src="http://lorempixel.com/50/50/"/>
+            </div>
+            <div class="text hidden"></div>
+        </div>
+    </div>
+
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container">
+            <div class="type hidden">Block with image</div>
+            <div class="title"></div>
+            <div class="image"></div>
+            <div class="text">Des is a gmahde Wiesn und i moan scho aa, Bladl Radler. Trachtnhuat Wurscht Blosmusi
+                Weißwiaschd nia Stubn a bissal measi, wolpern. Des is a gmahde Wiesn und i moan scho aa, Bladl Radler.
+                Trachtnhuat Wurscht Blosmusi Weißwiaschd nia Stubn a bissal measi, wolpern.</div>
+        </div>
+    </div>
+
+    <div class="text-block collapsed typ1-element block-element">
+        <div class="move"></div>
+        <div class="collapsed-container empty">
+            <div class="type">Block with image</div>
+            <div class="title"></div>
+            <div class="image"></div>
+            <div class="text hidden"></div>
+        </div>
+    </div>
+
+    <div class="text-block typ1-element block-element">
+        <div class="move"></div>
+        <div class="container grid">
+            <div class="text-block-controls">
+                <div class="fa-eye-slash options-collapse"></div>
+                <div class="fa-times options-remove"></div>
+            </div>
+            <div class="block block-block grid-row small">
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-title2" class="pointer " title="">
+                        Title
+                    </label>
+
+                    <input id="block-title2" type="text"
+                           class="form-element preview-update trigger-save-button hide-in-sortmode husky-validate"
+                           data-mapper-property="title" placeholder="">
+
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
                 </div>
+                <div class="grid-col-12 floating form-group">
+                    <label for="block-textarea2" class="pointer " title="">
+                        Description
+                    </label>
+
+                    <textarea id="block-textarea2" class="form-element"></textarea>
+
+                    <div class="block-content" data-sort-mode-id="block-title0"></div>
+                </div>
+                <div class="clear"></div>
             </div>
         </div>
-        <div class="content">
-            <ul class="items-list">
-                <li data-id="1"></span><span class="num">1</span><span class="value">Produkt X</span></li>
-                <li data-id="2"><span class="num">2</span><span class="value">Produkt Y</span></li>
-            </ul>
-        </div>
-        <div class="footer"></div>
     </div>
 
-    <div class="m-bottom-30"></div>
-    <div class="white-box">
-        <div class="header">
-            <span class="text">Roses are red violets are blue. This poem makes no sense.</span>
-        </div>
-        <div class="content">
-            <ul class="items-list">
-                <li data-id="1">
-                    <span class="fa-ellipsis-v icon"></span>
-                    <span class="num">1</span>
-                    <img src="http://placehold.it/50x50"/>
-                    <span class="value">Media X</span>
-                    <span class="fa-times remove"></span>
-                </li>
-                <li data-id="2">
-                    <span class="fa-ellipsis-v icon"></span>
-                    <span class="num">2</span>
-                    <img src="http://placehold.it/50x50"/>
-                    <span class="value">Media Y</span>
-                    <span class="fa-times remove"></span>
-                </li>
-            </ul>
-        </div>
-        <div class="footer">
-            <span class="text">Roses are <strong>still</strong> red violets are  <strong>still</strong> blue. This poem  <strong>still</strong> makes no sense.</span>
-        </div>
-    </div>
+    <div class="text-block-footer husky-select" id="block-add" style="width: 200px">
 
-    <div class="m-bottom-30"></div>
-    <div class="white-box">
-        <div class="header">
-            <span class="text">Roses are red violets are blue. This poem makes no sense.</span>
-            <span class="fa-plus-circle icon right border"></span>
-        </div>
-        <div class="content">
-            <div class="no-content">
-                <span class="fa-coffee icon"></span>
-                <div class="text">Nothing to see here. Move on</div>
+        <div class="husky-select-container action">
+            <div class="dropdown-label pointer">
+                <div class="checkbox"><span class="fa-plus-circle icon"></span> <span class="husky-select-label">Add Block</span>
+                </div>
+                <span class="fa-caret-down toggle-icon" style=""></span></div>
+            <div class="grid-row dropdown-list dropdown-shadow husky-select-dropdown-container hidden">
+                <ul class="husky-select-list">
+                    <li data-id="typ1" data-update-label="true">
+                        <div>
+                            <div class="check hidden">
+                                <div class="custom-checkbox no-spacing"><input type="checkbox"
+                                                                               class="form-element is-selected"> <span
+                                    class="icon"></span></div>
+                            </div>
+                            <div class="item-value">Block Type 1</div>
+                        </div>
+                    </li>
+                    <li data-id="typ2" data-update-label="true">
+                        <div>
+                            <div class="check hidden">
+                                <div class="custom-checkbox no-spacing"><input type="checkbox" class="form-element">
+                                    <span class="icon"></span></div>
+                            </div>
+                            <div class="item-value">Block Type 2</div>
+                        </div>
+                    </li>
+                    <li data-id="typ3" data-update-label="true">
+                        <div>
+                            <div class="check hidden">
+                                <div class="custom-checkbox no-spacing"><input type="checkbox" class="form-element">
+                                    <span class="icon"></span></div>
+                            </div>
+                            <div class="item-value">Block Type 3</div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
