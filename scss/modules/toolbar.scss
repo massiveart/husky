@@ -10,6 +10,8 @@ $toolbarBigHeight: 50px;
 .husky-toolbar {
     white-space: nowrap;
     display: inline-block;
+    vertical-align: bottom;
+    width: 100%;
     @include clear-float;
 
     .toolbar-search {
@@ -149,6 +151,10 @@ $toolbarBigHeight: 50px;
             background-color: inherit;
             cursor: default;
             color: $grayLight;
+
+            .dropdown-toggle::after {
+                border-top-color: $grayLight;
+            }
         }
 
         &.disabled::after {
