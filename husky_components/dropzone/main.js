@@ -165,8 +165,8 @@ define([], function() {
         },
 
         /**
-         * listens on and show dropzone popup
-         * @event husky.dropzone.<instance-name>.open-data-source
+         * listens on and shows dropzone popup
+         * @event husky.dropzone.<instance-name>.show-popup
          */
         SHOW_POPUP = function() {
             return createEventName.call(this, 'show-popup');
