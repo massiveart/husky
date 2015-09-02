@@ -151,6 +151,10 @@ $toolbarBigHeight: 50px;
             background-color: inherit;
             cursor: default;
             color: $grayLight;
+
+            .dropdown-toggle::after {
+                border-top-color: $grayLight;
+            }
         }
 
         &.disabled::after {
