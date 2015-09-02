@@ -4,12 +4,11 @@
 
 $footerOuterHeight: 121;
 $footerOuterHeightColappsed: 51;
-$footerTopMargin: 40;
+$footerTopMargin: 10;
 
 @mixin toggle-item {
-    border-bottom: 1px solid $navigationActiveColor;
     height: inherit;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
 }
 
 @mixin subitem-icon-before {
@@ -42,34 +41,15 @@ $fadeDuration: 100ms;
     font-weight: bold;
     cursor: default;
 
-    .section-toggle {
-        display: none;
-        position: absolute;
-        top: 2px;
-        right: 0;
-        a {
-            color: $grayDark;
-        }
-    }
-
     .section-headline-title {
         white-space: nowrap;
-    }
-
-    &:hover {
-        .section-toggle {
-            display: block;
-        }
     }
 }
 
 .husky-navigation {
     float: left;
     height: 100%;
-
-    &.data-navigation-opened {
-        width: 300px !important;
-    }
+    position: relative;
 }
 
 .navigation {
@@ -80,7 +60,7 @@ $fadeDuration: 100ms;
     left: 0px;
     background-color: $navigationBackgroundColor;
     overflow-x: visible;
-    z-index: 101;
+    z-index: 250;
     float: left;
 
     .navigation-close-icon {
@@ -97,7 +77,6 @@ $fadeDuration: 100ms;
         width: 30px;
         left: calc(100% - 38px);
         top: 6px;
-        background-color: $navigationBackgroundColor;
         line-height: 30px;
         vertical-align: middle;
         color: white;
@@ -129,7 +108,7 @@ $fadeDuration: 100ms;
     overflow-y: auto;
     overflow-x: hidden;
     color: rgba(255, 255, 255, 0.5);
-    font-size: 16px;
+    font-size: 14px;
 
     a {
         display: inline-block;
@@ -159,27 +138,29 @@ $fadeDuration: 100ms;
 }
 
 .navigation-header {
-    height: 30px;
     overflow: hidden;
-    margin: 40px $verticalMargin 30px;
+    padding: 35px $verticalMargin;
+    background: $navigationHoverColor;
+    white-space: nowrap;
 }
 
 .navigation-header-title {
     display: inline-block;
-    font-size: 18px;
+    font-size: 16px;
     color: $white;
     margin: 0;
-    line-height: 30px;
+    line-height: 25px;
     cursor: pointer;
+    vertical-align: bottom;
 }
 
 .logo {
     display: inline-block;
     margin-right: 10px;
-    float: left;
     width: 30px;
     height: 30px;
     cursor: pointer;
+    vertical-align: top;
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjMwcHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDMwIDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnNrZXRjaD0iaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoL25zIj4KICAgIDwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggMy4wLjEgKDc1OTcpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPlNsaWNlIDE8L3RpdGxlPgogICAgPGRlc2NyaXB0aW9uPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjcmlwdGlvbj4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0iNDkuOTk5NTk2OCUiIHkxPSItMC4wMDAzNDQ2MDg1MjYlIiB4Mj0iNDkuOTk5NTk2OCUiIHkyPSIxMDAuMDAyNTUlIiBpZD0ibGluZWFyR3JhZGllbnQtMSI+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiM3QUM5NDMiIG9mZnNldD0iMCUiPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzNGQTlGNSIgb2Zmc2V0PSIxMDAlIj48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHNrZXRjaDp0eXBlPSJNU1BhZ2UiPgogICAgICAgIDxnIGlkPSIwMy1TdWx1LVNpZ25ldC1Db2xvcigyKSIgc2tldGNoOnR5cGU9Ik1TTGF5ZXJHcm91cCIgZmlsbD0idXJsKCNsaW5lYXJHcmFkaWVudC0xKSI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0yOS44NTUsMTMuNzg1IEMzMC4xMjgsMTMuMzQgMzAuMDA1LDEyLjcyNSAyOS41ODMsMTIuNDE4IEwyMi40ODksNy4yNjQgQzIyLjA2Nyw2Ljk1NyAyMS42NzcsNi4yODEgMjEuNjIyLDUuNzYyIEwyMS4xMjYsMS4wMzYgQzIxLjA3MiwwLjUxNyAyMC42MjIsMC4yMjggMjAuMTI3LDAuMzkzIEwwLjY0NSw2LjkwOCBDMC4xNSw3LjA3NCAtMC4xMTgsNy42MTMgMC4wNSw4LjEwOCBMMy43MzksMTguOTcxIEMzLjkwNywxOS40NjUgNC40NjIsMTkuOTYgNC45NzIsMjAuMDcgTDIyLjYxNiwyMy44ODUgQzIzLjEyNiwyMy45OTUgMjMuNzY3LDIzLjcyMSAyNC4wMzksMjMuMjc2IEwyOS44NTUsMTMuNzg1IEwyOS44NTUsMTMuNzg1IFogTTEzLjgwMyw4Ljk2MSBDMTMuNDk1LDkuMzgzIDEyLjgyNiw5LjYzNiAxMi4zMTYsOS41MjQgTDQuMDMyLDcuNzAyIEMzLjUyMiw3LjU5IDMuNTEsNy4zNjMgNC4wMDUsNy4xOTcgTDE3Ljc2OSwyLjU5NCBDMTguMjY0LDIuNDI4IDE4LjQxNywyLjYzOCAxOC4xMSwzLjA2IEwxMy44MDMsOC45NjEgTDEzLjgwMyw4Ljk2MSBaIE0xOS40MDUsMy41NTggQzE5LjcxMywzLjEzNiAyMC4wMDksMy4yMTYgMjAuMDY0LDMuNzM1IEwyMS43NTcsMTkuODggQzIxLjgxMSwyMC4zOTkgMjEuNjA1LDIwLjQ3OCAyMS4yOTksMjAuMDU1IEwxNC45MTMsMTEuMjQ0IEMxNC42MDcsMTAuODIxIDE0LjYwOCwxMC4xMzEgMTQuOTE2LDkuNzA5IEwxOS40MDUsMy41NTggTDE5LjQwNSwzLjU1OCBaIE0xLjkxNyw5LjQzOSBDMS43NDksOC45NDUgMi4wMjksOC42MzIgMi41MzksOC43NDQgTDEyLjIwOCwxMC44NzEgQzEyLjcxOCwxMC45ODMgMTMuMzg2LDExLjQyMSAxMy42OTIsMTEuODQzIEwyMC42NTYsMjEuNDUgQzIwLjk2MiwyMS44NzMgMjAuNzk2LDIyLjEyOCAyMC4yODUsMjIuMDE3IEw1Ljk5NiwxOC45MjIgQzUuNDg2LDE4LjgxMSA0LjkzMSwxOC4zMTcgNC43NjMsMTcuODIyIEwxLjkxNyw5LjQzOSBMMS45MTcsOS40MzkgWiBNMjIuMDA4LDkuNDQzIEMyMS45NTQsOC45MjQgMjIuMjU1LDguNzUgMjIuNjc3LDkuMDU3IEwyNy43OTQsMTIuNzc1IEMyOC4yMTYsMTMuMDgyIDI4LjMzOSwxMy42OTcgMjguMDY2LDE0LjE0MiBMMjMuODEsMjEuMDk4IEMyMy41MzgsMjEuNTQzIDIzLjI3LDIxLjQ4MyAyMy4yMTYsMjAuOTY0IEwyMi4wMDgsOS40NDMgTDIyLjAwOCw5LjQ0MyBaIiBpZD0iU2hhcGUiIHNrZXRjaDp0eXBlPSJNU1NoYXBlR3JvdXAiPjwvcGF0aD4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
     background-position: center center;
     background-repeat: no-repeat;
@@ -215,14 +196,19 @@ li.is-active {
     overflow: hidden;
     height: 50px;
 
-    &:hover:not(.is-active) {
+    &:hover {
         background-color: $navigationHoverColor;
+    }
 
-        &.is-expanded {
-            .navigation-items-toggle {
-                border-bottom-color: $navigationBackgroundColor
-            }
-        }
+    &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 0px;
+        height: 100%;
+        background: $blue;
     }
 
     > div {
@@ -233,12 +219,15 @@ li.is-active {
     }
 
     &.is-active {
-        background-color: $navigationActiveColor;
-
-        &.is-expanded {
-            .navigation-items-toggle {
-                border-bottom-color: $navigationBackgroundColor
-            }
+        &::before {
+            width: 5px;
+        }
+        .navigation-item-icon,
+        .navigation-item-title {
+            color: $white;
+        }
+        .navigation-item-title {
+            font-size: $bigFontSize;
         }
     }
 
@@ -258,12 +247,6 @@ li.is-active {
 
     }
 
-    &.is-selected {
-        a {
-            color: white;
-        }
-    }
-
     /* sub-items */
     .navigation-items-list {
         position: absolute;
@@ -275,7 +258,7 @@ li.is-active {
         padding-left: 54px;
         padding-right: 20px;
         padding-bottom: 20px;
-        padding-top: 10px;
+        padding-top: 0;
         z-index: 100;
         @include single-transition(opacity, $fadeDuration);
     }
@@ -318,7 +301,6 @@ li.is-active {
             overflow: hidden;
             line-height: 28px;
             display: inline-block;
-            color: rgba(255, 255, 255, 0.75);
             min-height: 30px; /* prohibits height changes on select */
         }
     }
@@ -370,7 +352,6 @@ li.is-active {
 .navigation-items-toggle {
     position: relative;
     height: 50px;
-    border-bottom: 1px solid transparent;
     z-index: 200;
 }
 
@@ -409,10 +390,10 @@ li a.navigation-settings-icon {
 .navigation footer {
     padding: 15px 20px 15px 23px;
     height: $footerOuterHeight * 1px;
-    background-color: $navigationActiveColor;
+    background-color: $navigationHoverColor;
 
     .user {
-        font-size: $smallFontSize;
+        font-size: $baseFontSize;
         color: $white;
         margin-bottom: 15px;
         height: 20px;
@@ -485,8 +466,7 @@ li a.navigation-settings-icon {
     overflow-x: hidden;
 
     .navigation-header {
-        margin-left: 10px;
-        margin-right: 0;
+        padding-left: 10px;
     }
 
     .navigation-header-title {
@@ -648,7 +628,7 @@ li a.navigation-settings-icon {
 }
 
 .navigation-header {
-    @include single-transition(margin, $transitionDuration);
+    @include single-transition(padding, $transitionDuration);
 
     .navigation-header-title {
         @include single-transition(opacity, $transitionDuration);
@@ -668,7 +648,7 @@ li a.navigation-settings-icon {
 }
 
 .navigation-item-title {
-    @include single-transition(opacity, $transitionDuration);
+    @include transition(opacity $transitionDuration);
 }
 
 .search-icon {

@@ -150,13 +150,18 @@ a.btn-black, a.btn-highlight {
     background-color: $highlightColor;
     padding: 0 10px;
     height: 20px;
-    line-height: 20px;
+    line-height: 18px;
     vertical-align: middle;
     cursor: pointer;
 
     &:before {
         content: $fa-var-plus-circle;
-        font-size: 10px;
-        padding-right: 5px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    span {
+        padding-left: 5px;
+        vertical-align: middle
     }
 }

@@ -28,7 +28,7 @@ define([], function() {
             table: true,
             link: true,
             pasteFromWord: true,
-            height: 200
+            height: 65
         },
 
         /**
@@ -76,12 +76,14 @@ define([], function() {
         getConfig = function() {
             var config = this.sandbox.util.extend(false, {}, this.options);
 
-            config.toolbar = [
-                {name: 'semantics', items: ['Format']},
-                {name: 'basicstyles', items: ['Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike']},
-                {name: 'blockstyles', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
-                {name: 'list', items: ['NumberedList', 'BulletedList']}
-            ];
+            if (!config.toolbar) {
+                config.toolbar = [
+                    {name: 'semantics', items: ['Format']},
+                    {name: 'basicstyles', items: ['Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike']},
+                    {name: 'blockstyles', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+                    {name: 'list', items: ['NumberedList', 'BulletedList']}
+                ];
+            }
 
             // activate paste from Word
             if (this.options.pasteFromWord === true) {
@@ -224,23 +226,6 @@ define([], function() {
                     this.editor.destroy();
                 } else {
                     delete CKEDITOR.instances[this.editor.name];
-                }
-            }
-        },
-
-        remove: function() {
-            var instance = this.sandbox.ckeditor.getInstance(this.options.instanceName);
-
-            if (!!instance) {
-                // FIXME HACK
-                // this hack fix 'clearCustomData' not null on template change
-                // it occurs if the editor dom element not exists
-                // check if dom element exist then destroy instance else remove the instance from global object
-                // this should also fix memory leak that the instances are not deleted from global CKEDITOR
-                if (!!instance.window && instance.window.getFrame()) {
-                    instance.destroy();
-                } else {
-                    delete CKEDITOR.instances[this.options.instanceName];
                 }
             }
         }

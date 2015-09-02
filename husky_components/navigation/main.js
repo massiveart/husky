@@ -102,10 +102,6 @@ define(function() {
         defaults = {
             footerTemplate: '',
             collapsed: false,
-            labels: {
-                hide: 'navigation.hide',
-                show: 'navigation.show'
-            },
             resizeWidth: 1300,
             forceCollapse: false,
             systemName: 'Sulu 2.0',
@@ -165,7 +161,7 @@ define(function() {
         /**
          * raised when navigation was un-collapsed
          * @event husky.navigation.uncollapsed
-         * @param {Number} width The width of the un-collapsed navigation
+         * @param {Number} width The width of thewidth un-collapsed navigation
          */
         EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
 
@@ -231,8 +227,7 @@ define(function() {
          * hides the navigation completely
          * @event husky.navigation.hide
          */
-        EVENT_HIDE = namespace + 'hide'
-        ;
+        EVENT_HIDE = namespace + 'hide';
 
 
     return {
@@ -321,7 +316,7 @@ define(function() {
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
 
                 if (!!section.title) {
-                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
+                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span></div>');
                 }
 
                 this.sandbox.dom.append($sectionDiv, $sectionList);
@@ -430,7 +425,6 @@ define(function() {
          */
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this), '.navigation-items-toggle, .navigation-subitems-toggle');
-            this.sandbox.dom.on(this.$el, 'click', this.toggleSections.bind(this), '.section-toggle');
             this.sandbox.dom.on(this.$el, 'click', this.settingsClicked.bind(this), '.js-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this), '.js-navigation-sub-item, .js-navigation-item');
             this.sandbox.dom.on(this.$el, 'click', function() {
@@ -769,36 +763,6 @@ define(function() {
             }
         },
 
-        /**
-         * toggles sections
-         * @param event
-         */
-        toggleSections: function(event) {
-
-            event.preventDefault();
-
-            var $section = this.sandbox.dom.closest(event.currentTarget, '.section'),
-                $list = this.sandbox.dom.find('.section-items', $section),
-                toggleLink = this.sandbox.dom.find('a', event.currentTarget);
-
-
-            if (this.sandbox.dom.hasClass($section, 'is-hidden')) {
-                // hide section
-                this.sandbox.dom.slideDown($list, 200, function() {
-                    this.sandbox.dom.html(toggleLink, this.sandbox.translate(this.options.labels.hide));
-                    this.sandbox.dom.removeClass($section, 'is-hidden');
-                }.bind(this));
-            } else {
-                // show section
-                this.sandbox.dom.html(toggleLink, this.sandbox.translate(this.options.labels.show));
-                this.sandbox.dom.slideUp($list, 200, function() {
-                    this.sandbox.dom.addClass($section, 'is-hidden');
-                }.bind(this));
-            }
-
-            this.sandbox.emit('husky.navigation.section.toggle');
-        },
-
         // returns if nav was collapsed
         showIfCollapsed: function() {
 
@@ -995,6 +959,7 @@ define(function() {
             }
 
             this.sandbox.dom.addClass(this.$el, 'data-navigation-opened');
+            this.sandbox.dom.width(this.$el, '');
             this.sandbox.util.delay(function() {
                 $element.addClass('expanded');
             }, 0);

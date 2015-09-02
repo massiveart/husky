@@ -319,6 +319,7 @@ require(['lib/husky'], function(Husky) {
                 childrenPropertyName: 'children',
                 resultKey: 'categories',
                 preselected: [7, 10],
+                selectedCounter: true,
                 viewOptions: {
                     table: {
                         openPathToSelectedChildren: true,
