@@ -11,6 +11,7 @@ $toolbarBigHeight: 50px;
     white-space: nowrap;
     display: inline-block;
     vertical-align: bottom;
+    width: auto;
     @include clear-float;
 
     .toolbar-search {
