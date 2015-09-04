@@ -162,6 +162,7 @@ define(function() {
          * raised when navigation was un-collapsed
          * @event husky.navigation.uncollapsed
          * @param {Number} width The width of thewidth un-collapsed navigation
+         * @param {Boolean} true iff the uncollapsing-process was forced
          */
         EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
 
@@ -803,7 +804,7 @@ define(function() {
                 this.hideToolTip();
                 this.setHeightForExpanded();
                 if (this.collapsed) {
-                    this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH, forced);
                     if (!forced) {
                         this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
                     }

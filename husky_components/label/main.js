@@ -21,6 +21,7 @@
  * @param {Number} [options.counter] Counter to display in the label
  * @param {String} [options.description] Description of the lable (if html is null)
  * @param {Boolean} [options.hasClose] if true close button gets appended to the label
+ * @param {String} [options.effectType] either 'slide' or 'fade'
  * @param {Boolean} [options.autoVanish] if true label vanishes automatically
  * @param {Number} [options.vanishDelay] time in ms after which the vanish effect starts
  * @param {Number} [options.vanishDuration] duration of the vanish effect in ms
@@ -40,6 +41,7 @@ define(function() {
         counter: 1,
         description: null,
         hasClose: true,
+        effectType: 'slide',
         autoVanish: true,
         vanishDelay: 0,
         vanishDuration: 250,
@@ -78,6 +80,13 @@ define(function() {
             vanishDelay: 5000,
             title: 'Success',
             labelClass: 'husky-label-success'
+        },
+        SUCCESS_ICON: {
+            labelClass: 'husky-label-success-icon',
+            effectType: 'fade',
+            hasClose: false,
+            vanishDelay: 2000,
+            showDuration: 100
         }
     },
 
@@ -212,19 +221,32 @@ define(function() {
          * Makes the label disapear
          */
         vanish: function() {
-            this.label.$el.slideUp({
-                duration: this.options.vanishDuration,
-                done: this.close.bind(this)
-            });
+            if (this.options.effectType === 'slide') {
+                this.label.$el.slideUp({
+                    duration: this.options.vanishDuration,
+                    done: this.close.bind(this)
+                });
+            } else if (this.options.effectType === 'fade') {
+                this.label.$el.fadeOut({
+                    duration: this.options.vanishDuration,
+                    done: this.close.bind(this)
+                });
+            }
         },
 
         /**
          * Makes the label appear
          */
         show: function() {
-            this.label.$el.slideDown({
-                duration: this.options.showDuration
-            });
+            if (this.options.effectType === 'slide') {
+                this.label.$el.slideDown({
+                    duration: this.options.showDuration
+                });
+            } else if (this.options.effectType === 'fade') {
+                this.label.$el.fadeIn({
+                    duration: this.options.showDuration
+                });
+            }
         },
 
         /**
