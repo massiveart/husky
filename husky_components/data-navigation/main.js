@@ -53,40 +53,40 @@ define([
         templates = {
             header: function() {
                 return [
+                    '<table>',
                     '<% if (data.current.id !== \'root\') { %>',
-                    '   <div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
-                    '       <span class="fa-chevron-left data-navigation-parent-back"></span>',
-                    '       <div class="data-navigation-parent-text">',
-                    '           <% if (!!data.current && data.current.name) { %>',
-                    '               <%= data.current.name %>',
-                    '           <% } else { %>',
-                    '               <%= translates.title %>',
-                    '           <% } %>',
+                    '   <td class="header-item data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
+                    '       <div class="icon-container"><span class="fa-chevron-left icon"/></div>',
+                    '   </td>',
+                    '<% } %>',
+                    '<% if (data.children.length !== 0) { %>',
+                    '   <td class="header-item data-navigation-search">',
+                    '       <div class="icon-container"><span class="fa-search icon"/></div>',
+                    '       <div class="content-container">',
+                    '           <div class="search-container"/>',
                     '       </div>',
-                    '   </div>',
-                    '<% } else { %>',
-                    '   <div class="root-text">',
-                    '       <%= data.current.name || translates.title %>',
-                    '   </div>',
-                    '<% } %>'
+                    '   </td>',
+                    '<% } %>',
+                    '<% if (!!options.showAddButton) { %>',
+                    '   <td class="header-item data-navigation-add">',
+                    '       <div class="icon-container"><span class="fa-plus-circle icon"/></div>',
+                    '       <div class="content-container">',
+                    '           <span class="add-container"><%= options.translates.addButton %></span>',
+                    '       </div>',
+                    '   </td>',
+                    '<% } %>',
+                    '</table>'
                 ].join('');
             },
 
             main: function() {
                 return [
-                    '<div class="data-navigation<% if (options.showAddButton) { %> has-add-btn<% } %>">',
+                    '<div class="data-navigation">',
                     '   <div class="data-navigation-header"></div>',
                     '   <div class="data-navigation-list-container iscroll">',
-                    '       <div class="data-navigation-search"></div>',
                     '       <div class="data-navigation-list-scroll iscroll-inner"></div>',
                     '       <div class="loader"></div>',
                     '   </div>',
-                    '       <div class="data-navigation-list-footer">',
-                    '           <button class="data-navigation-add btn">',
-                    '               <span class="fa-plus-circle"></span>',
-                    '               <%= options.translates.addButton %>',
-                    '           </button>',
-                    '       </div>',
                     '</div>'
                 ].join('');
             }
@@ -240,18 +240,6 @@ define([
                 }
             ]);
 
-            this.sandbox.start([
-                {
-                    name: 'search@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.data-navigation-search', this.$el),
-                        appearance: 'white',
-                        instanceName: 'data-navigation',
-                        placeholderText: this.options.translates.search
-                    }
-                }
-            ]);
-
             this.startInfiniteScroll();
         },
 
@@ -297,7 +285,7 @@ define([
         bindDOMEvents: function() {
             this.$el.on('click', '.data-navigation-item', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
-            this.$el.on('click', '.data-navigation-parent-back', this.selectParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
         },
 
@@ -368,7 +356,6 @@ define([
 
             return this.sandbox.util.load(this.getUrl(url))
                 .then(this.parse.bind(this))
-                .then(this.hideSearch.bind(this))
                 .then(function(data) {
                     this.loading = false;
 
@@ -445,21 +432,6 @@ define([
         },
 
         /**
-         * hide search if no children available
-         * @param data
-         * @returns {*}
-         */
-        hideSearch: function(data) {
-            if (data.children.length === 0 && !this.searchTerm) {
-                this.$find('.data-navigation-search').hide();
-            } else {
-                this.$find('.data-navigation-search').show();
-            }
-
-            return data;
-        },
-
-        /**
          * caches the data inside a cache object
          * @method storeData
          * @param  {Object} data
@@ -505,8 +477,6 @@ define([
                 return this.load(url).then(this.storeData.bind(this));
             } else {
                 this.data = data;
-
-                dfd.then(this.hideSearch.bind(this));
                 dfd.resolve(data);
             }
 
@@ -564,12 +534,37 @@ define([
          * @method updateHeader
          */
         updateHeader: function(data) {
+            this.sandbox.stop('.search-container');
             var tpl = this.headerTpl({
                 data: data,
-                translates: this.options.translates,
-                nameKey: this.options.nameKey
+                options: this.options
             });
             this.$el.find('.data-navigation-header').html(tpl);
+            this.startSearch();
+        },
+
+        startSearch: function() {
+            this.sandbox.start([
+                {
+                    name: 'search@husky',
+                    options: {
+                        el: this.sandbox.dom.find('.search-container', this.$el),
+                        appearance: 'white',
+                        instanceName: 'data-navigation',
+                        placeholderText: this.options.translates.search
+                    }
+                }
+            ]).then(function() {
+                if (!!this.searchTerm){
+                    $('#search-input').val(this.searchTerm);
+                }
+                $('#search-input').focus(function() {
+                    $('.data-navigation-search').addClass('focused');
+                }.bind(this));
+                $('#search-input').blur(function() {
+                    $('.data-navigation-search').removeClass('focused');
+                }.bind(this));
+            }.bind(this));
         },
 
         /**

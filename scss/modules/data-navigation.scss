@@ -5,98 +5,139 @@
 .data-navigation {
     height: 100%;
     overflow: hidden;
-    padding-top: 100px;
-    background-color: $navigationHoverColor;
-    color: #fff;
+    background-color: $grayLighterer;
+    color: $black;
 
-    &.has-add-btn {
-        .data-navigation-list-container {
-            height: calc(100% - 100px);
+    .data-navigation-header {
+        height: 50px;
+        background-color: $grayLighter;
+
+        .header-item {
+            width: 0%;
+            position: relative;
+            cursor: pointer;
+
+            border-right: 1px solid white;
+            overflow: hidden;
+
+            @include transition(width 300ms);
+
+            .icon-container {
+                width: 50px;
+                height: 50px;
+                position: relative;
+
+                .icon {
+                    font-size: 16px;
+                    display: block;
+                    @include centerBlock();
+                }
+            }
+
+            .content-container {
+                height: 50px;
+                line-height: 50px;
+                position: absolute;
+                margin-right: 10px;
+                top: 0;
+                left: 51px;
+
+                vertical-align: middle;
+                font-size: 16px
+            }
         }
 
-        .data-navigation-list-footer {
-            display: block;
+        .header-item:last-child {
+            border: none;
         }
-    }
-}
 
-.data-navigation-search {
-    margin: 20px 40px;
-}
+        .data-navigation-back {
+            background-color: $grayLight;
+            color: $white;
+        }
 
-.data-navigation-list-scroll {
-    position: relative;
-}
+        .data-navigation-add {
+            width: 100%
+        }
 
-.data-navigation-header {
-    position: relative;
-    height: 50px;
-    border-bottom: 1px solid #21272E;
-    line-height: 50px;
-    font-size: 16px;
-    color: #999;
+        .data-navigation-search {
+            &:hover, &.focused {
+                width: 100%;
+            }
 
-    .root-text {
-        padding-left: 20px;
+            .search-container {
+                .search-icon {
+                    display: none;
+                }
+
+                .remove-icon {
+                    line-height: 50px;
+                    background: none;
+                }
+
+                #search-input {
+                    padding-left: 15px;
+                    padding-right: 30px;
+                }
+            }
+        }
     }
 }
 
 .data-navigation-list-container {
-    height: calc(100% - 50px);
+    height: 100%;
     overflow: auto;
     position: relative;
-}
-
-.data-navigation-list {
-    width: 100%;
-    height: 100%;
-    background-color: $navigationHoverColor;
-
-    &.is-animated {
-        position: absolute;
-        top: 0;
-        left: 100%;
-        z-index: 5;
-    }
-}
-
-.data-navigation-list-footer {
-    display: none;
     padding: 10px 0;
-    text-align: center;
-}
 
-.data-navigation-items {
-    height: 100%;
-    min-height: calc(100% - 150px);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow: auto;
-
-    & > li {
+    .data-navigation-list-scroll {
         position: relative;
-        height: 50px;
-        line-height: 50px;
-        padding: 0 30px 0 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        cursor: pointer;
 
-        &:hover {
-            background-color: #21272E;
-        }
+        .data-navigation-list {
+            width: 100%;
+            height: 100%;
 
-        &:focus {
-            outline: 0;
-        }
+            &.is-animated {
+                position: absolute;
+                top: 0;
+                left: 100%;
+                z-index: 5;
+            }
 
-        &.not-selectable {
-            cursor: default;
+            .data-navigation-items {
+                height: 100%;
+                min-height: calc(100% - 150px);
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                overflow: auto;
 
-            &:hover {
-                background-color: initial;
+                & > li {
+                    position: relative;
+                    height: 50px;
+                    line-height: 50px;
+                    padding: 0 30px 0 10px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $grayLight;
+                    }
+
+                    &:focus {
+                        outline: 0;
+                    }
+
+                    &.not-selectable {
+                        cursor: default;
+
+                        &:hover {
+                            background-color: initial;
+                        }
+                    }
+                }
             }
         }
     }
@@ -114,7 +155,6 @@
         right: 10px;
         top: 18px;
         font-size: 14px;
-        color: #999;
     }
 }
 
@@ -130,48 +170,6 @@
     vertical-align: top;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-}
-
-.data-navigation-back {
-    height: 50px;
-
-    &:focus {
-        outline: 0;
-    }
-
-    .data-navigation-parent-back {
-        position: absolute;
-        font-size: 14px;
-        color: #fff;
-        cursor: pointer;
-
-        width: 50px;
-        height: 50px;
-        padding-top: 17px;
-        padding-left: 22px;
-
-        &:hover {
-            background-color: #21272E;
-            padding-bottom: 5px;
-        }
-    }
-
-    .data-navigation-parent-text {
-        margin-left: 60px;
-
-        padding-right: 20px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-.data-navigation-add {
-    .fa-plus-circle {
-        margin-right: 5px;
-        float: left;
-        font-size: 16px;
-    }
 }
 
 .data-navigation-loader-container {
