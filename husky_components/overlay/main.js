@@ -21,8 +21,6 @@
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide' or 'medium'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
- * @params {String} [options.backdropColor] Color of the backdrop
- * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
@@ -69,12 +67,10 @@ define([], function() {
             openOnStart: false,
             removeOnClose: true,
             backdropClose: true,
-            backdropColor: '#000000',
             skin: '',
             supportKeyInput: true,
             propagateEvents: true,
             type: 'normal',
-            backdropAlpha: 0.5,
             cssClass: '',
             slides: [],
             top: null,
@@ -118,12 +114,11 @@ define([], function() {
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
             slidesSelector: '.slides',
-            backdropClass: 'husky-overlay-backdrop',
             overlayOkSelector: '.overlay-ok',
             overlayCancelSelector: '.overlay-cancel',
             overlayOtherButtonsSelector: '.overlay-button',
             tabsClass: 'tabs',
-            languageChangerClass: 'language-changer',
+            languageChangerClass: 'language-changer'
         },
 
         types = {
@@ -222,8 +217,8 @@ define([], function() {
                 '   <span class="text"><%= text %></span>',
                 '</div>'
             ].join(''),
-            backdrop: [
-                '<div class="husky-overlay-backdrop"></div>'
+            wrapper: [
+                '<div class="husky-overlay-wrapper"></div>'
             ].join(''),
             message: [
                 '<div class="message"><%= message %></div>'
@@ -351,9 +346,9 @@ define([], function() {
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
 
-            // make component element invisible (overlay and backdrop are fixed)
-            this.sandbox.dom.width(this.$el, 0);
-            this.sandbox.dom.height(this.$el, 0);
+            // make component element invisible (wrapper is fixed)
+            this.sandbox.dom.width(this.$wrapper, 0);
+            this.sandbox.dom.height(this.$wrapper, 0);
 
             this.setVariables();
             this.initSlideOptions();
@@ -470,7 +465,7 @@ define([], function() {
                 $slides: null,
                 slides: []
             };
-            this.$backdrop = null;
+            this.$wrapper = null;
             this.activeTab = null;
             this.slides = [];
             this.activeSlide = 0;
@@ -490,11 +485,9 @@ define([], function() {
             //only open if closed
             if (this.overlay.opened === false) {
                 this.overlay.opened = true;
-                //init backrop element
-                if (this.$backdrop === null) {
-                    this.initBackdrop();
+                if (this.$wrapper == null) {
+                    this.initWrapper();
                 }
-                //if overlay-element doesn't exist initialize it
                 if (this.overlay.$el === null) {
                     this.initSkeleton();
                     this.bindOverlayEvents();
@@ -574,14 +567,10 @@ define([], function() {
         },
 
         /**
-         * Initializes the Backdrop
+         * Initializes the wrapper
          */
-        initBackdrop: function() {
-            this.$backdrop = this.sandbox.dom.createElement(templates.backdrop);
-            this.sandbox.dom.css(this.$backdrop, {
-                'background-color': this.options.backdropColor
-            });
-            this.sandbox.dom.fadeTo(this.$backdrop, 0, this.options.backdropAlpha);
+        initWrapper: function() {
+            this.$wrapper = this.sandbox.dom.createElement(templates.wrapper);
         },
 
         /**
@@ -592,7 +581,6 @@ define([], function() {
 
             this.overlay.opened = false;
             this.collapsed = false;
-            this.overlay.$content.css('height', '');
 
             this.sandbox.emit(CLOSED.call(this));
 
@@ -600,7 +588,6 @@ define([], function() {
 
             if (!this.options.removeOnClose) {
                 this.sandbox.dom.detach(this.overlay.$el);
-                this.sandbox.dom.detach(this.$backdrop);
             } else {
                 this.removeComponent();
             }
@@ -610,8 +597,8 @@ define([], function() {
          * Inserts the overlay-element into the DOM
          */
         insertOverlay: function(emitEvent) {
-            this.sandbox.dom.append(this.$el, this.overlay.$el);
-            this.sandbox.dom.append(this.$el, this.$backdrop);
+            this.sandbox.dom.append(this.$wrapper, this.overlay.$el);
+            this.sandbox.dom.append(this.$el, this.$wrapper);
 
             if (!!emitEvent) {
                 this.sandbox.emit(OPENED.call(this));
@@ -846,7 +833,7 @@ define([], function() {
                 this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
                 }.bind(this));
-                this.sandbox.dom.on(this.$backdrop, 'click', function(event) {
+                this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
                 }.bind(this));
             }
@@ -868,7 +855,7 @@ define([], function() {
                 this.buttonHandler.bind(this), constants.overlayOtherButtonsSelector);
 
             if (this.options.backdropClose === true) {
-                this.sandbox.dom.on(this.$backdrop, 'click', this.closeHandler.bind(this));
+                this.sandbox.dom.on(this.$wrapper, 'click', this.closeHandler.bind(this));
             }
 
             this.bindOverlayCustomEvents();

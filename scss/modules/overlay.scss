@@ -5,19 +5,13 @@
 
 .husky-overlay-container {
     width: $overlayContainerWidth;
-    position: fixed;
-    top: 0;
-    left: 50%;
     background-color: $white;
-    z-index: 1000;
     border-radius: $borderRadius;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    z-index: 1000;
     @include standard-box-shadow;
-
-    // workaround for overlapping bug:
-    // Only in chrome: if the overlay is displayed on a page which contains an iframe which contains
-    // elements with the translate3d transform-property things get messed up. This line fixes the issue
-    -webkit-transform: translate3d(0, 0, 0);
-    // workaround (end)
 
     &.right-aligned {
         left: auto;
@@ -202,14 +196,25 @@
     }
 }
 
-.husky-overlay-backdrop {
+.husky-overlay-wrapper {
     width: 100%;
     height: 100%;
     position: fixed;
     top: 0px;
     left: 0px;
-    background: #000;
     z-index: 999;
+    text-align: center;
+    white-space: nowrap;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.5);
+
+    &::before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -0.25em;
+    }
 
     // workaround for overlapping bug:
     // Only in chrome: if the overlay is displayed on a page which contains an iframe which contains
