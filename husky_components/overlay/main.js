@@ -17,10 +17,8 @@
  * @params {String} [options.trigger] List of events on which the overlay should be opened
  * @params {String} [options.triggerEl] Element that triggers the overlay
  * @params {String} [options.instanceName] instance name of the component
- * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
- * @params {Boolean} [options.backdrop] if true backdrop will be shown
  * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide' or 'medium'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {String} [options.backdropColor] Color of the backdrop
@@ -29,7 +27,6 @@
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
  * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
- * @params {Array} [options.verticalSpacing] defines the minimum spacing in pixel to the bottom and the top
  * @params {Null|Number} [options.left] to fix the left position of the overlay. (px)
  * @params {Null|Number} [options.top] to fix the top position of the overlay. (px)
  *
@@ -68,12 +65,9 @@ define([], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
-            verticalSpacing: 100, //px
             instanceName: 'undefined',
-            draggable: true,
             openOnStart: false,
             removeOnClose: true,
-            backdrop: true,
             backdropClose: true,
             backdropColor: '#000000',
             skin: '',
@@ -104,8 +98,7 @@ define([], function() {
             cancelDefaultText: 'Cancel',
             okDefaultText: 'Ok',
             languageChanger: null,
-            cssClass: '',
-            smallHeader: false
+            cssClass: ''
         },
 
         internalSlideDefaults = {
@@ -125,14 +118,12 @@ define([], function() {
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
             slidesSelector: '.slides',
-            draggableClass: 'draggable',
             backdropClass: 'husky-overlay-backdrop',
             overlayOkSelector: '.overlay-ok',
             overlayCancelSelector: '.overlay-cancel',
             overlayOtherButtonsSelector: '.overlay-button',
             tabsClass: 'tabs',
             languageChangerClass: 'language-changer',
-            smallHeaderClass: 'small-header'
         },
 
         types = {
@@ -318,14 +309,6 @@ define([], function() {
         },
 
         /**
-         * calls the resize handler of the overlay to set the position, height etc.
-         * @event husky.overlay.<instance-name>.set-position
-         */
-        SET_POSITION = function() {
-            return createEventName.call(this, 'set-position');
-        },
-
-        /**
          * emited after the language changer is changed
          * @event husky.overlay.<instance-name>.language-changed
          * @param {String} selected language
@@ -432,11 +415,6 @@ define([], function() {
             this.sandbox.on(OPEN.call(this), this.triggerHandler.bind(this));
             this.sandbox.on(CLOSE.call(this), this.closeHandler.bind(this));
 
-            this.sandbox.on(SET_POSITION.call(this), function() {
-                this.resetResizeVariables();
-                this.resizeHandler();
-            }.bind(this));
-
             // emit language-changed-event when language dropdown gets changed
             this.sandbox.on('husky.select.' + this.options.instanceName + '.selected.item', function(localeIndex) {
                 this.sandbox.emit(LANGUAGE_CHANGED.call(this),
@@ -493,7 +471,6 @@ define([], function() {
                 slides: []
             };
             this.$backdrop = null;
-            this.dragged = false;
             this.activeTab = null;
             this.slides = [];
             this.activeSlide = 0;
@@ -514,7 +491,7 @@ define([], function() {
             if (this.overlay.opened === false) {
                 this.overlay.opened = true;
                 //init backrop element
-                if (this.$backdrop === null && this.options.backdrop === true) {
+                if (this.$backdrop === null) {
                     this.initBackdrop();
                 }
                 //if overlay-element doesn't exist initialize it
@@ -614,7 +591,6 @@ define([], function() {
             this.sandbox.emit(CLOSING.call(this));
 
             this.overlay.opened = false;
-            this.dragged = false;
             this.collapsed = false;
             this.overlay.$content.css('height', '');
 
@@ -624,10 +600,7 @@ define([], function() {
 
             if (!this.options.removeOnClose) {
                 this.sandbox.dom.detach(this.overlay.$el);
-
-                if (this.options.backdrop === true) {
-                    this.sandbox.dom.detach(this.$backdrop);
-                }
+                this.sandbox.dom.detach(this.$backdrop);
             } else {
                 this.removeComponent();
             }
@@ -638,16 +611,7 @@ define([], function() {
          */
         insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
-
-            // ensures that the overlay box fits the window form the beginning
-            this.resetResizeVariables();
-            this.resizeHandler();
-
-            this.setCoordinates();
-
-            if (this.options.backdrop === true) {
-                this.sandbox.dom.append(this.$el, this.$backdrop);
-            }
+            this.sandbox.dom.append(this.$el, this.$backdrop);
 
             if (!!emitEvent) {
                 this.sandbox.emit(OPENED.call(this));
@@ -707,16 +671,6 @@ define([], function() {
             // render a language changer into the header if configured
             if (this.slides[slide].languageChanger !== null) {
                 this.renderLanguageChanger(slide);
-            }
-
-            // add draggable class if overlay is draggable
-            if (this.options.draggable === true) {
-                this.sandbox.dom.addClass(this.overlay.slides[slide].$el, constants.draggableClass);
-            }
-
-            // add small-header class if configured
-            if (this.slides[slide].smallHeader === true) {
-                this.sandbox.dom.addClass(this.overlay.slides[slide].$header, constants.smallHeaderClass);
             }
 
             // add classes for various styling
@@ -892,11 +846,9 @@ define([], function() {
                 this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
                 }.bind(this));
-                if (this.options.backdrop === true) {
-                    this.sandbox.dom.on(this.$backdrop, 'click', function(event) {
-                        this.sandbox.dom.stopPropagation(event);
-                    }.bind(this));
-                }
+                this.sandbox.dom.on(this.$backdrop, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this));
             }
 
             // close handler for close icon
@@ -915,33 +867,8 @@ define([], function() {
             this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.buttonHandler.bind(this), constants.overlayOtherButtonsSelector);
 
-            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
-                if (this.dragged === false && this.overlay.opened === true) {
-                    this.resizeHandler();
-                }
-            }.bind(this));
-
-            if (this.options.backdrop === true && this.options.backdropClose === true) {
+            if (this.options.backdropClose === true) {
                 this.sandbox.dom.on(this.$backdrop, 'click', this.closeHandler.bind(this));
-            }
-
-            if (this.options.draggable === true) {
-                this.sandbox.util.foreach(this.overlay.slides, function(slide) {
-                    this.sandbox.dom.on(slide.$header, 'mousedown', function(e) {
-                        var origin = {
-                            y: e.clientY - (this.sandbox.dom.offset(this.overlay.slides[this.activeSlide].$header).top - this.sandbox.dom.scrollTop(this.sandbox.dom.$window)),
-                            x: e.clientX - (this.sandbox.dom.offset(this.overlay.slides[this.activeSlide].$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
-                        };
-
-                        //bind the mousemove event if mouse is down on header
-                        this.sandbox.dom.on(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName, function(event) {
-                            this.draggableHandler(event, origin);
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
-                this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
-                    this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
-                }.bind(this));
             }
 
             this.bindOverlayCustomEvents();
@@ -964,10 +891,6 @@ define([], function() {
             this.activeTab = tab;
             this.hideAllTabsElements(slide);
             this.sandbox.dom.show(tab.$el);
-            if (this.dragged === false) {
-                this.resetResizeVariables();
-                this.resizeHandler();
-            }
         },
 
         /**
@@ -1040,92 +963,6 @@ define([], function() {
                 button.callback,
                 this.sandbox.dom.find(constants.contentSelector, this.overlay.$el)
             );
-        },
-
-        /**
-         * Handles the mousemove event for making the overlay draggable
-         * @param event {object} the event-object of the mousemove event
-         * @param origin {object} object with x and y properties which hold the starting position of the cursor
-         */
-        draggableHandler: function(event, origin) {
-            this.updateCoordinates((event.clientY - origin.y), (event.clientX - origin.x));
-            this.dragged = true;
-
-            if (this.overlay.collapsed === true) {
-                this.overlay.collapsed = false;
-            }
-        },
-
-        /**
-         * Sets all properties and variables responsible for the correct resize experience back
-         * to their initial state or re-initializes them
-         */
-        resetResizeVariables: function() {
-            this.overlay.collapsed = false;
-            // FIXME shrink does not work without that but it doesnt scroll to to each time:
-            // this.sandbox.dom.height(this.overlay.$content, '');
-            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
-            this.setSlidesHeight();
-        },
-
-        /**
-         * Handles the shrinking and enlarging of the overlay
-         * if the window gets smaller
-         */
-        resizeHandler: function() {
-            //window is getting smaller - make overlay smaller
-            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing * 2) {
-                this.sandbox.dom.height(this.overlay.$content,
-                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing * 2)
-                );
-                this.overlay.collapsed = true;
-
-                //window is getting bigger - make the overlay bigger
-            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing * 2 &&
-                this.overlay.collapsed === true) {
-
-                //if overlay reached its beginning height - stop
-                if (this.sandbox.dom.height(this.overlay.$el) >= this.overlay.normalHeight) {
-                    this.overlay.collapsed = false;
-
-                    // else enlarge further
-                } else {
-                    this.sandbox.dom.height(this.overlay.$content,
-                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing * 2)
-                    );
-                }
-            }
-
-            // update position
-            this.setCoordinates();
-        },
-
-        /**
-         * Positions the overlay in the middle of the screen
-         */
-        setCoordinates: function() {
-            var top, left;
-            if (!!this.options.top) {
-                top = this.options.top;
-            } else {
-                top = (this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight()) / 2;
-            }
-            if (!!this.options.left) {
-                left = this.options.left;
-            } else {
-                left = (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth()) / 2;
-            }
-            this.updateCoordinates(top, left);
-        },
-
-        /**
-         * Updates the coordinates of the overlay
-         * @param top {Integer} new top of overlay
-         * @param left {Integer} new left of overlay
-         */
-        updateCoordinates: function(top, left) {
-            this.sandbox.dom.css(this.overlay.$el, {'top': top + 'px'});
-            this.sandbox.dom.css(this.overlay.$el, {'left': left + 'px'});
         },
 
         /**

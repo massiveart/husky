@@ -16,7 +16,6 @@
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - either true (for url) or position / name  (see preselector for more information)
- *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by options.fragment) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
@@ -51,7 +50,6 @@ define(function() {
             forceReload: false,
             callback: null,
             forceSelect: true,
-            skin: '',
             preSelectEvent: {
                 enabled: false,
                 triggerSelectItem: true
@@ -299,9 +297,6 @@ define(function() {
                 $list = this.sandbox.dom.createElement('<ul/>'),
                 selectedItem = null,
                 $item = null;
-
-            //add skin class
-            this.sandbox.dom.addClass($element, this.options.skin);
 
             this.$marker = this.sandbox.dom.createElement('<div class="marker"></div>');
             this.sandbox.dom.append($element, this.$marker);

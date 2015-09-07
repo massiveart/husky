@@ -58,13 +58,6 @@
         }
     }
 
-    .draggable {
-        .overlay-header {
-            cursor: move;
-            @include user-select(none);
-        }
-    }
-
     &.error {
         .overlay-header {
             background: $red;
@@ -149,12 +142,6 @@
         position: absolute;
         bottom: 10px;
         right: 20px;
-    }
-
-    &.small-header {
-      background: transparent;
-      min-height: 0;
-      height: 25px;
     }
 }
 

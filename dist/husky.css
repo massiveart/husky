@@ -5501,32 +5501,23 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   display: none;
 }
 /* line 62, ../scss/modules/overlay.scss */
-.husky-overlay-container .draggable .overlay-header {
-  cursor: move;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-}
-/* line 69, ../scss/modules/overlay.scss */
 .husky-overlay-container.error .overlay-header {
   background: #EA524E;
   color: #fff;
 }
-/* line 72, ../scss/modules/overlay.scss */
+/* line 65, ../scss/modules/overlay.scss */
 .husky-overlay-container.error .overlay-header .title {
   color: #000;
 }
-/* line 79, ../scss/modules/overlay.scss */
+/* line 72, ../scss/modules/overlay.scss */
 .husky-overlay-container.warning .overlay-header {
   background: #F2D212;
 }
-/* line 81, ../scss/modules/overlay.scss */
+/* line 74, ../scss/modules/overlay.scss */
 .husky-overlay-container.warning .overlay-header .title {
   color: #000;
 }
-/* line 87, ../scss/modules/overlay.scss */
+/* line 80, ../scss/modules/overlay.scss */
 .husky-overlay-container .slides {
   position: relative;
   left: 0px;
@@ -5535,20 +5526,20 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   -webkit-transition: left 500ms;
   transition: left 500ms;
 }
-/* line 92, ../scss/modules/overlay.scss */
+/* line 85, ../scss/modules/overlay.scss */
 .husky-overlay-container .slides .slide {
   float: left;
   width: 400px;
 }
 
-/* line 99, ../scss/modules/overlay.scss */
+/* line 92, ../scss/modules/overlay.scss */
 .overlay-header {
   min-height: 50px;
   background: #efefef;
   position: relative;
   border-radius: 3px 3px 0 0;
 }
-/* line 105, ../scss/modules/overlay.scss */
+/* line 98, ../scss/modules/overlay.scss */
 .overlay-header .title {
   color: #999;
   font-size: 23px;
@@ -5559,12 +5550,12 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   white-space: nowrap;
   overflow: hidden;
 }
-/* line 117, ../scss/modules/overlay.scss */
+/* line 110, ../scss/modules/overlay.scss */
 .overlay-header.with-sub-title .title {
   margin-bottom: 0;
   padding-bottom: 0;
 }
-/* line 122, ../scss/modules/overlay.scss */
+/* line 115, ../scss/modules/overlay.scss */
 .overlay-header.with-sub-title .sub-title {
   padding-left: 20px;
   padding-top: 5px;
@@ -5572,7 +5563,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   font-size: smaller;
   color: #999;
 }
-/* line 132, ../scss/modules/overlay.scss */
+/* line 125, ../scss/modules/overlay.scss */
 .overlay-header .close-button {
   position: absolute;
   top: 0px;
@@ -5583,25 +5574,19 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   line-height: 12px;
   padding: 8px;
 }
-/* line 143, ../scss/modules/overlay.scss */
+/* line 136, ../scss/modules/overlay.scss */
 .overlay-header .tabs {
   display: inline-block;
 }
-/* line 147, ../scss/modules/overlay.scss */
+/* line 140, ../scss/modules/overlay.scss */
 .overlay-header .language-changer {
   width: 80px;
   position: absolute;
   bottom: 10px;
   right: 20px;
 }
-/* line 154, ../scss/modules/overlay.scss */
-.overlay-header.small-header {
-  background: transparent;
-  min-height: 0;
-  height: 25px;
-}
 
-/* line 161, ../scss/modules/overlay.scss */
+/* line 148, ../scss/modules/overlay.scss */
 .overlay-footer {
   padding: 10px;
   border-top: 1px solid #ddd;
@@ -5614,59 +5599,59 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   content: ' ';
   display: block;
 }
-/* line 168, ../scss/modules/overlay.scss */
+/* line 155, ../scss/modules/overlay.scss */
 .overlay-footer .btn {
   display: inline-block;
   min-width: 70px;
   margin: 0 auto;
   padding: 0;
 }
-/* line 174, ../scss/modules/overlay.scss */
+/* line 161, ../scss/modules/overlay.scss */
 .overlay-footer .btn.tick {
   width: 70px;
   line-height: 28px;
 }
-/* line 179, ../scss/modules/overlay.scss */
+/* line 166, ../scss/modules/overlay.scss */
 .overlay-footer .btn.left {
   float: left;
   margin-right: 20px;
   margin-right: 0;
 }
-/* line 184, ../scss/modules/overlay.scss */
+/* line 171, ../scss/modules/overlay.scss */
 .overlay-footer .btn.right {
   float: right;
   margin-left: 20px;
   margin-right: 0;
 }
-/* line 191, ../scss/modules/overlay.scss */
+/* line 178, ../scss/modules/overlay.scss */
 .overlay-footer.center .btn {
   margin: 0 auto;
 }
-/* line 195, ../scss/modules/overlay.scss */
+/* line 182, ../scss/modules/overlay.scss */
 .overlay-footer.left .btn {
   float: left;
   margin-right: 20px;
 }
-/* line 200, ../scss/modules/overlay.scss */
+/* line 187, ../scss/modules/overlay.scss */
 .overlay-footer.right .btn {
   float: right;
   margin-left: 20px;
 }
 
-/* line 206, ../scss/modules/overlay.scss */
+/* line 193, ../scss/modules/overlay.scss */
 .overlay-content {
   overflow: auto;
   padding-left: 0;
   margin: 0 20px 10px 20px;
 }
-/* line 211, ../scss/modules/overlay.scss */
+/* line 198, ../scss/modules/overlay.scss */
 .overlay-content .message {
   padding: 20px 0 25px 0;
   font-size: 16px;
   color: #999;
 }
 
-/* line 218, ../scss/modules/overlay.scss */
+/* line 205, ../scss/modules/overlay.scss */
 .husky-overlay-backdrop {
   width: 100%;
   height: 100%;
@@ -8113,9 +8098,6 @@ a.btn-black, a.btn-highlight {
   /**
   *** Deactivated Skin
   **/
-  /**
-  *** Overlay Skin
-  **/
 }
 /* line 10, ../scss/modules/tabs.scss */
 .tabs-container ul {
@@ -8170,38 +8152,6 @@ a.btn-black, a.btn-highlight {
 /* line 64, ../scss/modules/tabs.scss */
 .tabs-container.deactivated ul li.is-selected a {
   color: #52B6CA;
-}
-/* line 73, ../scss/modules/tabs.scss */
-.tabs-container.overlay {
-  background-color: transparent;
-  padding: 10px 0 0 20px;
-}
-/* line 78, ../scss/modules/tabs.scss */
-.tabs-container.overlay ul {
-  padding: 0;
-  margin: 0;
-  white-space: nowrap;
-}
-/* line 82, ../scss/modules/tabs.scss */
-.tabs-container.overlay ul li {
-  line-height: 30px;
-  height: 30px;
-  padding: 0 10px;
-  border-radius: 3px 3px 0 0;
-  text-align: center;
-  min-width: 0;
-}
-/* line 89, ../scss/modules/tabs.scss */
-.tabs-container.overlay ul li a {
-  font-size: 14px;
-}
-/* line 92, ../scss/modules/tabs.scss */
-.tabs-container.overlay ul li.is-selected {
-  background-color: #fff;
-}
-/* line 98, ../scss/modules/tabs.scss */
-.tabs-container.overlay .marker {
-  display: none;
 }
 
 /*styles related to the whole container*/
