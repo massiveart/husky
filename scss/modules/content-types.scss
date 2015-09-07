@@ -334,6 +334,7 @@
             padding: 0 20px;
             color: $grayLight;
             li {
+                white-space: nowrap;
                 font-size: $baseFontSize;
                 line-height: 50px;
                 border-bottom: 1px solid $borderColor;
@@ -360,9 +361,14 @@
                 .remove {
                     position: absolute;
                     top: 50%;
-                    right: 10px;
-                    margin-top: -8px;
+                    right: -8px;
+                    margin-top: -20px;
                     cursor: pointer;
+                    width: 40px;
+                    height: 40px;
+                    line-height: 40px;
+                    background: $white;
+                    text-align: center;
                     color: $black;
                 }
             }
