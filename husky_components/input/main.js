@@ -204,6 +204,10 @@ define([], function() {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
 
+            this.sandbox.dom.on(this.input.$input, 'click', function() {
+                this.sandbox.dom.focus(this.input.$input);
+            }.bind(this));
+
             // delegate labels on input
             if (!!this.sandbox.dom.attr(this.$el, 'id')) {
                 this.sandbox.dom.on('label[for="' + this.sandbox.dom.attr(this.$el, 'id') + '"]', 'click', function() {
