@@ -42362,7 +42362,10 @@ define('__component__$overlay@husky',[], function() {
             if (!!event && this.sandbox.dom.hasClass(event.currentTarget, 'inactive')) {
                 return;
             }
-            !!event && this.sandbox.dom.preventDefault(event);
+            if (!!event) {
+                this.sandbox.dom.preventDefault(event);
+                this.sandbox.dom.stopPropagation(event);
+            }
 
             if (this.executeCallback(
                     this.slides[this.activeSlide].okCallback,
