@@ -6,7 +6,6 @@
     $overflowIconSpacing: 30px;
 
     position: relative;
-    padding-top: 10px;
 
     .husky-table {
         position: relative;
@@ -100,19 +99,7 @@
         }
 
         .has-action:hover, .has-action.selected:hover {
-            td:first-child {
-                position: relative;
-                &::before {
-                    content: "";
-                    display: block;
-                    width: 2px;
-                    height: 100%;
-                    background: $blue;
-                    position: absolute;
-                    top: 0px;
-                    left: 0px;
-                }
-            }
+            border-left-color: $blue;
         }
 
         // Remove when validation type for serverside validation is implemented
@@ -170,6 +157,10 @@
     tbody {
 
         .row {
+            .cell-content {
+                display: inline-block;
+                vertical-align: middle;
+            }
             &.even {
                 background: $white;
             }
@@ -229,6 +220,7 @@
             border-radius: $borderRadiusSmall;
             margin-left: 10px;
             display: inline-block;
+            vertical-align: middle;
             opacity: 0;
             @include single-transition(opacity, 100ms, ease-in, 200ms);
             &.right {
@@ -308,11 +300,16 @@
     }
 
     .selected-elements {
-        margin-top: -10px;
         display: block;
-        padding-bottom: 10px;
+        height: 20px;
+        @include transition(height 200ms);
+        overflow: hidden;
         &.indent {
             padding-left: 60px;
+        }
+        &.invisible {
+            visibility: visible;
+            height: 0px;
         }
     }
 

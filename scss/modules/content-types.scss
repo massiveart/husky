@@ -3,48 +3,33 @@
 // --------------------------------------------------
 
 .sortable {
-    .show-in-sortmode {
-        display: none;
-    }
-
-    &.is-sortmode {
-        .show-in-sortmode {
-            display: block;
-        }
-
-        .cke,
-        .hide-in-sortmode {
-            display: none;
-        }
-
-        .text-block {
-            label {
-                display: none;
-            }
-
-            .form-group {
-                margin-top: 0;
-            }
-        }
-    }
-
     .text-block {
-        & > .move {
-            position: relative;
 
+        .container,
+        .collapsed-container {
+            padding-left: 40px;
+        }
+
+        & > .move {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 100%;
+            background: $grayLighter;
+            z-index: 10;
+            text-align: center;
+            cursor: move;
+            color: $black;
+            font-size: 16px;
+            border-radius: $borderRadius 0 0 $borderRadius;
             &::before {
                 @extend .fa;
                 content: $fa-var-ellipsis-v;
-                cursor: move;
-                padding-right: 5px;
-                position: absolute;
-                top: 10px;
-                left: 2px;
-                z-index: 5;
-                color: #999;
-                font-size: 16px;
-                width: 20px;
-                text-align: center;
+                display: block;
+                position: relative;
+                top: 50%;
+                margin-top: -8px;
             }
         }
 
@@ -55,11 +40,17 @@
 }
 
 .text-block-controls {
-    margin-bottom: -20px;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .text-block {
-    margin-bottom: 20px;
+    position: relative;
+    margin-bottom: 10px;
+    background: $white;
+    border: 1px solid $borderColor;
+    border-radius: $borderRadius;
 
     .head {
 
@@ -77,27 +68,28 @@
         }
     }
 
-    .options-change {
-        cursor: pointer;
-        font-size: 16px;
-
-        .dropdown-toggle::after {
-            margin-left: 0;
-        }
-    }
-
     .options-remove {
         cursor: pointer;
-        position: relative;
-        top: 2px;
         font-size: 16px;
+        width: 22px;
+        height: 30px;
+        line-height: 30px;
+        margin-left: 5px;
+        text-align: left;
+    }
+    .options-collapse {
+        cursor: pointer;
+        font-size: 16px;
+        width: 22px;
+        height: 30px;
+        line-height: 30px;
+        text-align: left;
     }
 
-    .container {
-        padding: 10px 20px 20px 20px;
-        background: $grayLighterer;
-        border: 1px solid $grayLighter;
-        @include standard-box-shadow(2px, rgba(0, 0, 0, 0.06));
+    .container,
+    .collapsed-container{
+        padding: 20px;
+        position: relative;
 
         label {
             margin-bottom: 10px;
@@ -109,11 +101,97 @@
             width: 100%;
         }
     }
+
+    .collapsed-container {
+        color: $grayLight;
+        cursor: pointer;
+        padding-top: 10px;
+        display: none;
+        @include clear-float;
+        .title {
+            font-weight: bold;
+            font-style: oblique;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-right: 100px;
+        }
+        .image {
+            float: left;
+            overflow: hidden;
+            img {
+                display: block;
+                margin-right: 10px;
+                height: 50px;
+                width: 50px;
+            }
+        }
+        .text {
+            $font-size: $baseFontSize;
+            $line-height: $baseLineHeight;
+            $lines-to-show: 2;
+
+            display: block; /* Fallback for non-webkit */
+            display: -webkit-box;
+            padding-top: 3px;
+            height: 45px;
+            font-size: $font-size;
+            line-height: $line-height;
+            -webkit-line-clamp: $lines-to-show;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .type {
+            font-size: $smallFontSize;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        &.empty {
+            &::before {
+                @extend .fa;
+                content: $fa-var-coffee;
+                display: block;
+                width: 50px;
+                height: 50px;
+                position: relative;
+                top: 10px;
+                margin: 0 auto;
+                color: $grayLighter;
+                font-size: 45px;
+            }
+        }
+    }
+
+    &.collapsed {
+        .container {
+            display: none;
+        }
+        .collapsed-container {
+            display: block;
+        }
+    }
+}
+
+.text-blocks-header {
+    line-height: 20px;
+    text-align: right;
+    margin-top: -35px;
+    position: relative;
+    z-index: 20;
 }
 
 .text-blocks-toggle-btn {
-    padding: 5px 0;
-    height: auto;
+    font-size: $smallFontSize;
+    padding-bottom: 15px;
+    display: inline-block;
+    cursor: pointer;
+    &:focus {
+        outline: none;
+    }
 }
 
 .empty {
@@ -155,8 +233,9 @@
     width: 100%;
     height: 100%;
     background: $white;
-    border-radius: 0 0 $borderRadius $borderRadius;
-    border: 1px solid $grayLighter;
+    border-radius: $borderRadius;
+    border: 1px solid $borderColor;
+    padding: 0 0 15px 0;
 
     .text {
         font-size: $smallFontSize;
@@ -168,12 +247,37 @@
         top: 0px;
         left: 0px;
         height: 50px;
-        border-bottom: 1px solid $grayLighterer;
+        border-bottom: 1px solid $borderColor;
         line-height: 50px;
         padding-left: 20px;
         padding-right: 20px;
         font-size: $smallFontSize;
+        background: $grayLighterer;
+        text-align: center;
         @include clear-float;
+
+        .no-content-message {
+            color: $grayLight;
+            display: none;
+        }
+
+        .selected-counter {
+            color: $grayLight;
+            font-size: $reallySmallFontSize;
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 70px;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -10px;
+            display: none;
+        }
 
         .icon {
             display: block;
@@ -199,11 +303,11 @@
             }
             &.left {
                 float: left;
-                margin-right: 20px;
+                margin-right: -40px;
             }
             &.right {
                 float: right;
-                margin-left: 20px;
+                margin-left: -40px;
             }
         }
 
@@ -221,56 +325,35 @@
         position: relative;
         top: 0px;
         left: 0px;
+        max-height: 255px;
+        overflow: auto;
 
-        .loader {
-            padding: 50px 0;
-        }
-        .no-content {
-            text-align: center;
-            height: 210px;
-
-            .icon {
-                display: block;
-                position: absolute;
-                top: 0px;
-                left: 50%;
-                padding-top: 15px;
-                line-height: 125px;
-                margin-left: -65px;
-                font-size: 125px;
-                color: $grayLightest;
-            }
-            .text {
-                padding-top: 160px;
-                font-weight: bold;
-                color: $grayLightMedium;
-                font-size: 24px;
-            }
-        }
         .items-list {
             list-style-type: none;
             margin: 0;
             padding: 0 20px;
+            color: $grayLight;
             li {
+                white-space: nowrap;
                 font-size: $baseFontSize;
                 line-height: 50px;
-                border-bottom: 1px solid $grayLighter;
+                border-bottom: 1px solid $borderColor;
                 position: relative;
                 .icon {
                     cursor: move;
-                    color: $grayLight;
+                    color: $black;
                     font-size: 15px;
-                    padding-right: 15px;
+                    padding-right: 10px;
                 }
                 img {
-                    vertical-align: middle;
                     padding-top: 8px;
                     padding-bottom: 8px;
                     padding-right: 20px;
+                    vertical-align: middle;
                 }
                 .num {
                     color: $grayLight;
-                    padding-right: 10px;
+                    padding-right: 15px;
                 }
                 .value {
                     color: $grayLight;
@@ -278,12 +361,15 @@
                 .remove {
                     position: absolute;
                     top: 50%;
-                    right: 0;
-                    margin-top: -8px;
+                    right: -8px;
+                    margin-top: -20px;
                     cursor: pointer;
-                }
-                &:last-child {
-                    border-width: 2px;
+                    width: 40px;
+                    height: 40px;
+                    line-height: 40px;
+                    background: $white;
+                    text-align: center;
+                    color: $black;
                 }
             }
         }
@@ -294,5 +380,37 @@
         line-height: 14px;
         color: $grayLight;
         font-size: $smallFontSize;
+    }
+
+    &.no-content {
+        padding-bottom: 0;
+        .header {
+            .no-content-message {
+                display: inline;
+            }
+            .position {
+                display: none;
+            }
+            .selected-counter {
+                display: none;
+            }
+        }
+    }
+
+    &.is-loading {
+        .header {
+            .loader {
+                display: block;
+            }
+            .no-content-message {
+                display: none;
+            }
+            .position {
+                display: none;
+            }
+            .selected-counter {
+                display: none;
+            }
+        }
     }
 }

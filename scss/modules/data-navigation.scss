@@ -4,8 +4,9 @@
 
 .data-navigation {
     height: 100%;
+    overflow: hidden;
     padding-top: 100px;
-    background-color: $navigationActiveColor;
+    background-color: $navigationHoverColor;
     color: #fff;
 
     &.has-add-btn {
@@ -49,7 +50,7 @@
 .data-navigation-list {
     width: 100%;
     height: 100%;
-    background-color: $navigationActiveColor;
+    background-color: $navigationHoverColor;
 
     &.is-animated {
         position: absolute;

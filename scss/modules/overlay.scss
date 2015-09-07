@@ -160,7 +160,7 @@
 
 .overlay-footer {
     padding: 10px;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $borderColor;
     text-align: center;
     border-radius: 0 0 $borderRadius $borderRadius;
     @include clear-float;

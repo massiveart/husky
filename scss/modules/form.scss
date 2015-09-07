@@ -3,62 +3,66 @@
 // --------------------------------------------------
 
 .form-element {
-  width: 100%;
-  height: 30px;
-  border: 1px solid $inputBorderColor;
-  padding: 0 5px;
-  font-size: 14px;
-  border-radius: $borderRadius;
-  border: 1px solid $grayLighter;
+    width: 100%;
+    height: 30px;
+    border: 1px solid $borderColor;
+    padding: 0 5px;
+    font-size: 14px;
+    border-radius: $borderRadius;
 
-  &:focus {
-    outline: 0;
-    border-color: $inputBorderFocusColor;
-  }
+    &:focus {
+        outline: 0;
+        border-color: $inputBorderFocusColor;
+    }
 
-  &.input-large {
-    height: 40px;
-    padding: 0 10px;
-  }
+    &.input-large {
+        height: 40px;
+        padding: 0 10px;
+    }
 
-  &[readonly] {
-    background: none;
-    color: $grayLight;
-  }
+    &.input-bold {
+        @extend .input-large;
+        font-size: $reallyBigFontSize;
+    }
+
+    &[readonly] {
+        background: none;
+        color: $grayLight;
+    }
 }
 
-
 input[type="text"] {
-  &.input-round {
-    border-radius: 30px;
-  }
+    &.input-round {
+        border-radius: 30px;
+    }
 }
 
 input
 .input-description {
-  margin-top: -5px;
-  font-size: 10px;
-  color: $grayLight;
+    margin-top: -5px;
+    font-size: 10px;
+    color: $grayLight;
 }
 
 .input-placeholder-style {
-  color: $grayLight;
-  font-weight: normal;
+    color: $grayLight;
+    font-weight: normal;
 }
 
 input {
-  &::-webkit-input-placeholder {
-    @extend .input-placeholder-style;
-  }
-  &:-moz-placeholder {
-    @extend .input-placeholder-style;
-  }
-  ::-moz-placeholder {  /* Firefox 19+ */
-    @extend .input-placeholder-style;
-  }
-  :-ms-input-placeholder {
-    @extend .input-placeholder-style;
-  }
+    &::-webkit-input-placeholder {
+        @extend .input-placeholder-style;
+    }
+    &:-moz-placeholder {
+        @extend .input-placeholder-style;
+    }
+    ::-moz-placeholder {
+        /* Firefox 19+ */
+        @extend .input-placeholder-style;
+    }
+    :-ms-input-placeholder {
+        @extend .input-placeholder-style;
+    }
 }
 
 // Form behaviours
@@ -70,275 +74,290 @@ input {
 .form-group,
 .form-group-vertical,
 .form-vertical .form-group {
-  min-height: 30px;
+    min-height: 30px;
 
-  > :first-child {
-    height: 20px;
-    margin-bottom: 10px;
-  }
+    > :first-child {
+        height: 20px;
+        margin-bottom: 10px;
+    }
 
-  > :nth-child(2) {
-    margin: 0;
-    vertical-align: middle;
-  }
+    > :nth-child(2) {
+        margin: 0;
+        vertical-align: middle;
+    }
 }
 
 .form-horizontal {
 
-  .form-group {
+    .form-group {
 
-    display: table;
-    table-layout: fixed;
-    width: 100%;
+        display: table;
+        table-layout: fixed;
+        width: 100%;
 
-    > * {
-      display: table-cell;
+        > * {
+            display: table-cell;
+        }
+
+        > :first-child {
+            text-align: right;
+            vertical-align: middle;
+            padding-right: 20px;
+            width: 140px;
+        }
+
+        label.top {
+            vertical-align: top;
+            padding-top: 5px;
+        }
+
+        > :nth-child(2) {
+            width: 100%;
+        }
     }
-
-    > :first-child {
-      text-align: right;
-      vertical-align: middle;
-      padding-right: 20px;
-      width: 140px;
-    }
-
-    label.top {
-      vertical-align: top;
-      padding-top: 5px;
-    }
-
-    > :nth-child(2) {
-      width: 100%;
-    }
-  }
 }
-
-
 
 // Labels
 // -------------------------
 label {
-  display: block;
-  font-size: 14px;
-  color: #999999;
-  cursor: pointer;
-  white-space: nowrap;
+    display: block;
+    font-size: 14px;
+    color: #999999;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-  &.large {
-    font-size: 16px;
-    font-weight: bold;
-  }
+    &.large {
+        font-size: 16px;
+        font-weight: bold;
+    }
 
-  .form-element {
-    margin-top: 5px;
-    border: 1px solid $grayLighter;
-  }
+    .form-element {
+        margin-top: 5px;
+        border: 1px solid $borderColor;
+    }
 
-  &.inline {
-    font-size: 1em;
-    font-weight: normal;
-    display: inline;
-    vertical-align: middle;
-  }
-  &.spacing-right {
-    margin-right: 10px;
-  }
-  &.spacing-left {
-    margin-left: 10px;
-  }
+    &.inline {
+        font-size: 1em;
+        font-weight: normal;
+        display: inline;
+        vertical-align: middle;
+    }
+    &.spacing-right {
+        margin-right: 10px;
+    }
+    &.spacing-left {
+        margin-left: 10px;
+    }
 }
 
 // Checkboxes
 // -------------------------
 .custom-checkbox {
-  $checkboxSize: 15px;
-  $checkboxIcon: $fa-var-check;
+    $checkboxSize: 15px;
+    $checkboxIcon: $fa-var-check;
 
-  width: $checkboxSize;
-  height: $checkboxSize;
-  position: relative;
-  top: 2px;
-  left: 0px;
-  display: inline-block;
-  margin: 0 5px 0 0;
-
-  &.no-spacing {
-    top: 0;
-    margin: 0;
-  }
-
-  input {
-    opacity: 0;
     width: $checkboxSize;
     height: $checkboxSize;
-    display: block;
-    position: absolute;
-    top: 0px;
+    position: relative;
+    top: 2px;
     left: 0px;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px 0 0;
 
-    &:checked,
-    &.is-checked {
-      & + .icon {
-        border-color: $green;
-        background-color: $green;
-        color: $white;
-        &::after {
-          @extend .fa;
-          display: inline-block;
-          margin-top: -1px;
-          margin-left: -1px;
-          content: $checkboxIcon;
+    &.no-spacing {
+        top: 0;
+        margin: 0;
+    }
+
+    input {
+        opacity: 0;
+        width: $checkboxSize;
+        height: $checkboxSize;
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+
+        &:checked,
+        &.is-checked {
+            & + .icon {
+                border-color: $green;
+                background-color: $green;
+                color: $white;
+                &::after {
+                    @extend .fa;
+                    display: inline-block;
+                    margin-top: -1px;
+                    margin-left: -1px;
+                    content: $checkboxIcon;
+                }
+            }
         }
-      }
+
+        &:indeterminate,
+        &.is-indeterminate {
+            & + .icon {
+                background-color: $grayLight;
+                color: $white;
+                &::after {
+                    @extend .fa;
+                    display: inline-block;
+                    margin-top: -1px;
+                    margin-left: -1px;
+                    content: $checkboxIcon;
+                }
+            }
+        }
+
+        & + .icon {
+            // custom checkbox styling
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            margin: 0;
+            padding: 0;
+
+            display: block;
+            width: $checkboxSize;
+            height: $checkboxSize;
+
+            border: 1px solid $grayLight;
+            font-size: 15px;
+            line-height: $checkboxSize - 2px;
+            text-align: center;
+            border-radius: $borderRadiusSmall;
+        }
     }
-
-    & + .icon {
-      // custom checkbox styling
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      margin: 0;
-      padding: 0;
-
-      display: block;
-      width: $checkboxSize;
-      height: $checkboxSize;
-
-      border: 1px solid $grayLight;
-      font-size: 15px;
-      line-height: $checkboxSize - 2px;
-      text-align: center;
-      border-radius: $borderRadiusSmall;
-    }
-  }
 }
 
 // Textarea
 // -------------------------
 
 textarea {
-  resize: both;
+    resize: both;
 }
 
 textarea.vertical {
-  resize: vertical;
+    resize: vertical;
 }
 
 textarea.horizontal {
-  resize: horizontal;
+    resize: horizontal;
 }
 
 textarea.noResize {
-  resize: none;
+    resize: none;
 }
 
 textarea.form-element {
-  width: 100%;
-  height: 40px;
-  min-height: 150px;
-  padding: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  &.small {
-    height: 70px;
-    min-height: 70px;
-    padding: 5px;
-  }
+    width: 100%;
+    height: 40px;
+    min-height: 150px;
+    padding: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    &.small {
+        height: 70px;
+        min-height: 70px;
+        padding: 5px;
+    }
 }
 
 // Radio
 // -------------------------
 .custom-radio {
-  $radioSize: 15px;
-  width: $radioSize;
-  height: $radioSize;
-  position: relative;
-  top: 2px;
-  left: 0px;
-  display: inline-block;
-  margin: 0 5px 0 0;
-
-  &.no-spacing {
-    top: 0;
-    margin: 0;
-  }
-
-  input {
+    $radioSize: 15px;
     width: $radioSize;
     height: $radioSize;
-    opacity: 0;
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    top: 0px;
+    position: relative;
+    top: 2px;
     left: 0px;
-    margin: 0;
-    padding: 0;
+    display: inline-block;
+    margin: 0 5px 0 0;
 
-    &:checked,
-    &.is-checked {
-      & + .icon {
-        border-color: $white;
+    &.no-spacing {
+        top: 0;
+        margin: 0;
+    }
 
-        &::after {
-          content: "";
-          display: block;
-          width: 100%;
-          height: 100%;
-          border-radius: $radioSize;
-          background-color: $green;
+    input {
+        width: $radioSize;
+        height: $radioSize;
+        opacity: 0;
+        cursor: pointer;
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        margin: 0;
+        padding: 0;
+
+        &:checked,
+        &.is-checked {
+            & + .icon {
+                border-color: $white;
+
+                &::after {
+                    content: "";
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: $radioSize;
+                    background-color: $green;
+                }
+            }
         }
-      }
-    }
 
-    & + .icon {
-      //  custom checkbox styling
-      display: block;
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      width: $radioSize;
-      height: $radioSize;
-      padding: 2px;
-      border-radius: $radioSize;
-      border: 1px solid $inputBorderColor;
-      background-color: $white;
-      text-align: center;
-      margin: 0;
+        & + .icon {
+            //  custom checkbox styling
+            display: block;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: $radioSize;
+            height: $radioSize;
+            padding: 2px;
+            border-radius: $radioSize;
+            border: 1px solid $borderColor;
+            background-color: $white;
+            text-align: center;
+            margin: 0;
+        }
     }
-  }
 }
-
 
 // CK Editor
 // -------------------------
 .cke {
-  &.cke_chrome {
-    box-shadow: none !important;
-    border: 0 !important;
-  }
+    &.cke_chrome {
+        box-shadow: none !important;
+        border: 0 !important;
+    }
 
-  .cke_inner {
-    border: 1px solid $inputBorderColor !important;
-  }
-  .cke_inner,
-  .cke_wysiwyg_frame {
-    border-bottom-left-radius: $borderRadius !important;
-    border-bottom-right-radius: $borderRadius !important;
-  }
+    .cke_inner {
+        border: 1px solid $borderColor !important;
+        border-radius: 3px !important;
+    }
+    .cke_inner,
+    .cke_wysiwyg_frame {
+        border-bottom-left-radius: $borderRadius !important;
+        border-bottom-right-radius: $borderRadius !important;
+    }
 }
 
 .cke_hidpi .cke_dialog_close_button {
-  background-image: none !important;
+    background-image: none !important;
 }
 
 // Font-definition
 // -------------------------
 span.error {
-  font-size: $baseFontSize;
-  color: $red;
-  font-weight: bold;
+    font-size: $baseFontSize;
+    color: $red;
+    font-weight: bold;
 }

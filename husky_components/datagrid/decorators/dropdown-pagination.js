@@ -112,10 +112,6 @@ define(function() {
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             this.preparePagination();
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
-
-            this.preparePaginationDropdown();
-            this.prepareShowElementsDropdown();
-
             this.bindDomEvents();
         },
 
@@ -140,8 +136,8 @@ define(function() {
          * Destroys the pagination
          */
         destroy: function() {
-            this.unbindDomEvents();
             this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            this.unbindDomEvents();
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -250,6 +246,8 @@ define(function() {
                 }));
                 this.sandbox.dom.append(this.$paginationContainer, '<span></span>')
                 this.sandbox.dom.append(this.$paginationContainer, $showElements);
+
+                this.prepareShowElementsDropdown();
             }
 
             if (parseInt(this.data.pages, 10) > 1) {
@@ -263,6 +261,8 @@ define(function() {
                 this.sandbox.dom.append($pagination, this.sandbox.util.template(templates.pageChanger)({
                     label: paginationLabel
                 }));
+
+                this.preparePaginationDropdown();
             }
         },
 

@@ -204,7 +204,7 @@
                     '</div>'
                 ].join(''),
                 selectedCounter: [
-                    '<span class="selected-elements smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
+                    '<span class="selected-elements invisible smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
                 ].join('')
             },
 
@@ -483,6 +483,15 @@
              */
             MEDIUM_LOADER_HIDE = function() {
                 return this.createEventName('medium-loader.hide');
+            },
+
+            /**
+             * selects an item with a given id
+             * @event husky.datagrid.items.deselect
+             * @param {String|Number} The id of the item to select
+             */
+            SELECT_ITEM = function() {
+                return this.createEventName('select.item');
             },
 
             /**
@@ -1246,12 +1255,16 @@
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
                     this.dataGridWindowResize = this.windowResizeListener.bind(this);
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
+                    this.sandbox.dom.on(
+                        this.sandbox.dom.$window,
+                        'resize.' + this.createEventName('dom'),
+                        this.dataGridWindowResize
+                    );
                 }
             },
 
             unbindWindowResize: function() {
-                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize.' + this.createEventName('dom'));
             },
 
             /**
@@ -1262,49 +1275,26 @@
                     this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
                 }
 
-                // listen for private events
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
-
-                // provide the datagrid-data via event
                 this.sandbox.on(DATA_GET.call(this), this.provideData.bind(this));
-
-                // filter data
                 this.sandbox.on(DATA_SEARCH.call(this), this.searchGrid.bind(this));
-
-                // filter data
                 this.sandbox.on(URL_UPDATE.call(this), this.updateUrl.bind(this));
-
-                // changes the view of the datagrid
                 this.sandbox.on(CHANGE_VIEW.call(this), this.changeView.bind(this));
-
-                // changes the view of the datagrid
                 this.sandbox.on(CHANGE_PAGINATION.call(this), this.changePagination.bind(this));
-
-                // trigger selectedItems
-                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
-                    callback(this.getSelectedItemIds());
-                }.bind(this));
-
-                // add a single data record
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
-                // add multiple data records
                 this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
-
-                // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
-
-                // change an exsiting data-record
                 this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
-
-                // update selected-counter
                 this.sandbox.on(NUMBER_SELECTIONS.call(this), this.updateSelectedCounter.bind(this));
-
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
-
                 this.sandbox.on(SELECTED_UPDATE.call(this), this.updateSelection.bind(this));
+                this.sandbox.on(SELECT_ITEM.call(this), this.selectItem.bind(this));
                 this.sandbox.on(ITEMS_DESELECT.call(this), function() {
                     this.gridViews[this.viewId].deselectAllRecords();
+                }.bind(this));
+                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
+                    callback(this.getSelectedItemIds());
                 }.bind(this));
 
                 this.startColumnOptionsListener();
@@ -1555,6 +1545,14 @@
                 for (i = -1, length = selection.length; ++i < length;) {
                     this.gridViews[this.viewId].selectRecord(selection[i]);
                 }
+            },
+
+            /**
+             * Selects an item with a given id
+             * @param itemId {Number|String} the id of the item to select
+             */
+            selectItem: function(itemId) {
+                this.gridViews[this.viewId].selectRecord(itemId);
             },
 
             /**
