@@ -41707,10 +41707,6 @@ define('__component__$overlay@husky',[], function() {
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
 
-            // make component element invisible (wrapper is fixed)
-            this.sandbox.dom.width(this.$wrapper, 0);
-            this.sandbox.dom.height(this.$wrapper, 0);
-
             this.setVariables();
             this.initSlideOptions();
             this.bindEvents();
@@ -41860,8 +41856,6 @@ define('__component__$overlay@husky',[], function() {
 
                     this.sandbox.emit(INITIALIZED.call(this));
 
-                    this.insertOverlay(false);
-
                     this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
 
                     this.insertOverlay(true);
@@ -41932,6 +41926,7 @@ define('__component__$overlay@husky',[], function() {
          */
         initWrapper: function() {
             this.$wrapper = this.sandbox.dom.createElement(templates.wrapper);
+            this.$wrapper.hide();
         },
 
         /**
@@ -41941,12 +41936,11 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.emit(CLOSING.call(this));
 
             this.overlay.opened = false;
-            this.collapsed = false;
 
             this.sandbox.emit(CLOSED.call(this));
 
             this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
-
+            this.$wrapper.hide();
             if (!this.options.removeOnClose) {
                 this.sandbox.dom.detach(this.overlay.$el);
             } else {
@@ -41960,6 +41954,7 @@ define('__component__$overlay@husky',[], function() {
         insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$wrapper, this.overlay.$el);
             this.sandbox.dom.append(this.$el, this.$wrapper);
+            this.$wrapper.show();
 
             if (!!emitEvent) {
                 this.sandbox.emit(OPENED.call(this));
