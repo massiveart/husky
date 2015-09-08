@@ -106,14 +106,14 @@
 }
 
 .data-navigation-list-container {
-    height: 100%;
+    height: calc(100% - 50px);
     overflow: auto;
     position: relative;
     padding: 10px 0;
 
     .data-navigation-list-scroll {
         position: relative;
-        height: 100%;
+        height: calc(100% - 40px);
 
         .data-navigation-list {
             background-color: $grayLighterer;

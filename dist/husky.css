@@ -11235,7 +11235,7 @@ a.btn-black, a.btn-highlight {
 
 /* line 108, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container {
-  height: 100%;
+  height: calc(100% - 50px);
   overflow: auto;
   position: relative;
   padding: 10px 0;
@@ -11243,7 +11243,7 @@ a.btn-black, a.btn-highlight {
 /* line 114, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll {
   position: relative;
-  height: 100%;
+  height: calc(100% - 40px);
 }
 /* line 118, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list {
