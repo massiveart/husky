@@ -33,9 +33,9 @@
 
                 width: 50px;
                 height: 50px;
+                font-size: 20px;
 
                 span {
-                    font-size: 16px;
                     display: block;
                     @include centerBlock();
                 }
@@ -50,6 +50,7 @@
                 margin-right: 10px;
                 position: relative;
 
+                font-size: 12px;
                 vertical-align: middle;
             }
         }
@@ -57,9 +58,17 @@
         .data-navigation-back {
             background-color: $grayLight;
             color: $white;
+
+            .icon-container {
+                font-size: 18px;
+            }
         }
 
         .data-navigation-search {
+            .fa-search {
+                font-size: 18px;
+            }
+
             .search-container {
                 .search-icon {
                     right: 10px;
@@ -73,6 +82,7 @@
                 #search-input {
                     padding-left: 15px;
                     padding-right: 30px;
+                    font-size: 12px;
                 }
             }
         }
@@ -135,7 +145,7 @@
                     cursor: pointer;
 
                     &:hover {
-                        background-color: $grayLight;
+                        background-color: $grayLighter;
                     }
 
                     &:focus {

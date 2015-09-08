@@ -229,7 +229,7 @@ define([
                     name: 'loader@husky',
                     options: {
                         el: this.sandbox.dom.find('.loader', this.$el),
-                        hidden: true
+                        color: '#ccc'
                     }
                 }
             ]);
