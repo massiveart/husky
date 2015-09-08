@@ -44471,7 +44471,7 @@ define('__component__$data-navigation@husky',[
          * @method startInfiniteScroll
          */
         startInfiniteScroll: function() {
-            this.sandbox.infiniteScroll('.iscroll', this.loadNextPage.bind(this), 50);
+            this.sandbox.infiniteScroll('.iscroll', this.loadNextPage.bind(this), 10);
         },
 
         /**
