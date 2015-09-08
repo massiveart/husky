@@ -1,15 +1,16 @@
 .husky-label-error,
 .husky-label-warning,
 .husky-label-success {
+    $height: 70px;
+
     width: 100%;
-    height: 30px;
+    height: $height;
     position: relative;
     top: 0px;
     left: 0px;
-    border-radius: 0 0 $borderRadius $borderRadius;
     color: $white;
-    line-height: 30px;
-    padding-left: 20px;
+    line-height: $height;
+    padding-left: 55px;
     font-size: $smallFontSize;
     z-index: 15000;
 
@@ -19,18 +20,24 @@
     }
     .close {
         position: absolute;
-        top: 0px;
-        right: 0px;
-        height: 30px;
-        line-height: 30px;
+        top: 0;
+        left: 0;
+        height: $height;
+        line-height: $height;
         cursor: pointer;
-        padding: 0 10px;
+        padding: 0 20px;
         font-size: 15px;
     }
+}
+
+.husky-label-error,
+.husky-label-warning,
+.husky-label-success,
+.husky-label-success-icon {
     .counter {
         span {
             display: inline-block;
-            vertical-align: middle;
+            vertical-align: baseline;
             $radius: 7px;
             width: 2 * $radius;
             height: 2 * $radius;
@@ -43,9 +50,43 @@
         }
         position: absolute;
         top: 0;
-        right: 30px;
+        right: 0;
+        padding: 0 50px;
         height: 100%;
-        line-height: 28px;
+        line-height: 70px;
+    }
+}
+
+.husky-label-success-icon {
+    height: 100px;
+    background: $green;
+    text-align: center;
+    padding: 0 10px;
+    position: relative;
+    &::before {
+        content: "";
+        display: inline-block;
+        width: 100%;
+        height: 35px;
+        background-image: url('data:image/svg+xml;utf8,<svg width="48px" height="38px" viewBox="0 0 48 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"> <!-- Generator: Sketch 3.3.3 (12072) - http://www.bohemiancoding.com/sketch --> <title>Type something</title> <desc>Created with Sketch.</desc> <defs></defs> <g id="Basics" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Success-Message" sketch:type="MSArtboardGroup" transform="translate(-99.000000, -19.000000)" stroke="#FFFFFF"> <g id="Toolbar" sketch:type="MSLayerGroup"> <g id="Navigation/Navigation-Standard" sketch:type="MSShapeGroup"> <g id="Client"> <path d="M146.379414,26.9419509 C146.379414,27.7398803 146.100142,28.4181101 145.541592,28.9766607 L123.877917,50.6403351 L119.808498,54.7097546 C119.249947,55.2683052 118.571718,55.5475763 117.773788,55.5475763 C116.975859,55.5475763 116.297629,55.2683052 115.739078,54.7097546 L111.669659,50.6403351 L100.837822,39.8084979 C100.279271,39.2499473 100,38.5717175 100,37.7737882 C100,36.9758588 100.279271,36.297629 100.837822,35.7390784 L104.907241,31.6696589 C105.465792,31.1111083 106.144022,30.8318372 106.941951,30.8318372 C107.73988,30.8318372 108.41811,31.1111083 108.976661,31.6696589 L117.773788,40.4967086 L137.402753,20.8378217 C137.961303,20.2792711 138.639533,20 139.437463,20 C140.235392,20 140.913622,20.2792711 141.472172,20.8378217 L145.541592,24.9072412 C146.100142,25.4657917 146.379414,26.1440215 146.379414,26.9419509 L146.379414,26.9419509 Z" id="Type-something"></path> </g> </g> </g> </g> </g> </svg>');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center center;
+        margin: 20px 0 5px 0;
+    }
+    .text {
+        color: $white;
+        font-size: $reallySmallFontSize;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .counter {
+        right: auto;
+        left: 0;
+        color: $green;
+        line-height: normal;
+        padding: 5px;
     }
 }
 

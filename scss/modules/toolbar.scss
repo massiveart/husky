@@ -340,6 +340,7 @@ $toolbarBigHeight: 50px;
 
 @mixin bigSkin($highlightColor) {
     height: $toolbarBigHeight;
+    width: auto;
 
     .group {
         height: $toolbarBigHeight;
