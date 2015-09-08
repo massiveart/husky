@@ -41388,19 +41388,17 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
- * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide' or 'medium'
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'dropzone'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
- * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
  * @params {Null|Number} [options.left] to fix the left position of the overlay. (px)
  * @params {Null|Number} [options.top] to fix the top position of the overlay. (px)
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
  * @params {String} [options.slides[].subTitle] the sub-title of the overlay
- * @params {String|Boolean} [options.slides[].closeIcon] icon class for the close button. If false no close icon will be displayed
  * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
  * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
  * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submited
@@ -41438,7 +41436,6 @@ define('__component__$overlay@husky',[], function() {
             backdropClose: true,
             skin: '',
             supportKeyInput: true,
-            propagateEvents: true,
             type: 'normal',
             cssClass: '',
             slides: [],
@@ -41450,7 +41447,6 @@ define('__component__$overlay@husky',[], function() {
             index: -1,
             title: '',
             subTitle: null,
-            closeIcon: 'times',
             message: '',
             closeCallback: null,
             cancelCallback: null,
@@ -41467,7 +41463,6 @@ define('__component__$overlay@husky',[], function() {
         },
 
         internalSlideDefaults = {
-            $close: null,
             $el: null,
             $footer: null,
             $header: null,
@@ -41486,7 +41481,7 @@ define('__component__$overlay@husky',[], function() {
             overlayOkSelector: '.overlay-ok',
             overlayCancelSelector: '.overlay-cancel',
             overlayOtherButtonsSelector: '.overlay-button',
-            tabsClass: 'tabs',
+            tabsClass: 'overlay-tabs',
             languageChangerClass: 'language-changer'
         },
 
@@ -41507,7 +41502,6 @@ define('__component__$overlay@husky',[], function() {
                 removeOnClose: true,
                 openOnStart: true,
                 instanceName: 'warning',
-                closeIcon: false,
                 buttons: [
                     {
                         type: 'ok',
@@ -41528,7 +41522,6 @@ define('__component__$overlay@husky',[], function() {
                 removeOnClose: true,
                 openOnStart: true,
                 instanceName: 'error',
-                closeIcon: false,
                 buttons: [
                     {
                         type: 'cancel',
@@ -41546,7 +41539,7 @@ define('__component__$overlay@husky',[], function() {
         /** templates for component */
         templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container <%= overflowClass %> <%= skin %> <%= cssClass %> smart-content-overlay">',
+                '<div class="husky-overlay-container <%= overflowClass %> <%= skin %> <%= cssClass %>">',
                 '   <div class="slides"></div>',
                 '</div>'
             ].join(''),
@@ -41555,7 +41548,6 @@ define('__component__$overlay@husky',[], function() {
                 '   <div class="overlay-header<% if(subTitle) { %> with-sub-title<% } %>">',
                 '       <span class="title"><%= title %></span>',
                 '       <% if(subTitle) { %><div class="sub-title"><%= subTitle %></div><% } %>',
-                '       <% if (!!closeIcon) { %><a class="fa-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '   </div>',
                 '   <div class="overlay-content"></div>',
                 '   <div class="overlay-footer">',
@@ -42012,14 +42004,12 @@ define('__component__$overlay@husky',[], function() {
 
             this.overlay.slides[slide].$el = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.slideSkeleton, {
-                    title: this.sandbox.util.cropMiddle(this.slides[slide].title, 38),
+                    title: this.sandbox.util.cropMiddle(this.slides[slide].title, 58),
                     subTitle: !!this.slides[slide].subTitle ? this.slides[slide].subTitle : null,
-                    closeIcon: this.slides[slide].closeIcon,
                     index: this.slides[slide].index,
                     cssClass: this.slides[slide].cssClass
                 })
             );
-            this.overlay.slides[slide].$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.slides[slide].$el);
@@ -42045,7 +42035,7 @@ define('__component__$overlay@husky',[], function() {
             this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
                 '<div class="' + constants.languageChangerClass + '"/>'
             );
-            this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$languageChanger);
+            this.sandbox.dom.append(this.overlay.slides[slide].$content, this.overlay.slides[slide].$languageChanger);
             this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
 
             this.sandbox.start([
@@ -42055,7 +42045,6 @@ define('__component__$overlay@husky',[], function() {
                         el: $element,
                         data: this.slides[slide].languageChanger.locales,
                         preSelectedElements: [this.slides[slide].languageChanger.preSelected],
-                        skin: 'white',
                         instanceName: this.options.instanceName
                     }
                 }
@@ -42134,7 +42123,7 @@ define('__component__$overlay@husky',[], function() {
         renderTabs: function(slide) {
             this.overlay.slides[slide].tabs = [];
             this.overlay.slides[slide].$tabs = this.sandbox.dom.createElement('<div class="' + constants.tabsClass + '"/>');
-            this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$tabs);
+            this.sandbox.dom.after(this.overlay.slides[slide].$header, this.overlay.slides[slide].$tabs);
 
             for (var i = -1, length = this.slides[slide].tabs.length; ++i < length;) {
                 this.overlay.slides[slide].tabs.push({
@@ -42191,25 +42180,12 @@ define('__component__$overlay@husky',[], function() {
          * Binds overlay events
          */
         bindOverlayEvents: function() {
-            //set current overlay in front of all other overlays
-            this.sandbox.dom.on(this.overlay.$el, 'mousedown', function() {
-                this.sandbox.dom.css(this.sandbox.dom.$('.husky-overlay-container'), {'z-index': 'auto'});
-                this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
+            this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
             }.bind(this));
-
-            //stop propagation
-            if (this.options.propagateEvents === false) {
-                this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
-                    this.sandbox.dom.stopPropagation(event);
-                }.bind(this));
-                this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
-                    this.sandbox.dom.stopPropagation(event);
-                }.bind(this));
-            }
-
-            // close handler for close icon
-            this.sandbox.dom.on(this.overlay.$el, 'click',
-                this.closeHandler.bind(this), constants.closeSelector);
+            this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this));
 
             // close handler for cancel buttons
             this.sandbox.dom.on(this.overlay.$el, 'click',

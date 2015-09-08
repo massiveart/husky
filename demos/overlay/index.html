@@ -15,29 +15,6 @@
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="../../dist/husky.min.css">
-        <style>
-            .content-inner {
-                padding: 0 20px;
-            }
-
-            .content-inner textarea {
-                width: 100%;
-                max-width: 100%;
-                height: 300px;
-            }
-
-            .column-navigation-slide .overlay-header {
-                margin-bottom: 0px;
-            }
-
-            .column-navigation-slide .overlay-content {
-                margin: 0px;
-            }
-
-            .column-navigation-slide .overlay-footer {
-                margin: 0px;
-            }
-        </style>
     </head>
     <body>
         <div class="grid">
@@ -79,10 +56,6 @@
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
-                <div class="btn pointer grid-col-3 align-center" id="showme4">Show me an overlay with skin wide</div>
-            </div>
-            <div class="grid-row m-top-20">
-                <div class="grid-col-1">&nbsp;</div>
                 <div class="btn pointer grid-col-3 align-center" id="slides">Show me an overlay slides</div>
             </div>
             <div class="grid-row m-top-20">
@@ -92,11 +65,6 @@
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
                 <div class="btn pointer grid-col-3 align-center" id="subTitle">This is an overlay with subTitle</div>
-            </div>
-            <div class="grid-row m-top-20">
-                <div class="grid-col-1">&nbsp;</div>
-                <div class="btn pointer grid-col-3 align-center" id="manualposition">Overlay with manual position set</div>
-                <div id="manualpositionoverlay"></div>
             </div>
         </div>
         <div id="overlay1"></div>
@@ -128,7 +96,7 @@
                         }),
                         _ = app.sandbox.util._,
 
-                        testData = '<div class="content-inner">' +
+                        testData = '<div class="padding">' +
                                 '<h3>Most awesome overlay</h3>' +
                                 '<p>here could be anything</p>' +
                                 '<div class="grid-row divider">' +
@@ -216,7 +184,7 @@
                         options: {
                             el: '#overlay1',
                             triggerEl: '#normal',
-                            title: 'This is the title of the overlay and it is too big',
+                            title: 'This is the title of the overlay and it is a really really long title',
                             data: '<div style="min-height: 350px"></div>',
                             closeCallback: function() {
                                 console.log('You clicked on close');
@@ -235,9 +203,9 @@
                             instanceName: 'withTabs',
                             supportKeyInput: false,
                             tabs: [
-                                {title: 'Info', data: '<div><h2>Info Tab</h2></div><p>I dont support Enter and Esc</p>'},
-                                {title: 'Languages', data: '<div><h2>Languages Tab</h2></div>'},
-                                {title: 'Versions', data: '<div><h2>Versions</h2></div>'}
+                                {title: 'Info', data: '<div class="padding"><h2>Info Tab</h2><p>I dont support Enter and Esc</p></div>'},
+                                {title: 'Languages', data: '<div class="padding"><h2>Languages Tab</h2></div>'},
+                                {title: 'Versions', data: '<div class="padding"><h2>Versions</h2></div>'}
                             ],
                             languageChanger: {
                                 locales: ['EN', 'DE', 'ES'],
@@ -272,29 +240,10 @@
                         name: 'overlay@husky',
                         options: {
                             el: '#overlay4',
-                            triggerEl: '#showme4',
-                            title: 'We want your title!',
-                            container: '#insertOverlayHere',
-                            instanceName: 'wide',
-                            skin: 'wide',
-                            data: testData,
-                            okInactive: true,
-                            closeCallback: function() {
-                                console.log('You clicked on close');
-                            },
-                            okCallback: function() {
-                                console.log('You clicked on ok');
-                            }
-                        }
-                    },
-                    {
-                        name: 'overlay@husky',
-                        options: {
-                            el: '#overlay4',
                             triggerEl: '#muchContent',
                             title: 'This is a lot of content',
                             instanceName: 'much-content',
-                            data: '<form id="media-multiple-edit"> <div class="grid"> <div data-type="collection" data-mapper-property="[{&quot;data&quot;: &quot;records&quot;, &quot;tpl&quot;: &quot;media-tpl&quot;}]" class="husky-validate"><div data-mapper-property-tpl="media-tpl" data-mapper-id="214"> <div class="grid-row"> <label for="media-edit-title-7">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-7" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-7">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-7" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="215"> <div class="grid-row"> <label for="media-edit-title-8">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-8" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-8">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-8" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="216"> <div class="grid-row"> <label for="media-edit-title-9">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-9" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-9">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-9" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="217"> <div class="grid-row"> <label for="media-edit-title-10">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-10" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-10">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-10" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="218"> <div class="grid-row"> <label for="media-edit-title-16">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-16" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-16">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-16" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="219"> <div class="grid-row"> <label for="media-edit-title-15">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-15" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-15">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-15" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="220"> <div class="grid-row"> <label for="media-edit-title-17">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-17" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-17">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-17" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="221"> <div class="grid-row"> <label for="media-edit-title-18">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-18" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-18">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-18" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="222"> <div class="grid-row"> <label for="media-edit-title-19">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-19" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-19">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-19" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="223"> <div class="grid-row"> <label for="media-edit-title-20">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-20" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-20">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-20" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="224"> <div class="grid-row"> <label for="media-edit-title-21">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-21" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-21">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-21" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div></div> </div> </form>',
+                            data: '<form class="padding"> <div class="grid"> <div data-type="collection" data-mapper-property="[{&quot;data&quot;: &quot;records&quot;, &quot;tpl&quot;: &quot;media-tpl&quot;}]" class="husky-validate"><div data-mapper-property-tpl="media-tpl" data-mapper-id="214"> <div class="grid-row"> <label for="media-edit-title-7">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-7" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-7">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-7" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="215"> <div class="grid-row"> <label for="media-edit-title-8">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-8" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-8">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-8" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="216"> <div class="grid-row"> <label for="media-edit-title-9">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-9" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-9">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-9" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="217"> <div class="grid-row"> <label for="media-edit-title-10">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-10" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-10">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-10" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="218"> <div class="grid-row"> <label for="media-edit-title-16">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-16" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-16">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-16" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="219"> <div class="grid-row"> <label for="media-edit-title-15">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-15" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-15">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-15" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="220"> <div class="grid-row"> <label for="media-edit-title-17">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-17" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-17">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-17" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="221"> <div class="grid-row"> <label for="media-edit-title-18">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-18" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-18">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-18" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="222"> <div class="grid-row"> <label for="media-edit-title-19">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-19" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-19">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-19" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="223"> <div class="grid-row"> <label for="media-edit-title-20">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-20" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-20">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-20" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div><div data-mapper-property-tpl="media-tpl" data-mapper-id="224"> <div class="grid-row"> <label for="media-edit-title-21">Title</label> <input class="form-element husky-validate" type="text" id="media-edit-title-21" value="" data-validation-required="true" data-validation-min-length="3" data-mapper-property="title"> </div> <div class="grid-row"> <label for="media-edit-description-21">Description</label> <textarea class="small noResize form-element husky-validate" id="media-edit-description-21" data-mapper-property="description"></textarea> </div> <hr class="divider dark small"> </div></div> </div> </form>',
                             closeCallback: function() {
                                 console.log('You clicked on close');
                             },
@@ -311,25 +260,7 @@
                             title: 'With subtitle',
                             subTitle: '#15787-854<br/>Druckerei GmbH',
                             instanceName: 'sub-title',
-                            data: 'Not important',
-                            closeCallback: function() {
-                                console.log('You clicked on close');
-                            },
-                            okCallback: function() {
-                                console.log('You clicked on ok');
-                            }
-                        }
-                    },
-                    {
-                        name: 'overlay@husky',
-                        options: {
-                            el: '#manualpositionoverlay',
-                            triggerEl: '#manualposition',
-                            title: 'This is the title of the overlay and it is too big',
-                            data: '<div style="min-height: 350px"></div>',
-                            instanceName: 'manualposition',
-                            top: 10,
-                            left: 10,
+                            data: '<div class="padding">Not important</div>',
                             closeCallback: function() {
                                 console.log('You clicked on close');
                             },

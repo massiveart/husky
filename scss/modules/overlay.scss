@@ -11,6 +11,8 @@
     vertical-align: middle;
     position: relative;
     z-index: 1000;
+    text-align: left;
+    background-color: $grayLightMedium2;
     @include standard-box-shadow;
 
     &.right-aligned {
@@ -21,22 +23,6 @@
     &.overflow-hidden {
         /* FIXME select in slides hidden */
         overflow: hidden;
-    }
-
-    &.wide {
-        width: $overlayContainerWidthWide;
-
-        .slides .slide {
-            width: $overlayContainerWidthWide;
-        }
-    }
-
-    &.medium {
-        width: $overlayContainerMediumWidth;
-
-        .slides .slide {
-            width: $overlayContainerMediumWidth;
-        }
     }
 
     &.dropzone {
@@ -85,58 +71,42 @@
 
 .overlay-header {
     min-height: 50px;
-    background: $grayLightest;
     position: relative;
+    background: $white;
     border-radius: $borderRadius $borderRadius 0 0;
+    height: 100px;
 
     .title {
         color: $grayLight;
-        font-size: 23px;
-        vertical-align: text-top;
+        font-size: 24px;
+        vertical-align: middle;
         display: block;
-        padding: 15px 0 10px 20px;
-        margin-right: 40px;
         white-space: nowrap;
         overflow: hidden;
+        padding: 0 20px;
+        text-overflow: ellipsis;
+        line-height: 100px;
+        text-align: center;
     }
 
     &.with-sub-title {
         .title {
-            margin-bottom: 0;
-            padding-bottom: 0;
+            line-height: 75px;
         }
 
         .sub-title {
-            padding-left: 20px;
-            padding-top: 5px;
-            padding-bottom: 10px;
-
-            font-size: smaller;
+            font-size: $smallFontSize;
             color: $grayLight;
+            margin-top: -23px;
+            text-align: center;
         }
     }
+}
 
-    .close-button {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        font-size: 16px;
-        text-decoration: none;
-        color: black;
-        line-height: 12px;
-        padding: 8px;
-    }
-
-    .tabs {
-        display: inline-block;
-    }
-
-    .language-changer {
-        width: 80px;
-        position: absolute;
-        bottom: 10px;
-        right: 20px;
-    }
+.overlay-tabs {
+    background: $white;
+    padding: 0 20px;
+    border-top: 1px solid $grayLightMedium2;
 }
 
 .overlay-footer {
@@ -159,7 +129,6 @@
         // individual button align
         &.left {
             float: left;
-            margin-right: 20px;
             margin-right: 0;
         }
         &.right {
@@ -185,14 +154,23 @@
 }
 
 .overlay-content {
-    overflow: auto;
-    padding-left: 0;
-    margin: 0 20px 10px 20px;
+    position: relative;
+
+    .padding {
+        padding: 20px;
+    }
 
     .message {
         padding: 20px 0 25px 0;
         font-size: $bigFontSize;
         color: $grayLight;
+    }
+
+    .language-changer {
+        width: 80px;
+        position: absolute;
+        top: -40px;
+        right: 20px;
     }
 }
 
