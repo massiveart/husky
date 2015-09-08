@@ -5,13 +5,13 @@
 
 .husky-overlay-container {
     width: $overlayContainerWidth;
-    background-color: $white;
     border-radius: $borderRadius;
     display: inline-block;
     vertical-align: middle;
     position: relative;
     z-index: 1000;
     text-align: left;
+    white-space: normal;
     background-color: $grayLightMedium2;
     @include standard-box-shadow;
 
@@ -38,21 +38,12 @@
         }
     }
 
-    &.error {
+    &.alert {
         .overlay-header {
-            background: $red;
-            color: $white;
+            height: 70px;
             .title {
-                color: $black;
-            }
-        }
-    }
-
-    &.warning {
-        .overlay-header {
-            background: $yellow;
-            .title {
-                color: $black;
+                line-height: normal;
+                padding-top: 40px;
             }
         }
     }
@@ -61,16 +52,18 @@
         position: relative;
         left: 0px;
         @include single-transition(left, 500ms);
+        white-space: nowrap;
+        padding-bottom: 70px;
 
         .slide {
-            float: left;
+            display: inline-block;
+            vertical-align: top;
             width: $overlayContainerWidth;
         }
     }
 }
 
 .overlay-header {
-    min-height: 50px;
     position: relative;
     background: $white;
     border-radius: $borderRadius $borderRadius 0 0;
@@ -110,23 +103,22 @@
 }
 
 .overlay-footer {
-    padding: 10px;
+    padding: 20px;
     border-top: 1px solid $borderColor;
     text-align: center;
     border-radius: 0 0 $borderRadius $borderRadius;
+    width: $overlayContainerWidth;
+    position: absolute;
+    bottom: 0;
+    left: auto;
     @include clear-float;
 
     .btn {
         display: inline-block;
-        min-width: 70px;
+        min-width: 115px;
         margin: 0 auto;
         padding: 0;
 
-        &.tick {
-            width: 70px;
-            line-height: 28px;
-        }
-        // individual button align
         &.left {
             float: left;
             margin-right: 0;
@@ -135,6 +127,11 @@
             float: right;
             margin-left: 20px;
             margin-right: 0;
+        }
+        &.just-text {
+            background: transparent;
+            color: $black;
+            font-size: $smallFontSize;
         }
     }
 
@@ -155,15 +152,18 @@
 
 .overlay-content {
     position: relative;
+    white-space: normal;
 
     .padding {
         padding: 20px;
     }
 
     .message {
-        padding: 20px 0 25px 0;
+        padding: 10px 105px 40px;
+        background: $white;
         font-size: $bigFontSize;
         color: $grayLight;
+        text-align: center;
     }
 
     .language-changer {

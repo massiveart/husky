@@ -25,7 +25,7 @@
 
             <div class="grid-row m-top-30">
                 <div class="grid-col-1">&nbsp;</div>
-                <div class="grid-col-3"><h2>Default types</h2></div>
+                <div class="grid-col-3"><h2>Types</h2></div>
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
@@ -33,11 +33,7 @@
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
-                <div class="btn pointer grid-col-3 align-center" id="warning">Warning</div>
-            </div>
-            <div class="grid-row m-top-20">
-                <div class="grid-col-1">&nbsp;</div>
-                <div class="btn pointer grid-col-3 align-center" id="error">Error</div>
+                <div class="btn pointer grid-col-3 align-center" id="alert">Alert</div>
             </div>
 
             <div class="grid-row m-top-30">
@@ -51,8 +47,7 @@
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
-                <div class="btn pointer grid-col-3 align-center" id="showme3">Show me an overlay with deactivated ok
-                </div>
+                <div class="btn pointer grid-col-3 align-center" id="showme3">Overlay with deactivated ok button</div>
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
@@ -96,22 +91,6 @@
                         }),
                         _ = app.sandbox.util._,
 
-                        testData = '<div class="padding">' +
-                                '<h3>Most awesome overlay</h3>' +
-                                '<p>here could be anything</p>' +
-                                '<div class="grid-row divider">' +
-                                '<div class="grid-col-5 pull-left">' +
-                                '<div>Some text</div>' +
-                                '</div>' +
-                                '<div class="grid-col-4 pull-right">' +
-                                '<div id="action" class="btn action fit only-icon pointer">' +
-                                '<div class="fa-arrow-right"></div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '<textarea></textarea>' +
-                                '</div>';
-
 
                 App = app;
 
@@ -122,11 +101,10 @@
                             el: '#overlaySlides',
                             triggerEl: '#slides',
                             instanceName: 'slides',
-                            skin: 'wide',
                             slides: [
                                 {
                                     title: 'Slide 1',
-                                    data: testData,
+                                    data: '<div class="padding"><span class="pointer" id="slideme">Click me to slide right.</span></div>',
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
@@ -156,7 +134,7 @@
                                             text: 'Clear',
                                             inactive: false,
                                             align: 'center',
-                                            classes: 'black-text',
+                                            classes: 'just-text',
                                             callback: function() {
                                                 alert('HELLO');
                                             }
@@ -166,7 +144,7 @@
                                         console.log('You clicked on close');
 
                                         app.sandbox.emit('husky.overlay.slides.slide-left');
-                                        return true;
+                                        return false;
                                     },
                                     okCallback: function(data) {
                                         console.log('You clicked on ok - another');
@@ -226,8 +204,9 @@
                             triggerEl: '#showme3',
                             title: 'We want your title!',
                             container: '#insertOverlayHere',
+                            instanceName: 'deactivated',
                             okInactive: true,
-                            data: testData,
+                            data: '<div class="padding">The ok button gets activated in two seconds and deactivated in four seconds.</div>',
                             closeCallback: function() {
                                 console.log('You clicked on close');
                             },
@@ -280,19 +259,21 @@
                                         options: {
                                             el: '#column-navigation',
                                             url: 'http://husky.lo:7878/admin/api/columnnavigation?children=1.2.3.1',
-                                            selected: '1.2.3.1',
-                                            noPageDescription: 'No Pages',
-                                            sizeRelativeTo: '#overlaySlides .slide-0 .overlay-content',
-                                            wrapper: {height: 100},
-                                            showEdit: false,
-                                            showStatus: false
+                                            instanceName: 'overlay',
+                                            actionIcon: 'fa-plus-circle',
+                                            showOptions: false,
+                                            showStatus: true,
+                                            responsive: false,
+                                            skin: 'fixed-height-small',
+                                            markable: true,
+                                            sortable: false
                                         }
                                     }
                                 ]
                         );
                     });
 
-                    $('body').on('click', '#action', function() {
+                    $('body').on('click', '#slideme', function() {
                         app.sandbox.emit('husky.overlay.slides.slide-right');
                     });
 
@@ -305,7 +286,7 @@
                         }, 2000);
                     });
 
-                    $('#warning').click(function() {
+                    $('#alert').click(function() {
                         var $element = $('<div/>');
                         $('body').append($element);
 
@@ -314,42 +295,20 @@
                                 name: 'overlay@husky',
                                 options: {
                                     el: $element,
-                                    title: 'Please confirm',
-                                    message: 'If you delete this content it will be lost. Do you want to continue?',
-                                    okDefaultText: 'Yes, delete it',
-                                    type: 'warning',
+                                    title: 'Delete page?',
+                                    message: 'The operation you are about to do will permanently delete data. This is not undoable! Please think about it and accept or decline.',
+                                    okDefaultText: 'Delete',
+                                    cancelDefaultText: 'Cancel',
+                                    type: 'alert',
                                     closeCallback: function() {
                                         console.log('You clicked on close');
+                                        return true;
                                     },
                                     okCallback: function(data) {
                                         console.log('You clicked on ok - another');
                                         console.log('returned data ', data)
                                         console.log($(data).find('h3').text());
-                                    }
-                                }
-                            }
-                        ]);
-                    });
-
-                    $('#error').click(function() {
-                        var $element = $('<div/>');
-                        $('body').append($element);
-
-                        app.sandbox.start([
-                            {
-                                name: 'overlay@husky',
-                                options: {
-                                    el: $element,
-                                    title: 'This action is not possible',
-                                    message: 'Sorry, you cannot delete this content because you don’t have the permissions.',
-                                    type: 'error',
-                                    closeCallback: function() {
-                                        console.log('You clicked on close');
-                                    },
-                                    okCallback: function(data) {
-                                        console.log('You clicked on ok - another');
-                                        console.log('returned data ', data)
-                                        console.log($(data).find('h3').text());
+                                        return true;
                                     }
                                 }
                             }

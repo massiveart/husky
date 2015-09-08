@@ -41395,13 +41395,14 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
  * @params {Null|Number} [options.left] to fix the left position of the overlay. (px)
  * @params {Null|Number} [options.top] to fix the top position of the overlay. (px)
+ * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
  * @params {String} [options.slides[].subTitle] the sub-title of the overlay
  * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
  * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
- * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submited
+ * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submitted
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
  * @params {Boolean} [options.slides[].okInactive] If true all ok-buttons start deactivated
@@ -41436,6 +41437,7 @@ define('__component__$overlay@husky',[], function() {
             backdropClose: true,
             skin: '',
             supportKeyInput: true,
+            propagateEvents: true,
             type: 'normal',
             cssClass: '',
             slides: [],
@@ -42175,12 +42177,14 @@ define('__component__$overlay@husky',[], function() {
          * Binds overlay events
          */
         bindOverlayEvents: function() {
-            this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this));
-            this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this));
+            if (this.options.propagateEvents === false) {
+                this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this));
+                this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this));
+            }
 
             // close handler for cancel buttons
             this.sandbox.dom.on(this.overlay.$el, 'click',
@@ -42195,7 +42199,11 @@ define('__component__$overlay@husky',[], function() {
                 this.buttonHandler.bind(this), constants.overlayOtherButtonsSelector);
 
             if (this.options.backdropClose === true) {
-                this.sandbox.dom.on(this.$wrapper, 'click', this.closeHandler.bind(this));
+                this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
+                    if (event.target === this.$wrapper.get(0)) {
+                        this.closeHandler(event);
+                    }
+                }.bind(this));
             }
 
             this.bindOverlayCustomEvents();
