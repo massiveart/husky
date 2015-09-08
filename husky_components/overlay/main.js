@@ -89,8 +89,8 @@ define([], function() {
             tabs: null,
             okInactive: false,
             buttonsDefaultAlign: 'center',
-            cancelDefaultText: 'Cancel',
-            okDefaultText: 'Ok',
+            cancelDefaultText: 'public.cancel',
+            okDefaultText: 'public.ok',
             languageChanger: null,
             cssClass: ''
         },
@@ -682,7 +682,7 @@ define([], function() {
 
                 $button = this.sandbox.dom.createElement(this.sandbox.util.template(template, {
                     icon: button.icon,
-                    text: text,
+                    text: this.sandbox.translate(text),
                     buttonNumber: i,
                     classes: (inactive === true) ? classes + ' inactive gray' : classes
                 }));
