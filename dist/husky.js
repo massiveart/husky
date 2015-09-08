@@ -41492,21 +41492,6 @@ define('__component__$overlay@husky',[], function() {
                 buttons: [
                     {
                         type: 'ok',
-                        icon: 'check',
-                        classes: 'tick',
-                        inactive: false
-                    }
-                ]
-            },
-            warning: {
-                cssClass: 'warning',
-                backdropClose: false,
-                removeOnClose: true,
-                openOnStart: true,
-                instanceName: 'warning',
-                buttons: [
-                    {
-                        type: 'ok',
                         inactive: false,
                         align: 'right'
                     },
@@ -41517,17 +41502,21 @@ define('__component__$overlay@husky',[], function() {
                     }
                 ]
             },
-            error: {
-                cssClass: 'error',
-                backdropClose: false,
-                cancelDefaultText: 'Ok',
+            alert: {
+                cssClass: 'alert',
                 removeOnClose: true,
                 openOnStart: true,
-                instanceName: 'error',
+                instanceName: 'alert',
                 buttons: [
                     {
+                        type: 'ok',
+                        inactive: false,
+                        align: 'right'
+                    },
+                    {
                         type: 'cancel',
-                        inactive: false
+                        inactive: false,
+                        align: 'left'
                     }
                 ]
             }
@@ -41861,28 +41850,9 @@ define('__component__$overlay@husky',[], function() {
                     this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
 
                     this.insertOverlay(true);
-                    this.setSlidesHeight();
                 } else {
                     this.insertOverlay(true);
                 }
-            }
-        },
-
-        /**
-         * Sets the height of all slides equal
-         */
-        setSlidesHeight: function() {
-            if (this.slides.length > 1) {
-                var maxHeight = -1;
-                // set width to n-width
-                this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
-                this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
-
-                $(this.overlay.$content).each(function() {
-                    maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
-                });
-
-                this.sandbox.dom.css(this.overlay.$content, 'height', this.sandbox.dom.height(this.sandbox.dom.get(this.overlay.$content, 0)) + 'px');
             }
         },
 
@@ -41920,7 +41890,8 @@ define('__component__$overlay@husky',[], function() {
          * slide to given number
          */
         slideTo: function(slide) {
-            this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * this.overlay.width + 'px');
+            var width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
+            this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * width + 'px');
         },
 
         /**
