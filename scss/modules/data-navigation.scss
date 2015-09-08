@@ -113,7 +113,7 @@
 
     .data-navigation-list-scroll {
         position: relative;
-        height: calc(100% - 40px);
+        min-height: calc(100% - 40px);
 
         .data-navigation-list {
             background-color: $grayLighterer;

@@ -11243,7 +11243,7 @@ a.btn-black, a.btn-highlight {
 /* line 114, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll {
   position: relative;
-  height: calc(100% - 40px);
+  min-height: calc(100% - 40px);
 }
 /* line 118, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list {
