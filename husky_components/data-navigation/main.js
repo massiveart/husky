@@ -53,29 +53,25 @@ define([
         templates = {
             header: function() {
                 return [
-                    '<table>',
-                    '<% if (data.current.id !== \'root\') { %>',
-                    '   <td class="header-item data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
-                    '       <div class="icon-container"><span class="fa-chevron-left icon"/></div>',
-                    '   </td>',
-                    '<% } %>',
-                    '<% if (data.children.length !== 0) { %>',
-                    '   <td class="header-item data-navigation-search">',
-                    '       <div class="icon-container"><span class="fa-search icon"/></div>',
-                    '       <div class="content-container">',
-                    '           <div class="search-container"/>',
-                    '       </div>',
-                    '   </td>',
-                    '<% } %>',
+                    '<div class="header-item data-navigation-back" style="display: none;">',
+                    '    <div class="icon-container"><span class="fa-chevron-left"/></div>',
+                    '</div>',
+                    '<div class="header-item data-navigation-search" style="display: none;">',
+                    '    <div class="icon-container"><span class="fa-search"/></div>',
+                    '    <div class="content-container">',
+                    '        <div class="search-container"/>',
+                    '    </div>',
+                    '</div>',
                     '<% if (!!options.showAddButton) { %>',
-                    '   <td class="header-item data-navigation-add">',
-                    '       <div class="icon-container"><span class="fa-plus-circle icon"/></div>',
+                    '   <div class="header-item data-navigation-add">',
+                    '       <div class="icon-container"><span class="fa-plus-circle"/></div>',
                     '       <div class="content-container">',
                     '           <span class="add-container"><%= options.translates.addButton %></span>',
                     '       </div>',
-                    '   </td>',
+                    '   </div>',
+                    '<% } else { %>',
+                    '   <div class="header-item header-filler"/>',
                     '<% } %>',
-                    '</table>'
                 ].join('');
             },
 
@@ -192,6 +188,7 @@ define([
 
             this.render();
             this.bindCustomEvents();
+            this.bindDOMEvents();
 
             this.sandbox.once('husky.loader.initialized', function() {
                 this.showLoader();
@@ -199,10 +196,6 @@ define([
                 this.load()
                     .then(function(data) {
                         this.hideLoader();
-
-                        return data;
-                    }.bind(this))
-                    .then(function(data) {
                         this.sandbox.emit(INITIALIZED.call(this));
 
                         this.currentView = this.createView(data);
@@ -226,9 +219,10 @@ define([
          * @method render
          */
         render: function() {
-            var tpl = this.mainTpl({options: this.options});
-            this.$el.html(tpl);
-            this.bindDOMEvents();
+            var mainTpl = this.mainTpl({options: this.options});
+            this.$el.html(mainTpl);
+            var headerTpl = this.headerTpl({options: this.options});
+            this.$el.find('.data-navigation-header').html(headerTpl);
 
             this.sandbox.start([
                 {
@@ -241,6 +235,37 @@ define([
             ]);
 
             this.startInfiniteScroll();
+            this.startSearch();
+        },
+
+        startSearch: function() {
+            this.sandbox.start([
+                {
+                    name: 'search@husky',
+                    options: {
+                        el: this.sandbox.dom.find('.search-container', this.$el),
+                        appearance: 'white',
+                        instanceName: 'data-navigation',
+                        placeholderText: this.options.translates.search
+                    }
+                }
+            ]);
+        },
+
+        updateHeader: function(data) {
+            if (data.current.id !== 'root') {
+                $('.data-navigation-back').show();
+                var parent = (!!data.parent) ? data.parent.id : 'root';
+                this.sandbox.dom.data($('.data-navigation-back'), 'parent-id', parent);
+            } else {
+                $('.data-navigation-back').hide();
+            }
+
+            if (data.children.length !== 0 || !!this.searchTerm) {
+                $('.data-navigation-search').show();
+            } else {
+                $('.data-navigation-search').hide();
+            }
         },
 
         /**
@@ -287,6 +312,15 @@ define([
             this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
+
+            this.$el.on('click', '.data-navigation-search > .icon-container', function() {
+                if (!$('.data-navigation-header').hasClass('header-search')){
+                    $('.data-navigation-header').addClass('header-search');
+                    $('.data-navigation-search span').attr('class', 'fa-times');
+                } else {
+                    this.clearSearch();
+                }
+            }.bind(this));
         },
 
         /**
@@ -375,9 +409,13 @@ define([
          * @method clearSearch
          */
         clearSearch: function() {
-            this.searchTerm = null;
-
+            $('.data-navigation-header').removeClass('header-search');
+            $('.data-navigation-search span').attr('class', 'fa-search');
             this.sandbox.emit('husky.search.data-navigation.clear');
+            if (!!this.searchTerm) {
+                this.sandbox.emit('husky.search.data-navigation.reset');
+                this.searchTerm = null;
+            }
         },
 
         /**
@@ -515,7 +553,7 @@ define([
          * @method openParentHandler
          */
         openParentHandler: function(event) {
-            var $item = $(event.currentTarget).closest('*[data-parent-id]'),
+            var $item = $(event.currentTarget).closest('.data-navigation-back'),
                 id = this.sandbox.dom.data($item, 'parent-id'),
                 newView = this.createView();
 
@@ -527,44 +565,6 @@ define([
                     this.updateHeader(data);
                     newView.render(data, this.options);
                 }.bind(this));
-        },
-
-        /**
-         * Update the header html
-         * @method updateHeader
-         */
-        updateHeader: function(data) {
-            this.sandbox.stop('.search-container');
-            var tpl = this.headerTpl({
-                data: data,
-                options: this.options
-            });
-            this.$el.find('.data-navigation-header').html(tpl);
-            this.startSearch();
-        },
-
-        startSearch: function() {
-            this.sandbox.start([
-                {
-                    name: 'search@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.search-container', this.$el),
-                        appearance: 'white',
-                        instanceName: 'data-navigation',
-                        placeholderText: this.options.translates.search
-                    }
-                }
-            ]).then(function() {
-                if (!!this.searchTerm){
-                    $('#search-input').val(this.searchTerm);
-                }
-                $('#search-input').focus(function() {
-                    $('.data-navigation-search').addClass('focused');
-                }.bind(this));
-                $('#search-input').blur(function() {
-                    $('.data-navigation-search').removeClass('focused');
-                }.bind(this));
-            }.bind(this));
         },
 
         /**

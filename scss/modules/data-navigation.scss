@@ -9,25 +9,32 @@
     color: $black;
 
     .data-navigation-header {
+        display: table;
+        table-layout: fixed;
         height: 50px;
+        width: 100%;
         background-color: $grayLighter;
 
         .header-item {
-            width: 0%;
+            display: table-cell;
+            width: 50px;
+            height: 50px;
+
             position: relative;
             cursor: pointer;
 
             border-right: 1px solid white;
             overflow: hidden;
 
-            @include transition(width 300ms);
-
             .icon-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+
                 width: 50px;
                 height: 50px;
-                position: relative;
 
-                .icon {
+                span {
                     font-size: 16px;
                     display: block;
                     @include centerBlock();
@@ -37,18 +44,14 @@
             .content-container {
                 height: 50px;
                 line-height: 50px;
-                position: absolute;
+
+                min-width: 50px;
+                margin-left: 50px;
                 margin-right: 10px;
-                top: 0;
-                left: 51px;
+                position: relative;
 
                 vertical-align: middle;
-                font-size: 16px
             }
-        }
-
-        .header-item:last-child {
-            border: none;
         }
 
         .data-navigation-back {
@@ -56,29 +59,37 @@
             color: $white;
         }
 
-        .data-navigation-add {
-            width: 100%
-        }
-
         .data-navigation-search {
-            &:hover, &.focused {
-                width: 100%;
-            }
-
             .search-container {
                 .search-icon {
-                    display: none;
+                    right: 10px;
+                    line-height: 50px;
                 }
 
                 .remove-icon {
-                    line-height: 50px;
-                    background: none;
+                    display: none !important;
                 }
 
                 #search-input {
                     padding-left: 15px;
                     padding-right: 30px;
                 }
+            }
+        }
+
+        .data-navigation-add, .header-filler {
+            width: 100%;
+            border: none;
+        }
+
+        &.header-search {
+            .data-navigation-add, .header-filler {
+                display: none;
+            }
+
+            .data-navigation-search {
+                width: 100%;
+                border: none;
             }
         }
     }
@@ -92,8 +103,10 @@
 
     .data-navigation-list-scroll {
         position: relative;
+        height: 100%;
 
         .data-navigation-list {
+            background-color: $grayLighterer;
             width: 100%;
             height: 100%;
 
@@ -106,7 +119,6 @@
 
             .data-navigation-items {
                 height: 100%;
-                min-height: calc(100% - 150px);
                 margin: 0;
                 padding: 0;
                 list-style: none;
@@ -175,7 +187,7 @@
 .data-navigation-loader-container {
     position: absolute;
     width: 100%;
-    height: calc(100% - 150px);
+    height: 100%;
     left: 0;
     top: 0;
     padding: 4px 0;
@@ -184,7 +196,7 @@
 .data-navigation-info {
     text-align: center;
     line-height: 50px;
-    height: calc(100% - 150px);
+    height: 100%;
 }
 
 .data-navigation-info-empty {

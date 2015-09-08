@@ -44203,40 +44203,36 @@ define('__component__$data-navigation@husky',[
         templates = {
             header: function() {
                 return [
-                    '<% if (data.current.id !== \'root\') { %>',
-                    '   <div class="data-navigation-back" data-parent-id="<%= !!data.parent ? data.parent.id : \'root\' %>">',
-                    '       <span class="fa-chevron-left data-navigation-parent-back"></span>',
-                    '       <div class="data-navigation-parent-text">',
-                    '           <% if (!!data.current && data.current.name) { %>',
-                    '               <%= data.current.name %>',
-                    '           <% } else { %>',
-                    '               <%= translates.title %>',
-                    '           <% } %>',
+                    '<div class="header-item data-navigation-back" style="display: none;">',
+                    '    <div class="icon-container"><span class="fa-chevron-left"/></div>',
+                    '</div>',
+                    '<div class="header-item data-navigation-search" style="display: none;">',
+                    '    <div class="icon-container"><span class="fa-search"/></div>',
+                    '    <div class="content-container">',
+                    '        <div class="search-container"/>',
+                    '    </div>',
+                    '</div>',
+                    '<% if (!!options.showAddButton) { %>',
+                    '   <div class="header-item data-navigation-add">',
+                    '       <div class="icon-container"><span class="fa-plus-circle"/></div>',
+                    '       <div class="content-container">',
+                    '           <span class="add-container"><%= options.translates.addButton %></span>',
                     '       </div>',
                     '   </div>',
                     '<% } else { %>',
-                    '   <div class="root-text">',
-                    '       <%= data.current.name || translates.title %>',
-                    '   </div>',
-                    '<% } %>'
+                    '   <div class="header-item header-filler"/>',
+                    '<% } %>',
                 ].join('');
             },
 
             main: function() {
                 return [
-                    '<div class="data-navigation<% if (options.showAddButton) { %> has-add-btn<% } %>">',
+                    '<div class="data-navigation">',
                     '   <div class="data-navigation-header"></div>',
                     '   <div class="data-navigation-list-container iscroll">',
-                    '       <div class="data-navigation-search"></div>',
                     '       <div class="data-navigation-list-scroll iscroll-inner"></div>',
                     '       <div class="loader"></div>',
                     '   </div>',
-                    '       <div class="data-navigation-list-footer">',
-                    '           <button class="data-navigation-add btn">',
-                    '               <span class="fa-plus-circle"></span>',
-                    '               <%= options.translates.addButton %>',
-                    '           </button>',
-                    '       </div>',
                     '</div>'
                 ].join('');
             }
@@ -44342,6 +44338,7 @@ define('__component__$data-navigation@husky',[
 
             this.render();
             this.bindCustomEvents();
+            this.bindDOMEvents();
 
             this.sandbox.once('husky.loader.initialized', function() {
                 this.showLoader();
@@ -44349,10 +44346,6 @@ define('__component__$data-navigation@husky',[
                 this.load()
                     .then(function(data) {
                         this.hideLoader();
-
-                        return data;
-                    }.bind(this))
-                    .then(function(data) {
                         this.sandbox.emit(INITIALIZED.call(this));
 
                         this.currentView = this.createView(data);
@@ -44376,9 +44369,10 @@ define('__component__$data-navigation@husky',[
          * @method render
          */
         render: function() {
-            var tpl = this.mainTpl({options: this.options});
-            this.$el.html(tpl);
-            this.bindDOMEvents();
+            var mainTpl = this.mainTpl({options: this.options});
+            this.$el.html(mainTpl);
+            var headerTpl = this.headerTpl({options: this.options});
+            this.$el.find('.data-navigation-header').html(headerTpl);
 
             this.sandbox.start([
                 {
@@ -44390,19 +44384,38 @@ define('__component__$data-navigation@husky',[
                 }
             ]);
 
+            this.startInfiniteScroll();
+            this.startSearch();
+        },
+
+        startSearch: function() {
             this.sandbox.start([
                 {
                     name: 'search@husky',
                     options: {
-                        el: this.sandbox.dom.find('.data-navigation-search', this.$el),
+                        el: this.sandbox.dom.find('.search-container', this.$el),
                         appearance: 'white',
                         instanceName: 'data-navigation',
                         placeholderText: this.options.translates.search
                     }
                 }
             ]);
+        },
 
-            this.startInfiniteScroll();
+        updateHeader: function(data) {
+            if (data.current.id !== 'root') {
+                $('.data-navigation-back').show();
+                var parent = (!!data.parent) ? data.parent.id : 'root';
+                this.sandbox.dom.data($('.data-navigation-back'), 'parent-id', parent);
+            } else {
+                $('.data-navigation-back').hide();
+            }
+
+            if (data.children.length !== 0 || !!this.searchTerm) {
+                $('.data-navigation-search').show();
+            } else {
+                $('.data-navigation-search').hide();
+            }
         },
 
         /**
@@ -44447,8 +44460,17 @@ define('__component__$data-navigation@husky',[
         bindDOMEvents: function() {
             this.$el.on('click', '.data-navigation-item', this.selectChildrenDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-item-thumb', this.selectChildrenDataHandler.bind(this));
-            this.$el.on('click', '.data-navigation-parent-back', this.selectParentDataHandler.bind(this));
+            this.$el.on('click', '.data-navigation-back', this.selectParentDataHandler.bind(this));
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
+
+            this.$el.on('click', '.data-navigation-search > .icon-container', function() {
+                if (!$('.data-navigation-header').hasClass('header-search')){
+                    $('.data-navigation-header').addClass('header-search');
+                    $('.data-navigation-search span').attr('class', 'fa-times');
+                } else {
+                    this.clearSearch();
+                }
+            }.bind(this));
         },
 
         /**
@@ -44518,7 +44540,6 @@ define('__component__$data-navigation@husky',[
 
             return this.sandbox.util.load(this.getUrl(url))
                 .then(this.parse.bind(this))
-                .then(this.hideSearch.bind(this))
                 .then(function(data) {
                     this.loading = false;
 
@@ -44538,9 +44559,13 @@ define('__component__$data-navigation@husky',[
          * @method clearSearch
          */
         clearSearch: function() {
-            this.searchTerm = null;
-
+            $('.data-navigation-header').removeClass('header-search');
+            $('.data-navigation-search span').attr('class', 'fa-search');
             this.sandbox.emit('husky.search.data-navigation.clear');
+            if (!!this.searchTerm) {
+                this.sandbox.emit('husky.search.data-navigation.reset');
+                this.searchTerm = null;
+            }
         },
 
         /**
@@ -44595,21 +44620,6 @@ define('__component__$data-navigation@husky',[
         },
 
         /**
-         * hide search if no children available
-         * @param data
-         * @returns {*}
-         */
-        hideSearch: function(data) {
-            if (data.children.length === 0 && !this.searchTerm) {
-                this.$find('.data-navigation-search').hide();
-            } else {
-                this.$find('.data-navigation-search').show();
-            }
-
-            return data;
-        },
-
-        /**
          * caches the data inside a cache object
          * @method storeData
          * @param  {Object} data
@@ -44655,8 +44665,6 @@ define('__component__$data-navigation@husky',[
                 return this.load(url).then(this.storeData.bind(this));
             } else {
                 this.data = data;
-
-                dfd.then(this.hideSearch.bind(this));
                 dfd.resolve(data);
             }
 
@@ -44695,7 +44703,7 @@ define('__component__$data-navigation@husky',[
          * @method openParentHandler
          */
         openParentHandler: function(event) {
-            var $item = $(event.currentTarget).closest('*[data-parent-id]'),
+            var $item = $(event.currentTarget).closest('.data-navigation-back'),
                 id = this.sandbox.dom.data($item, 'parent-id'),
                 newView = this.createView();
 
@@ -44707,19 +44715,6 @@ define('__component__$data-navigation@husky',[
                     this.updateHeader(data);
                     newView.render(data, this.options);
                 }.bind(this));
-        },
-
-        /**
-         * Update the header html
-         * @method updateHeader
-         */
-        updateHeader: function(data) {
-            var tpl = this.headerTpl({
-                data: data,
-                translates: this.options.translates,
-                nameKey: this.options.nameKey
-            });
-            this.$el.find('.data-navigation-header').html(tpl);
         },
 
         /**
