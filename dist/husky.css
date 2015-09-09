@@ -2885,8 +2885,8 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url("../fonts/fontawesome-webfont.eot?v=4.4.0");
-  src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.4.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff2?v=4.4.0") format("woff2"), url("../fonts/fontawesome-webfont.woff?v=4.4.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.4.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular") format("svg");
+  src: url("fonts/fontawesome/fontawesome-webfont.eot?v=4.4.0");
+  src: url("fonts/fontawesome/fontawesome-webfont.eot?#iefix&v=4.4.0") format("embedded-opentype"), url("fonts/fontawesome/fontawesome-webfont.woff2?v=4.4.0") format("woff2"), url("fonts/fontawesome/fontawesome-webfont.woff?v=4.4.0") format("woff"), url("fonts/fontawesome/fontawesome-webfont.ttf?v=4.4.0") format("truetype"), url("fonts/fontawesome/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal;
 }
