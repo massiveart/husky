@@ -60,6 +60,8 @@ define(['services/husky/util'], function(Util) {
             app.core.util.arrayGetColumn = Util.arrayGetColumn;
 
             app.core.util.removeFromArray = Util.removeFromArray;
+
+            app.core.util.capitalizeFirstLetter = Util.capitalizeFirstLetter;
         }
     };
 });

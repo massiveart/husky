@@ -27,8 +27,15 @@
 
     &.dropzone {
         width: $overlayContainerWidthExtraWide;
-        .slides .slide {
-          width: $overlayContainerWidthExtraWide
+        .slides {
+            margin: 0;
+            padding: 0;
+            .slide {
+                width: $overlayContainerWidthExtraWide
+            }
+        }
+        .overlay-header {
+            display: none;
         }
         .overlay-content {
             margin-bottom: 20px;
@@ -45,6 +52,9 @@
                 line-height: normal;
                 padding-top: 40px;
             }
+        }
+        .overlay-content {
+            margin: 0;
         }
     }
 
@@ -153,10 +163,7 @@
 .overlay-content {
     position: relative;
     white-space: normal;
-
-    .padding {
-        padding: 20px;
-    }
+    margin: 20px;
 
     .message {
         padding: 10px 105px 40px;
@@ -164,12 +171,16 @@
         font-size: $bigFontSize;
         color: $grayLight;
         text-align: center;
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
     }
 
     .language-changer {
         width: 80px;
         position: absolute;
-        top: -40px;
+        top: -60px;
         right: 20px;
     }
 }
