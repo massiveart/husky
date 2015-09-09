@@ -94,17 +94,6 @@
     }
 }
 
-.no-label-text {
-    .husky-label-success-icon {
-        &::before {
-            margin-top: 30px;
-        }
-        .text {
-            opacity: 0;
-        }
-    }
-}
-
 .husky-label-error {
     background: $red;
     .counter {
