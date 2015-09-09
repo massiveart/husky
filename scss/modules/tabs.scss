@@ -66,39 +66,6 @@
             }
         }
     }
-
-    /**
-    *** Overlay Skin
-    **/
-    &.overlay {
-        $tabsHeight: 30px;
-        background-color: transparent;
-        padding: 10px 0 0 20px;
-
-        ul {
-            padding: 0;
-            margin: 0;
-            white-space: nowrap;
-            li {
-                line-height: $tabsHeight;
-                height: $tabsHeight;
-                padding: 0 10px;
-                border-radius: $borderRadius $borderRadius 0 0;
-                text-align: center;
-                min-width: 0;
-                a {
-                    font-size: $baseFontSize;
-                }
-                &.is-selected {
-                    background-color: $white;
-                }
-            }
-        }
-
-        .marker {
-            display: none;
-        }
-    }
 }
 
 

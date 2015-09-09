@@ -269,6 +269,15 @@ define(function() {
         });
     };
 
+    /**
+     * Makes the first letter uppercase
+     * @param string
+     * @returns {string}
+     */
+    Util.prototype.capitalizeFirstLetter = function(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
     Util.getInstance = function() {
         if (instance == null) {
             instance = new Util();

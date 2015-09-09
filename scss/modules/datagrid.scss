@@ -4,7 +4,6 @@
 
 .husky-datagrid {
     $overflowIconSpacing: 30px;
-
     position: relative;
 
     .husky-table {
@@ -106,6 +105,10 @@
         .server-validation-error .editable-input {
             border-color: $red !important;
             border-width: 2px !important;
+        }
+
+        &.white-box {
+            padding: 0;
         }
     }
 
