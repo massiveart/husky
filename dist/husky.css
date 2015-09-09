@@ -10527,17 +10527,27 @@ a.btn-black, a.btn-highlight {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
-  margin: 20px 0 5px 0;
+  margin-top: 20px;
+  margin-bottom: 5px;
+  -moz-transition: margin-top 500ms;
+  -o-transition: margin-top 500ms;
+  -webkit-transition: margin-top 500ms;
+  transition: margin-top 500ms;
 }
-/* line 77, ../scss/modules/label.scss */
+/* line 79, ../scss/modules/label.scss */
 .husky-label-success-icon .text {
   color: #fff;
   font-size: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 1;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  -webkit-transition: opacity 500ms;
+  transition: opacity 500ms;
 }
-/* line 84, ../scss/modules/label.scss */
+/* line 88, ../scss/modules/label.scss */
 .husky-label-success-icon .counter {
   right: auto;
   left: 0;
@@ -10546,29 +10556,38 @@ a.btn-black, a.btn-highlight {
   padding: 5px;
 }
 
-/* line 93, ../scss/modules/label.scss */
+/* line 99, ../scss/modules/label.scss */
+.no-label-text .husky-label-success-icon::before {
+  margin-top: 30px;
+}
+/* line 102, ../scss/modules/label.scss */
+.no-label-text .husky-label-success-icon .text {
+  opacity: 0;
+}
+
+/* line 108, ../scss/modules/label.scss */
 .husky-label-error {
   background: #EA524E;
 }
-/* line 95, ../scss/modules/label.scss */
+/* line 110, ../scss/modules/label.scss */
 .husky-label-error .counter {
   color: #EA524E;
 }
 
-/* line 100, ../scss/modules/label.scss */
+/* line 115, ../scss/modules/label.scss */
 .husky-label-warning {
   background: #F2D212;
 }
-/* line 102, ../scss/modules/label.scss */
+/* line 117, ../scss/modules/label.scss */
 .husky-label-warning .counter {
   color: #F2D212;
 }
 
-/* line 107, ../scss/modules/label.scss */
+/* line 122, ../scss/modules/label.scss */
 .husky-label-success {
   background: #5DC774;
 }
-/* line 109, ../scss/modules/label.scss */
+/* line 124, ../scss/modules/label.scss */
 .husky-label-success .counter {
   color: #5DC774;
 }
