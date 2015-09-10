@@ -62,8 +62,10 @@
         .data-navigation-search {
             border-right: 1px solid rgba(255, 255, 255, 0.2);
 
-            .fa-search {
-                font-size: 18px;
+            .icon-container {
+                span {
+                    font-size: 16px;
+                }
             }
 
             .search-container {
