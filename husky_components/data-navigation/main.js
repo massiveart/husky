@@ -57,7 +57,7 @@ define([
                     '    <div class="icon-container"><span class="fa-chevron-left"/></div>',
                     '</div>',
                     '<div class="header-item data-navigation-search" style="display: none;">',
-                    '    <div class="icon-container"><span class="fa-search"/></div>',
+                    '    <div class="icon-container"><span class="fa-search fa-flip-horizontal"/></div>',
                     '    <div class="content-container">',
                     '        <div class="search-container"/>',
                     '    </div>',
@@ -410,7 +410,7 @@ define([
          */
         clearSearch: function() {
             $('.data-navigation-header').removeClass('header-search');
-            $('.data-navigation-search span').attr('class', 'fa-search');
+            $('.data-navigation-search span').attr('class', 'fa-search fa-flip-horizontal');
             this.sandbox.emit('husky.search.data-navigation.clear');
             if (!!this.searchTerm) {
                 this.sandbox.emit('husky.search.data-navigation.reset');

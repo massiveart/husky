@@ -21,37 +21,30 @@
             height: 50px;
 
             position: relative;
-            cursor: pointer;
-
-            border-right: 1px solid white;
-            overflow: hidden;
 
             .icon-container {
-                position: absolute;
-                top: 0;
-                left: 0;
-
+                cursor: pointer;
+                display: table-cell;
                 width: 50px;
-                height: 50px;
-                font-size: 20px;
+                text-align: center;
 
                 span {
-                    display: block;
-                    @include centerBlock();
+                    font-size: 20px;
+                    line-height: 50px;
+                    vertical-align: middle;
                 }
             }
 
             .content-container {
-                height: 50px;
-                line-height: 50px;
-
-                min-width: 50px;
-                margin-left: 50px;
-                margin-right: 10px;
+                display: none;
+                width: 100%;
                 position: relative;
+                top: 1px;
+                padding-left: 10px;
 
                 font-size: 12px;
-                vertical-align: middle;
+                overflow: hidden;
+                white-space: nowrap;
             }
         }
 
@@ -60,19 +53,24 @@
             color: $white;
 
             .icon-container {
-                font-size: 18px;
+                span {
+                    font-size: 14px;
+                }
             }
         }
 
         .data-navigation-search {
-            .fa-search {
-                font-size: 18px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+
+            .icon-container {
+                span {
+                    font-size: 16px;
+                }
             }
 
             .search-container {
                 .search-icon {
-                    right: 10px;
-                    line-height: 50px;
+                    right: 0;
                 }
 
                 .remove-icon {
@@ -89,7 +87,16 @@
 
         .data-navigation-add, .header-filler {
             width: 100%;
+            padding: 0 20px;
             border: none;
+
+            .content-container {
+                display: table-cell;
+            }
+        }
+
+        .data-navigation-add {
+            cursor: pointer;
         }
 
         &.header-search {
@@ -99,7 +106,12 @@
 
             .data-navigation-search {
                 width: 100%;
+                padding: 0 20px;
                 border: none;
+
+                .content-container {
+                    display: table-cell;
+                }
             }
         }
     }
@@ -109,7 +121,7 @@
     height: calc(100% - 50px);
     overflow: auto;
     position: relative;
-    padding: 10px 0;
+    padding: 15px 0 10px 0;
 
     .data-navigation-list-scroll {
         position: relative;
@@ -154,6 +166,8 @@
 
                     &.not-selectable {
                         cursor: default;
+                        padding: 0;
+                        height: auto;
 
                         &:hover {
                             background-color: initial;
@@ -212,4 +226,11 @@
 .data-navigation-info-empty {
     color: $grayLight;
     font-size: $baseFontSize;
+    line-height: normal;
+
+    .icon {
+        font-size: 40px;
+        display: block;
+        margin: 10px 0 10px 0;
+    }
 }
