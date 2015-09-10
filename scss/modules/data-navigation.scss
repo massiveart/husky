@@ -21,9 +21,9 @@
             height: 50px;
 
             position: relative;
-            cursor: pointer;
 
             .icon-container {
+                cursor: pointer;
                 display: table-cell;
                 width: 50px;
                 text-align: center;
@@ -43,6 +43,8 @@
                 padding-left: 10px;
 
                 font-size: 12px;
+                overflow: hidden;
+                white-space: nowrap;
             }
         }
 
@@ -89,6 +91,10 @@
             .content-container {
                 display: table-cell;
             }
+        }
+
+        .data-navigation-add {
+            cursor: pointer;
         }
 
         &.header-search {
@@ -158,6 +164,8 @@
 
                     &.not-selectable {
                         cursor: default;
+                        padding: 0;
+                        height: auto;
 
                         &:hover {
                             background-color: initial;
@@ -216,4 +224,11 @@
 .data-navigation-info-empty {
     color: $grayLight;
     font-size: $baseFontSize;
+    line-height: normal;
+
+    .icon {
+        font-size: 40px;
+        display: block;
+        margin: 10px 0 10px 0;
+    }
 }

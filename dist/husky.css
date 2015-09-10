@@ -11874,10 +11874,10 @@ a.btn-black, a.btn-highlight {
   width: 50px;
   height: 50px;
   position: relative;
-  cursor: pointer;
 }
-/* line 26, ../scss/modules/data-navigation.scss */
+/* line 25, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .header-item .icon-container {
+  cursor: pointer;
   display: table-cell;
   width: 50px;
   text-align: center;
@@ -11896,89 +11896,95 @@ a.btn-black, a.btn-highlight {
   top: 1px;
   padding-left: 10px;
   font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
 }
-/* line 49, ../scss/modules/data-navigation.scss */
+/* line 51, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-back {
   background-color: #999;
   color: #fff;
 }
-/* line 54, ../scss/modules/data-navigation.scss */
+/* line 56, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-back .icon-container span {
   font-size: 14px;
 }
-/* line 60, ../scss/modules/data-navigation.scss */
+/* line 62, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-search {
   border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
-/* line 63, ../scss/modules/data-navigation.scss */
+/* line 65, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-search .fa-search {
   font-size: 18px;
 }
-/* line 68, ../scss/modules/data-navigation.scss */
+/* line 70, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-search .search-container .search-icon {
   right: 0;
 }
-/* line 72, ../scss/modules/data-navigation.scss */
+/* line 74, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-search .search-container .remove-icon {
   display: none !important;
 }
-/* line 76, ../scss/modules/data-navigation.scss */
+/* line 78, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-search .search-container #search-input {
   padding-left: 15px;
   padding-right: 30px;
   font-size: 12px;
 }
-/* line 84, ../scss/modules/data-navigation.scss */
+/* line 86, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-add, .data-navigation .data-navigation-header .header-filler {
   width: 100%;
   padding: 0 20px;
   border: none;
 }
-/* line 89, ../scss/modules/data-navigation.scss */
+/* line 91, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header .data-navigation-add .content-container, .data-navigation .data-navigation-header .header-filler .content-container {
   display: table-cell;
 }
-/* line 95, ../scss/modules/data-navigation.scss */
+/* line 96, ../scss/modules/data-navigation.scss */
+.data-navigation .data-navigation-header .data-navigation-add {
+  cursor: pointer;
+}
+/* line 101, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header.header-search .data-navigation-add, .data-navigation .data-navigation-header.header-search .header-filler {
   display: none;
 }
-/* line 99, ../scss/modules/data-navigation.scss */
+/* line 105, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header.header-search .data-navigation-search {
   width: 100%;
   padding: 0 20px;
   border: none;
 }
-/* line 104, ../scss/modules/data-navigation.scss */
+/* line 110, ../scss/modules/data-navigation.scss */
 .data-navigation .data-navigation-header.header-search .data-navigation-search .content-container {
   display: table-cell;
 }
 
-/* line 112, ../scss/modules/data-navigation.scss */
+/* line 118, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container {
   height: calc(100% - 50px);
   overflow: auto;
   position: relative;
-  padding: 10px 0;
+  padding: 15px 0 10px 0;
 }
-/* line 118, ../scss/modules/data-navigation.scss */
+/* line 124, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll {
   position: relative;
   min-height: calc(100% - 40px);
 }
-/* line 122, ../scss/modules/data-navigation.scss */
+/* line 128, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list {
   background-color: #ddd;
   width: 100%;
   height: 100%;
 }
-/* line 127, ../scss/modules/data-navigation.scss */
+/* line 133, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list.is-animated {
   position: absolute;
   top: 0;
   left: 100%;
   z-index: 5;
 }
-/* line 134, ../scss/modules/data-navigation.scss */
+/* line 140, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list .data-navigation-items {
   height: 100%;
   margin: 0;
@@ -11986,7 +11992,7 @@ a.btn-black, a.btn-highlight {
   list-style: none;
   overflow: auto;
 }
-/* line 141, ../scss/modules/data-navigation.scss */
+/* line 147, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list .data-navigation-items > li {
   position: relative;
   height: 50px;
@@ -11997,24 +12003,26 @@ a.btn-black, a.btn-highlight {
   text-overflow: ellipsis;
   cursor: pointer;
 }
-/* line 151, ../scss/modules/data-navigation.scss */
+/* line 157, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list .data-navigation-items > li:hover {
   background-color: #ccc;
 }
-/* line 155, ../scss/modules/data-navigation.scss */
+/* line 161, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list .data-navigation-items > li:focus {
   outline: 0;
 }
-/* line 159, ../scss/modules/data-navigation.scss */
+/* line 165, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list .data-navigation-items > li.not-selectable {
   cursor: default;
+  padding: 0;
+  height: auto;
 }
-/* line 162, ../scss/modules/data-navigation.scss */
+/* line 170, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container .data-navigation-list-scroll .data-navigation-list .data-navigation-items > li.not-selectable:hover {
   background-color: initial;
 }
 
-/* line 172, ../scss/modules/data-navigation.scss */
+/* line 180, ../scss/modules/data-navigation.scss */
 .data-navigation-item-name {
   display: inline-block;
   width: calc(100% - 45px);
@@ -12022,7 +12030,7 @@ a.btn-black, a.btn-highlight {
   overflow: hidden;
   padding-left: 5px;
 }
-/* line 179, ../scss/modules/data-navigation.scss */
+/* line 187, ../scss/modules/data-navigation.scss */
 .data-navigation-item-name .fa-chevron-right {
   position: absolute;
   right: 10px;
@@ -12030,7 +12038,7 @@ a.btn-black, a.btn-highlight {
   font-size: 14px;
 }
 
-/* line 187, ../scss/modules/data-navigation.scss */
+/* line 195, ../scss/modules/data-navigation.scss */
 .data-navigation-item-thumb {
   position: relative;
   top: 6px;
@@ -12045,7 +12053,7 @@ a.btn-black, a.btn-highlight {
   background-repeat: no-repeat;
 }
 
-/* line 201, ../scss/modules/data-navigation.scss */
+/* line 209, ../scss/modules/data-navigation.scss */
 .data-navigation-loader-container {
   position: absolute;
   width: 100%;
@@ -12055,17 +12063,24 @@ a.btn-black, a.btn-highlight {
   padding: 4px 0;
 }
 
-/* line 210, ../scss/modules/data-navigation.scss */
+/* line 218, ../scss/modules/data-navigation.scss */
 .data-navigation-info {
   text-align: center;
   line-height: 50px;
   height: 100%;
 }
 
-/* line 216, ../scss/modules/data-navigation.scss */
+/* line 224, ../scss/modules/data-navigation.scss */
 .data-navigation-info-empty {
   color: #999;
   font-size: 14px;
+  line-height: normal;
+}
+/* line 229, ../scss/modules/data-navigation.scss */
+.data-navigation-info-empty .icon {
+  font-size: 40px;
+  display: block;
+  margin: 10px 0 10px 0;
 }
 
 /* line 56, ../scss/husky.scss */
