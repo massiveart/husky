@@ -21,8 +21,8 @@
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String}  [options.data[].mode] if 'order' - column gets set in order mode if clicked
  * @params {Function}  [options.data[].enabler] Gets called each time the options change columns.
- *                                            Gets an object with a numberItems and a hasSelected property.
- *                                            If returns false the dropdown item will get disabled, enabled otherwise
+ *          Gets an object with a numberItems and a hasSelected property.
+ *          If returns false the dropdown item will get disabled, enabled otherwise
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
  * @params {String} [options.idName] name of id-key
@@ -1016,7 +1016,7 @@ define([], function() {
          * @param closeCallback - callback to execute if clicked on ok
          */
         confirmOrder: function(okCallback, closeCallback) {
-            this.sandbox.confirm.warning(this,
+            this.sandbox.confirm.alert(this,
                 this.options.orderConfirmTitle, this.options.orderConfirmMessage,
                 okCallback, closeCallback);
         },
