@@ -26,11 +26,11 @@
                  * @param message - the message (or translation key) for the box
                  * @param okCallback - callback to execute after box was confirmed
                  * @param closeCallback - callback to execute on cancel
-                 * @param [type] - 'warning' or 'error' - default 'warning'
+                 * @param [type] default 'alert'
                  */
-                warning: function (that, title, message, okCallback, closeCallback, type) {
+                alert: function (that, title, message, okCallback, closeCallback, type) {
                     var $element = app.core.dom.createElement('<div/>'),
-                        type = type || 'warning';
+                        type = type || 'alert';
                     app.core.dom.append(that.$el, $element);
 
                     that.sandbox.start([
