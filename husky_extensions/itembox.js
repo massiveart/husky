@@ -327,7 +327,7 @@ define(function() {
                 // reset items visible when new content is loaded
                 this.viewAll = false;
 
-                if (!!data) {
+                if (!!data && data.length > 0) {
                     this.sandbox.util.load(this.getUrl(data))
                         .then(function(data) {
                             this.$container.removeClass(constants.isLoadingClass);
@@ -337,6 +337,7 @@ define(function() {
                             this.sandbox.logger.error(error);
                         }.bind(this));
                 } else {
+                    this.$container.removeClass(constants.isLoadingClass);
                     this.sandbox.emit(this.DATA_RETRIEVED(), []);
                 }
             },
@@ -362,6 +363,9 @@ define(function() {
                     this.updateSelectedCounter();
                     this.updateVisibility();
                 } else {
+                    // remove content
+                    this.$list.children().remove();
+
                     this.addNoContentClass();
                 }
             },
