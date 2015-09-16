@@ -290,7 +290,7 @@ define([
          * @method startInfiniteScroll
          */
         startInfiniteScroll: function() {
-            this.sandbox.infiniteScroll.initialize('.iscroll', this.loadNextPage.bind(this), 10);
+            this.sandbox.infiniteScroll.initialize('.iscroll', this.loadNextPage.bind(this));
         },
 
         /**
