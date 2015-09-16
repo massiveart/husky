@@ -44,8 +44,9 @@
     define([
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
-        'husky_components/datagrid/decorators/dropdown-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
+        'husky_components/datagrid/decorators/dropdown-pagination',
+        'husky_components/datagrid/decorators/infinite-scroll-pagination'
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination) {
 
             /* Default values for options */
 
@@ -57,7 +58,8 @@
                 },
                 pagination: 'dropdown',
                 paginationOptions: {
-                    dropdown: {}
+                    dropdown: {},
+                    'infinite-scroll': {}
                 },
 
                 contentFilters: null,
@@ -100,7 +102,8 @@
                     thumbnail: thumbnailView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination
+                    dropdown: decoratorDropdownPagination,
+                    'infinite-scroll': infiniteScrollPagination
                 }
             },
 
