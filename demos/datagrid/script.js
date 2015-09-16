@@ -513,9 +513,9 @@ require(['lib/husky'], function(Husky) {
             options: {
                 url: 'http://husky.lo:7878/admin/api/datagrid',
                 view: 'thumbnail', //path is configured with require.config.paths (see above)
-                pagination: 'infinite',
+                pagination: 'infinite-scroll',
                 paginationOptions: {
-                    infinite: {
+                    'infinite-scroll': {
                         scrollContainer: '#datagrid-infinite',
                     }
                 },
