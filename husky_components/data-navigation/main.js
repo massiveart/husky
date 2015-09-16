@@ -228,6 +228,7 @@ define([
          */
         remove: function() {
             this.cache.destroy();
+            this.sandbox.infiniteScroll.destroy('.iscroll');
         },
 
         /**
@@ -289,7 +290,7 @@ define([
          * @method startInfiniteScroll
          */
         startInfiniteScroll: function() {
-            this.sandbox.infiniteScroll('.iscroll', this.loadNextPage.bind(this), 10);
+            this.sandbox.infiniteScroll.initialize('.iscroll', this.loadNextPage.bind(this), 10);
         },
 
         /**
