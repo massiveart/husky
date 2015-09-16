@@ -11,14 +11,16 @@
         width: auto;
         overflow: hidden;
         text-align: center;
-        padding-top: 5px;
     }
 
-    &.infinite {
+    &.infinite-scroll {
         margin: 0;
     }
 
     &.dropdowns {
+        .pagination-loader {
+            padding-top: 5px;
+        }
 
         .show-elements {
             float: left;

@@ -21,7 +21,7 @@ define(function() {
         },
 
         constants = {
-            paginationClass: 'pagination-wrapper infinite',
+            paginationClass: 'pagination-wrapper infinite-scroll',
             paginationElementClass: 'pagination',
             loaderClass: 'pagination-loader'
         },
@@ -88,6 +88,7 @@ define(function() {
 
             this.startLoader();
             this.bindInfiniteScroll();
+            this.fillScrollContainer();
         },
 
         /**
@@ -104,7 +105,7 @@ define(function() {
                     }
                 }
             ]);
-            this.$loader.hide();
+            this.$loader.css('opacity', '0');
         },
 
         /**
@@ -132,23 +133,33 @@ define(function() {
          * Binds dom related events
          */
         bindInfiniteScroll: function() {
-            this.sandbox.infiniteScroll.initialize(this.options.scrollContainer, this.appendNextPage.bind(this), 0);
+            this.sandbox.infiniteScroll.initialize(this.options.scrollContainer, this.appendNextPage.bind(this));
+        },
+
+        fillScrollContainer: function() {
+            if ($(this.options.scrollContainer)[0].clientHeight >= $(this.options.scrollContainer)[0].scrollHeight){
+                this.appendNextPage().then(function(hasNextPage) {
+                    if (hasNextPage) {
+                        this.fillScrollContainer();
+                    }
+                }.bind(this));
+            }
         },
 
         appendNextPage: function() {
             var promise = $.Deferred();
 
             if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
-                this.$loader.show();
+                this.$loader.css('opacity', '1');
 
                 this.sandbox.util.load(this.datagrid.data.links.next.href).then(function(data) {
                     this.updateDatagrid(data);
+                    this.$loader.css('opacity', '0');
 
-                    this.$loader.hide();
-                    promise.resolve();
+                    promise.resolve(true);
                 }.bind(this))
             } else {
-                promise.resolve();
+                promise.resolve(false);
             }
 
             return promise;
@@ -163,6 +174,7 @@ define(function() {
 
             this.addRecordsToDatagrid(data._embedded[this.datagrid.options.resultKey]);
         },
+
         addRecordsToDatagrid: function(records) {
             this.sandbox.util.foreach(records, function(record) {
                 if (!!record.id) {
