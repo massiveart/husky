@@ -179,7 +179,7 @@ define(function() {
             this.sandbox.util.foreach(records, function(record) {
                 if (!!record.id) {
                     this.datagrid.data.embedded.push(record);
-                    this.datagrid.gridViews[this.datagrid.viewId].addRecord(record);
+                    this.datagrid.gridViews[this.datagrid.viewId].addRecord(record, true);
                 }
             }.bind(this));
         }

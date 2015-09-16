@@ -319,9 +319,11 @@ define(function() {
          * Adds a row to the datagrid
          * @param record {Object} the new record to add
          */
-        addRecord: function(record) {
+        addRecord: function(record, appendAtBottom) {
+            var prepend = (!!appendAtBottom) ? false : this.options.addRowTop;
+
             this.removeEmptyIndicator();
-            this.renderBodyRow(record, this.options.addRowTop);
+            this.renderBodyRow(record, prepend);
             this.setAlternateClasses();
         },
 
