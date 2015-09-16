@@ -30236,9 +30236,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * Adds a row to the datagrid
          * @param record {Object} the new record to add
          */
-        addRecord: function(record) {
+        addRecord: function(record, appendAtBottom) {
+            var prepend = (!!appendAtBottom) ? false : this.options.addRowTop;
+
             this.removeEmptyIndicator();
-            this.renderBodyRow(record, this.options.addRowTop);
+            this.renderBodyRow(record, prepend);
             this.setAlternateClasses();
         },
 
@@ -31640,7 +31642,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * Parses the data and passes it to a render function
          * @param thumbnails {Array} array with thumbnails to render
          */
-        renderThumbnails: function(thumbnails) {
+        renderThumbnails: function(thumbnails, appendAtBottom) {
             var imgSrc, imgAlt, title, description, id, thumbnail;
 
             this.thumbnailFormat = (this.options.large === false) ? this.options.smallThumbnailFormat : this.options.largeThumbnailFormat;
@@ -31683,7 +31685,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 description = description.join(constants.descriptionDelimiter);
 
                 // pass the found data to a render method
-                this.renderThumbnail(id, imgSrc, imgAlt, title, description, record);
+                this.renderThumbnail(id, imgSrc, imgAlt, title, description, record, appendAtBottom);
             }.bind(this));
         },
 
@@ -31696,7 +31698,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param description {String} the thumbnail description to render
          * @param record {Object} the original data record
          */
-        renderThumbnail: function(id, imgSrc, imgAlt, title, description, record) {
+        renderThumbnail: function(id, imgSrc, imgAlt, title, description, record, appendAtBottom) {
             this.$thumbnails[id] = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
@@ -31713,7 +31715,11 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
             }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
             this.sandbox.dom.hide(this.$thumbnails[id]);
-            this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
+            if (!!appendAtBottom) {
+                this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
+            } else {
+                this.sandbox.dom.prepend(this.$el, this.$thumbnails[id]);
+            }
             this.sandbox.dom.fadeIn(this.$thumbnails[id], this.options.fadeInDuration);
 
             this.bindThumbnailDomEvents(id);
@@ -31828,8 +31834,8 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param record
          * @public
          */
-        addRecord: function(record) {
-            this.renderThumbnails([record]);
+        addRecord: function(record, appendAtBottom) {
+            this.renderThumbnails([record], appendAtBottom);
         },
 
         /**
@@ -32387,7 +32393,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             this.sandbox.util.foreach(records, function(record) {
                 if (!!record.id) {
                     this.datagrid.data.embedded.push(record);
-                    this.datagrid.gridViews[this.datagrid.viewId].addRecord(record);
+                    this.datagrid.gridViews[this.datagrid.viewId].addRecord(record, true);
                 }
             }.bind(this));
         }
@@ -33809,7 +33815,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     if (!!recordData.id) {
                         this.pushRecords([recordData]);
                     }
-                    this.gridViews[this.viewId].addRecord(recordData);
+                    this.gridViews[this.viewId].addRecord(recordData, false);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
@@ -33825,7 +33831,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     this.sandbox.util.foreach(records, function(record) {
                         if (!!record.id) {
                             this.pushRecords([record]);
-                            this.gridViews[this.viewId].addRecord(record);
+                            this.gridViews[this.viewId].addRecord(record, false);
                         }
                     }.bind(this));
                     if (typeof callback === 'function') {
