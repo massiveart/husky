@@ -33275,7 +33275,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].rendered) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
@@ -33593,7 +33593,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     this.destroy();
                     this.loadAndInitializePagination(pagination).then(function(){
                         this.render();
-                    });
+                    }.bind(this));
                 }
             },
 

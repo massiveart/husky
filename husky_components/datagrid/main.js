@@ -842,7 +842,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].rendered) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
@@ -1160,7 +1160,7 @@
                     this.destroy();
                     this.loadAndInitializePagination(pagination).then(function(){
                         this.render();
-                    });
+                    }.bind(this));
                 }
             },
 
