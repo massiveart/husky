@@ -99,7 +99,7 @@ define(function() {
         },
 
         /**
-         * Starts a small loader
+         * Starts a small loader in pagination container. loader is hidde per css
          */
         startLoader: function() {
             this.sandbox.start([
@@ -112,7 +112,6 @@ define(function() {
                     }
                 }
             ]);
-            this.$loader.css('opacity', '0');
         },
 
         /**
@@ -137,15 +136,21 @@ define(function() {
         },
 
         /**
-         * Binds dom related events
+         * Binds the scroll event in the given scrollContainer
          */
         bindInfiniteScroll: function() {
             this.sandbox.infiniteScroll.initialize(this.options.scrollContainer, this.appendNextPage.bind(this));
         },
 
+        /**
+         * Add records to the datagrid until scroll-container is filled or all records are displayed
+         */
         fillScrollContainer: function() {
             var $scrollContainer = $(this.options.scrollContainer);
+
+            // check if scroll-container has an scroll-bar
             if ($scrollContainer[0].clientHeight >= $scrollContainer[0].scrollHeight) {
+                // check if there are unrendered items
                 if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
                     this.appendNextPage().then(function() {
                             this.fillScrollContainer();
@@ -154,16 +159,21 @@ define(function() {
             }
         },
 
+        /**
+         * Load next page and append records at the bottom of the datagrid
+         * If there isn't a next page, render a reached-bottom message
+         * @returns {*}
+         */
         appendNextPage: function() {
             var promise = $.Deferred();
 
             if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
-                this.$loader.css('opacity', '1');
+                this.$paginationContainer.addClass('loading');
 
                 this.sandbox.util.load(this.datagrid.data.links.next.href).then(function(data) {
                     this.updateDatagrid(data);
                     this.$paginationContainer.data('showReachedEnd', true);
-                    this.$loader.css('opacity', '0');
+                    this.$paginationContainer.removeClass('loading');
 
                     promise.resolve();
                 }.bind(this))
@@ -177,6 +187,11 @@ define(function() {
             return promise;
         },
 
+        /**
+         * Update datagrid properties to the given data
+         * Append embedded records to the datagrid
+         * @param data
+         */
         updateDatagrid: function(data) {
             this.datagrid.data.links = this.datagrid.parseLinks(data._links);
             this.datagrid.data.total = data.total;
@@ -187,6 +202,10 @@ define(function() {
             this.addRecordsToDatagrid(data._embedded[this.datagrid.options.resultKey]);
         },
 
+        /**
+         * Append given records tothe bottom of the datagrid
+         * @param records
+         */
         addRecordsToDatagrid: function(records) {
             this.sandbox.util.foreach(records, function(record) {
                 if (!!record.id) {
