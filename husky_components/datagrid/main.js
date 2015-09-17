@@ -375,6 +375,15 @@
             },
 
             /**
+            * listens on and changes the current rendered page
+            * @event husky.datagrid.change.page
+            * @param {Integer} page page to render
+             */
+            CHANGE_PAGE = function() {
+                return this.createEventName('change.page');
+            },
+
+            /**
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
@@ -1357,6 +1366,11 @@
                         callback(ids, items);
                     } else {
                         callback(this.getSelectedItemIds());
+                    }
+                }.bind(this));
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                    if (!isNaN(page)) {
+                        this.changePage(null, page, null)
                     }
                 }.bind(this));
 
