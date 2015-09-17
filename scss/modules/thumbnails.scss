@@ -11,6 +11,7 @@
   $thumbnailLargeWidth: 190px;
   $imgLargeHeight: 170px;
 
+  margin-bottom: -20px;
   @include clear-float;
   @include user-select(none);
 
