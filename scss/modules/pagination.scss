@@ -14,7 +14,25 @@
     }
 
     &.infinite-scroll {
-        margin: 0;
+        height: 40px;
+        text-align: center;
+
+        .pagination-message {
+            color: $grayLighter;
+            font-size: 12px;
+            line-height: 40px;
+            vertical-align: middle;
+            display: none;
+        }
+
+        &.reached-end {
+            .pagination-message {
+                display: inline;
+            }
+            .pagination-loader {
+                display: none;
+            }
+        }
     }
 
     &.dropdowns {

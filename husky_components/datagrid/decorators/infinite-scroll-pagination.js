@@ -17,6 +17,7 @@ define(function() {
 
     var defaults = {
             scrollContainer: '.page',
+            reachedBottomMessage: 'you reached the end of the list',
             limit: 20
         },
 
@@ -33,6 +34,7 @@ define(function() {
             paginationContainer: [
                 '<div class="' + constants.paginationClass + '">',
                 '   <div class="' + constants.loaderClass + '"/>',
+                '   <span class="pagination-message"><%= reachedBottomMessage %></span>',
                 '</div>'
             ].join('')
         };
@@ -82,7 +84,12 @@ define(function() {
             this.$el = $container;
             this.data = data;
 
-            this.$paginationContainer = this.sandbox.dom.createElement(templates.paginationContainer);
+            this.$paginationContainer = this.sandbox.dom.createElement(
+                this.sandbox.util.template(templates.paginationContainer, {
+                    reachedBottomMessage: this.sandbox.translate(this.options.reachedBottomMessage)
+                })
+            );
+
             this.$loader = $(this.$paginationContainer).find('.' + constants.loaderClass);
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
@@ -137,12 +144,13 @@ define(function() {
         },
 
         fillScrollContainer: function() {
-            if ($(this.options.scrollContainer)[0].clientHeight >= $(this.options.scrollContainer)[0].scrollHeight){
-                this.appendNextPage().then(function(hasNextPage) {
-                    if (hasNextPage) {
-                        this.fillScrollContainer();
-                    }
-                }.bind(this));
+            var $scrollContainer = $(this.options.scrollContainer);
+            if ($scrollContainer[0].clientHeight >= $scrollContainer.scrollHeight) {
+                if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
+                    this.appendNextPage().then(function() {
+                            this.fillScrollContainer();
+                    }.bind(this));
+                }
             }
         },
 
@@ -159,6 +167,7 @@ define(function() {
                     promise.resolve(true);
                 }.bind(this))
             } else {
+                this.$paginationContainer.addClass('reached-end');
                 promise.resolve(false);
             }
 
