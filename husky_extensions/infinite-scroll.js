@@ -15,23 +15,25 @@
 
         var scrollTimer = null,
 
-            scrollListener = function(selector, padding, callback) {
+            scrollListener = function(selector, offset, callback) {
                 if (!$(selector).data('blocked')) {
                     if (!!scrollTimer) {
                         clearTimeout(scrollTimer);   // clear any previous pending timer
                     }
-                    scrollTimer = setTimeout(scrollHandler.bind(this, selector, padding, callback), 50);
+                    scrollTimer = setTimeout(scrollHandler.bind(this, selector, offset, callback), 50);
                 }
             },
 
-            scrollHandler = function(selector, padding, callback) {
+            scrollHandler = function(selector, offset, callback) {
                 var scrollContainer = $(selector),
                     containerHeight = scrollContainer[0].clientHeight,
                     contentHeight = scrollContainer[0].scrollHeight,
                     scrollTop = scrollContainer.scrollTop(),
-                    padding = (isNaN(padding)) ? 0 : padding;
+                    padding = (isNaN(offset)) ? 0 : offset;
 
+                // check if user scrolled to bottom
                 if ((containerHeight + scrollTop + padding - contentHeight) >= 0) {
+
                     scrollContainer.data('blocked', true);
                     var result = callback();
 
@@ -52,12 +54,22 @@
             initialize: function(app) {
                 app.sandbox.infiniteScroll = {
 
-                    initialize: function(selector, callback, padding) {
+                    /**
+                     * Listen for scroll-to-bottom on the element of the given selector
+                     * @param selector element to listen on
+                     * @param callback function to execute on scrolled-to-bottom
+                     * @param offset execute callback before reaching bottom. value in px
+                     */
+                    initialize: function(selector, callback, offset) {
                         app.sandbox.dom.on(selector, 'scroll.infinite', function() {
-                            scrollListener(selector, padding, callback);
+                            scrollListener(selector, offset, callback);
                         });
                     },
 
+                    /**
+                     * Unbind the scroll event listener
+                     * @param selector
+                     */
                     destroy: function(selector) {
                         app.sandbox.dom.off(selector, 'scroll.infinite');
                     }
