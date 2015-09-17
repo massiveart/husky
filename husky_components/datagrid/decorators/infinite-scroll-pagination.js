@@ -145,7 +145,7 @@ define(function() {
 
         fillScrollContainer: function() {
             var $scrollContainer = $(this.options.scrollContainer);
-            if ($scrollContainer[0].clientHeight >= $scrollContainer.scrollHeight) {
+            if ($scrollContainer[0].clientHeight >= $scrollContainer[0].scrollHeight) {
                 if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
                     this.appendNextPage().then(function() {
                             this.fillScrollContainer();
