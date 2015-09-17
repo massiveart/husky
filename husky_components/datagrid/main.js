@@ -1441,6 +1441,11 @@
                         this.changePage(null, page, limit);
                     }
                 }.bind(this));
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                    if (!isNaN(page)) {
+                        this.changePage(null, page, null)
+                    }
+                }.bind(this));
 
                 this.startColumnOptionsListener();
                 this.startSearchListener();
