@@ -32347,7 +32347,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
         },
 
         /**
-         * Starts a small loader
+         * Starts a small loader in pagination container. loader is hidde per css
          */
         startLoader: function() {
             this.sandbox.start([
@@ -32360,7 +32360,6 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     }
                 }
             ]);
-            this.$loader.css('opacity', '0');
         },
 
         /**
@@ -32385,15 +32384,21 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
         },
 
         /**
-         * Binds dom related events
+         * Binds the scroll event in the given scrollContainer
          */
         bindInfiniteScroll: function() {
             this.sandbox.infiniteScroll.initialize(this.options.scrollContainer, this.appendNextPage.bind(this));
         },
 
+        /**
+         * Add records to the datagrid until scroll-container is filled or all records are displayed
+         */
         fillScrollContainer: function() {
             var $scrollContainer = $(this.options.scrollContainer);
+
+            // check if scroll-container has an scroll-bar
             if ($scrollContainer[0].clientHeight >= $scrollContainer[0].scrollHeight) {
+                // check if there are unrendered items
                 if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
                     this.appendNextPage().then(function() {
                             this.fillScrollContainer();
@@ -32402,16 +32407,21 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             }
         },
 
+        /**
+         * Load next page and append records at the bottom of the datagrid
+         * If there isn't a next page, render a reached-bottom message
+         * @returns {*}
+         */
         appendNextPage: function() {
             var promise = $.Deferred();
 
             if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
-                this.$loader.css('opacity', '1');
+                this.$paginationContainer.addClass('loading');
 
                 this.sandbox.util.load(this.datagrid.data.links.next.href).then(function(data) {
                     this.updateDatagrid(data);
                     this.$paginationContainer.data('showReachedEnd', true);
-                    this.$loader.css('opacity', '0');
+                    this.$paginationContainer.removeClass('loading');
 
                     promise.resolve();
                 }.bind(this))
@@ -32425,6 +32435,11 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             return promise;
         },
 
+        /**
+         * Update datagrid properties to the given data
+         * Append embedded records to the datagrid
+         * @param data
+         */
         updateDatagrid: function(data) {
             this.datagrid.data.links = this.datagrid.parseLinks(data._links);
             this.datagrid.data.total = data.total;
@@ -32435,6 +32450,10 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             this.addRecordsToDatagrid(data._embedded[this.datagrid.options.resultKey]);
         },
 
+        /**
+         * Append given records tothe bottom of the datagrid
+         * @param records
+         */
         addRecordsToDatagrid: function(records) {
             this.sandbox.util.foreach(records, function(record) {
                 if (!!record.id) {
@@ -32820,6 +32839,15 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              */
             CHANGE_PAGINATION = function() {
                 return this.createEventName('pagination.change');
+            },
+
+            /**
+            * listens on and changes the current rendered page
+            * @event husky.datagrid.change.page
+            * @param {Integer} page page to render
+             */
+            CHANGE_PAGE = function() {
+                return this.createEventName('change.page');
             },
 
             /**
@@ -33805,6 +33833,11 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         callback(ids, items);
                     } else {
                         callback(this.getSelectedItemIds());
+                    }
+                }.bind(this));
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                    if (!isNaN(page)) {
+                        this.changePage(null, page, null)
                     }
                 }.bind(this));
 
@@ -49751,23 +49784,25 @@ define("datepicker-zh-TW", function(){});
 
         var scrollTimer = null,
 
-            scrollListener = function(selector, padding, callback) {
+            scrollListener = function(selector, offset, callback) {
                 if (!$(selector).data('blocked')) {
                     if (!!scrollTimer) {
                         clearTimeout(scrollTimer);   // clear any previous pending timer
                     }
-                    scrollTimer = setTimeout(scrollHandler.bind(this, selector, padding, callback), 50);
+                    scrollTimer = setTimeout(scrollHandler.bind(this, selector, offset, callback), 50);
                 }
             },
 
-            scrollHandler = function(selector, padding, callback) {
+            scrollHandler = function(selector, offset, callback) {
                 var scrollContainer = $(selector),
                     containerHeight = scrollContainer[0].clientHeight,
                     contentHeight = scrollContainer[0].scrollHeight,
                     scrollTop = scrollContainer.scrollTop(),
-                    padding = (isNaN(padding)) ? 0 : padding;
+                    padding = (isNaN(offset)) ? 0 : offset;
 
+                // check if user scrolled to bottom
                 if ((containerHeight + scrollTop + padding - contentHeight) >= 0) {
+
                     scrollContainer.data('blocked', true);
                     var result = callback();
 
@@ -49788,12 +49823,22 @@ define("datepicker-zh-TW", function(){});
             initialize: function(app) {
                 app.sandbox.infiniteScroll = {
 
-                    initialize: function(selector, callback, padding) {
+                    /**
+                     * Listen for scroll-to-bottom on the element of the given selector
+                     * @param selector element to listen on
+                     * @param callback function to execute on scrolled-to-bottom
+                     * @param offset execute callback before reaching bottom. value in px
+                     */
+                    initialize: function(selector, callback, offset) {
                         app.sandbox.dom.on(selector, 'scroll.infinite', function() {
-                            scrollListener(selector, padding, callback);
+                            scrollListener(selector, offset, callback);
                         });
                     },
 
+                    /**
+                     * Unbind the scroll event listener
+                     * @param selector
+                     */
                     destroy: function(selector) {
                         app.sandbox.dom.off(selector, 'scroll.infinite');
                     }
