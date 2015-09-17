@@ -162,13 +162,16 @@ define(function() {
 
                 this.sandbox.util.load(this.datagrid.data.links.next.href).then(function(data) {
                     this.updateDatagrid(data);
+                    this.$paginationContainer.data('showReachedEnd', true);
                     this.$loader.css('opacity', '0');
 
-                    promise.resolve(true);
+                    promise.resolve();
                 }.bind(this))
             } else {
-                this.$paginationContainer.addClass('reached-end');
-                promise.resolve(false);
+                if (!!this.$paginationContainer.data('showReachedEnd')) {
+                    this.$paginationContainer.addClass('reached-end');
+                }
+                promise.resolve();
             }
 
             return promise;
