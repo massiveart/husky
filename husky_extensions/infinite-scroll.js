@@ -59,7 +59,7 @@
                     },
 
                     destroy: function(selector) {
-                        this.sandbox.dom.off(selector, 'scroll.infinite');
+                        app.sandbox.dom.off(selector, 'scroll.infinite');
                     }
                 }
             }
