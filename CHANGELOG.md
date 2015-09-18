@@ -3,10 +3,14 @@ CHANGELOGS:
 
 Dev-develop
 ==================
+- datagrid
+    - added infinite-scroll-pagination
+    - added change-page event
+
 - toolbar
     - new blueish style
     - options changes
-    - 
+
 - services
     - New util and mediator service
 
