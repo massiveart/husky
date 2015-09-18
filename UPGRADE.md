@@ -2,6 +2,11 @@
 
 ## Dev-develop
 
+### Infinite scroll
+The infinite-scroll-extension got refactored. To initialize infinite-scroll on an element, use
+"this.sandbox.infiniteScroll.initialize(selector, callback)" instead of "this.sandbox.infiniteScroll(selector, callback)" now.
+To unbind an infinite-scroll handler, use "this.sandbox.infiniteScroll.destroy(selector)"
+
 ### Toolbar
 - 'blueish' style got removed. 'big' style was added
 - options.data renamed to options.buttons
