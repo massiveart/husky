@@ -4,7 +4,9 @@
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Number} [options.limit] Data records per page
- * @param {Number} [options.scrollContainer] CSS selector of the element which holds the datagrid items and is scrollable
+ * @param {Number} [options.scrollContainer] CSS selector of the scrollable container which contains the records
+ * @param {Number} [options.reachedBottomMessage] message or translation key to display when all items are loaded
+ * @param {Number} [options.scrollOffset] Defines an offset to the bottom, new pages are loaded when reaching this offset
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -18,6 +20,7 @@ define(function() {
     var defaults = {
             scrollContainer: '.page',
             reachedBottomMessage: 'you reached the end of the list',
+            scrollOffset: 0,
             limit: 20
         },
 
@@ -139,7 +142,9 @@ define(function() {
          * Binds the scroll event in the given scrollContainer
          */
         bindInfiniteScroll: function() {
-            this.sandbox.infiniteScroll.initialize(this.options.scrollContainer, this.appendNextPage.bind(this));
+            this.sandbox.infiniteScroll.initialize(
+                this.options.scrollContainer, this.appendNextPage.bind(this), this.options.scrollOffset
+            );
         },
 
         /**
