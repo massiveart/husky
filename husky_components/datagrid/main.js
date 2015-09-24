@@ -487,11 +487,29 @@
 
             /**
              * selects an item with a given id
-             * @event husky.datagrid.items.deselect
+             * @event husky.datagrid.select.item
              * @param {String|Number} The id of the item to select
              */
             SELECT_ITEM = function() {
                 return this.createEventName('select.item');
+            },
+
+            /**
+             * deselects an item with a given id
+             * @event husky.datagrid.deselect.item
+             * @param {String|Number} The id of the item to deselect
+             */
+            DESELECT_ITEM = function() {
+                return this.createEventName('deselect.item');
+            },
+
+            /**
+             * toggle an item with a given id
+             * @event husky.datagrid.toggle.item
+             * @param {String|Number} The id of the item to toggle
+             */
+            TOGGLE_ITEM = function() {
+                return this.createEventName('toggle.item');
             },
 
             /**
@@ -1290,6 +1308,8 @@
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
                 this.sandbox.on(SELECTED_UPDATE.call(this), this.updateSelection.bind(this));
                 this.sandbox.on(SELECT_ITEM.call(this), this.selectItem.bind(this));
+                this.sandbox.on(DESELECT_ITEM.call(this), this.deselectItem.bind(this));
+                this.sandbox.on(TOGGLE_ITEM.call(this), this.toggleItem.bind(this));
                 this.sandbox.on(ITEMS_DESELECT.call(this), function() {
                     this.gridViews[this.viewId].deselectAllRecords();
                 }.bind(this));
@@ -1553,6 +1573,28 @@
              */
             selectItem: function(itemId) {
                 this.gridViews[this.viewId].selectRecord(itemId);
+            },
+
+            /**
+             * Deselects an item with a given id
+             * @param itemId {Number|String} the id of the item to select
+             */
+            deselectItem: function(itemId) {
+                if (!!this.gridViews[this.viewId].deselectRecord) {
+                    this.gridViews[this.viewId].deselectRecord(itemId);
+                }
+            },
+
+            /**
+             * Toogle an item with a given id
+             * @param itemId {Number|String} the id of the item to select
+             */
+            toggleItem: function(itemId) {
+                if (this.itemIsSelected(itemId)) {
+                    this.deselectItem(itemId);
+                } else {
+                    this.selectItem(itemId);
+                }
             },
 
             /**

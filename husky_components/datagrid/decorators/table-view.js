@@ -359,7 +359,7 @@ define(function() {
             this.$el = null;
             this.table = {};
             this.data = null;
-            this.rowClicked = false;
+            this.rowClicked = {};
             this.isFocusoutHandlerEnabled = this.options.editable === true || this.options.editable === 'true';
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
@@ -1250,14 +1250,15 @@ define(function() {
          * @param event {Object} the original click event
          */
         rowClickCallback: function(event) {
-            if (this.rowClicked === false) {
-                this.rowClicked = true;
-                var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-                ;
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+
+            if (!this.rowClicked[recordId]) {
+                this.rowClicked[recordId] = true;
+
                 this.datagrid.itemClicked.call(this.datagrid, recordId);
                 // delay to prevent multiple emits on double click
                 this.sandbox.util.delay(function() {
-                    this.rowClicked = false;
+                    this.rowClicked[recordId] = false;
                 }.bind(this), 500);
             }
         },
@@ -1347,11 +1348,19 @@ define(function() {
         },
 
         /**
-         * Selects or deselects a record with a given id
+         * Selects a record with a given id
          * @param recordId {Number|String} the id of the record to select or deselect
          */
         selectRecord: function(recordId) {
             this.toggleSelectRecord(recordId, true);
+        },
+
+        /**
+         * Deselects a record with a given id
+         * @param recordId {Number|String} the id of the record to select or deselect
+         */
+        deselectRecord: function(recordId) {
+            this.toggleSelectRecord(recordId, false);
         },
 
         /**
