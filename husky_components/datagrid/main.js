@@ -1342,8 +1342,19 @@
                 this.sandbox.on(ITEMS_DESELECT.call(this), function() {
                     this.gridViews[this.viewId].deselectAllRecords();
                 }.bind(this));
-                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
-                    callback(this.getSelectedItemIds());
+                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function (callback, returnItems) {
+                    if (!!returnItems) {
+                        var ids = this.getSelectedItemIds(),
+                            items = [];
+
+                        this.sandbox.util.foreach(ids, function (id) {
+                            items.push(this.getRecordById(id));
+                        }.bind(this));
+
+                        callback(ids, items);
+                    } else {
+                        callback(this.getSelectedItemIds());
+                    }
                 }.bind(this));
 
                 this.startColumnOptionsListener();
