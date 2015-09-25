@@ -1249,17 +1249,23 @@ define([], function() {
             if (!!this.options.data && this.options.data.length > 0) {
                 var context = {
                     numberItems: 0,
-                    hasSelected: false
+                    hasSelected: false,
+                    selectedItem: null
                 };
                 if (!!this.columns[column]) {
                     context.numberItems = Object.keys(this.columns[column]).length;
                     context.hasSelected = !!this.selected[column];
+
+                    if (!!this.selected[column]) {
+                        context.selectedItem = this.selected[column];
+                    }
                 }
                 this.sandbox.util.each(this.options.data, function(index, item) {
                     if (!!item.enabler && typeof item.enabler === 'function') {
                         this.sandbox.emit(
                             'husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.toggle',
-                            item.id, item.enabler(context)
+                            item.id,
+                            item.enabler(context)
                         );
                     }
                 }.bind(this));
