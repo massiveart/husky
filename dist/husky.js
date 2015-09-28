@@ -32238,7 +32238,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             scrollContainer: '.page',
             reachedBottomMessage: 'you reached the end of the list',
             scrollOffset: 0,
-            limit: 20
+            limit: 50
         },
 
         constants = {
@@ -33769,9 +33769,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
                     callback(this.getSelectedItemIds());
                 }.bind(this));
-                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page, limit) {
                     if (!isNaN(page)) {
-                        this.changePage(null, page, null)
+                        this.changePage(null, page, limit);
                     }
                 }.bind(this));
 
