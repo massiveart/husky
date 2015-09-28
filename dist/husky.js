@@ -37407,6 +37407,8 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {String} [options.url] url to load data from
  * @param {Boolean} [options.isNative] should use native select
  * @param {Boolean} [options.showToolTip] Show tool-tip on hover - only works for single-selects
+ * @param {Boolean} [options.preferPreselectionFromData] Defines if preselection from data object should overrule
+ *                  the one from preSelect object
  */
 
 define('__component__$select@husky',[], function() {
@@ -37442,7 +37444,8 @@ define('__component__$select@husky',[], function() {
             resultKey: '',
             showToolTip: false,
             translations: translations,
-            isNative: false
+            isNative: false,
+            preferPreselectionFromData: false
         },
 
         constants = {
@@ -37626,12 +37629,11 @@ define('__component__$select@husky',[], function() {
         };
 
     return {
-
         initialize: function() {
             var selectedIds;
 
             this.sandbox.logger.log('initialize', this);
-            this.options = this.sandbox.util.extend({}, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, defaults, this.options);
 
             // if deselectfield is set to true, set it to default value
             if (!!this.options.deselectField && this.options.deselectField.toString() === 'true') {
@@ -37646,10 +37648,12 @@ define('__component__$select@husky',[], function() {
             // Used as a fallback to revert to the last committed data
             this.mergedData = null;
 
-            // when preselected elements is not set via options look in data-attribute
-            if (!this.options.preSelectedElements || this.options.preSelectedElements.length === 0) {
+            // if data value is written,
+            if (!this.options.preSelectedElements ||
+                this.options.preSelectedElements.length === 0 ||
+                this.options.preferPreselectionFromData
+            ) {
                 selectedIds = this.sandbox.dom.data(this.$el, 'selection');
-
                 if (typeof selectedIds === 'string') {
                     this.options.preSelectedElements = selectedIds.split(',');
                 } else if (Array.isArray(selectedIds)) {
