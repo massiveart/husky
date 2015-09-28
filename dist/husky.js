@@ -32865,6 +32865,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * raised when limit of request changed
              * @event husky.datagrid.page-size.changed
              * @param {Integer} pageSize new size
+             * @param {String} paginationId current pagination
              */
             PAGE_SIZE_CHANGED = function() {
                 return this.createEventName('page-size.changed');
@@ -33769,9 +33770,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
                     callback(this.getSelectedItemIds());
                 }.bind(this));
-                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page, limit) {
                     if (!isNaN(page)) {
-                        this.changePage(null, page, null)
+                        this.changePage(null, page, limit);
                     }
                 }.bind(this));
 
@@ -34263,7 +34264,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         if (!limit) {
                             limit = this.data.limit;
                         } else if (this.data.limit !== limit) {
-                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit);
+                            this.sandbox.emit(PAGE_SIZE_CHANGED.call(this), limit, this.paginationId);
                         }
 
                         // generate uri for loading
