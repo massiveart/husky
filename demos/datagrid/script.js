@@ -715,7 +715,7 @@ require(['lib/husky'], function(Husky) {
 
 
         $('#set-data').on('click', function() {
-            app.sandbox.emit('husky.datagrid.datagrid-set-data.set-data', constants.setData.data2);
+            app.sandbox.emit('husky.datagrid.datagrid-set-data.data.set', constants.setData.data2);
         });
 
     });
