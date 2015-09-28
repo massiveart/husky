@@ -13,6 +13,61 @@ require(['lib/husky'], function(Husky) {
 
     var app,
         view, pagination,
+        constants = {
+            setData: {
+                fieldList: [
+                    {
+                        "disabled": true,
+                        "name": "id"
+                    },
+                    {
+                        "translation": "public.title",
+                        "name": "title"
+                    },
+                    {
+                        "translation": "videomanagement.chapters.start",
+                        "name": "start"
+                    },
+                    {
+                        "translation": "videomanagement.chapters.end",
+                        "name": "end"
+                    }
+                ],
+                data1: [
+                    {
+                        "id": "2",
+                        "title": "Second row",
+                        "start": "00:01:00",
+                        "end": "00:01:10"
+                    },
+                    {
+                        "id": "1",
+                        "title": "First row",
+                        "start": "00:00:00",
+                        "end": "00:01:00"
+                    }
+                ],
+                data2: [
+                    {
+                        "id": "1",
+                        "title": "First row",
+                        "start": "00:00:00",
+                        "end": "00:01:00"
+                    },
+                    {
+                        "id": "2",
+                        "title": "Second row",
+                        "start": "00:01:00",
+                        "end": "00:01:10"
+                    },
+                    {
+                        "id": "3",
+                        "title": "Third row",
+                        "start": "00:01:10",
+                        "end": "00:02:10"
+                    },                ]
+            }
+        },
         _;
 
     app = new Husky({debug: {enable: true}});
@@ -498,6 +553,18 @@ require(['lib/husky'], function(Husky) {
                     app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
                 }
             }
+        },
+        ,
+        {
+            name: 'datagrid@husky',
+            options: {
+                data: constants.setData.data1,
+                searchInstanceName: 'test',
+                searchFields: ['title'],
+                el: '#datagrid-set-data',
+                instanceName: 'datagrid-set-data',
+                matchings: constants.setData.fieldList
+            }
         }
     ]).then(function() {
         App = app;
@@ -644,6 +711,11 @@ require(['lib/husky'], function(Husky) {
                     {"id": "content4", "translation": "Content 4", "disabled": false, "width": "500px"}
                 ]
             );
+        });
+
+
+        $('#set-data').on('click', function() {
+            app.sandbox.emit('husky.datagrid.datagrid-set-data.set-data', constants.setData.data2);
         });
 
     });
