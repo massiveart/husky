@@ -32372,7 +32372,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 // check if there are unrendered items
                 if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
                     this.appendNextPage().then(function() {
-                            this.fillScrollContainer();
+                        this.fillScrollContainer();
                     }.bind(this));
                 }
             }
@@ -32486,9 +32486,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
         'husky_components/datagrid/decorators/infinite-scroll-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination) {
 
-            /* Default values for options */
+        /* Default values for options */
 
-            var defaults = {
+        var defaults = {
                 view: 'table',
                 viewOptions: {
                     table: {},
@@ -32813,9 +32813,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
-            * listens on and changes the current rendered page
-            * @event husky.datagrid.change.page
-            * @param {Integer} page page to render
+             * listens on and changes the current rendered page
+             * @event husky.datagrid.change.page
+             * @param {Integer} page page to render
              */
             CHANGE_PAGE = function() {
                 return this.createEventName('change.page');
@@ -33504,7 +33504,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             /**
              * Initialize the current set view decorator. Log an error message to console if the view is not valid
              */
-            initializeViewDecorator: function(){
+            initializeViewDecorator: function() {
                 if (this.isViewValid(this.gridViews[this.viewId])) {
                     // merge view options with passed ones
                     this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
@@ -33596,7 +33596,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             changePagination: function(pagination) {
                 if (pagination !== this.paginationId) {
                     this.destroy();
-                    this.loadAndInitializePagination(pagination).then(function(){
+                    this.loadAndInitializePagination(pagination).then(function() {
                         this.render();
                     }.bind(this));
                 }
@@ -44590,7 +44590,7 @@ define('__component__$data-navigation@husky',[
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
 
             this.$el.on('click', '.data-navigation-search > .icon-container', function() {
-                if (!$('.data-navigation-header').hasClass('header-search')){
+                if (!$('.data-navigation-header').hasClass('header-search')) {
                     $('.data-navigation-header').addClass('header-search');
                     $('.data-navigation-search span').attr('class', 'fa-times');
                     $('.data-navigation-search input').select();
@@ -49616,8 +49616,7 @@ define("datepicker-zh-TW", function(){});
             }
         };
     });
-})
-();
+})();
 
 /**
  * This file is part of Husky frontend development framework.

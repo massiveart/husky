@@ -48,9 +48,9 @@
         'husky_components/datagrid/decorators/infinite-scroll-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination) {
 
-            /* Default values for options */
+        /* Default values for options */
 
-            var defaults = {
+        var defaults = {
                 view: 'table',
                 viewOptions: {
                     table: {},
@@ -375,9 +375,9 @@
             },
 
             /**
-            * listens on and changes the current rendered page
-            * @event husky.datagrid.change.page
-            * @param {Integer} page page to render
+             * listens on and changes the current rendered page
+             * @event husky.datagrid.change.page
+             * @param {Integer} page page to render
              */
             CHANGE_PAGE = function() {
                 return this.createEventName('change.page');
@@ -1066,7 +1066,7 @@
             /**
              * Initialize the current set view decorator. Log an error message to console if the view is not valid
              */
-            initializeViewDecorator: function(){
+            initializeViewDecorator: function() {
                 if (this.isViewValid(this.gridViews[this.viewId])) {
                     // merge view options with passed ones
                     this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
@@ -1158,7 +1158,7 @@
             changePagination: function(pagination) {
                 if (pagination !== this.paginationId) {
                     this.destroy();
-                    this.loadAndInitializePagination(pagination).then(function(){
+                    this.loadAndInitializePagination(pagination).then(function() {
                         this.render();
                     }.bind(this));
                 }

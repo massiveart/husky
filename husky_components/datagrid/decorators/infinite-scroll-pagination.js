@@ -158,7 +158,7 @@ define(function() {
                 // check if there are unrendered items
                 if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
                     this.appendNextPage().then(function() {
-                            this.fillScrollContainer();
+                        this.fillScrollContainer();
                     }.bind(this));
                 }
             }
