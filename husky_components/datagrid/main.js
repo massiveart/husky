@@ -1441,9 +1441,9 @@
                         this.changePage(null, page, limit);
                     }
                 }.bind(this));
-                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page, limit) {
                     if (!isNaN(page)) {
-                        this.changePage(null, page, null)
+                        this.changePage(null, page, limit);
                     }
                 }.bind(this));
 
