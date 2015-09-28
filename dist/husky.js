@@ -30865,7 +30865,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                         if (cell.croppable === true) {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
-                                content = this.sandbox.util.cropMiddle(cell.originalData, this.options.croppedMaxLength);
+                                content = this.sandbox.util.cropMiddle(
+                                    !!cell.originalData ? cell.originalData.toString() : '',
+                                    this.options.croppedMaxLength
+                                );
                                 this.sandbox.dom.attr($contentContainer, 'title', cell.originalData);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
