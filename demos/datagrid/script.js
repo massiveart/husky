@@ -25,47 +25,39 @@ require(['lib/husky'], function(Husky) {
                         "name": "title"
                     },
                     {
-                        "translation": "videomanagement.chapters.start",
-                        "name": "start"
-                    },
-                    {
-                        "translation": "videomanagement.chapters.end",
-                        "name": "end"
+                        "translation": "public.description",
+                        "name": "descr"
                     }
                 ],
                 data1: [
                     {
                         "id": "2",
                         "title": "Second row",
-                        "start": "00:01:00",
-                        "end": "00:01:10"
+                        "descr": "Descr 2"
                     },
                     {
                         "id": "1",
                         "title": "First row",
-                        "start": "00:00:00",
-                        "end": "00:01:00"
+                        "descr": "Descr 1"
                     }
                 ],
                 data2: [
                     {
                         "id": "1",
                         "title": "First row",
-                        "start": "00:00:00",
-                        "end": "00:01:00"
+                        "descr": "Descr 1"
                     },
                     {
                         "id": "2",
                         "title": "Second row",
-                        "start": "00:01:00",
-                        "end": "00:01:10"
+                        "descr": "Descr 2"
                     },
                     {
                         "id": "3",
                         "title": "Third row",
-                        "start": "00:01:10",
-                        "end": "00:02:10"
-                    },                ]
+                        "descr": "Descr 3"
+                    },
+                ]
             }
         },
         _;
