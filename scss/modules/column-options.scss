@@ -3,7 +3,6 @@
 $columnOptionsListItemHeight: 50px;
 $columnOptionsContainerWidth: 400px;
 
-
 .column-options-parent {
     .overlay-content {
         margin: 0;
@@ -62,14 +61,14 @@ $columnOptionsContainerWidth: 400px;
         font-size: 18px;
         &::before {
             line-height: 50px;
-            vertical-align:center;
+            vertical-align: center;
         }
-        cursor:pointer;
+        cursor: pointer;
     }
 }
 
 .sortable-placeholder {
-    border: 1px dashed rgba(0,0,0,0.3);
+    border: 1px dashed rgba(0, 0, 0, 0.3);
     width: 95%;
     height: 95%;
     margin: auto;
