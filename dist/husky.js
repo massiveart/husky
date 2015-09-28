@@ -32406,7 +32406,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 // check if there are unrendered items
                 if (!!this.datagrid.data.links && !!this.datagrid.data.links.next) {
                     this.appendNextPage().then(function() {
-                            this.fillScrollContainer();
+                        this.fillScrollContainer();
                     }.bind(this));
                 }
             }
@@ -32847,9 +32847,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
-            * listens on and changes the current rendered page
-            * @event husky.datagrid.change.page
-            * @param {Integer} page page to render
+             * listens on and changes the current rendered page
+             * @event husky.datagrid.change.page
+             * @param {Integer} page page to render
              */
             CHANGE_PAGE = function() {
                 return this.createEventName('change.page');
@@ -44807,7 +44807,7 @@ define('__component__$data-navigation@husky',[
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
 
             this.$el.on('click', '.data-navigation-search > .icon-container', function() {
-                if (!$('.data-navigation-header').hasClass('header-search')){
+                if (!$('.data-navigation-header').hasClass('header-search')) {
                     $('.data-navigation-header').addClass('header-search');
                     $('.data-navigation-search span').attr('class', 'fa-times');
                     $('.data-navigation-search input').select();
@@ -49851,8 +49851,7 @@ define("datepicker-zh-TW", function(){});
             }
         };
     });
-})
-();
+})();
 
 /**
  * This file is part of Husky frontend development framework.

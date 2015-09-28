@@ -375,9 +375,9 @@
             },
 
             /**
-            * listens on and changes the current rendered page
-            * @event husky.datagrid.change.page
-            * @param {Integer} page page to render
+             * listens on and changes the current rendered page
+             * @event husky.datagrid.change.page
+             * @param {Integer} page page to render
              */
             CHANGE_PAGE = function() {
                 return this.createEventName('change.page');

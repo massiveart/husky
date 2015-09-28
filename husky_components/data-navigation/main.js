@@ -331,7 +331,7 @@ define([
             this.$el.on('click', '.data-navigation-add', this.addHandler.bind(this));
 
             this.$el.on('click', '.data-navigation-search > .icon-container', function() {
-                if (!$('.data-navigation-header').hasClass('header-search')){
+                if (!$('.data-navigation-header').hasClass('header-search')) {
                     $('.data-navigation-header').addClass('header-search');
                     $('.data-navigation-search span').attr('class', 'fa-times');
                     $('.data-navigation-search input').select();
