@@ -38504,7 +38504,7 @@ define('__component__$select@husky',[], function() {
             var selectedIds;
 
             this.sandbox.logger.log('initialize', this);
-            this.options = this.sandbox.util.extend(true, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             // if deselectfield is set to true, set it to default value
             if (!!this.options.deselectField && this.options.deselectField.toString() === 'true') {
