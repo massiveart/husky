@@ -38280,7 +38280,7 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {Boolean} [options.isNative] should use native select
  * @param {Boolean} [options.showToolTip] Show tool-tip on hover - only works for single-selects
  * @param {Boolean} [options.preferPreselectionFromData] Defines if preselection from data object should overrule
- *                  the one from preSelect object
+ *                  the one from preSelected Elements option
  */
 
 define('__component__$select@husky',[], function() {
