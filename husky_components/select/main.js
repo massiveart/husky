@@ -39,8 +39,7 @@
  * @param {String} [options.url] url to load data from
  * @param {Boolean} [options.isNative] should use native select
  * @param {Boolean} [options.showToolTip] Show tool-tip on hover - only works for single-selects
- * @param {Boolean} [options.preferPreselectionFromData] Defines if preselection from data object should overrule
- *                  the one from preSelected Elements option
+ * @param {Array} [options.defaultValue] Array of default items that should be selected if no item has been preselected
  */
 
 define([], function() {
@@ -77,7 +76,7 @@ define([], function() {
             showToolTip: false,
             translations: translations,
             isNative: false,
-            preferPreselectionFromData: false
+            defaultValue: null
         },
 
         constants = {
@@ -280,11 +279,8 @@ define([], function() {
             // Used as a fallback to revert to the last committed data
             this.mergedData = null;
 
-            // if data value is written,
-            if (!this.options.preSelectedElements ||
-                this.options.preSelectedElements.length === 0 ||
-                this.options.preferPreselectionFromData
-            ) {
+            // if no data was preselected search for data array
+            if (!this.options.preSelectedElements || this.options.preSelectedElements.length === 0) {
                 selectedIds = this.sandbox.dom.data(this.$el, 'selection');
                 if (typeof selectedIds === 'string') {
                     this.options.preSelectedElements = selectedIds.split(',');
@@ -292,6 +288,8 @@ define([], function() {
                     this.options.preSelectedElements = selectedIds.map(String);
                 } else if (typeof selectedIds === 'number') {
                     this.options.preSelectedElements.push(selectedIds.toString());
+                } else if (!!this.options.defaultValue) {
+                    this.options.preSelectedElements = this.options.defaultValue;
                 }
             }
 
