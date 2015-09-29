@@ -17,12 +17,12 @@
  * @params {Object} [options] Configuration object
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
- * @params {String} [options.actionIcon] icon class of action button
+ * @params {String|Function} [options.actionIcon] icon class of action button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String}  [options.data[].mode] if 'order' - column gets set in order mode if clicked
  * @params {Function}  [options.data[].enabler] Gets called each time the options change columns.
- *                                            Gets an object with a numberItems and a hasSelected property.
- *                                            If returns false the dropdown item will get disabled, enabled otherwise
+ *          Gets an object with a numberItems and a hasSelected property.
+ *          If returns false the dropdown item will get disabled, enabled otherwise
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
  * @params {String} [options.idName] name of id-key
@@ -670,13 +670,30 @@ define([], function() {
          * @param disabled - indicates if item is disabled
          */
         renderRightInfo: function($item, data, disabled) {
-            var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item);
-            if (this.options.showActionIcon === true && !disabled) {
-                this.sandbox.dom.append($container, '<span class="' + this.options.actionIcon + ' action col-icon"></span>');
+            var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item),
+                actionIcon = this.getActionIcon(data);
+
+            if (this.options.showActionIcon === true && actionIcon && !disabled) {
+                this.sandbox.dom.append($container, '<span class="' + actionIcon + ' action col-icon"></span>');
             }
             if (!!data[this.options.hasSubName] && (!disabled || !this.options.disabledChildren)) {
                 this.sandbox.dom.append($container, '<span class="fa-chevron-right arrow inactive col-icon"></span>');
             }
+        },
+
+        /**
+         * Returns the action items for the given item data
+         * @param {Object} data
+         * @returns {string}
+         */
+        getActionIcon: function(data) {
+            var actionItem = this.options.actionIcon;
+
+            if (typeof(this.options.actionIcon) === 'function') {
+                actionItem = this.options.actionIcon(data);
+            }
+
+            return actionItem;
         },
 
         /**
@@ -999,7 +1016,7 @@ define([], function() {
          * @param closeCallback - callback to execute if clicked on ok
          */
         confirmOrder: function(okCallback, closeCallback) {
-            this.sandbox.confirm.warning(this,
+            this.sandbox.confirm.alert(this,
                 this.options.orderConfirmTitle, this.options.orderConfirmMessage,
                 okCallback, closeCallback);
         },
@@ -1380,6 +1397,7 @@ define([], function() {
             if (this.inOrderMode === true) {
                 return false;
             }
+
             if (this.sandbox.dom.hasClass(event.currentTarget, 'action') === true) {
                 $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
             } else {

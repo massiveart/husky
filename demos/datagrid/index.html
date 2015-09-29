@@ -19,7 +19,6 @@
         }
         #content {
             max-width: 800px;
-            /*margin: auto;*/
             margin: 0 0px;
             padding: 0 50px;
         }
@@ -31,10 +30,13 @@
 <body>
 
     <div id="content" class="grid">
+
         <h1>Husky Datagrid Demo</h1>
+
         <div class="m-top-30 m-bottom-30"></div>
-        <div id="toolbar" class="grid-row m-top-30 m-bottom-10" style="text-align:right;clear:both;"></div>
+        <div id="toolbar" class="grid-row m-top-30 m-bottom-20" style="text-align:right;clear:both;"></div>
         <div id="datagrid" class="grid-row"></div>
+
         <div class="grid-row  m-top-30">
             <div id="add-row" class="grid-col-3"><span>Add Row</span></div>
             <div id="get-selected" class="grid-col-3"><span>Get Selected</span></div>
@@ -53,25 +55,37 @@
         <div class="grid-row m-top-30">
             <div class="grid-col-6">Note: First row can be edited. The others produce a validation error</div>
         </div>
+
         <h2 class="divider m-top-30">Datagrid with children elements</h2>
         <div id="children-datagrid"></div>
+
         <h2 class="divider m-top-30">Datagrid with children elements - (only leaves can be selected)</h2>
         <div id="children-datagrid-only-leaves"></div>
+
         <h2 class="divider m-top-30">Children datagrid - (children loaded at beginning)</h2>
         <div id="children-datagrid-beginning"></div>
+
         <h2 class="divider m-top-30">Datagrid as assignment component</h2>
         <div id="get-from-data" class="btn action fit m-bottom-30">Get selected cateogries from dom</div>
         <div id="assignment-datagrid"></div>
+
         <h2 class="divider m-top-30">Empty datagrid</h2>
         <div id="empty-datagrid"></div>
         <div class="m-top-30"></div>
         <div id="empty-datagrid2"></div>
-        <h2 class="devider m-top-30">Thumbnail view</h2>
+
+        <h2 class="divider m-top-30">Thumbnail view</h2>
         <div id="datagrid2"></div>
+
+        <h2 class="divider m-top-30">External Decorator</h2>
+        <div id="datagrid-external"></div>
+
     </div>
 
     <script src="../../bower_components/jquery/jquery.js"></script>
-    <script data-main="script" src="../../bower_components/requirejs/require.js"></script>
+    <script src="../../bower_components/requirejs/require.js"></script>
+    <script src="../js/defaults.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>

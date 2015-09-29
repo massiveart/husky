@@ -56,10 +56,17 @@
             <div class="container">
                 <div id="column-navigation-3"></div>
             </div>
+
+            <div class="m-bottom-30"></div>
+            <h2 class="divider">ActionIcon Callback</h2>
+            <div class="container">
+                <div id="column-navigation-4"></div>
+            </div>
         </div>
 
         <script src="../../bower_components/jquery/jquery.js"></script>
         <script src="../js/require.js"></script>
+        <script src="../js/defaults.js"></script>
 
         <script>
             var app;
@@ -154,6 +161,66 @@
                                     showOptions: false,
                                     showStatus: false,
                                     showActionIcon: false
+                                }
+                            },
+                            {
+                                name: 'column-navigation@husky',
+                                options: {
+                                    el: '#column-navigation-4',
+                                    url: 'http://husky.lo:7878/admin/api/columnnavigation?children=1.2.3.1',
+                                    selected: '1.2.3.1',
+                                    noPageDescription: 'No Pages',
+                                    instanceName: 'responsive',
+                                    orderConfirmTitle: 'Be careful',
+                                    orderConfirmMessage: 'Are you sure you want to move this item?',
+                                    actionIcon: function() {
+                                        if (Math.random() > 0.7) {
+                                            return '';
+                                        } else if(Math.random() > 0.4) {
+                                            return 'fa-eye';
+                                        } else {
+                                            return 'fa-pencil';
+                                        }
+                                    },
+                                    data: [
+                                        {
+                                            id: 1,
+                                            name: 'Order this column',
+                                            mode: 'order',
+                                            enabler: function(column) { // Button is enabled if column has more than one item
+                                                return column.numberItems > 1;
+                                            }
+                                        },
+                                        {
+                                            id: 2,
+                                            divider: true
+                                        },
+                                        {
+                                            id: 2,
+                                            name: 'Button 2',
+                                            enabler: function(column) { // Button is enabled if column has an even number of items
+                                                return column.numberItems % 2 === 0;
+                                            }
+                                        },
+                                        {
+                                            id: 3,
+                                            name: 'Button 3'
+                                        },
+                                        {
+                                            id: 4,
+                                            name: 'Button 4',
+                                            enabler: function(column) { // Button is enabled if column as a selected item
+                                                return column.hasSelected;
+                                            }
+                                        }
+                                    ],
+                                    tooltipTranslations: {
+                                        ghost: 'ghost',
+                                        shadow: 'shadow',
+                                        unpublished: 'unpublished',
+                                        internalLink: 'internal link',
+                                        externalLink: 'external link'
+                                    }
                                 }
                             }
                         ]).then(function () {

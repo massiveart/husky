@@ -31,6 +31,7 @@
 
         <script src="../../bower_components/jquery/jquery.js"></script>
         <script src="../js/require.js"></script>
+        <script src="../js/defaults.js"></script>
 
         <script>
             require.config({
@@ -52,7 +53,7 @@
                             el: '#data-navigation',
                             url: 'http://husky.lo:7878/admin/api/collections',
                             childrenLinkPropertyName: 'self',
-                            showAddButton: false
+                            showAddButton: true
                         }
                     }
                 ]);

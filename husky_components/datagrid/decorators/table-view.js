@@ -359,7 +359,7 @@ define(function() {
             this.$el = null;
             this.table = {};
             this.data = null;
-            this.rowClicked = false;
+            this.rowClicked = {};
             this.isFocusoutHandlerEnabled = this.options.editable === true || this.options.editable === 'true';
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
             this.tableCropped = false;
@@ -388,6 +388,7 @@ define(function() {
                     icon: this.options.actionIcon,
                     column: this.options.actionIconColumn || this.datagrid.matchings[0].attribute,
                     align: 'left',
+                    callback: this.datagrid.options.actionCallback,
                     actionIcon: true
                 });
             }
@@ -570,6 +571,7 @@ define(function() {
                 childrenExpanded: false,
                 parent: hasParent ? record.parent : null,
                 hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
+                selectedChildren: 0,
                 level: 1
             };
 
@@ -941,12 +943,12 @@ define(function() {
                         if (cell.croppable === true) {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
-                                content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
-                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
+                                content = this.sandbox.util.cropMiddle(cell.originalData, this.options.croppedMaxLength);
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalData);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
-                                content = cell.originalContent;
+                                content = cell.originalData;
                                 this.sandbox.dom.removeAttr($contentContainer, 'title');
                                 this.tableCropped = false;
                             }
@@ -1248,14 +1250,15 @@ define(function() {
          * @param event {Object} the original click event
          */
         rowClickCallback: function(event) {
-            if (this.rowClicked === false) {
-                this.rowClicked = true;
-                var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-                ;
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+
+            if (!this.rowClicked[recordId]) {
+                this.rowClicked[recordId] = true;
+
                 this.datagrid.itemClicked.call(this.datagrid, recordId);
                 // delay to prevent multiple emits on double click
                 this.sandbox.util.delay(function() {
-                    this.rowClicked = false;
+                    this.rowClicked[recordId] = false;
                 }.bind(this), 500);
             }
         },
@@ -1275,7 +1278,9 @@ define(function() {
          */
         cellActionCallback: function(event) {
             var recordId = this.sandbox.dom.data(this.sandbox.dom.parent(event.currentTarget), 'id');
-            this.datagrid.itemAction.call(this.datagrid, recordId);
+            if (!!this.table.rows[recordId] && !this.table.rows[recordId].hasChildren) {
+                this.datagrid.itemAction.call(this.datagrid, recordId);
+            }
         },
 
         /**
@@ -1343,11 +1348,19 @@ define(function() {
         },
 
         /**
-         * Selects or deselects a record with a given id
+         * Selects a record with a given id
          * @param recordId {Number|String} the id of the record to select or deselect
          */
         selectRecord: function(recordId) {
             this.toggleSelectRecord(recordId, true);
+        },
+
+        /**
+         * Deselects a record with a given id
+         * @param recordId {Number|String} the id of the record to select or deselect
+         */
+        deselectRecord: function(recordId) {
+            this.toggleSelectRecord(recordId, false);
         },
 
         /**
@@ -1363,13 +1376,20 @@ define(function() {
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
                 );
                 this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
+                this.indeterminateSelectParents(id);
             } else {
                 this.datagrid.setItemUnselected.call(this.datagrid, id);
                 // ensure that checkboxes are unchecked
                 this.sandbox.dom.prop(
                     this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                 );
+                if (this.table.rows[id].selectedChildren > 0) {
+                    this.sandbox.dom.prop(
+                        this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'indeterminate', true
+                    );
+                }
                 this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
+                this.indeterminateUnselectParents(id);
             }
 
             this.updateSelectAll();
@@ -1497,7 +1517,7 @@ define(function() {
          * @param id {Number|String} the id of the record
          */
         openParents: function(recordId) {
-            if (!!this.table && !!this.table.rows[recordId]) {
+            if (!!this.table.rows[recordId]) {
                 var parentId = this.table.rows[recordId].parent;
                 if (!!parentId) {
                     if (!!this.table.rows[parentId].parent) {
@@ -1505,6 +1525,40 @@ define(function() {
                     }
                     this.showChildren(parentId);
                 }
+            }
+        },
+
+        /**
+         * Marks the checkboxes of all parents as indeterminate (if they are not already checked)
+         * @param recordId {Number|String} the id of the record
+         */
+        indeterminateSelectParents: function(recordId) {
+            var parentId = this.table.rows[recordId].parent,
+                $checkbox;
+            if (!!parentId) {
+                this.table.rows[parentId].selectedChildren += 1;
+                $checkbox = this.table.rows[parentId].$el.find('.' + constants.checkboxClass);
+                if (!$checkbox.prop('checked')) {
+                    $checkbox.prop('indeterminate', true);
+                }
+                this.indeterminateSelectParents(parentId);
+            }
+        },
+
+        /**
+         * Unmarks the checkboxes of all parents as indeterminate
+         * @param recordId {Number|String} the id of the record
+         */
+        indeterminateUnselectParents: function(recordId) {
+            var parentId = this.table.rows[recordId].parent,
+                $checkbox;
+            if (!!parentId) {
+                this.table.rows[parentId].selectedChildren -= 1;
+                $checkbox = this.table.rows[parentId].$el.find('.' + constants.checkboxClass);
+                if (this.table.rows[parentId].selectedChildren === 0 && !!$checkbox.prop('indeterminate')) {
+                    $checkbox.prop('indeterminate', false);
+                }
+                this.indeterminateUnselectParents(parentId);
             }
         },
 

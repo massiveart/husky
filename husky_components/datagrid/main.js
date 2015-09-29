@@ -5,14 +5,17 @@
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
- * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {String} [options.view='table'] name of the view to use
- * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
- * @param {Object} [options.paginationOptions] Configuration Object for the pagination
+ * @param {String} [options.defaultMeasureUnit] the unit that should be taken
+ * @param {String} [options.view] name of the view to use.
+ *                  external views can be used by configuring the path to decorator-js with require.config.paths
  * @param {Object} [options.viewOptions] Configuration Object for the view
+ * @param {Boolean|String} [options.pagination] name the the pagination to use. If false no pagination will be initialized
+ *                  external paginations can be used by configuring path to decorator-js with require.config.paths
+ * @param {Object} [options.paginationOptions] Configuration Object for the pagination
+ *
  * @param {Boolean} [options.sortable] Defines if records are sortable
- * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
- * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
+ * @param {String} [options.searchInstanceName] if set, a listener will be set for the corresponding search events
+ * @param {String} [options.columnOptionsInstanceName] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
@@ -44,10 +47,9 @@
         'husky_components/datagrid/decorators/dropdown-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
-        /**
-         *    Default values for options
-         */
-        var defaults = {
+            /* Default values for options */
+
+            var defaults = {
                 view: 'table',
                 viewOptions: {
                     table: {},
@@ -57,6 +59,7 @@
                 paginationOptions: {
                     dropdown: {}
                 },
+
                 contentFilters: null,
                 sortable: true,
                 matchings: [],
@@ -201,13 +204,14 @@
                     '</div>'
                 ].join(''),
                 selectedCounter: [
-                    '<span class="selected-elements smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
+                    '<span class="selected-elements invisible smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
                 ].join('')
             },
 
             namespace = 'husky.datagrid.',
 
-        /* TRIGGERS EVENTS */
+
+            /* TRIGGERS EVENTS */
 
             /**
              * raised after initialization has finished
@@ -239,6 +243,14 @@
              */
             UPDATED = function() {
                 return this.createEventName('updated');
+            },
+
+            /**
+             * raised when the data is initially loaded
+             * @event husky.datagrid.loaded
+             */
+            LOADED = function() {
+                return this.createEventName('loaded');
             },
 
             /**
@@ -474,6 +486,33 @@
             },
 
             /**
+             * selects an item with a given id
+             * @event husky.datagrid.select.item
+             * @param {String|Number} The id of the item to select
+             */
+            SELECT_ITEM = function() {
+                return this.createEventName('select.item');
+            },
+
+            /**
+             * deselects an item with a given id
+             * @event husky.datagrid.deselect.item
+             * @param {String|Number} The id of the item to deselect
+             */
+            DESELECT_ITEM = function() {
+                return this.createEventName('deselect.item');
+            },
+
+            /**
+             * toggle an item with a given id
+             * @event husky.datagrid.toggle.item
+             * @param {String|Number} The id of the item to toggle
+             */
+            TOGGLE_ITEM = function() {
+                return this.createEventName('toggle.item');
+            },
+
+            /**
              * deselect all items
              * @event husky.datagrid.items.deselect
              */
@@ -572,12 +611,20 @@
                     direction: null
                 };
 
-                // Should only be be called once
-                this.bindCustomEvents();
+                this.bindCustomEvents(); // Should only be be called once
+                this.bindDOMEvents();
+                this.renderMediumLoader();
+                if (this.options.selectedCounter === true) {
+                    this.renderSelectedCounter();
+                }
 
-                this.initRender();
+                this.loadAndInitializeDecorators().then(function() {
+                    this.loadAndEvaluateMatchings().then(function() {
+                        this.loadAndRenderData();
+                        this.sandbox.emit(INITIALIZED.call(this));
+                    }.bind(this));
+                }.bind(this));
 
-                this.sandbox.emit(INITIALIZED.call(this));
             },
 
             remove: function() {
@@ -588,7 +635,7 @@
             /**
              * Gets the data either via the url or the array
              */
-            getData: function() {
+            loadAndRenderData: function() {
                 var url;
                 if (!!this.options.url) {
                     url = this.options.url;
@@ -601,7 +648,10 @@
 
                     this.loading();
                     this.load({
-                        url: url
+                        url: url,
+                        success: function(data) {
+                            this.sandbox.emit(LOADED.call(this), data);
+                        }.bind(this)
                     });
                 } else if (!!this.options.data) {
                     this.sandbox.logger.log('load data from array');
@@ -622,10 +672,10 @@
             /**
              * Checks if matchings/fields are given as url or array.
              * If a url is given the appropriate fields are fetched.
-             *
-             * @param {Array} matchings array with matchings
              */
-            evaluateMatchings: function() {
+            loadAndEvaluateMatchings: function() {
+                var def = this.sandbox.data.deferred();
+
                 var matchings = this.options.matchings;
                 if (typeof(matchings) === 'string') {
                     // Load matchings/fields from url
@@ -634,13 +684,14 @@
                         url: matchings,
                         success: function(response) {
                             this.filterMatchings(response);
-                            this.getData();
+                            def.resolve();
                         }.bind(this)
                     });
                 } else {
                     this.filterMatchings(matchings);
-                    this.getData();
+                    def.resolve();
                 }
+                return def;
             },
 
             /**
@@ -820,6 +871,7 @@
                         }
                         this.destroy();
                         this.parseData(response);
+                        this.getSortingFromUrl(this.currentUrl);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
                             params.success(response);
@@ -828,6 +880,22 @@
                     .fail(function(status, error) {
                         this.sandbox.logger.error(status, error);
                     }.bind(this));
+            },
+
+            /**
+             * Parses the sorting params from the url
+             * @param url
+             */
+            getSortingFromUrl: function(url) {
+                if (url.indexOf('sortOrder') > -1 && url.indexOf('sortBy') > -1) {
+                    var attribute = this.sandbox.util.getParameterByName('sortBy', url),
+                        direction = this.sandbox.util.getParameterByName('sortOrder', url);
+
+                    if (!!attribute && !!direction) {
+                        this.sort.attribute = attribute;
+                        this.sort.direction = direction;
+                    }
+                }
             },
 
             /**
@@ -878,15 +946,14 @@
             /**
              * Gets the view and a load to get data and render it
              */
-            initRender: function() {
-                this.bindDOMEvents();
-                this.renderMediumLoader();
-                if (this.options.selectedCounter === true) {
-                    this.renderSelectedCounter();
-                }
-                this.getPaginationDecorator(this.paginationId);
-                this.getViewDecorator(this.viewId);
-                this.evaluateMatchings();
+            loadAndInitializeDecorators: function() {
+                var def = this.sandbox.data.deferred();
+                this.loadAndInitializePagination(this.paginationId).then(function() {
+                    this.loadAndInitializeView(this.viewId).then(function() {
+                        def.resolve();
+                    }.bind(this));
+                }.bind(this));
+                return def;
             },
 
             /**
@@ -953,24 +1020,46 @@
             },
 
             /**
-             * Gets the view and starts the rendering of the data
+             * Load view decorator to given viewId and initialize it
              * @param viewId {String} the identifier of the decorator
              */
-            getViewDecorator: function(viewId) {
-                // TODO: dynamically load a decorator from external source if local decorator doesn't exist
+            loadAndInitializeView: function(viewId) {
                 this.viewId = viewId;
+                var def = this.sandbox.data.deferred();
 
-                // if view is not already loaded, load it
-                if (!this.gridViews[this.viewId]) {
+                // view allready loaded
+                if (!!this.gridViews[this.viewId]) {
+                    def.resolve();
+                }
+
+                // load husky decorator
+                else if (!!this.decorators.views[this.viewId]) {
                     this.gridViews[this.viewId] = this.decorators.views[this.viewId];
-                    var isViewValid = this.isViewValid(this.gridViews[this.viewId]);
+                    this.initializeViewDecorator();
+                    def.resolve();
+                }
 
-                    if (isViewValid === true) {
-                        // merge view options with passed ones
-                        this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
-                    } else {
-                        this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
-                    }
+                // not an husky decorator, try to load external decorator
+                else {
+                    require([viewId], function(view) {
+                        this.gridViews[this.viewId] = view;
+                        this.initializeViewDecorator();
+                        def.resolve();
+                    }.bind(this));
+                }
+
+                return def;
+            },
+
+            /**
+             * Initialize the current set view decorator. Log an error message to console if the view is not valid
+             */
+            initializeViewDecorator: function(){
+                if (this.isViewValid(this.gridViews[this.viewId])) {
+                    // merge view options with passed ones
+                    this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
+                } else {
+                    this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
                 }
             },
 
@@ -980,34 +1069,57 @@
              * @returns {boolean} returns true if the view is usable
              */
             isViewValid: function(view) {
-                var bool = true;
-                if (typeof view.initialize === 'undefined' ||
+                if (!view ||
+                    typeof view.initialize === 'undefined' ||
                     typeof view.render === 'undefined' ||
                     typeof view.destroy === 'undefined') {
-                    bool = false;
+                    return false;
                 }
-                return bool;
+                return true;
             },
 
             /**
-             * Gets the Pagination and initializes it
+             * Load pagination decorator to given paginationId and initialize it
              * @param {String} paginationId the identifier of the pagination
              */
-            getPaginationDecorator: function(paginationId) {
-                // todo: dynamically load a decorator if local decorator doesn't exist
-                if (!!paginationId) {
-                    this.paginationId = paginationId;
+            loadAndInitializePagination: function(paginationId) {
+                this.paginationId = paginationId;
+                var def = this.sandbox.data.deferred();
 
-                    // load the pagination if not already loaded
-                    if (!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId] = this.decorators.paginations[this.paginationId];
-                        var paginationIsValid = this.isPaginationValid(this.paginations[this.paginationId]);
-                        if (paginationIsValid === true) {
-                            this.paginations[this.paginationId].initialize(this, this.options.paginationOptions[this.paginationId]);
-                        } else {
-                            this.sandbox.logger.log('Error: Pagination does not meet the configured requirements. See the documentation');
-                        }
-                    }
+                // no pagination set or pagination allready loaded
+                if (!paginationId || !!this.paginations[this.paginationId]) {
+                    def.resolve();
+                }
+
+                // load husky decorator
+                else if (!!this.decorators.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId] = this.decorators.paginations[this.paginationId];
+                    this.initializePaginationDecorator();
+                    def.resolve();
+                }
+
+                // not an husky decorator, try to load external decorator
+                else {
+                    require([paginationId], function(pagination) {
+                        this.decorators.paginations[this.paginationId] = pagination;
+                        this.initializePaginationDecorator();
+                        def.resolve();
+                    }.bind(this));
+                }
+
+                return def;
+            },
+
+            /**
+             * Initialize the current set pagination decorator. Log an error message to console if the view is not valid
+             */
+            initializePaginationDecorator: function() {
+                if (this.isPaginationValid(this.paginations[this.paginationId])) {
+                    this.paginations[this.paginationId]
+                        .initialize(this, this.options.paginationOptions[this.paginationId]);
+                } else {
+                    this.sandbox.logger
+                        .log('Error: Pagination does not meet the configured requirements. See the documentation');
                 }
             },
 
@@ -1020,9 +1132,10 @@
                 // only change if view or if options are passed (could be passed to the same view)
                 if (view !== this.viewId || !!options) {
                     this.destroy();
-                    this.getViewDecorator(view);
-                    this.extendViewOptions(options);
-                    this.render();
+                    this.loadAndInitializeView(view).then(function() {
+                        this.extendViewOptions(options);
+                        this.render();
+                    }.bind(this));
                 }
             },
 
@@ -1033,8 +1146,9 @@
             changePagination: function(pagination) {
                 if (pagination !== this.paginationId) {
                     this.destroy();
-                    this.getPaginationDecorator(pagination);
-                    this.render();
+                    this.loadAndInitializePagination(pagination).then(function(){
+                        this.render();
+                    });
                 }
             },
 
@@ -1055,14 +1169,14 @@
              * @returns {boolean} returns true if the pagination is usable
              */
             isPaginationValid: function(pagination) {
-                var bool = true;
-                if (typeof pagination.initialize === 'undefined' ||
+                if (!pagination ||
+                    typeof pagination.initialize === 'undefined' ||
                     typeof pagination.render === 'undefined' ||
                     typeof pagination.getLimit === 'undefined' ||
                     typeof pagination.destroy === 'undefined') {
-                    bool = false;
+                    return false;
                 }
-                return bool;
+                return true;
             },
 
             /**
@@ -1159,12 +1273,16 @@
             bindDOMEvents: function() {
                 if (this.options.resizeListeners === true) {
                     this.dataGridWindowResize = this.windowResizeListener.bind(this);
-                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
+                    this.sandbox.dom.on(
+                        this.sandbox.dom.$window,
+                        'resize.' + this.createEventName('dom'),
+                        this.dataGridWindowResize
+                    );
                 }
             },
 
             unbindWindowResize: function() {
-                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize', this.dataGridWindowResize);
+                this.sandbox.dom.off(this.sandbox.dom.$window, 'resize.' + this.createEventName('dom'));
             },
 
             /**
@@ -1175,49 +1293,28 @@
                     this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
                 }
 
-                // listen for private events
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
-
-                // provide the datagrid-data via event
                 this.sandbox.on(DATA_GET.call(this), this.provideData.bind(this));
-
-                // filter data
                 this.sandbox.on(DATA_SEARCH.call(this), this.searchGrid.bind(this));
-
-                // filter data
                 this.sandbox.on(URL_UPDATE.call(this), this.updateUrl.bind(this));
-
-                // changes the view of the datagrid
                 this.sandbox.on(CHANGE_VIEW.call(this), this.changeView.bind(this));
-
-                // changes the view of the datagrid
                 this.sandbox.on(CHANGE_PAGINATION.call(this), this.changePagination.bind(this));
-
-                // trigger selectedItems
-                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
-                    callback(this.getSelectedItemIds());
-                }.bind(this));
-
-                // add a single data record
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
-                // add multiple data records
                 this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
-
-                // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
-
-                // change an exsiting data-record
                 this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
-
-                // update selected-counter
                 this.sandbox.on(NUMBER_SELECTIONS.call(this), this.updateSelectedCounter.bind(this));
-
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
-
                 this.sandbox.on(SELECTED_UPDATE.call(this), this.updateSelection.bind(this));
+                this.sandbox.on(SELECT_ITEM.call(this), this.selectItem.bind(this));
+                this.sandbox.on(DESELECT_ITEM.call(this), this.deselectItem.bind(this));
+                this.sandbox.on(TOGGLE_ITEM.call(this), this.toggleItem.bind(this));
                 this.sandbox.on(ITEMS_DESELECT.call(this), function() {
                     this.gridViews[this.viewId].deselectAllRecords();
+                }.bind(this));
+                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
+                    callback(this.getSelectedItemIds());
                 }.bind(this));
 
                 this.startColumnOptionsListener();
@@ -1467,6 +1564,36 @@
 
                 for (i = -1, length = selection.length; ++i < length;) {
                     this.gridViews[this.viewId].selectRecord(selection[i]);
+                }
+            },
+
+            /**
+             * Selects an item with a given id
+             * @param itemId {Number|String} the id of the item to select
+             */
+            selectItem: function(itemId) {
+                this.gridViews[this.viewId].selectRecord(itemId);
+            },
+
+            /**
+             * Deselects an item with a given id
+             * @param itemId {Number|String} the id of the item to select
+             */
+            deselectItem: function(itemId) {
+                if (!!this.gridViews[this.viewId].deselectRecord) {
+                    this.gridViews[this.viewId].deselectRecord(itemId);
+                }
+            },
+
+            /**
+             * Toogle an item with a given id
+             * @param itemId {Number|String} the id of the item to select
+             */
+            toggleItem: function(itemId) {
+                if (this.itemIsSelected(itemId)) {
+                    this.deselectItem(itemId);
+                } else {
+                    this.selectItem(itemId);
                 }
             },
 
@@ -1762,8 +1889,8 @@
 
                         this.load({
                             url: url,
-                            success: function() {
-                                this.sandbox.emit(UPDATED.call(this));
+                            success: function(data) {
+                                this.sandbox.emit(UPDATED.call(this), data);
                             }.bind(this)
                         });
                     }

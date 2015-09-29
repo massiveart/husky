@@ -1,6 +1,15 @@
 CHANGELOGS:
 ===========
 
+Dev-develop
+==================
+- toolbar
+    - new blueish style
+    - options changes
+    - 
+- services
+    - New util and mediator service
+
 2015/04/20 v0.11.0
 ==================
 

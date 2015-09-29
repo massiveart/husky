@@ -198,8 +198,8 @@ define(function() {
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
                     imgAlt: imgAlt,
-                    title: this.sandbox.util.cropMiddle(title, 24),
-                    description: this.sandbox.util.cropMiddle(description, 32),
+                    title: this.sandbox.util.cropMiddle(String(title), 24),
+                    description: this.sandbox.util.cropMiddle(String(description), 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id),
                     selectable: this.options.selectable

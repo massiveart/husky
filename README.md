@@ -2,10 +2,6 @@
 
 Husky is an awesome front-end framework.
 
-## Read the documentation
-
-[Documentation](https://github.com/massiveart/husky/tree/develop/docs/md/README.md)
-
 ## How to contribute like a boss
 
 First install all necessary npm modules by running:
