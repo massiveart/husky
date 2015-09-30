@@ -121,7 +121,7 @@ define(function() {
         var substrLength;
 
         // return text if it doesn't need to be cropped
-        if (!text || text.length <= maxLength) {
+        if (!text || text.length <= maxLength || !text.slice) {
             return text;
         }
 
@@ -136,7 +136,7 @@ define(function() {
     },
 
         Util.prototype.cropFront = function(text, maxLength, delimiter) {
-            if (!text || text.length <= maxLength) {
+            if (!text || text.length <= maxLength || !text.slice) {
                 return text;
             }
 
@@ -146,7 +146,7 @@ define(function() {
         },
 
         Util.prototype.cropTail = function(text, maxLength, delimiter) {
-            if (!text || text.length <= maxLength) {
+            if (!text || text.length <= maxLength || !text.slice) {
                 return text;
             }
 
@@ -275,6 +275,10 @@ define(function() {
      * @returns {string}
      */
     Util.prototype.capitalizeFirstLetter = function(string) {
+        if (!string.slice) {
+            return string;
+        }
+
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
