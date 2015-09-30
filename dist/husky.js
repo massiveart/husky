@@ -27405,7 +27405,7 @@ define('services/husky/util',[],function() {
         var substrLength;
 
         // return text if it doesn't need to be cropped
-        if (!text || text.length <= maxLength) {
+        if (!text || text.length <= maxLength || !text.slice) {
             return text;
         }
 
@@ -27420,7 +27420,7 @@ define('services/husky/util',[],function() {
     },
 
         Util.prototype.cropFront = function(text, maxLength, delimiter) {
-            if (!text || text.length <= maxLength) {
+            if (!text || text.length <= maxLength || !text.slice) {
                 return text;
             }
 
@@ -27430,7 +27430,7 @@ define('services/husky/util',[],function() {
         },
 
         Util.prototype.cropTail = function(text, maxLength, delimiter) {
-            if (!text || text.length <= maxLength) {
+            if (!text || text.length <= maxLength || !text.slice) {
                 return text;
             }
 
@@ -27559,6 +27559,10 @@ define('services/husky/util',[],function() {
      * @returns {string}
      */
     Util.prototype.capitalizeFirstLetter = function(string) {
+        if (!string.slice) {
+            return string;
+        }
+
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
