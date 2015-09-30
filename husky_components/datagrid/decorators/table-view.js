@@ -25,13 +25,13 @@
  * @param {Boolean} [options.openPathToSelectedChildren] true to show path to selected children
  * @param {String} [options.actionIcon] the icon which gets shown in the action click button
  * @param {String|Number} [options.actionIconColumn] the column to add the action icon to. Null for firs column
- *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the view and unbind events
  * @param {Function} [onResize] function which gets automatically executed on window resize
  * @param {Function} [unbindCustomEvents] function to unbind the custom events of this object
+ * @param {Boolean} [cropContents] Define if cell contents should be cropped, when options.croppedMaxSize is exceeded
  */
 define(function() {
 
@@ -60,7 +60,8 @@ define(function() {
             actionIcon: 'pencil',
             actionIconColumn: null,
             croppedMaxLength: 35,
-            openPathToSelectedChildren: false
+            openPathToSelectedChildren: false,
+            cropContents: true
         },
 
         constants = {
@@ -914,7 +915,10 @@ define(function() {
          * Gets executed when the table width is bigger than its container width
          */
         overflowHandler: function() {
-            this.toggleCropTable(true);
+            if (!!this.options.cropContents) {
+                this.toggleCropTable(true);
+            }
+
             // if still overflown add a css class
             if (this.containerIsOverflown() === true) {
                 this.sandbox.dom.addClass(this.$el, constants.overflowClass);
@@ -926,7 +930,7 @@ define(function() {
          */
         underflowHandler: function() {
             if (this.tableCropped === true) {
-                if (this.sandbox.dom.width(this.table.$container) > this.cropBreakPoint) {
+                if (!!this.options.cropContents && this.sandbox.dom.width(this.table.$container) > this.cropBreakPoint) {
                     this.toggleCropTable(false);
                 }
                 if (this.containerIsOverflown() === false) {
@@ -947,12 +951,12 @@ define(function() {
                         if (cell.croppable === true) {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
-                                content = this.sandbox.util.cropMiddle(cell.originalData, this.options.croppedMaxLength);
-                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalData);
+                                content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
-                                content = cell.originalData;
+                                content = cell.originalContent;
                                 this.sandbox.dom.removeAttr($contentContainer, 'title');
                                 this.tableCropped = false;
                             }
