@@ -313,6 +313,10 @@ define(function() {
             var $elem, $sectionDiv, $sectionList;
             // iterate through sections
             this.sandbox.util.foreach(data.items, function(section) {
+                if (!section.items || !section.items.length) {
+                    return;
+                }
+
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
 
