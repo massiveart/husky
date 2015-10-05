@@ -13,6 +13,53 @@ require(['lib/husky'], function(Husky) {
 
     var app,
         view, pagination,
+        constants = {
+            setData: {
+                fieldList: [
+                    {
+                        "disabled": true,
+                        "name": "id"
+                    },
+                    {
+                        "translation": "public.title",
+                        "name": "title"
+                    },
+                    {
+                        "translation": "public.description",
+                        "name": "descr"
+                    }
+                ],
+                data1: [
+                    {
+                        "id": "2",
+                        "title": "Second row",
+                        "descr": "Descr 2"
+                    },
+                    {
+                        "id": "1",
+                        "title": "First row",
+                        "descr": "Descr 1"
+                    }
+                ],
+                data2: [
+                    {
+                        "id": "1",
+                        "title": "First row",
+                        "descr": "Descr 1"
+                    },
+                    {
+                        "id": "2",
+                        "title": "Second row",
+                        "descr": "Descr 2"
+                    },
+                    {
+                        "id": "3",
+                        "title": "Third row",
+                        "descr": "Descr 3"
+                    },
+                ]
+            }
+        },
         _;
 
     app = new Husky({debug: {enable: true}});
@@ -498,6 +545,18 @@ require(['lib/husky'], function(Husky) {
                     app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
                 }
             }
+        },
+        ,
+        {
+            name: 'datagrid@husky',
+            options: {
+                data: constants.setData.data1,
+                searchInstanceName: 'test',
+                searchFields: ['title'],
+                el: '#datagrid-set-data',
+                instanceName: 'datagrid-set-data',
+                matchings: constants.setData.fieldList
+            }
         }
     ]).then(function() {
         App = app;
@@ -644,6 +703,11 @@ require(['lib/husky'], function(Husky) {
                     {"id": "content4", "translation": "Content 4", "disabled": false, "width": "500px"}
                 ]
             );
+        });
+
+
+        $('#set-data').on('click', function() {
+            app.sandbox.emit('husky.datagrid.datagrid-set-data.data.set', constants.setData.data2);
         });
 
     });
