@@ -251,10 +251,12 @@ define(function() {
                 this.sandbox.emit('sulu.header.toolbar.item.enable', 'save', false);
             },
 
+            /**
+             * Gets data and returns them in sorted order
+             * @param data {object} The data, which should be set into the grid
+             */
             updateOrder: function(data) {
-                data.sort(function(a, b) {
-                    return a.start > b.start;
-                });
+                throw new Error('"updateOrder" not implemented');
             },
 
             /**
