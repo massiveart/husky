@@ -101,10 +101,10 @@ define(function() {
         },
 
         addItem = function(newItem) {
-            var data = [];
+            var data = this.getData();
 
-            if (App.util.typeOf(this.getData()) === 'array' && App.util.typeOf(this.getData()[0]) === 'object') {
-                data = this.getData();
+            if (this.sandbox.util.typeOf(data) !== 'array' || this.sandbox.util.typeOf(data[0]) !== 'object') {
+                data = [];
             }
 
             data.push(newItem);
