@@ -461,6 +461,14 @@
             },
 
             /**
+             * sets new data to datagrid
+             * @event husky.datagrid.data.set
+             */
+            DATA_SET = function() {
+                return this.createEventName('data.set');
+            },
+
+            /**
              * triggers husky.datagrid.items.selected event, which returns all selected item ids
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
@@ -883,6 +891,26 @@
             },
 
             /**
+             * Changes data in grid from array
+             * @param data array
+             */
+            setData: function(data) {
+                this.destroy();
+
+                if (!!data.resultKey && !!data[data.resultKey]) {
+                    this.data.embedded = data[data.resultKey];
+                } else {
+                    this.data.embedded = data;
+                }
+
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+
+                this.render();
+            },
+
+            /**
              * Parses the sorting params from the url
              * @param url
              */
@@ -1294,6 +1322,7 @@
                 }
 
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
+                this.sandbox.on(DATA_SET.call(this), this.setData.bind(this));
                 this.sandbox.on(DATA_GET.call(this), this.provideData.bind(this));
                 this.sandbox.on(DATA_SEARCH.call(this), this.searchGrid.bind(this));
                 this.sandbox.on(URL_UPDATE.call(this), this.updateUrl.bind(this));
