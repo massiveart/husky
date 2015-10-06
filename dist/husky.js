@@ -32554,6 +32554,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 resultKey: 'items',
                 selectedCounter: false,
                 selectedCounterText: 'public.elements-selected',
+                selectedCounterShowSelectedText: 'public.show-selected',
+                selectedCounterShowAllText: 'public.show-all',
                 viewSpacingBottom: 110,
                 clickCallback: null,
                 actionCallback: null,
@@ -32682,7 +32684,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     '</div>'
                 ].join(''),
                 selectedCounter: [
-                    '<span class="selected-elements invisible smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
+                    '<span class="selected-elements invisible smaller-font grey-font">',
+                    '    <span class="number">0</span> <%= text %> (<span class="show-selected"><%= showText %></span>)',
+                    '</span>'
                 ].join('')
             },
 
@@ -33276,9 +33280,14 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * Renderes the counter which shows how many elements have been selected
              */
             renderSelectedCounter: function() {
-                this.sandbox.dom.append(this.$element, this.sandbox.util.template(templates.selectedCounter)({
-                    text: this.sandbox.translate(this.options.selectedCounterText)
-                }));
+                this.sandbox.dom.append(
+                    this.$element,
+                    this.sandbox.util.template(templates.selectedCounter, {
+                            text: this.sandbox.translate(this.options.selectedCounterText),
+                            showText: this.sandbox.translate(this.options.selectedCounterShowSelectedText)
+                        }
+                    )
+                );
                 this.updateSelectedCounter();
             },
 
@@ -33794,6 +33803,24 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         this.dataGridWindowResize
                     );
                 }
+
+                if (this.options.selectedCounter) {
+                    this.sandbox.dom.on(this.$el,
+                        'click',
+                        function(event) {
+                            this.sandbox.dom.stopPropagation(event);
+                            if (!this.gridViews[this.viewId].showSelected) {
+                                return;
+                            }
+
+                            this.show = !this.show;
+                            this.gridViews[this.viewId].showSelected(this.show);
+
+                            this.updateSelectedCounter();
+                        }.bind(this),
+                        '.selected-elements .show-selected'
+                    );
+                }
             },
 
             unbindWindowResize: function() {
@@ -34051,6 +34078,25 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                     } else {
                         this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
+                    }
+
+                    if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].showSelected &&
+                        this.getSelectedItemIds().length === 0
+                    ) {
+                        this.gridViews[this.viewId].showSelected(false);
+                        this.show = false;
+                    }
+
+                    if (!!this.show) {
+                        this.sandbox.dom.text(
+                            this.$find('.show-selected'),
+                            this.sandbox.translate(this.options.selectedCounterShowAllText)
+                        );
+                    } else {
+                        this.sandbox.dom.text(
+                            this.$find('.show-selected'),
+                            this.sandbox.translate(this.options.selectedCounterShowSelectedText)
+                        );
                     }
                 }
             },
