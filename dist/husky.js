@@ -32272,7 +32272,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             scrollContainer: '.page',
             reachedBottomMessage: 'you reached the end of the list',
             scrollOffset: 0,
-            limit: 20
+            limit: 50
         },
 
         constants = {

@@ -21,7 +21,7 @@ define(function() {
             scrollContainer: '.page',
             reachedBottomMessage: 'you reached the end of the list',
             scrollOffset: 0,
-            limit: 20
+            limit: 50
         },
 
         constants = {
