@@ -47,9 +47,9 @@
         'husky_components/datagrid/decorators/dropdown-pagination'
     ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
-            /* Default values for options */
+        /* Default values for options */
 
-            var defaults = {
+        var defaults = {
                 view: 'table',
                 viewOptions: {
                     table: {},
@@ -211,7 +211,7 @@
             namespace = 'husky.datagrid.',
 
 
-            /* TRIGGERS EVENTS */
+        /* TRIGGERS EVENTS */
 
             /**
              * raised after initialization has finished
@@ -1082,7 +1082,7 @@
             /**
              * Initialize the current set view decorator. Log an error message to console if the view is not valid
              */
-            initializeViewDecorator: function(){
+            initializeViewDecorator: function() {
                 if (this.isViewValid(this.gridViews[this.viewId])) {
                     // merge view options with passed ones
                     this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
@@ -1174,7 +1174,7 @@
             changePagination: function(pagination) {
                 if (pagination !== this.paginationId) {
                     this.destroy();
-                    this.loadAndInitializePagination(pagination).then(function(){
+                    this.loadAndInitializePagination(pagination).then(function() {
                         this.render();
                     });
                 }
@@ -1342,12 +1342,12 @@
                 this.sandbox.on(ITEMS_DESELECT.call(this), function() {
                     this.gridViews[this.viewId].deselectAllRecords();
                 }.bind(this));
-                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function (callback, returnItems) {
+                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback, returnItems) {
                     if (!!returnItems) {
                         var ids = this.getSelectedItemIds(),
                             items = [];
 
-                        this.sandbox.util.foreach(ids, function (id) {
+                        this.sandbox.util.foreach(ids, function(id) {
                             items.push(this.getRecordById(id));
                         }.bind(this));
 

@@ -317,7 +317,7 @@ define([], function() {
          * @param {Number} slide number
          * @event husky.overlay.<instance-name>.slide-to
          */
-        SLIDE_TO = function () {
+        SLIDE_TO = function() {
             return createEventName.call(this, 'slide-to');
         },
 
@@ -509,22 +509,24 @@ define([], function() {
          * slide left
          */
         slideLeft: function() {
-            this.activeSlide--;
-            if (this.activeSlide < 0) {
-                this.activeSlide = this.slides.length - 1;
+            var slide = this.activeSlide - 1;
+            if (slide < 0) {
+                slide = this.slides.length - 1;
             }
-            this.slideTo(this.activeSlide);
+            
+            this.slideTo(slide);
         },
 
         /**
          * slide right
          */
         slideRight: function() {
-            this.activeSlide++;
-            if (this.activeSlide >= this.slides.length) {
-                this.activeSlide = 0;
+            var slide = this.activeSlide + 1;
+            if (slide >= this.slides.length) {
+                slide = 0;
             }
-            this.slideTo(this.activeSlide);
+
+            this.slideTo(slide);
         },
 
         /**
@@ -532,14 +534,13 @@ define([], function() {
          *
          * @param {Number} slide
          */
-        slideEvent: function (slide) {
+        slideEvent: function(slide) {
             if (slide < 0 || slide >= this.slides.length) {
                 this.sandbox.logger.error('Slide index out bounds');
 
                 return;
             }
 
-            this.activeSlide = slide;
             this.slideTo(this.activeSlide);
         },
 
@@ -547,6 +548,8 @@ define([], function() {
          * slide to given number
          */
         slideTo: function(slide) {
+            this.activeSlide = slide;
+
             var width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
             this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * width + 'px');
         },
