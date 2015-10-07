@@ -33385,7 +33385,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
-                this.sandbox.util.load(this.currentUrl, params.data)
+                return this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
                         this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                         if (this.isLoading === true) {
@@ -33888,9 +33888,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         callback(this.getSelectedItemIds());
                     }
                 }.bind(this));
-                this.sandbox.on(CHANGE_PAGE.call(this), function(page) {
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page, limit) {
                     if (!isNaN(page)) {
-                        this.changePage(null, page, null)
+                        this.changePage(null, page, limit);
                     }
                 }.bind(this));
 
