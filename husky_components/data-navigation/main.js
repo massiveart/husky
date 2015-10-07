@@ -21,7 +21,7 @@
  * @param {String} [options.childrenLinkKey] - key of children link in object
  * @param {String} [options.showAddButton] - Indicates if add button should be rendered
  * @param {Object} [options.translates] Holds the translates
- * @param {Bool} [options.globalEvents] Should global events be sent
+ * @param {Boolean} [options.globalEvents] Should global events be sent
  */
 define([
     'husky_components/data-navigation/list-view'
@@ -63,15 +63,14 @@ define([
                     '    </div>',
                     '</div>',
                     '<% if (!!options.showAddButton) { %>',
-                    '   <div class="header-item data-navigation-add">',
+                    '   <div class="header-item ', constants.addButtonClass, '">',
                     '       <div class="icon-container"><span class="fa-plus-circle"/></div>',
                     '       <div class="content-container">',
                     '           <span class="add-container"><%= options.translates.addButton %></span>',
                     '       </div>',
                     '   </div>',
-                    '<% } else { %>',
-                    '   <div class="header-item header-filler"/>',
                     '<% } %>',
+                    '<div class="header-item header-filler"/>'
                 ].join('');
             },
 
@@ -89,7 +88,8 @@ define([
         },
 
         constants = {
-            ROOT_ID: 'root'
+            ROOT_ID: 'root',
+            addButtonClass: 'data-navigation-add'
         },
 
         eventNamespace = 'husky.data-navigation.',
@@ -135,6 +135,22 @@ define([
          */
         ADD = function() {
             return createEventName.call(this, 'add')
+        },
+
+        /**
+         * hides the add button of the data navigation
+         * @event husky.data-navigation.add-button.hide
+         */
+        HIDE_ADD_BUTTON = function() {
+           return createEventName.call(this, 'add-button.hide');
+        },
+
+        /**
+         * shows the add button of the data navigation
+         * @event husky.data-navigation.add-button.show
+         */
+        SHOW_ADD_BUTTON = function() {
+            return createEventName.call(this, 'add-button.show');
         },
 
         /**
@@ -335,6 +351,10 @@ define([
                     this.cache.deleteAll();
                 }
             }.bind(this));
+
+            this.sandbox.on(SHOW_ADD_BUTTON.call(this), this.showAddButton.bind(this));
+
+            this.sandbox.on(HIDE_ADD_BUTTON.call(this), this.hideAddButton.bind(this));
 
             this.sandbox.on(RELOAD.call(this), function() {
                 this.setUrl(this.getCurrentUrl(), true);
@@ -634,6 +654,20 @@ define([
          */
         addHandler: function() {
             this.sandbox.emit(ADD.call(this), this.data.current.item);
+        },
+
+        /**
+         * Shows the add button
+         */
+        showAddButton: function() {
+            $('.' + constants.addButtonClass).show();
+        },
+
+        /**
+         * Hides the add button
+         */
+        hideAddButton: function() {
+            $('.' + constants.addButtonClass).hide();
         },
 
         /**
