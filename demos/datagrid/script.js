@@ -546,7 +546,6 @@ require(['lib/husky'], function(Husky) {
                 }
             }
         },
-        ,
         {
             name: 'datagrid@husky',
             options: {
