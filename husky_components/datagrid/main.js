@@ -210,7 +210,11 @@
                 ].join(''),
                 selectedCounter: [
                     '<span class="selected-elements invisible smaller-font grey-font">',
-                    '    <span class="number">0</span> <%= text %> (<span class="show-selected"><%= showText %></span>)',
+                    '    <span class="number">0</span>',
+                    '    &nbsp;<%= text %>',
+                    '    <span class="show-selected-container" <% if (!showSelectedLink) { %>style="display: none;"<% } %>>',
+                    '        &nbsp;(<span class="show-selected"><%= showText %></span>)',
+                    '    </span>',
                     '</span>'
                 ].join('')
             },
@@ -638,11 +642,11 @@
                 this.bindCustomEvents(); // Should only be be called once
                 this.bindDOMEvents();
                 this.renderMediumLoader();
-                if (this.options.selectedCounter === true) {
-                    this.renderSelectedCounter();
-                }
 
                 this.loadAndInitializeDecorators().then(function() {
+                    if (this.options.selectedCounter === true) {
+                        this.renderSelectedCounter();
+                    }
                     this.loadAndEvaluateMatchings().then(function() {
                         this.loadAndRenderData();
                         this.sandbox.emit(INITIALIZED.call(this));
@@ -809,7 +813,8 @@
                     this.$element,
                     this.sandbox.util.template(templates.selectedCounter, {
                             text: this.sandbox.translate(this.options.selectedCounterText),
-                            showText: this.sandbox.translate(this.options.selectedCounterShowSelectedText)
+                            showText: this.sandbox.translate(this.options.selectedCounterShowSelectedText),
+                            showSelectedLink: !!this.gridViews[this.viewId].showSelected
                         }
                     )
                 );
@@ -1623,6 +1628,13 @@
                             this.sandbox.translate(this.options.selectedCounterShowSelectedText)
                         );
                     }
+
+                    if (!!this.gridViews[this.viewId].showSelected) {
+                        this.sandbox.dom.show(this.$find('.show-selected-container'));
+                    } else {
+                        this.sandbox.dom.hide(this.$find('.show-selected-container'));
+                    }
+
                 }
             },
 
@@ -1891,6 +1903,9 @@
              */
             changePage: function(uri, page, limit) {
                 if (!!this.data.links.pagination || !!uri) {
+                    this.show = false;
+                    this.updateSelectedCounter();
+
                     var url, uriTemplate;
 
                     // if a url is passed load the data from this url

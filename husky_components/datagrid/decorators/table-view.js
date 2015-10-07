@@ -1599,6 +1599,19 @@ define(function() {
                 this.sandbox.dom.filter($rows, ':visible:odd'),
                 constants.oddClass
             );
+        },
+
+        showSelected: function(show) {
+            // TODO this is a really basic implementation
+            // - here should all selected be loaded
+            // - currently only current page will be filtered
+            var $items = this.datagrid.$find('tbody .row:not(.selected)');
+
+            if (!!show) {
+                $items.hide();
+            } else {
+                $items.show();
+            }
         }
     };
 });
