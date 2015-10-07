@@ -133,31 +133,31 @@ define(function() {
         substrLength = Math.floor((maxLength - delimiter.length) / 2);
 
         return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
-    },
+    };
 
-        Util.prototype.cropFront = function(text, maxLength, delimiter) {
-            if (!text || text.length <= maxLength || !text.slice) {
-                return text;
-            }
+    Util.prototype.cropFront = function(text, maxLength, delimiter) {
+        if (!text || text.length <= maxLength || !text.slice) {
+            return text;
+        }
 
-            delimiter = delimiter || '...';
+        delimiter = delimiter || '...';
 
-            return delimiter + text.slice(-(maxLength - delimiter.length));
-        },
+        return delimiter + text.slice(-(maxLength - delimiter.length));
+    };
 
-        Util.prototype.cropTail = function(text, maxLength, delimiter) {
-            if (!text || text.length <= maxLength || !text.slice) {
-                return text;
-            }
+    Util.prototype.cropTail = function(text, maxLength, delimiter) {
+        if (!text || text.length <= maxLength || !text.slice) {
+            return text;
+        }
 
-            delimiter = delimiter || '...';
+        delimiter = delimiter || '...';
 
-            return text.slice(0, (maxLength - delimiter.length)) + delimiter;
-        },
+        return text.slice(0, (maxLength - delimiter.length)) + delimiter;
+    };
 
-        Util.prototype.contains = function(list, value) {
-            return _.contains(list, value);
-        };
+    Util.prototype.contains = function(list, value) {
+        return _.contains(list, value);
+    };
 
     Util.prototype.isAlphaNumeric = function(str) {
         var code, i, len;
@@ -257,6 +257,14 @@ define(function() {
     };
 
     Util.prototype.template = _.template;
+
+    Util.prototype.extend = $.extend;
+
+    Util.prototype.Deferred = $.Deferred;
+
+    Util.prototype.arrayMap = _.map;
+
+    Util.prototype.object = _.object;
 
     /**
      * Escapes special html character
