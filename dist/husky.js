@@ -27291,6 +27291,149 @@ define('type/husky-input',[
  * with this source code in the file LICENSE.
  */
 
+define('services/husky/url-validator',[],function() {
+
+    'use strict';
+
+    var constants = {
+            regex: "([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*",
+            defaultProtocols: ['http://', 'https://', 'ftp://', 'ftps://'],
+            specificPartKey: 2,
+            schemeKey: 1,
+            urlKey: 0
+        },
+
+        getRegexp = function(schemes) {
+            return new RegExp('^(' + schemes.join('|') + ')(' + constants.regex + ')$');
+        };
+
+    function Validator() {
+    }
+
+    /**
+     * Returns default schemes.
+     *
+     * @returns {Array}
+     */
+    Validator.prototype.getDefaultSchemes = function() {
+        return constants.defaultProtocols;
+    };
+
+    /**
+     * Tests given URL against internal regex.
+     *
+     * @param {String} url
+     * @param {Array} schemes if NULL default schemes will be used
+     *
+     * @returns {Boolean}
+     */
+    Validator.prototype.test = function(url, schemes) {
+        if (!schemes) {
+            schemes = this.getDefaultSchemes();
+        }
+
+        return getRegexp(schemes).test(url);
+    };
+
+    /**
+     * Returns parts of URL.
+     *
+     * @param {String} url
+     * @param {Array} schemes if NULL default schemes will be used
+     *
+     * @returns {{url, scheme, specificPart}}
+     */
+    Validator.prototype.match = function(url, schemes) {
+        if (!schemes) {
+            schemes = this.getDefaultSchemes();
+        }
+
+        var match = url.match(getRegexp(schemes));
+
+        if (!match) {
+            return match;
+        }
+
+        return {
+            url: match[constants.urlKey],
+            scheme: match[constants.schemeKey],
+            specificPart: match[constants.specificPartKey]
+        };
+    };
+
+    return new Validator();
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/url-input',[
+    'type/default',
+    'services/husky/url-validator'
+], function(Default, urlValidator) {
+
+    'use strict';
+
+    return function($el, options) {
+        var defaults = {
+                schemes: urlValidator.getDefaultSchemes()
+            },
+
+            constants = {
+                dataKey: 'url-data',
+                dataChangedEvent: 'data-changed'
+            },
+
+            typeInterface = {
+                setValue: function(data) {
+                    var match = urlValidator.match(data, this.options.schemes);
+
+                    if (!!match) {
+                        this.$el.data(
+                            constants.dataKey,
+                            match
+                        );
+                        this.$el.trigger(constants.dataChangedEvent)
+                    }
+                },
+
+                getValue: function() {
+                    var data = this.$el.data(constants.dataKey);
+
+                    return !!data && !!data.url ? data.url : null;
+                },
+
+                needsValidation: function() {
+                    return this.getValue() !== null;
+                },
+
+                validate: function() {
+                    var url = this.getValue();
+
+                    return urlValidator.test(url, this.options.schemes);
+                }
+            };
+
+        return new Default($el, defaults, options, 'url-input', typeInterface);
+    };
+});
+
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 define('services/husky/util',[],function() {
 
     'use strict';
@@ -45336,6 +45479,232 @@ define('__component__$data-navigation@husky',[
                         oldView.destroy();
                     }.bind(this)
                 });
+        }
+    };
+});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/input
+ */
+
+/**
+ * @class Url-Input
+ * @constructor
+ */
+define('__component__$url-input@husky',['services/husky/url-validator'], function(urlValidator) {
+    var defaults = {
+            instanceName: 'url-input',
+            inputClass: '',
+            scheme: 'https://',
+            specificPart: ''
+        },
+
+        constants = {
+            triggerClass: 'drop-down-trigger',
+            toggleClass: 'dropdown-toggle',
+            schemeClass: 'scheme',
+            specificPartClass: 'specific-part-input',
+            linkClass: 'link',
+            dataKey: 'url-data',
+            dataChangedEvent: 'data-changed'
+        },
+
+        templates = {
+            skeleton: [
+                '<div class="front"',
+                '<% if (items.length > 1) { %>',
+                '     data-aura-component="dropdown@husky"',
+                '     data-aura-trigger=".<%= constants.triggerClass %>"',
+                '     data-aura-instance-name="<%= options.instanceName %>"',
+                '     data-aura-data=\'<%= JSON.stringify(items) %>\'',
+                '<% } %>',
+                '     >',
+                '    <a class="<%= constants.schemeClass %> <%= constants.linkClass %> text text-link"',
+                '       href="<%= data.url %>" target="_blank"><%= data.scheme %></a>',
+                '<% if (items.length > 1) { %>',
+                '    <span class="<%= constants.triggerClass %>">',
+                '        <span class="<%= constants.toggleClass %>" style="display: inline-block;"/>',
+                '    </span>',
+                '<% } %>',
+                '</div>',
+                '<div class="input">',
+                '    <input type="text"',
+                '           class="<%= constants.specificPartClass %> <%= options.inputClass %>" ',
+                '           value="<%= data.specificPart %>"/>',
+                '</div>'
+            ].join('')
+        };
+
+    return {
+        /**
+         * Initialize component
+         */
+        initialize: function() {
+            // the array will be extend with all default.schemes if this.options.schemes are set
+            if (!this.options.schemes || this.options.schemes.length === 0) {
+                this.options.schemes = urlValidator.getDefaultSchemes();
+            }
+
+            // merge defaults
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            if (this.getData() === undefined) {
+                this.setData({scheme: this.options.scheme, specificPart: this.options.specificPart});
+            }
+
+            this.prepareItems(this.options.schemes);
+            this.render();
+            this.bindCustomEvents();
+            this.bindDomEvents();
+        },
+
+        /**
+         * Prepare schemes to use it in dropdown.
+         */
+        prepareItems: function(schemes) {
+            this.items = this.sandbox.util.arrayMap(schemes, function(scheme) {
+                return {
+                    id: scheme,
+                    name: scheme
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Render skeleton of component
+         */
+        render: function() {
+            this.$el.addClass('husky-input');
+
+            this.html(this.sandbox.util.template(templates.skeleton, {
+                constants: constants,
+                options: this.options,
+                data: this.getData(),
+                items: this.items
+            }));
+        },
+
+        /**
+         * Bind necessary dom events.
+         */
+        bindDomEvents: function() {
+            this.sandbox.dom.on(
+                this.$find('.' + constants.linkClass),
+                'click',
+                this.linkHandler.bind(this)
+            );
+
+            this.sandbox.dom.on(
+                this.$find('.' + constants.specificPartClass),
+                'keyup',
+                this.specificPartChangedHandler.bind(this)
+            );
+
+            this.sandbox.dom.on(
+                this.$el,
+                constants.dataChangedEvent,
+                this.dataChangedHandler.bind(this)
+            );
+        },
+
+        /**
+         * Handles click on scheme.
+         */
+        linkHandler: function() {
+            var data = this.getData();
+            if (!data.url) {
+                return false;
+            }
+        },
+
+        /**
+         * Handles input changed.
+         */
+        specificPartChangedHandler: function(e) {
+            this.sandbox.dom.stopPropagation(e);
+
+            var specificPart = this.$find('.' + constants.specificPartClass).val(),
+                data = this.setData({specificPart: specificPart});
+
+            this.$find('.' + constants.schemeClass).attr('href', data.url);
+        },
+
+        /**
+         * Handles data changed.
+         */
+        dataChangedHandler: function() {
+            var data = this.getData();
+            this.$find('.' + constants.specificPartClass).val(data.specificPart);
+            this.$find('.' + constants.schemeClass).html(data.scheme);
+            this.$find('.' + constants.schemeClass).attr('href', data.url);
+        },
+
+        /**
+         * Bind necessary aura events.
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(
+                'husky.dropdown.' + this.options.instanceName + '.item.click',
+                this.selectSchemeHandler.bind(this)
+            );
+        },
+
+        /**
+         * Handles scheme dropdown value click.
+         *
+         * @param {{id, name}} item
+         */
+        selectSchemeHandler: function(item) {
+            this.$find('.' + constants.schemeClass).html(item.name);
+
+            var data = this.setData({scheme: item.id});
+            this.$find('.' + constants.schemeClass).attr('href', data.url);
+        },
+
+        /**
+         * Set data to dom-data and generate URL.
+         *
+         * @param {{scheme, specificPart}} data
+         */
+        setData: function(data) {
+            var newData = this.sandbox.util.extend(true, {}, this.getData(), data);
+
+            newData.url = null;
+            if (!!newData.scheme && !!newData.specificPart) {
+                newData.url = this.getUrl(newData);
+            }
+
+            this.$el.data(constants.dataKey, newData);
+            this.$el.trigger('change');
+
+            return newData;
+        },
+
+        /**
+         * Returns URL generated from given data.
+         *
+         * @param {{scheme, specificPart}} data
+         *
+         * @returns {String}
+         */
+        getUrl: function(data) {
+            return data.scheme + data.specificPart;
+        },
+
+        /**
+         * Returns dom-data.
+         *
+         * @returns {{scheme, specificPart, url}}
+         */
+        getData: function() {
+            return this.$el.data(constants.dataKey);
         }
     };
 });
