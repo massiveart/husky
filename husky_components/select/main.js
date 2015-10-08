@@ -257,6 +257,21 @@ define([], function() {
         },
         getCaret = function() {
             return this.$find(constants.toggleClass);
+        },
+
+        processStyles = function(button) {
+            if (!!this.options.style) {
+                var styles = this.options.style.split(' ');
+                this.sandbox.util.foreach(styles, function(style) {
+                    if (style === 'small') {
+                        this.sandbox.dom.addClass(button, 'small');
+                    } else if (style === 'big') {
+                        this.sandbox.dom.addClass(button, 'big');
+                    } else if (style === 'action') {
+                        this.sandbox.dom.addClass(button, 'action');
+                    }
+                }.bind(this));
+            }
         };
 
     return {
@@ -342,13 +357,7 @@ define([], function() {
                 );
             this.sandbox.dom.append($originalElement, button);
 
-            if (this.options.style === 'small') {
-                this.sandbox.dom.addClass(button, 'small');
-            } else if (this.options.style === 'big') {
-                this.sandbox.dom.addClass(button, 'big');
-            } else if (this.options.style === 'action') {
-                this.sandbox.dom.addClass(button, 'action');
-            }
+            processStyles.call(this, button);
 
             // add skin style
             this.sandbox.dom.addClass(button, this.options.skin);
