@@ -49,6 +49,10 @@
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="no-header">Without Header</div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
                 <div class="btn pointer grid-col-3 align-center" id="withtabs">Overlay with tabs and language selector
                 </div>
             </div>
@@ -74,6 +78,7 @@
         <div id="overlay3"></div>
         <div id="overlay4"></div>
         <div id="overlay5"></div>
+        <div id="overlay6"></div>
         <div id="insertOverlayHere"></div>
         <div id="overlaySlides"></div>
         <script src="../js/jquery.js"></script>
@@ -162,6 +167,21 @@
                                     }
                                 }
                             ]
+                        }
+                    },
+                    {
+                        name: 'overlay@husky',
+                        options: {
+                            el: '#overlay6',
+                            triggerEl: '#no-header',
+                            displayHeader: false,
+                            data: '<div style="min-height: 350px"></div>',
+                            closeCallback: function() {
+                                console.log('You clicked on close');
+                            },
+                            okCallback: function() {
+                                console.log('You clicked on ok');
+                            }
                         }
                     },
                     {

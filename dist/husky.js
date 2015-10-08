@@ -38564,16 +38564,21 @@ define('__component__$select@husky',[], function() {
             return this.$find(constants.toggleClass);
         },
 
-        processStyles = function(button) {
+        /**
+         * Process styles of options and apply to select.
+         *
+         * @param {Object} $button
+         */
+        processStyles = function($button) {
             if (!!this.options.style) {
                 var styles = this.options.style.split(' ');
                 this.sandbox.util.foreach(styles, function(style) {
                     if (style === 'small') {
-                        this.sandbox.dom.addClass(button, 'small');
+                        this.sandbox.dom.addClass($button, 'small');
                     } else if (style === 'big') {
-                        this.sandbox.dom.addClass(button, 'big');
+                        this.sandbox.dom.addClass($button, 'big');
                     } else if (style === 'action') {
-                        this.sandbox.dom.addClass(button, 'action');
+                        this.sandbox.dom.addClass($button, 'action');
                     }
                 }.bind(this));
             }
