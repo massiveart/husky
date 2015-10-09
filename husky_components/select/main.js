@@ -25,7 +25,8 @@
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
- * @param {String} [options.style] "normal", "small", "big", "action" for different appearance
+ * @param {String} [options.style] "normal", "small", "big", "action" for different appearance. Multiple assignments
+ *                  are done by separating styles with a space (e.g. 'action big')
  * @param {String} [options.skin] style class to set to the elements component (e.g 'white')
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
  * @param {Boolean} [options.fixedLabel] If true the label never gets changed
@@ -257,6 +258,23 @@ define([], function() {
         },
         getCaret = function() {
             return this.$find(constants.toggleClass);
+        },
+
+        /**
+         * Process styles of options and apply to select.
+         *
+         * @param {Object} $button
+         */
+        processStyles = function($button) {
+            var allowedStyles = ['small', 'big', 'action'];
+            if (!!this.options.style) {
+                var styles = this.options.style.split(' ');
+                this.sandbox.util.foreach(styles, function(style) {
+                    if (allowedStyles.indexOf(style) > -1) {
+                        this.sandbox.dom.addClass($button, style);
+                    }
+                }.bind(this));
+            }
         };
 
     return {
@@ -342,13 +360,7 @@ define([], function() {
                 );
             this.sandbox.dom.append($originalElement, button);
 
-            if (this.options.style === 'small') {
-                this.sandbox.dom.addClass(button, 'small');
-            } else if (this.options.style === 'big') {
-                this.sandbox.dom.addClass(button, 'big');
-            } else if (this.options.style === 'action') {
-                this.sandbox.dom.addClass(button, 'action');
-            }
+            processStyles.call(this, button);
 
             // add skin style
             this.sandbox.dom.addClass(button, this.options.skin);

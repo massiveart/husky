@@ -21,6 +21,7 @@
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'dropzone'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
+ * @params {Boolean} [options.displayHeader] Defines if overlay Header with title should be shown
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
@@ -68,6 +69,7 @@ define([], function() {
             backdropClose: true,
             skin: '',
             supportKeyInput: true,
+            displayHeader: true,
             propagateEvents: true,
             type: 'normal',
             cssClass: '',
@@ -167,10 +169,12 @@ define([], function() {
             ].join(''),
             slideSkeleton: [
                 '<div class="slide slide-<%= index %> <%= cssClass %>">',
-                '   <div class="overlay-header<% if(subTitle) { %> with-sub-title<% } %>">',
-                '       <span class="title"><%= title %></span>',
-                '       <% if(subTitle) { %><div class="sub-title"><%= subTitle %></div><% } %>',
-                '   </div>',
+                '   <% if(displayHeader) { %>',
+                '      <div class="overlay-header<% if(subTitle) { %> with-sub-title<% } %>">',
+                '           <span class="title"><%= title %></span>',
+                '           <% if(subTitle) { %><div class="sub-title"><%= subTitle %></div><% } %>',
+                '       </div>',
+                '   <% } %>',
                 '   <div class="overlay-content"></div>',
                 '   <div class="overlay-footer">',
                 '   </div>',
@@ -513,7 +517,7 @@ define([], function() {
             if (slide < 0) {
                 slide = this.slides.length - 1;
             }
-            
+
             this.slideTo(slide);
         },
 
@@ -635,7 +639,8 @@ define([], function() {
                     title: this.sandbox.util.cropMiddle(this.slides[slide].title, 58),
                     subTitle: !!this.slides[slide].subTitle ? this.slides[slide].subTitle : null,
                     index: this.slides[slide].index,
-                    cssClass: this.slides[slide].cssClass
+                    cssClass: this.slides[slide].cssClass,
+                    displayHeader: this.options.displayHeader
                 })
             );
             this.overlay.slides[slide].$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.slides[slide].$el);
