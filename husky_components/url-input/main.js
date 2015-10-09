@@ -17,7 +17,7 @@ define(['services/husky/url-validator'], function(urlValidator) {
     var defaults = {
             instanceName: 'url-input',
             inputClass: '',
-            scheme: 'https://',
+            scheme: 'http://',
             specificPart: ''
         },
 

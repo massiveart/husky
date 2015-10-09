@@ -45502,7 +45502,7 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
     var defaults = {
             instanceName: 'url-input',
             inputClass: '',
-            scheme: 'https://',
+            scheme: 'http://',
             specificPart: ''
         },
 
