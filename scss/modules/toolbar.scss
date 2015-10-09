@@ -438,7 +438,8 @@ $toolbarBigHeight: 50px;
 }
 
 .husky-toolbar-responsive {
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
 
     &.overflown {
         @include box-shadow(inset -8px 0px 8px -3px rgba(0, 0, 0, 0.08), inset 8px 0px 8px -3px rgba(0, 0, 0, 0.08));
