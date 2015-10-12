@@ -41,7 +41,11 @@ define([
                 getValue: function() {
                     var data = this.$el.data(constants.dataKey);
 
-                    return !!data && !!data.url ? data.url : null;
+                    if (!!data && !!data.scheme && !!data.specificPart) {
+                        return data.scheme + data.specificPart;
+                    }
+
+                    return null
                 },
 
                 needsValidation: function() {

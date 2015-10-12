@@ -42,7 +42,7 @@ define(['services/husky/url-validator'], function(urlValidator) {
                 '<% } %>',
                 '     >',
                 '    <a class="<%= constants.schemeClass %> <%= constants.linkClass %> text text-link"',
-                '       href="<%= data.url %>" target="_blank"><%= data.scheme %></a>',
+                '       href="<%= url %>" target="_blank"><%= data.scheme %></a>',
                 '<% if (items.length > 1) { %>',
                 '    <span class="<%= constants.triggerClass %>">',
                 '        <span class="<%= constants.toggleClass %>" style="display: inline-block;"/>',
@@ -97,11 +97,13 @@ define(['services/husky/url-validator'], function(urlValidator) {
          */
         render: function() {
             this.$el.addClass('husky-input');
+            var data = this.getData();
 
             this.html(this.sandbox.util.template(templates.skeleton, {
                 constants: constants,
                 options: this.options,
-                data: this.getData(),
+                url: this.getUrl(data),
+                data: data,
                 items: this.items
             }));
         },
@@ -133,8 +135,10 @@ define(['services/husky/url-validator'], function(urlValidator) {
          * Handles click on scheme.
          */
         linkHandler: function() {
-            var data = this.getData();
-            if (!data.url) {
+            var data = this.getData(),
+                url = this.getUrl(data);
+
+            if (!url) {
                 return false;
             }
         },
@@ -166,7 +170,7 @@ define(['services/husky/url-validator'], function(urlValidator) {
             var data = this.getData();
             this.$find('.' + constants.specificPartClass).val(data.specificPart);
             this.$find('.' + constants.schemeClass).html(data.scheme);
-            this.$find('.' + constants.schemeClass).attr('href', data.url);
+            this.$find('.' + constants.schemeClass).attr('href', this.getUrl(data));
         },
 
         /**
@@ -191,17 +195,12 @@ define(['services/husky/url-validator'], function(urlValidator) {
         },
 
         /**
-         * Set data to dom-data and generate URL.
+         * Set data to dom-data.
          *
          * @param {{scheme, specificPart}} data
          */
         setData: function(data) {
-            var newData = this.sandbox.util.extend(true, {}, this.getData(), data);
-
-            newData.url = null;
-            if (!!newData.scheme && !!newData.specificPart) {
-                newData.url = this.getUrl(newData);
-            }
+            var newData = this.sandbox.util.extend(true, {}, this.$el.data(constants.dataKey), data);
 
             this.$el.data(constants.dataKey, newData);
             this.$el.trigger('change');
@@ -217,13 +216,17 @@ define(['services/husky/url-validator'], function(urlValidator) {
          * @returns {String}
          */
         getUrl: function(data) {
-            return data.scheme + data.specificPart;
+            if (!!data && !!data.scheme && !!data.specificPart) {
+                return data.scheme + data.specificPart;
+            }
+
+            return null;
         },
 
         /**
          * Returns dom-data.
          *
-         * @returns {{scheme, specificPart, url}}
+         * @returns {{scheme, specificPart}}
          */
         getData: function() {
             return this.$el.data(constants.dataKey);

@@ -92,7 +92,6 @@ define(function() {
         }
 
         return {
-            url: match[constants.urlKey],
             scheme: match[constants.schemeKey],
             specificPart: match[constants.specificPartKey]
         };
