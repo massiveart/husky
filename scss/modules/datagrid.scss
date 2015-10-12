@@ -314,6 +314,11 @@
             visibility: visible;
             height: 0px;
         }
+
+        .show-selected {
+            color: $black;
+            cursor: pointer;
+        }
     }
 
     .medium-loader {

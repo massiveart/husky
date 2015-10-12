@@ -44,8 +44,9 @@
     define([
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
-        'husky_components/datagrid/decorators/dropdown-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
+        'husky_components/datagrid/decorators/dropdown-pagination',
+        'husky_components/datagrid/decorators/infinite-scroll-pagination'
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination) {
 
         /* Default values for options */
 
@@ -57,7 +58,8 @@
                 },
                 pagination: 'dropdown',
                 paginationOptions: {
-                    dropdown: {}
+                    dropdown: {},
+                    'infinite-scroll': {}
                 },
 
                 contentFilters: null,
@@ -77,6 +79,8 @@
                 resultKey: 'items',
                 selectedCounter: false,
                 selectedCounterText: 'public.elements-selected',
+                selectedCounterShowSelectedText: 'public.show-selected',
+                selectedCounterShowAllText: 'public.show-all',
                 viewSpacingBottom: 110,
                 clickCallback: null,
                 actionCallback: null,
@@ -100,7 +104,8 @@
                     thumbnail: thumbnailView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination
+                    dropdown: decoratorDropdownPagination,
+                    'infinite-scroll': infiniteScrollPagination
                 }
             },
 
@@ -204,7 +209,13 @@
                     '</div>'
                 ].join(''),
                 selectedCounter: [
-                    '<span class="selected-elements invisible smaller-font grey-font"><span class="number">0</span> <%= text %></span>'
+                    '<span class="selected-elements invisible smaller-font grey-font">',
+                    '    <span class="number">0</span>',
+                    '    &nbsp;<%= text %>',
+                    '    <span class="show-selected-container" <% if (!showSelectedLink) { %>style="display: none;"<% } %>>',
+                    '        &nbsp;(<span class="show-selected"><%= showText %></span>)',
+                    '    </span>',
+                    '</span>'
                 ].join('')
             },
 
@@ -363,12 +374,34 @@
             },
 
             /**
+             * listens on and changes the view, pagination, page and limit of the datagrid
+             * @event husky.datagrid.change
+             * @param {Number} page The page
+             * @param {Number} limit The limit
+             * @param {String} viewId The identifier of the view
+             * @param {Object} Options to merge with the current view options
+             * @param {String} paginationId The identifier of the pagination
+             */
+            CHANGE = function() {
+                return this.createEventName('change');
+            },
+
+            /**
              * listens on and changes the pagination of the datagrid
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
             CHANGE_PAGINATION = function() {
                 return this.createEventName('pagination.change');
+            },
+
+            /**
+             * listens on and changes the current rendered page
+             * @event husky.datagrid.change.page
+             * @param {Integer} page page to render
+             */
+            CHANGE_PAGE = function() {
+                return this.createEventName('change.page');
             },
 
             /**
@@ -622,11 +655,11 @@
                 this.bindCustomEvents(); // Should only be be called once
                 this.bindDOMEvents();
                 this.renderMediumLoader();
-                if (this.options.selectedCounter === true) {
-                    this.renderSelectedCounter();
-                }
 
                 this.loadAndInitializeDecorators().then(function() {
+                    if (this.options.selectedCounter === true) {
+                        this.renderSelectedCounter();
+                    }
                     this.loadAndEvaluateMatchings().then(function() {
                         this.loadAndRenderData();
                         this.sandbox.emit(INITIALIZED.call(this));
@@ -789,9 +822,15 @@
              * Renderes the counter which shows how many elements have been selected
              */
             renderSelectedCounter: function() {
-                this.sandbox.dom.append(this.$element, this.sandbox.util.template(templates.selectedCounter)({
-                    text: this.sandbox.translate(this.options.selectedCounterText)
-                }));
+                this.sandbox.dom.append(
+                    this.$element,
+                    this.sandbox.util.template(templates.selectedCounter, {
+                            text: this.sandbox.translate(this.options.selectedCounterText),
+                            showText: this.sandbox.translate(this.options.selectedCounterShowSelectedText),
+                            showSelectedLink: !!this.gridViews[this.viewId].showSelected
+                        }
+                    )
+                );
                 this.updateSelectedCounter();
             },
 
@@ -838,7 +877,7 @@
              * Destroys the view and the pagination
              */
             destroy: function() {
-                if (this.gridViews[this.viewId].rendered === true) {
+                if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].rendered) {
                     this.gridViews[this.viewId].destroy();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].destroy();
@@ -871,7 +910,7 @@
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
-                this.sandbox.util.load(this.currentUrl, params.data)
+                return this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
                         this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                         if (this.isLoading === true) {
@@ -1160,7 +1199,7 @@
                 // only change if view or if options are passed (could be passed to the same view)
                 if (view !== this.viewId || !!options) {
                     this.destroy();
-                    this.loadAndInitializeView(view).then(function() {
+                    return this.loadAndInitializeView(view).then(function() {
                         this.extendViewOptions(options);
                         this.render();
                     }.bind(this));
@@ -1176,8 +1215,26 @@
                     this.destroy();
                     this.loadAndInitializePagination(pagination).then(function() {
                         this.render();
-                    });
+                    }.bind(this));
                 }
+            },
+
+            /**
+             * Changes style and page of datagrid
+             * @param {Number} page The page
+             * @param {Number} limit The limit
+             * @param {String} viewId The identifier of the view
+             * @param {Object} options to merge with the current view options
+             * @param {String} paginationId The identifier of the pagination
+             */
+            change: function(page, limit, viewId, options, paginationId) {
+                this.showMediumLoader();
+                this.changePage(null, page, limit).then(function() {
+                    this.changeView(viewId, options).then(function() {
+                        this.changePagination(paginationId);
+                        this.hideMediumLoader();
+                    }.bind(this));
+                }.bind(this));
             },
 
             /**
@@ -1307,6 +1364,24 @@
                         this.dataGridWindowResize
                     );
                 }
+
+                if (this.options.selectedCounter) {
+                    this.sandbox.dom.on(this.$el,
+                        'click',
+                        function(event) {
+                            this.sandbox.dom.stopPropagation(event);
+                            if (!this.gridViews[this.viewId].showSelected) {
+                                return;
+                            }
+
+                            this.show = !this.show;
+                            this.gridViews[this.viewId].showSelected(this.show);
+
+                            this.updateSelectedCounter();
+                        }.bind(this),
+                        '.selected-elements .show-selected'
+                    );
+                }
             },
 
             unbindWindowResize: function() {
@@ -1327,6 +1402,7 @@
                 this.sandbox.on(DATA_SEARCH.call(this), this.searchGrid.bind(this));
                 this.sandbox.on(URL_UPDATE.call(this), this.updateUrl.bind(this));
                 this.sandbox.on(CHANGE_VIEW.call(this), this.changeView.bind(this));
+                this.sandbox.on(CHANGE.call(this), this.change.bind(this));
                 this.sandbox.on(CHANGE_PAGINATION.call(this), this.changePagination.bind(this));
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
                 this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
@@ -1354,6 +1430,11 @@
                         callback(ids, items);
                     } else {
                         callback(this.getSelectedItemIds());
+                    }
+                }.bind(this));
+                this.sandbox.on(CHANGE_PAGE.call(this), function(page, limit) {
+                    if (!isNaN(page)) {
+                        this.changePage(null, page, limit);
                     }
                 }.bind(this));
 
@@ -1450,7 +1531,7 @@
                     if (!!recordData.id) {
                         this.pushRecords([recordData]);
                     }
-                    this.gridViews[this.viewId].addRecord(recordData);
+                    this.gridViews[this.viewId].addRecord(recordData, false);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
@@ -1466,7 +1547,7 @@
                     this.sandbox.util.foreach(records, function(record) {
                         if (!!record.id) {
                             this.pushRecords([record]);
-                            this.gridViews[this.viewId].addRecord(record);
+                            this.gridViews[this.viewId].addRecord(record, false);
                         }
                     }.bind(this));
                     if (typeof callback === 'function') {
@@ -1560,6 +1641,32 @@
                     } else {
                         this.sandbox.dom.removeClass(this.$find('.selected-elements'), 'invisible');
                     }
+
+                    if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].showSelected &&
+                        this.getSelectedItemIds().length === 0
+                    ) {
+                        this.gridViews[this.viewId].showSelected(false);
+                        this.show = false;
+                    }
+
+                    if (!!this.show) {
+                        this.sandbox.dom.text(
+                            this.$find('.show-selected'),
+                            this.sandbox.translate(this.options.selectedCounterShowAllText)
+                        );
+                    } else {
+                        this.sandbox.dom.text(
+                            this.$find('.show-selected'),
+                            this.sandbox.translate(this.options.selectedCounterShowSelectedText)
+                        );
+                    }
+
+                    if (!!this.gridViews[this.viewId].showSelected) {
+                        this.sandbox.dom.show(this.$find('.show-selected-container'));
+                    } else {
+                        this.sandbox.dom.hide(this.$find('.show-selected-container'));
+                    }
+
                 }
             },
 
@@ -1828,6 +1935,10 @@
              */
             changePage: function(uri, page, limit) {
                 if (!!this.data.links.pagination || !!uri) {
+                    var def = this.sandbox.data.deferred();
+                    this.show = false;
+                    this.updateSelectedCounter();
+
                     var url, uriTemplate;
 
                     // if a url is passed load the data from this url
@@ -1857,9 +1968,12 @@
                     this.load({
                         url: url,
                         success: function() {
+                            def.resolve();
                             this.sandbox.emit(UPDATED.call(this), 'changed page');
                         }.bind(this)
                     });
+
+                    return def;
                 }
             },
 

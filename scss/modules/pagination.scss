@@ -11,10 +11,43 @@
         width: auto;
         overflow: hidden;
         text-align: center;
-        padding-top: 5px;
+    }
+
+    &.infinite-scroll {
+        height: 40px;
+        text-align: center;
+
+        .pagination-loader {
+            display: none;
+        }
+
+        .pagination-message {
+            opacity: 0;
+            @include transition(opacity 200ms);
+
+            color: $grayLighter;
+            font-size: 12px;
+            line-height: 40px;
+            vertical-align: middle;
+        }
+
+        &.loading {
+            .pagination-loader {
+                display: block;
+            }
+        }
+
+        &.reached-end {
+            .pagination-message {
+                opacity: 1;
+            }
+        }
     }
 
     &.dropdowns {
+        .pagination-loader {
+            padding-top: 5px;
+        }
 
         .show-elements {
             float: left;

@@ -319,9 +319,11 @@ define(function() {
          * Adds a row to the datagrid
          * @param record {Object} the new record to add
          */
-        addRecord: function(record) {
+        addRecord: function(record, appendAtBottom) {
+            var prepend = (!!appendAtBottom) ? false : this.options.addRowTop;
+
             this.removeEmptyIndicator();
-            this.renderBodyRow(record, this.options.addRowTop);
+            this.renderBodyRow(record, prepend);
             this.setAlternateClasses();
         },
 
@@ -951,8 +953,11 @@ define(function() {
                         if (cell.croppable === true) {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
-                                content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
-                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
+                                content = this.sandbox.util.cropMiddle(
+                                    !!cell.originalData ? cell.originalData.toString() : '',
+                                    this.options.croppedMaxLength
+                                );
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalData);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
@@ -1594,6 +1599,19 @@ define(function() {
                 this.sandbox.dom.filter($rows, ':visible:odd'),
                 constants.oddClass
             );
+        },
+
+        showSelected: function(show) {
+            // TODO this is a really basic implementation
+            // - here should all selected be loaded
+            // - currently only current page will be filtered
+            var $items = this.datagrid.$find('tbody .row:not(.selected)');
+
+            if (!!show) {
+                $items.hide();
+            } else {
+                $items.show();
+            }
         }
     };
 });

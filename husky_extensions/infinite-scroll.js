@@ -13,47 +13,67 @@
 
     define(function() {
 
-        var scrollHandler = function(event, sandbox, padding, callback) {
-            var $currentTarget = sandbox.dom.find(event.currentTarget),
-                $inner = sandbox.dom.first(
-                    sandbox.dom.find('div.iscroll-inner', $currentTarget)
-                ),
-                borderTopWidth = parseInt(sandbox.dom.css($currentTarget, 'borderTopWidth')),
-                borderTopWidthInt = isNaN(borderTopWidth) ? 0 : borderTopWidth,
-                iContainerTop = parseInt(sandbox.dom.css($currentTarget, 'paddingTop')) + borderTopWidthInt,
-                iTopHeight = sandbox.dom.offset($currentTarget).top,
-                innerTop = $inner.length ? sandbox.dom.offset($inner).top : 0,
-                iTotalHeight = Math.ceil(iTopHeight - innerTop + $currentTarget.height() + iContainerTop);
+        var scrollTimer = null,
 
-            if (
-                sandbox.dom.data($currentTarget, 'blocked') === 'on' &&
-                iTotalHeight + (isNaN(padding) ? 0 : padding) >= $inner.outerHeight()
-            ) {
-                sandbox.dom.data($currentTarget, 'blocked', 'off');
-                var result = callback();
-
-                if (!!result && !!result.then) {
-                    result.then(function() {
-                        sandbox.dom.data($currentTarget, 'blocked', 'on');
-                    });
-                } else {
-                    sandbox.dom.data($currentTarget, 'blocked', 'on');
+            scrollListener = function(selector, offset, callback) {
+                if (!$(selector).data('blocked')) {
+                    if (!!scrollTimer) {
+                        clearTimeout(scrollTimer);   // clear any previous pending timer
+                    }
+                    scrollTimer = setTimeout(scrollHandler.bind(this, selector, offset, callback), 50);
                 }
-            }
-        };
+            },
+
+            scrollHandler = function(selector, offset, callback) {
+                var scrollContainer = $(selector),
+                    containerHeight = scrollContainer[0].clientHeight,
+                    contentHeight = scrollContainer[0].scrollHeight,
+                    scrollTop = scrollContainer.scrollTop(),
+                    padding = (isNaN(offset)) ? 0 : offset;
+
+                // check if user scrolled to bottom
+                if ((containerHeight + scrollTop + padding - contentHeight) >= 0) {
+
+                    scrollContainer.data('blocked', true);
+                    var result = callback();
+
+                    if (!!result && !!result.then) {
+                        result.then(function() {
+                            $(selector).removeData('blocked');
+                        });
+                    } else {
+                        $(selector).removeData('blocked');
+                    }
+                }
+            };
 
         return {
 
             name: 'infinite-scroll',
 
             initialize: function(app) {
-                app.sandbox.infiniteScroll = function(selector, callback, padding) {
-                    app.sandbox.dom.data(app.sandbox.dom.find(selector), 'blocked', 'on');
+                app.sandbox.infiniteScroll = {
 
-                    app.sandbox.dom.on(selector, 'scroll', function(event) {
-                        scrollHandler(event, app.sandbox, padding, callback);
-                    });
-                };
+                    /**
+                     * Listen for scroll-to-bottom on the element of the given selector
+                     * @param selector element to listen on
+                     * @param callback function to execute on scrolled-to-bottom
+                     * @param offset execute callback before reaching bottom. value in px
+                     */
+                    initialize: function(selector, callback, offset) {
+                        app.sandbox.dom.on(selector, 'scroll.infinite', function() {
+                            scrollListener(selector, offset, callback);
+                        });
+                    },
+
+                    /**
+                     * Unbind the scroll event listener
+                     * @param selector
+                     */
+                    destroy: function(selector) {
+                        app.sandbox.dom.off(selector, 'scroll.infinite');
+                    }
+                }
             }
         };
     });

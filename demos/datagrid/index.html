@@ -17,78 +17,83 @@
             height: auto;
             padding-bottom: 50px;
         }
+
         #content {
             max-width: 800px;
             margin: 0 0px;
             padding: 0 50px;
         }
+
+        #datagrid-infinite {
+            overflow: auto;
+            height: 100px;
+        }
+
         h1 {
             padding: 20px 0 30px;
         }
     </style>
 </head>
 <body>
+    <div class="page">
+        <div id="content" class="grid">
 
-    <div id="content" class="grid">
+            <h1>Husky Datagrid Demo</h1>
 
-        <h1>Husky Datagrid Demo</h1>
+            <div class="m-top-30 m-bottom-30"></div>
+            <div id="toolbar" class="grid-row m-top-30 m-bottom-20" style="text-align:right;clear:both;"></div>
+            <div id="datagrid" class="grid-row"></div>
 
-        <div class="m-top-30 m-bottom-30"></div>
-        <div id="toolbar" class="grid-row m-top-30 m-bottom-20" style="text-align:right;clear:both;"></div>
-        <div id="datagrid" class="grid-row"></div>
+            <div class="grid-row  m-top-30">
+                <div id="add-row" class="grid-col-3"><span>Add Row</span></div>
+                <div id="get-selected" class="grid-col-3"><span>Get Selected</span></div>
+                <div id="update" class="grid-col-3"><span>Update</span></div>
+                <div id="update-url" class="grid-col-3"><span>Update url</span></div>
+            </div>
+            <div class="grid-row  m-top-30">
+                <div id="change-columns" class="grid-col-3"><span>Change Columns</span></div>
+                <div id="change-pagination" class="grid-col-3"><span>Change the pagination</span></div>
+                <div id="change-view" class="grid-col-3"><span>Change the view</span></div>
+                <div id="add-records" class="grid-col-3"><span>Add records to current view</span></div>
+            </div>
+            <div class="grid-row  m-top-30">
+                <div id="change-records" class="grid-col-3"><span>Change some data-records</span></div>
+            </div>
+            <div class="grid-row m-top-30">
+                <div class="grid-col-6">Note: First row can be edited. The others produce a validation error</div>
+            </div>
 
-        <div class="grid-row  m-top-30">
-            <div id="add-row" class="grid-col-3"><span>Add Row</span></div>
-            <div id="get-selected" class="grid-col-3"><span>Get Selected</span></div>
-            <div id="update" class="grid-col-3"><span>Update</span></div>
-            <div id="update-url" class="grid-col-3"><span>Update url</span></div>
+            <h2 class="divider m-top-30">Datagrid with children elements</h2>
+            <div id="children-datagrid"></div>
+
+            <h2 class="divider m-top-30">Datagrid with children elements - (only leaves can be selected)</h2>
+            <div id="children-datagrid-only-leaves"></div>
+
+            <h2 class="divider m-top-30">Children datagrid - (children loaded at beginning)</h2>
+            <div id="children-datagrid-beginning"></div>
+
+            <h2 class="divider m-top-30">Datagrid as assignment component</h2>
+            <div id="get-from-data" class="btn action fit m-bottom-30">Get selected cateogries from dom</div>
+            <div id="assignment-datagrid"></div>
+
+            <h2 class="divider m-top-30">Empty datagrid</h2>
+            <div id="empty-datagrid2"></div>
+
+            <h2 class="divider m-top-30">Thumbnail view</h2>
+            <div id="datagrid2"></div>
+
+            <h2 class="divider m-top-30">External Decorator</h2>
+            <div id="datagrid-external"></div>
+
+            <h2 class="divider m-top-30">Infinite Pagination</h2>
+            <div id="datagrid-infinite"></div>
+
         </div>
-        <div class="grid-row  m-top-30">
-            <div id="change-columns" class="grid-col-3"><span>Change Columns</span></div>
-            <div id="change-pagination" class="grid-col-3"><span>Change the pagination</span></div>
-            <div id="change-view" class="grid-col-3"><span>Change the view</span></div>
-            <div id="add-records" class="grid-col-3"><span>Add records to current view</span></div>
-        </div>
-        <div class="grid-row  m-top-30">
-            <div id="change-records" class="grid-col-3"><span>Change some data-records</span></div>
-        </div>
-        <div class="grid-row m-top-30">
-            <div class="grid-col-6">Note: First row can be edited. The others produce a validation error</div>
-        </div>
 
-        <h2 class="divider m-top-30">Datagrid with children elements</h2>
-        <div id="children-datagrid"></div>
-
-        <h2 class="divider m-top-30">Datagrid with children elements - (only leaves can be selected)</h2>
-        <div id="children-datagrid-only-leaves"></div>
-
-        <h2 class="divider m-top-30">Children datagrid - (children loaded at beginning)</h2>
-        <div id="children-datagrid-beginning"></div>
-
-        <h2 class="divider m-top-30">Datagrid as assignment component</h2>
-        <div id="get-from-data" class="btn action fit m-bottom-30">Get selected cateogries from dom</div>
-        <div id="assignment-datagrid"></div>
-
-        <h2 class="divider m-top-30">Empty datagrid</h2>
-        <div id="empty-datagrid"></div>
-        <div class="m-top-30"></div>
-        <div id="empty-datagrid2"></div>
-
-        <h2 class="divider m-top-30">Thumbnail view</h2>
-        <div id="datagrid2"></div>
-
-        <h2 class="divider m-top-30">External Decorator</h2>
-        <div id="datagrid-external"></div>
-
-        <h2 class="divider m-top-30">Set data</h2>
-        <div id="set-data" class="btn action fit m-bottom-30">Set other data</div>
-        <div id="datagrid-set-data"></div>
+        <script src="../../bower_components/jquery/jquery.js"></script>
+        <script src="../../bower_components/requirejs/require.js"></script>
+        <script src="../js/defaults.js"></script>
+        <script src="script.js"></script>
     </div>
-
-    <script src="../../bower_components/jquery/jquery.js"></script>
-    <script src="../../bower_components/requirejs/require.js"></script>
-    <script src="../js/defaults.js"></script>
-    <script src="script.js"></script>
-
 </body>
 </html>
