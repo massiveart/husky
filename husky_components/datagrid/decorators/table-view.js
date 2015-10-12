@@ -1003,7 +1003,7 @@ define(function() {
             if (this.options.editable === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.editableItemClickHandler.bind(this), '.' + constants.editableItemClass);
                 this.sandbox.dom.on(this.table.$body, 'focusout', this.editableInputFocusoutHandler.bind(this), '.' + constants.editableInputClass);
-                this.sandbox.dom.on(this.table.$body, 'keypress', this.editableInputKeyHandler.bind(this), '.' + constants.editableInputClass);
+                this.sandbox.dom.on(this.table.$body, 'keydown', this.editableInputKeyHandler.bind(this), '.' + constants.editableInputClass);
             }
             if (!!this.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
@@ -1102,6 +1102,9 @@ define(function() {
          * @param event {Object} the event object
          */
         editableInputKeyHandler: function(event) {
+            // remove server error class if text has changed again
+            this.removeEditedErrorCallback($(event.currentTarget).parents('.' + constants.rowClass).data('id'));
+
             // on enter
             if (event.keyCode === 13) {
                 this.editableInputEventHandler(event);
@@ -1175,6 +1178,12 @@ define(function() {
                 this.sandbox.dom.find('.' + constants.inputWrapperClass, $row),
                 constants.editedErrorClass
             );
+        },
+
+        removeEditedErrorCallback: function(recordId) {
+            var $row = this.table.rows[recordId].$el;
+            $row.find('.' + constants.inputWrapperClass).removeClass(constants.editedErrorClass);
+            this.editStatuses[recordId] = true;
         },
 
         /**
