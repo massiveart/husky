@@ -118,7 +118,7 @@ define(['services/husky/url-validator'], function(urlValidator) {
 
             this.sandbox.dom.on(
                 this.$find('.' + constants.specificPartClass),
-                'keyup',
+                'focusout',
                 this.specificPartChangedHandler.bind(this)
             );
 
@@ -145,10 +145,18 @@ define(['services/husky/url-validator'], function(urlValidator) {
         specificPartChangedHandler: function(e) {
             this.sandbox.dom.stopPropagation(e);
 
-            var specificPart = this.$find('.' + constants.specificPartClass).val(),
-                data = this.setData({specificPart: specificPart});
+            var $element = this.$find('.' + constants.specificPartClass),
+                specificPart = $element.val(),
+                match = urlValidator.match(specificPart, this.options.schemes),
+                data = {specificPart: specificPart};
 
-            this.$find('.' + constants.schemeClass).attr('href', data.url);
+            if (!!match) {
+                data.scheme = match.scheme;
+                data.specificPart = match.specificPart;
+            }
+
+            this.setData(data);
+            this.dataChangedHandler();
         },
 
         /**
@@ -177,10 +185,9 @@ define(['services/husky/url-validator'], function(urlValidator) {
          * @param {{id, name}} item
          */
         selectSchemeHandler: function(item) {
-            this.$find('.' + constants.schemeClass).html(item.name);
+            this.setData({scheme: item.id});
 
-            var data = this.setData({scheme: item.id});
-            this.$find('.' + constants.schemeClass).attr('href', data.url);
+            this.dataChangedHandler();
         },
 
         /**
