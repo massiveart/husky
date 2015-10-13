@@ -51775,11 +51775,11 @@ define('husky_extensions/util',['services/husky/util'], function(Util) {
 
             app.core.util.save = Util.save;
 
-            app.core.util.cropMiddle = Util.cropMiddle,
+            app.core.util.cropMiddle = Util.cropMiddle;
 
-            app.core.util.cropFront = Util.cropFront,
+            app.core.util.cropFront = Util.cropFront;
 
-            app.core.util.cropTail = Util.cropTail,
+            app.core.util.cropTail = Util.cropTail;
 
             app.core.util.contains = Util.contains;
 
@@ -51804,6 +51804,10 @@ define('husky_extensions/util',['services/husky/util'], function(Util) {
             app.core.util.removeFromArray = Util.removeFromArray;
 
             app.core.util.capitalizeFirstLetter = Util.capitalizeFirstLetter;
+
+            app.core.util.arrayMap = Util.arrayMap;
+
+            app.core.util.object = Util.object;
         }
     };
 });
