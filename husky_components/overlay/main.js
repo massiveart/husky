@@ -545,7 +545,7 @@ define([], function() {
                 return;
             }
 
-            this.slideTo(this.activeSlide);
+            this.slideTo(slide);
         },
 
         /**
