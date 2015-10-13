@@ -33917,7 +33917,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
 
                         callback(ids, items);
                     } else {
-                        callback(this.getSelectedItemIds());
+                        callback(this.sandbox.util.deepCopy(this.getSelectedItemIds()));
                     }
                 }.bind(this));
                 this.sandbox.on(CHANGE_PAGE.call(this), function(page, limit) {
