@@ -59,6 +59,11 @@
     .text {
         font-size: $baseFontSize;
     }
+
+    .text-link {
+        color: $black;
+        cursor: pointer !important;
+    }
 }
 
 .husky-input {

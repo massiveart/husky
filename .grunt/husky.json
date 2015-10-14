@@ -24,10 +24,12 @@
             "husky": "lib/husky",
             "type/husky-select": "husky_components/select/select-type",
             "type/husky-input": "husky_components/input/input-type",
+            "type/url-input": "husky_components/url-input/url-input",
 
             "services/husky/util": "husky_services/util",
             "services/husky/mediator": "husky_services/mediator",
             "services/husky/translator": "husky_services/translator",
+            "services/husky/url-validator": "husky_services/url-validator",
 
             "bootstrap-datepicker": "bower_components/bootstrap-datepicker/bootstrap-datepicker",
             "datepicker-ar": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az",
@@ -104,7 +106,8 @@
             "__component__$dropzone@husky": "husky_components/dropzone/main",
             "__component__$input@husky": "husky_components/input/main",
             "data-navigation": "husky_components/data-navigation",
-            "__component__$data-navigation@husky": "husky_components/data-navigation/main"
+            "__component__$data-navigation@husky": "husky_components/data-navigation/main",
+            "__component__$url-input@husky": "husky_components/url-input/main"
         },
         "shim": {
             "backbone": {
@@ -140,10 +143,12 @@
             "tagsManager",
             "type/husky-select",
             "type/husky-input",
+            "type/url-input",
 
             "services/husky/util",
             "services/husky/mediator",
             "services/husky/translator",
+            "services/husky/url-validator",
 
             "husky",
             "__component__$navigation@husky",
@@ -167,7 +172,8 @@
             "__component__$toggler@husky",
             "__component__$dropzone@husky",
             "__component__$input@husky",
-            "__component__$data-navigation@husky"
+            "__component__$data-navigation@husky",
+            "__component__$url-input@husky"
         ]
     }
 }
