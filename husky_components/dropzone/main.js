@@ -69,7 +69,7 @@ define([], function() {
             dropzoneEnabled: true,
             cancelUploadOnOverlayClick: false,
             maxFilesize: 256, // mb
-            fileTooBigKey: 'husky.upload.error.file-to-big' // can handle {{filesize}}, {{maxFilesize}}, {{filename}
+            fileTooBigKey: 'husky.upload.error.file-to-big' // can handle {{filesize}}, {{maxFilesize}}, {{filename}}
         },
 
         constants = {
