@@ -33883,6 +33883,10 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * @param {String} paginationId The identifier of the pagination
              */
             change: function(page, limit, viewId, options, paginationId) {
+                if (paginationId === this.paginationId && view === this.viewId) {
+                    return;
+                }
+
                 this.showMediumLoader();
                 this.changePage(null, page, limit).then(function() {
                     this.changeView(viewId, options).then(function() {
