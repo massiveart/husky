@@ -72,6 +72,10 @@
                 <div class="grid-col-1">&nbsp;</div>
                 <div class="btn pointer grid-col-3 align-center" id="subTitle">This is an overlay with subTitle</div>
             </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="alertList">This is an alert overlay with a list</div>
+            </div>
         </div>
         <div id="overlay1"></div>
         <div id="overlay2"></div>
@@ -333,7 +337,36 @@
                                     },
                                     okCallback: function(data) {
                                         console.log('You clicked on ok - another');
-                                        console.log('returned data ', data)
+                                        console.log('returned data ', data);
+                                        console.log($(data).find('h3').text());
+                                        return true;
+                                    }
+                                }
+                            }
+                        ]);
+                    });
+
+                    $('#alertList').click(function() {
+                        var $element = $('<div/>');
+                        $('body').append($element);
+
+                        app.sandbox.start([
+                            {
+                                name: 'overlay@husky',
+                                options: {
+                                    el: $element,
+                                    title: 'Delete page?',
+                                    message: '<p>The operation you are about to do will permanently delete data. This is not undoable! Please think about it and accept or decline.</p><ul><li>Item 1</li><li>Item 2</li></ul>',
+                                    okDefaultText: 'Delete',
+                                    cancelDefaultText: 'Cancel',
+                                    type: 'alert',
+                                    closeCallback: function() {
+                                        console.log('You clicked on close');
+                                        return true;
+                                    },
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data);
                                         console.log($(data).find('h3').text());
                                         return true;
                                     }
