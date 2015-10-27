@@ -172,8 +172,10 @@
         color: $grayLight;
         text-align: center;
         ul {
-            list-style-type: none;
-            padding: 0;
+            border: 1px solid $grayLighterer;
+            list-style-position: inside;
+            text-align: left;
+            padding: 10px;
         }
     }
 
