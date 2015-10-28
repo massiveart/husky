@@ -16,7 +16,6 @@
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - either true (for url) or position / name  (see preselector for more information)
- *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by options.fragment) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
@@ -51,7 +50,6 @@ define(function() {
             forceReload: false,
             callback: null,
             forceSelect: true,
-            skin: '',
             preSelectEvent: {
                 enabled: false,
                 triggerSelectItem: true
@@ -157,7 +155,8 @@ define(function() {
                 if (!!item) {
                     this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
                     this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
-
+                    this.sandbox.dom.addClass(this.$marker, 'animate');
+                    setMarker.call(this);
                     // callback
                     if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
                         item.callback.call(this, item);
@@ -172,6 +171,14 @@ define(function() {
             }
         },
 
+        setMarker = function() {
+            var $selected = this.$find('li.is-selected');
+            if (!!$selected.length) {
+                this.sandbox.dom.width(this.$marker, this.sandbox.dom.outerWidth($selected));
+                this.sandbox.dom.css(this.$marker, {'left': this.sandbox.dom.position($selected).left + 'px'});
+            }
+        },
+
         triggerSelectEvent = function(item) {
             item.forceReload = (item.forceReload && typeof item.forceReload !== "undefined") ? item.forceReload : this.options.forceReload;
             this.sandbox.emit(ITEM_SELECT.call(this), item);
@@ -179,10 +186,14 @@ define(function() {
 
         showItem = function(item) {
             this.sandbox.dom.show(this.domItems[item]);
+            this.sandbox.dom.removeClass(this.$marker, 'animate');
+            setMarker.call(this);
         },
 
         hideItem = function(item) {
             this.sandbox.dom.hide(this.domItems[item]);
+            this.sandbox.dom.removeClass(this.$marker, 'animate');
+            setMarker.call(this);
         },
 
         bindDOMEvents = function() {
@@ -214,8 +225,8 @@ define(function() {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            this.$el = this.sandbox.dom.$(this.options.el);
             this.active = true;
+            this.$marker = null;
 
             this.items = [];
             this.domItems = {};
@@ -287,8 +298,8 @@ define(function() {
                 selectedItem = null,
                 $item = null;
 
-            //add skin class
-            this.sandbox.dom.addClass($element, this.options.skin);
+            this.$marker = this.sandbox.dom.createElement('<div class="marker"></div>');
+            this.sandbox.dom.append($element, this.$marker);
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
@@ -320,7 +331,6 @@ define(function() {
                     }
                 }
                 this.domItems[item.id] = $item;
-
             }.bind(this));
 
             // force selection of first element
@@ -328,7 +338,7 @@ define(function() {
                 selectedItem = this.options.data[0];
                 this.sandbox.dom.addClass(this.sandbox.dom.find('li', $list).eq(0), 'is-selected');
             }
-
+            setMarker.call(this);
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }

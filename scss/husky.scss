@@ -15,7 +15,7 @@
     "various.scss",
     "colorpicker.scss",
     "datepicker.scss",
-    "fontsawesome/font-awesome.scss",
+    "fontawesome/font-awesome.scss",
     "dropdown-menu.scss";
 
 
@@ -45,11 +45,15 @@
     "modules/select.scss",
     "modules/datagrid",
     "modules/label",
-    "modules/matcher",
-    "modules/process",
     "modules/toggler",
     "modules/content-types",
     "modules/dropzone",
     "modules/input",
     "modules/thumbnails",
     "modules/data-navigation";
+
+// so you don't have to add the 'fa' class to every icon container
+[class^="fa-"] {
+    @extend .fa;
+    text-decoration: none;
+}

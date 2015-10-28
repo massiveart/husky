@@ -29,7 +29,7 @@
 .dropdown-menu {
     width: 250px;
     max-height: 350px;
-    overflow: scroll;
+    overflow: auto;
     display: inline-block;
     position: absolute;
     top: 20px;
@@ -38,7 +38,7 @@
     margin-left: 5px;
     margin-bottom: 40px;
     background-color: $white;
-    border: 1px solid $grayLighter;
+    border: 1px solid $borderColor;
     z-index: 90;
     border-radius: $borderRadius;
 

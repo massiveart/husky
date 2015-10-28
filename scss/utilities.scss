@@ -60,7 +60,7 @@
 // -------------------------
 
 .editable {
-    padding: 4px 7px 4px 7px;
+    padding: 6px 7px 6px 7px;
     margin: 0 0 0 -4px;
     border: 1px solid transparent;
     border-radius: $borderRadius;
@@ -71,6 +71,7 @@
     width:100%;
     white-space: nowrap;
     cursor: pointer;
+    line-height: normal;
 }
 
 .editable:focus,

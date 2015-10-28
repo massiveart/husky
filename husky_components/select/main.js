@@ -25,7 +25,8 @@
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
- * @param {String} [options.style] "normal", "small", "big", "action" for different appearance
+ * @param {String} [options.style] "normal", "small", "big", "action" for different appearance. Multiple assignments
+ *                  are done by separating styles with a space (e.g. 'action big')
  * @param {String} [options.skin] style class to set to the elements component (e.g 'white')
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
  * @param {Boolean} [options.fixedLabel] If true the label never gets changed
@@ -39,6 +40,7 @@
  * @param {String} [options.url] url to load data from
  * @param {Boolean} [options.isNative] should use native select
  * @param {Boolean} [options.showToolTip] Show tool-tip on hover - only works for single-selects
+ * @param {Array} [options.defaultValue] Array of default items that should be selected if no item has been preselected
  */
 
 define([], function() {
@@ -74,7 +76,8 @@ define([], function() {
             resultKey: '',
             showToolTip: false,
             translations: translations,
-            isNative: false
+            isNative: false,
+            defaultValue: null
         },
 
         constants = {
@@ -255,15 +258,31 @@ define([], function() {
         },
         getCaret = function() {
             return this.$find(constants.toggleClass);
+        },
+
+        /**
+         * Process styles of options and apply to select.
+         *
+         * @param {Object} $button
+         */
+        processStyles = function($button) {
+            var allowedStyles = ['small', 'big', 'action'];
+            if (!!this.options.style) {
+                var styles = this.options.style.split(' ');
+                this.sandbox.util.foreach(styles, function(style) {
+                    if (allowedStyles.indexOf(style) > -1) {
+                        this.sandbox.dom.addClass($button, style);
+                    }
+                }.bind(this));
+            }
         };
 
     return {
-
         initialize: function() {
             var selectedIds;
 
             this.sandbox.logger.log('initialize', this);
-            this.options = this.sandbox.util.extend({}, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             // if deselectfield is set to true, set it to default value
             if (!!this.options.deselectField && this.options.deselectField.toString() === 'true') {
@@ -278,16 +297,17 @@ define([], function() {
             // Used as a fallback to revert to the last committed data
             this.mergedData = null;
 
-            // when preselected elements is not set via options look in data-attribute
+            // if no data was preselected search for data array
             if (!this.options.preSelectedElements || this.options.preSelectedElements.length === 0) {
                 selectedIds = this.sandbox.dom.data(this.$el, 'selection');
-
                 if (typeof selectedIds === 'string') {
                     this.options.preSelectedElements = selectedIds.split(',');
                 } else if (Array.isArray(selectedIds)) {
                     this.options.preSelectedElements = selectedIds.map(String);
                 } else if (typeof selectedIds === 'number') {
                     this.options.preSelectedElements.push(selectedIds.toString());
+                } else if (!!this.options.defaultValue) {
+                    this.options.preSelectedElements = this.options.defaultValue;
                 }
             }
 
@@ -340,13 +360,7 @@ define([], function() {
                 );
             this.sandbox.dom.append($originalElement, button);
 
-            if (this.options.style === 'small') {
-                this.sandbox.dom.addClass(button, 'small');
-            } else if (this.options.style === 'big') {
-                this.sandbox.dom.addClass(button, 'big');
-            } else if (this.options.style === 'action') {
-                this.sandbox.dom.addClass(button, 'action');
-            }
+            processStyles.call(this, button);
 
             // add skin style
             this.sandbox.dom.addClass(button, this.options.skin);

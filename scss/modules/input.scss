@@ -8,7 +8,7 @@
         line-height: $inputHeight - 10px;
         margin: 5px 0 0 0;
         padding-right: 5px;
-        border-right: 1px solid $grayLighter;
+        border-right: 1px solid $borderColor;
         color: $grayLight;
         font-size: 16px;
 
@@ -59,6 +59,11 @@
     .text {
         font-size: $baseFontSize;
     }
+
+    .text-link {
+        color: $black;
+        cursor: pointer !important;
+    }
 }
 
 .husky-input {
@@ -75,7 +80,7 @@
         .input {
             overflow: visible;
         }
-        
+
         .front {
             color: $black;
             cursor: pointer;

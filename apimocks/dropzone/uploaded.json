@@ -1,9 +1,15 @@
-{"total": 1, "_embedded": {
-    "media": [
-        {
-            "id": 1,
-            "name": "Picture 1",
-            "category": "products"
-        }
-    ]
-}}
+{
+  "id": 6,
+  "size": 595834,
+  "mimeType": "image\/jpeg",
+  "title": "donald-duck-susse",
+  "name": "donald-duck-susse.jpg",
+  "thumbnails": {
+    "170x170": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "200x200": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "50x50": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "150x100": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg",
+    "640x480": "http:\/\/www.bilderfotos.com\/data\/media\/6\/donald-duck-susse.jpg"
+  },
+  "url": "\/media\/6\/download\/handplant_regular.jpg?v=1"
+}

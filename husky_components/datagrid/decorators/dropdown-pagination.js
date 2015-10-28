@@ -55,6 +55,7 @@ define(function() {
 
             showElements: [
                 '<div class="show-elements">',
+                '<span class="text"><%= translate(text) %>:</span>',
                 '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
                 '<%= desc %>',
                 '<span class="dropdown-toggle"></span>',
@@ -111,10 +112,6 @@ define(function() {
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             this.preparePagination();
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
-
-            this.preparePaginationDropdown();
-            this.prepareShowElementsDropdown();
-
             this.bindDomEvents();
         },
 
@@ -139,8 +136,8 @@ define(function() {
          * Destroys the pagination
          */
         destroy: function() {
-            this.unbindDomEvents();
             this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            this.unbindDomEvents();
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -241,13 +238,16 @@ define(function() {
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
-                description = this.sandbox.translate(translations.show) +
-                ' <strong>' + this.data.embedded.length + '</strong> ' +
-                this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
+                description = this.data.embedded.length;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
-                    'desc': description
+                    desc: description,
+                    text: translations.elementsPerPage,
+                    translate: this.sandbox.translate
                 }));
+                this.sandbox.dom.append(this.$paginationContainer, '<span></span>')
                 this.sandbox.dom.append(this.$paginationContainer, $showElements);
+
+                this.prepareShowElementsDropdown();
             }
 
             if (parseInt(this.data.pages, 10) > 1) {
@@ -261,6 +261,8 @@ define(function() {
                 this.sandbox.dom.append($pagination, this.sandbox.util.template(templates.pageChanger)({
                     label: paginationLabel
                 }));
+
+                this.preparePaginationDropdown();
             }
         },
 
@@ -315,7 +317,7 @@ define(function() {
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 data.push({
                     id: this.options.showElementsSteps[i],
-                    name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
+                    name: this.options.showElementsSteps[i]
                 });
             }
 

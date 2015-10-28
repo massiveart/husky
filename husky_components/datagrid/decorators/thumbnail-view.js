@@ -137,7 +137,7 @@ define(function() {
          * Parses the data and passes it to a render function
          * @param thumbnails {Array} array with thumbnails to render
          */
-        renderThumbnails: function(thumbnails) {
+        renderThumbnails: function(thumbnails, appendAtBottom) {
             var imgSrc, imgAlt, title, description, id, thumbnail;
 
             this.thumbnailFormat = (this.options.large === false) ? this.options.smallThumbnailFormat : this.options.largeThumbnailFormat;
@@ -180,7 +180,7 @@ define(function() {
                 description = description.join(constants.descriptionDelimiter);
 
                 // pass the found data to a render method
-                this.renderThumbnail(id, imgSrc, imgAlt, title, description, record);
+                this.renderThumbnail(id, imgSrc, imgAlt, title, description, record, appendAtBottom);
             }.bind(this));
         },
 
@@ -193,13 +193,13 @@ define(function() {
          * @param description {String} the thumbnail description to render
          * @param record {Object} the original data record
          */
-        renderThumbnail: function(id, imgSrc, imgAlt, title, description, record) {
+        renderThumbnail: function(id, imgSrc, imgAlt, title, description, record, appendAtBottom) {
             this.$thumbnails[id] = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
                     imgAlt: imgAlt,
-                    title: this.sandbox.util.cropMiddle(title, 24),
-                    description: this.sandbox.util.cropMiddle(description, 32),
+                    title: this.sandbox.util.cropMiddle(String(title), 24),
+                    description: this.sandbox.util.cropMiddle(String(description), 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!this.datagrid.itemIsSelected.call(this.datagrid, record.id),
                     selectable: this.options.selectable
@@ -210,7 +210,11 @@ define(function() {
             }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
             this.sandbox.dom.hide(this.$thumbnails[id]);
-            this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
+            if (!!appendAtBottom) {
+                this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
+            } else {
+                this.sandbox.dom.prepend(this.$el, this.$thumbnails[id]);
+            }
             this.sandbox.dom.fadeIn(this.$thumbnails[id], this.options.fadeInDuration);
 
             this.bindThumbnailDomEvents(id);
@@ -253,7 +257,7 @@ define(function() {
 
             if (!!this.options.selectable) {
                 this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
-                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                    this.datagrid.itemAction.call(this.datagrid, id);
                     this.selectItem(id);
                 }.bind(this));
             }
@@ -301,7 +305,7 @@ define(function() {
                     this.datagrid.setItemSelected.call(this.datagrid, id);
                 }
             } else {
-                this.datagrid.emitItemClickedEvent(id);
+                this.datagrid.itemAction(id);
             }
         },
 
@@ -325,8 +329,8 @@ define(function() {
          * @param record
          * @public
          */
-        addRecord: function(record) {
-            this.renderThumbnails([record]);
+        addRecord: function(record, appendAtBottom) {
+            this.renderThumbnails([record], appendAtBottom);
         },
 
         /**

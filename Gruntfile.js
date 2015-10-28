@@ -241,6 +241,17 @@ module.exports = function(grunt) {
                         ],
                         dest: 'bower_components/jquery/'
                     },
+                    // html.sortable
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/html.sortable/dist/html.sortable.js',
+                            '.bower_components/html.sortable/dist/html.sortable.min.js',
+                            '.bower_components/html.sortable/dist/html.sortable.min.js.map'
+                        ],
+                        dest: 'bower_components/html.sortable/'
+                    },
                     // requirejs
                     {
                         expand: true,

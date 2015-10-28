@@ -9,29 +9,30 @@ table {
 }
 
 .table {
+    color: $grayLight;
+
     th,
     td {
         text-align: left;
-        padding: 8px 10px;
+        padding: 0 10px;
         vertical-align: top;
+        border-right: 1px solid $grayLightMedium2;
     }
 
     tr {
-        border-bottom: 1px solid $grayLighter;
         height: 50px;
+        border-left: 2px solid transparent;
+        td:last-child {
+            border-right: none;
+        }
     }
 
     thead {
-
-        tr {
-            height: 30px;
-        }
-
         th {
             vertical-align: bottom;
             color: $grayLight;
-            font-size: 16px;
             font-weight: normal;
+            line-height: 50px;
 
             a {
                 color: $black;
@@ -43,9 +44,8 @@ table {
             }
 
         }
-
         tr {
-            border-bottom: 2px solid $grayLighter;
+            background: $grayLighterer;
         }
     }
 
@@ -58,11 +58,29 @@ table {
               max-width: 50px;
             }
         }
+        tr:nth-child(2n+1) {
+            background: $white;
+        }
+        tr:nth-child(2n) {
+            background: $grayLightest2;
+        }
+        tr.selected {
+            border-left-color: $borderColor;
+        }
     }
 
     .thumb {
         img {
             vertical-align: middle;
         }
+    }
+
+    .checkbox-cell {
+        width: 20px;
+        text-align: center;
+    }
+
+    .custom-checkbox {
+        margin: 0 8px;
     }
 }

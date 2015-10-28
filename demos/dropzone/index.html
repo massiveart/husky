@@ -25,6 +25,7 @@
 
 <h1>Husky dropzone demo</h1>
 <div class="grid">
+
     <div class="grid-row">
         <div class="grid-col-6">
             <div id="awsomeDropzone"
@@ -36,7 +37,9 @@
                  data-aura-show-overlay="false"></div>
         </div>
     </div>
+
     <div class="grid-row">
+        <h2>Small dropzone</h2>
         <div class="grid-col-6">
             <div id="smallDropzone"
                  data-aura-component="dropzone@husky"
@@ -47,19 +50,41 @@
                  data-aura-show-overlay="false"></div>
         </div>
     </div>
+
     <div class="grid-row">
         <h2>This dropzone has a callback which gets called and resolves a promise before uploading</h2>
         <div class="grid-col-6">
             <div id="manualProcessDropzone"></div>
         </div>
     </div>
+
+    <div class="grid-row">
+        <h2>Overlay dropzone (image-change over event-listener)</h2>
+        <div class="grid-col-6">
+            <div id="imagebox" style="width: 300px; height: 300px; position: relative;
+            background: url('http://lorempixel.com/output/nightlife-q-g-640-480-4.jpg') no-repeat; background-size: cover; background-position: center center;">
+                <div id="overlayDropzone" style="width: 100%; height: 100%"
+                     data-aura-component="dropzone@husky"
+                     data-aura-title-key=""
+                     data-aura-description-key="Drop image or click to change picture"
+                     data-aura-url="http://husky.lo:7878/admin/api/dropzone"
+                     data-aura-skin="overlay"
+                     data-aura-max-files="1"
+                     data-aura-instance-name="overlay"
+                     data-aura-show-overlay="false"></div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 <p>Note: Scroll a bit and drop a file to see the dropzone in an overlay</p>
 <div class="btn fit action" id="lock">Lock Popup</div>
 <div class="btn fit action" id="unlock">Unlock Popup</div>
 <div style="width:100px;height:1000000px"></div>
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
+<script src="../js/defaults.js"></script>
 
 <script type="text/javascript">
 require.config({
@@ -97,6 +122,15 @@ require(['lib/husky'], function(Husky) {
                 }
             }
         }]);
+
+        // event handling for overlay-dropzone
+        app.sandbox.on('husky.dropzone.overlay.success', function(image, response) {
+            var img = response.thumbnails['200x200'];
+            $('#imagebox').css('background', 'url('+ img + ') no-repeat');
+            $('#imagebox').css('background-size', 'cover');
+            $('#imagebox').css('background-position', 'center center');
+        });
+
         app.logger.log('Aura started...');
     });
 

@@ -16,51 +16,47 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="../../dist/husky.min.css">
         <style type="text/css">
-            #content {
-                width: 800px;
-                margin-left: 300px;
-                margin-top: 100px;
-                min-height: 300px;
-                background: #f1f1f1;
+            body {
+                margin: 50px;
             }
         </style>
     </head>
     <body>
-        <div id="content">
-            <h3>tabs loaded by passing data</h3>
+        <h1>Husky Tabs Demo</h1>
+        <h3>tabs loaded by passing data</h3>
 
-            <div data-aura-component="tabs@husky"
-                 data-aura-data='[{"name":"Details","action":"details","id":"529f1f5b777f1"},{"name":"Permissions","action":"permissions","id":"529f1f5b7782f"},{"name":"Settings","action":"settings","id":"529f1f5b7782f"},{"name":"Utils","action":"utils","id":"529f1f5b7782f"}]'
-                    data-aura-preselect="Permissions" data-aura-preselector="title"></div>
+        <div data-aura-component="tabs@husky"
+             data-aura-data='[{"name":"Details","action":"details","id":"529f1f5b777f1"},{"name":"Permissions","action":"permissions","id":"529f1f5b7782f"},{"name":"Settings","action":"settings","id":"529f1f5b7782f"},{"name":"Utils","action":"utils","id":"529f1f5b7782f"}]'
+                data-aura-preselect="Permissions" data-aura-preselector="title"></div>
 
-            <h3>tabs loaded by passing url with pre select event</h3>
-            <div data-aura-component="tabs@husky"
-                 data-aura-url="http://husky.lo:7878/admin/api/tabs"
-                 data-aura-instance-name="contacts"
-                 data-aura-pre-select-event='{"enabled":true, "triggerSelectItem": false}'
-                ></div>
+        <h3>tabs loaded by passing url with pre select event</h3>
+        <div data-aura-component="tabs@husky"
+             data-aura-url="http://husky.lo:7878/admin/api/tabs"
+             data-aura-instance-name="contacts"
+             data-aura-pre-select-event='{"enabled":true, "triggerSelectItem": false}'
+            ></div>
 
-            <h3>tabs loaded by passing url with pre select event</h3>
-            <div data-aura-component="tabs@husky"
-                 data-aura-url="http://husky.lo:7878/admin/api/tabs"
-                 data-aura-instance-name="contacts2"
-                 data-aura-pre-select-event='{"enabled":true, "triggerSelectItem": true}'
-                ></div>
+        <h3>tabs loaded by passing url with pre select event</h3>
+        <div data-aura-component="tabs@husky"
+             data-aura-url="http://husky.lo:7878/admin/api/tabs"
+             data-aura-instance-name="contacts2"
+             data-aura-pre-select-event='{"enabled":true, "triggerSelectItem": true}'
+            ></div>
 
-            <div class="grid">
-                <div class="grid-row">
-                    <div class="grid-col-6 m-top-30 pointer" id="deactivate">Deactivate</div>
-                    <div class="grid-col-6 m-top-30 pointer" id="activate">Activate</div>
-                </div>
-                <div class="grid-row">
-                    <div class="grid-col-6 m-top-30 pointer" id="enable-item">enable item</div>
-                    <div class="grid-col-6 m-top-30 pointer" id="disable-item">disable item</div>
-                </div>
+        <div class="grid">
+            <div class="grid-row">
+                <div class="grid-col-6 m-top-30 pointer" id="deactivate">Deactivate</div>
+                <div class="grid-col-6 m-top-30 pointer" id="activate">Activate</div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-col-6 m-top-30 pointer" id="enable-item">enable item</div>
+                <div class="grid-col-6 m-top-30 pointer" id="disable-item">disable item</div>
             </div>
         </div>
 
         <script src="../js/jquery.js"></script>
         <script src="../js/require.js"></script>
+        <script src="../js/defaults.js"></script>
 
         <script type="text/javascript">
             require.config({

@@ -22,7 +22,7 @@ define([], function() {
 
     var templates = {
             skeleton: [
-                '<a class="fa-search search-icon" href="#"></a>',
+                '<a class="fa-search fa-flip-horizontal search-icon" href="#"></a>',
                 '<a class="fa-times-circle remove-icon" href="#"></a>',
                 '<input id="search-input" type="text" class="form-element input-round search-input" placeholder="<%= placeholderText %>"/>'
             ].join('')

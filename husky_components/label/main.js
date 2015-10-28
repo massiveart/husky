@@ -18,11 +18,14 @@
  * @param {String} [options.type] type of the lable (WARNING, ERROR or SUCCESS)
  * @param {String|Object} [options.html] html-string or DOM-object to insert into the label
  * @param {String} [options.title] Title of the label (if html is null)
+ * @param {Number} [options.counter] Counter to display in the label
  * @param {String} [options.description] Description of the lable (if html is null)
  * @param {Boolean} [options.hasClose] if true close button gets appended to the label
- * @param {Boolean} [options.fadeOut] if true label fades out automatically
- * @param {Number} [options.fadeOutDelay] time in ms after which the fade-out starts
- * @param {Number} [options.fadeDuration] duration of the fade-out in ms
+ * @param {String} [options.effectType] either 'slide' or 'fade'
+ * @param {Boolean} [options.autoVanish] if true label vanishes automatically
+ * @param {Number} [options.vanishDelay] time in ms after which the vanish effect starts
+ * @param {Number} [options.vanishDuration] duration of the vanish effect in ms
+ * @param {Number} [options.showDuration] duration of the show effect in ms
  * @param {Function} [options.closeCallback] callback to execute if the close-button is clicked
  * @param {String} [options.insertMethod] insert method to use for inserting the label (append or prepend)
  */
@@ -35,11 +38,14 @@ define(function() {
         type: 'WARNING',
         html: null,
         title: null,
+        counter: 1,
         description: null,
         hasClose: true,
-        fadeOut: true,
-        fadeOutDelay: 0,
-        fadeDuration: 500,
+        effectType: 'slide',
+        autoVanish: true,
+        vanishDelay: 0,
+        vanishDuration: 250,
+        showDuration: 250,
         closeCallback: null,
         insertMethod: 'append'
     },
@@ -52,6 +58,7 @@ define(function() {
     constants = {
         textClass: 'text',
         closeClass: 'close',
+        counterClass: 'counter',
         closeIconClass: 'fa-times-circle'
     },
 
@@ -62,50 +69,66 @@ define(function() {
         ERROR: {
             title: 'Error',
             labelClass: 'husky-label-error',
-            fadeOutDelay: 10000
+            vanishDelay: 10000
         },
         WARNING: {
-            fadeOutDelay: 5000,
+            vanishDelay: 5000,
             title: 'Warning',
             labelClass: 'husky-label-warning'
         },
         SUCCESS: {
-            hasClose: false,
-            fadeOutDelay: 2000,
+            vanishDelay: 5000,
             title: 'Success',
             labelClass: 'husky-label-success'
+        },
+        SUCCESS_ICON: {
+            labelClass: 'husky-label-success-icon',
+            effectType: 'fade',
+            hasClose: false,
+            vanishDelay: 2000,
+            showDuration: 100
         }
     },
 
     /**
      * generates template template
      */
-    template = {
-        basic: function(options) {
-            return [
-                '<div class="' + constants.textClass + '">',
-                '<strong>' + options.title + '</strong>',
-                '<span>' + options.description + '</span>',
-                '</div>'
-            ].join('');
-        },
-        closeButton: function() {
-            return [
-                '<div class="' + constants.closeClass + '">',
-                '<span class="' + constants.closeIconClass + '"></span>',
-                '</div>'
-            ].join('');
-        }
+    templates = {
+        basic: ['<div class="' + constants.textClass + '">',
+                '   <strong><%= title %></strong>',
+                '   <span><%= description %></span>',
+                '   <div class="' + constants.counterClass + '"><span><%= counter %></span></div>',
+                '</div>'].join(''),
+        closeButton: ['<div class="' + constants.closeClass + '">',
+                      '<span class="' + constants.closeIconClass + '"></span>',
+                      '</div>'].join('')
     },
 
     eventNamespace = 'husky.label.',
 
     /**
      * raised after initialization process
-     * @event husky.label.[INSTANCE_NAME.]initialized
+     * @event husky.label.[INSTANCE_NAME].initialized
      */
     INITIALIZED = function() {
         return createEventName.call(this, 'initialized');
+    },
+
+    /**
+     * raised before destroy process
+     * @event husky.label.[INSTANCE_NAME].destroyed
+     */
+    DESTROYED = function() {
+        return createEventName.call(this, 'destroyed');
+    },
+
+    /**
+     * listens on and refreshes the vanish-out delay
+     * @event husky.label.[INSTANCE_NAME].refresh
+     * @param {String|Number} counter The counter number to display
+     */
+    REFRESH = function() {
+        return createEventName.call(this, 'refresh');
     },
 
     /** returns normalized event names */
@@ -122,26 +145,34 @@ define(function() {
 
             //merge defaults with defaults of type and options
             this.options = this.sandbox.util.extend(true, {}, defaults, typesDefaults[this.options.type], this.options);
-
+            this.vanishTimer = null;
             this.label = {
                 $el: null,
                 $content: null,
                 $close: null
             };
 
+            this.bindCustomEvents();
             this.render();
-            this.bindEvents();
+            this.bindDomEvents();
             this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
+         * Destroy the component (aura hook)
+         */
+        destroy: function() {
+            this.sandbox.emit(DESTROYED.call(this));
+        },
+
+        /**
          * Binds the events for the component
          */
-        bindEvents: function() {
+        bindDomEvents: function() {
             this.sandbox.dom.on(this.label.$close, 'click', function() {
-                this.fadeOut();
+                this.vanish();
                 if (typeof this.options.closeCallback === 'function') {
                     this.options.closeCallback();
                 }
@@ -149,27 +180,73 @@ define(function() {
         },
 
         /**
-         * Starts the fade-out effect
+         * Bind custom aura events
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(REFRESH.call(this), this.refresh.bind(this));
+        },
+
+        /**
+         * Refreshes the vanish and rerenders the counter
+         */
+        refresh: function() {
+            this.options.counter += 1;
+            this.abortEffects();
+            this.label.$el.find('.' + constants.counterClass + ' span').html(this.options.counter);
+            this.updateCounterVisibility();
+            this.startEffects();
+        },
+
+        /**
+         * Starts the vanish effect
          */
         startEffects: function() {
-            if (this.options.fadeOut === true) {
-                _.delay(function() {
-                    this.fadeOut();
-                }.bind(this), this.options.fadeOutDelay);
+            if (this.options.autoVanish === true) {
+                this.vanishTimer = _.delay(function() {
+                    this.vanish();
+                }.bind(this), this.options.vanishDelay);
             }
         },
 
         /**
-         * Fades the label out
+         * Cancels the vanish effect
          */
-        fadeOut: function() {
-            this.sandbox.dom.fadeOut(this.label.$el, this.options.fadeDuration, function() {
-                this.sandbox.dom.css(this.label.$el, {
-                    'visibility': 'hidden',
-                    'display': 'block'
+        abortEffects: function() {
+            this.label.$el.stop();
+            this.label.$el.removeAttr('style');
+            clearTimeout(this.vanishTimer);
+        },
+
+        /**
+         * Makes the label disapear
+         */
+        vanish: function() {
+            if (this.options.effectType === 'slide') {
+                this.label.$el.slideUp({
+                    duration: this.options.vanishDuration,
+                    done: this.close.bind(this)
                 });
-                this.sandbox.dom.slideUp(this.label.$el, 300, this.close.bind(this));
-            }.bind(this));
+            } else if (this.options.effectType === 'fade') {
+                this.label.$el.fadeOut({
+                    duration: this.options.vanishDuration,
+                    done: this.close.bind(this)
+                });
+            }
+        },
+
+        /**
+         * Makes the label appear
+         */
+        show: function() {
+            if (this.options.effectType === 'slide') {
+                this.label.$el.slideDown({
+                    duration: this.options.showDuration
+                });
+            } else if (this.options.effectType === 'fade') {
+                this.label.$el.fadeIn({
+                    duration: this.options.showDuration
+                });
+            }
         },
 
         /**
@@ -180,14 +257,17 @@ define(function() {
             this.renderContent();
             this.renderClose();
 
+            this.updateCounterVisibility();
             this.insertLabel();
+            this.show();
         },
 
         /**
          * Renders the main element
          */
         renderElement: function() {
-            this.label.$el = this.sandbox.dom.createElement('<div class="'+ this.options.labelClass +'"/>')
+            this.label.$el = this.sandbox.dom.createElement('<div class="'+ this.options.labelClass +'"/>');
+            this.label.$el.hide();
         },
 
         /**
@@ -197,7 +277,11 @@ define(function() {
             if (this.options.html !== null) {
                 this.label.$content = this.sandbox.dom.createElement(this.options.html);
             } else {
-                this.label.$content = this.sandbox.dom.createElement(template.basic(this.options));
+                this.label.$content = this.sandbox.dom.createElement(this.sandbox.util.template(templates.basic, {
+                    title: this.options.title,
+                    description: this.options.description,
+                    counter: this.options.counter
+                }));
             }
 
             //append content to main element
@@ -205,11 +289,22 @@ define(function() {
         },
 
         /**
+         * Hides or shows the counter-object
+         */
+        updateCounterVisibility: function() {
+            if (this.options.counter > 1) {
+                this.sandbox.dom.show(this.label.$el.find('.' + constants.counterClass));
+            } else {
+                this.sandbox.dom.hide(this.label.$el.find('.' + constants.counterClass));
+            }
+        },
+
+        /**
          * Renders the close button
          */
         renderClose: function() {
             if (this.options.hasClose === true) {
-                this.label.$close = this.sandbox.dom.createElement(template.closeButton());
+                this.label.$close = this.sandbox.dom.createElement(templates.closeButton);
 
                 //append close to main element
                 this.sandbox.dom.append(this.label.$el, this.label.$close);

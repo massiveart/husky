@@ -5,19 +5,15 @@
 
 .husky-overlay-container {
     width: $overlayContainerWidth;
-    position: fixed;
-    top: 0;
-    left: 50%;
-    background-color: $white;
-    z-index: 1000;
     border-radius: $borderRadius;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    z-index: 1000;
+    text-align: left;
+    white-space: normal;
+    background-color: $grayLightMedium2;
     @include standard-box-shadow;
-
-    // workaround for overlapping bug:
-    // Only in chrome: if the overlay is displayed on a page which contains an iframe which contains
-    // elements with the translate3d transform-property things get messed up. This line fixes the issue
-    -webkit-transform: translate3d(0, 0, 0);
-    // workaround (end)
 
     &.right-aligned {
         left: auto;
@@ -29,26 +25,17 @@
         overflow: hidden;
     }
 
-    &.wide {
-        width: $overlayContainerWidthWide;
-
-        .slides .slide {
-            width: $overlayContainerWidthWide;
-        }
-    }
-
-    &.medium {
-        width: $overlayContainerMediumWidth;
-
-        .slides .slide {
-            width: $overlayContainerMediumWidth;
-        }
-    }
-
     &.dropzone {
         width: $overlayContainerWidthExtraWide;
-        .slides .slide {
-          width: $overlayContainerWidthExtraWide
+        .slides {
+            margin: 0;
+            padding: 0;
+            .slide {
+                width: $overlayContainerWidthExtraWide
+            }
+        }
+        .overlay-header {
+            display: none;
         }
         .overlay-content {
             margin-bottom: 20px;
@@ -58,29 +45,16 @@
         }
     }
 
-    .draggable {
+    &.alert {
         .overlay-header {
-            cursor: move;
-            @include user-select(none);
-        }
-    }
-
-    &.error {
-        .overlay-header {
-            background: $red;
-            color: $white;
+            height: 70px;
             .title {
-                color: $black;
+                line-height: normal;
+                padding-top: 40px;
             }
         }
-    }
-
-    &.warning {
-        .overlay-header {
-            background: $yellow;
-            .title {
-                color: $black;
-            }
+        .overlay-content {
+            margin: 0;
         }
     }
 
@@ -88,103 +62,86 @@
         position: relative;
         left: 0px;
         @include single-transition(left, 500ms);
+        white-space: nowrap;
+        padding-bottom: 70px;
 
         .slide {
-            float: left;
+            display: inline-block;
+            vertical-align: top;
             width: $overlayContainerWidth;
         }
     }
 }
 
 .overlay-header {
-    min-height: 50px;
-    background: $grayLightest;
     position: relative;
+    background: $white;
     border-radius: $borderRadius $borderRadius 0 0;
+    height: 100px;
 
     .title {
         color: $grayLight;
-        font-size: 23px;
-        vertical-align: text-top;
+        font-size: 24px;
+        vertical-align: middle;
         display: block;
-        padding: 15px 0 10px 20px;
-        margin-right: 40px;
         white-space: nowrap;
         overflow: hidden;
+        padding: 0 20px;
+        text-overflow: ellipsis;
+        line-height: 100px;
+        text-align: center;
     }
 
     &.with-sub-title {
         .title {
-            margin-bottom: 0;
-            padding-bottom: 0;
+            line-height: 75px;
         }
 
         .sub-title {
-            padding-left: 20px;
-            padding-top: 5px;
-            padding-bottom: 10px;
-
-            font-size: smaller;
+            font-size: $smallFontSize;
             color: $grayLight;
+            margin-top: -23px;
+            text-align: center;
         }
-    }
-
-    .close-button {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        font-size: 16px;
-        text-decoration: none;
-        color: black;
-        line-height: 12px;
-        padding: 8px;
-    }
-
-    .tabs {
-        display: inline-block;
-    }
-
-    .language-changer {
-        width: 80px;
-        position: absolute;
-        bottom: 10px;
-        right: 20px;
-    }
-
-    &.small-header {
-      background: transparent;
-      min-height: 0;
-      height: 25px;
     }
 }
 
+.overlay-tabs {
+    background: $white;
+    padding: 0 20px;
+    border-top: 1px solid $grayLightMedium2;
+}
+
 .overlay-footer {
-    padding: 10px;
-    border-top: 1px solid $grayLighter;
+    padding: 20px;
+    border-top: 1px solid $borderColor;
     text-align: center;
     border-radius: 0 0 $borderRadius $borderRadius;
+    width: $overlayContainerWidth;
+    position: absolute;
+    bottom: 0;
+    left: auto;
     @include clear-float;
 
     .btn {
         display: inline-block;
-        min-width: 70px;
+        min-width: 115px;
         margin: 0 auto;
         padding: 0;
 
-        &.tick {
-            width: 70px;
-            line-height: 28px;
-        }
-        // individual button align
         &.left {
             float: left;
-            margin-right: 20px;
             margin-right: 0;
         }
         &.right {
             float: right;
             margin-left: 20px;
             margin-right: 0;
+        }
+        &.just-text {
+            background: transparent;
+            color: $black;
+            font-size: $smallFontSize;
         }
     }
 
@@ -204,25 +161,51 @@
 }
 
 .overlay-content {
-    overflow: auto;
-    padding-left: 0;
-    margin: 0 20px 10px 20px;
+    position: relative;
+    white-space: normal;
+    margin: 20px;
 
     .message {
-        padding: 20px 0 25px 0;
+        padding: 10px 105px 40px;
+        background: $white;
         font-size: $bigFontSize;
         color: $grayLight;
+        text-align: center;
+        ul {
+            border: 1px solid $grayLighterer;
+            list-style-position: inside;
+            text-align: left;
+            padding: 10px;
+        }
+    }
+
+    .language-changer {
+        width: 80px;
+        position: absolute;
+        top: -60px;
+        right: 0;
     }
 }
 
-.husky-overlay-backdrop {
+.husky-overlay-wrapper {
     width: 100%;
     height: 100%;
     position: fixed;
     top: 0px;
     left: 0px;
-    background: #000;
     z-index: 999;
+    text-align: center;
+    white-space: nowrap;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.5);
+
+    &::before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -0.25em;
+    }
 
     // workaround for overlapping bug:
     // Only in chrome: if the overlay is displayed on a page which contains an iframe which contains
