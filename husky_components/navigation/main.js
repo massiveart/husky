@@ -580,10 +580,6 @@ define(function() {
                 domObject = item.domObject,
                 parent;
 
-            if (this.sandbox.dom.hasClass(domObject, 'is-selected')) {
-                return;
-            }
-
             if (this.sandbox.dom.hasClass(domObject, 'js-navigation-sub-item')) {
                 parent = this.sandbox.dom.closest(domObject, '.navigation-items');
 
