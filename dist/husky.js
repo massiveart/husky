@@ -40383,8 +40383,7 @@ define('__component__$column-navigation@husky',[],function() {
                 internalLink: 'public.internal-link',
                 externalLink: 'public.external-link'
             },
-            actionCallback: function(item) {
-            }
+            actionCallback: null
         },
 
         constants = {
