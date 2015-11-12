@@ -47,8 +47,9 @@
  * @params {Boolean} [options.tooltipTranslations.unpublished] translation-keys for unpublished
  * @params {Boolean} [options.tooltipTranslations.internalLink] translation-keys for internal-link
  * @params {Boolean} [options.tooltipTranslations.externalLink] translation-keys for external-link
+ * @params {Callback} [options.actionCallback] callback which will be called on action
  */
-define([], function() {
+define(function() {
 
     'use strict';
 
@@ -87,6 +88,8 @@ define([], function() {
                 unpublished: 'public.unpublished',
                 internalLink: 'public.internal-link',
                 externalLink: 'public.external-link'
+            },
+            actionCallback: function(item) {
             }
         },
 
@@ -293,6 +296,15 @@ define([], function() {
          */
         RESIZE = function() {
             return createEventName.call(this, 'resize');
+        },
+
+        /**
+         * @event husky.column-navigation.set-options
+         * @description the element will be rerendered with given options
+         * @param {{url, selected}} options
+         */
+        SET_OPTIONS = function() {
+            return createEventName.call(this, 'set-options');
         },
 
         createContext = function(column) {
@@ -930,6 +942,22 @@ define([], function() {
             }
         },
 
+        unBindDOMEvents: function() {
+            this.$el.off();
+            if (!!this.dom.$add) {
+                this.dom.$add.off();
+            }
+            if (!!this.dom.$container) {
+                this.dom.$container.off();
+            }
+            if (!!this.dom.$wrapper) {
+                this.dom.$wrapper.off();
+            }
+            if (!!this.dom.$ok) {
+                this.dom.$ok.off();
+            }
+        },
+
         /**
          * Handles the key-down event of a order-input
          * @param event
@@ -940,7 +968,7 @@ define([], function() {
             }
             if (event.keyCode === 27) { // cancel on esc
                 var column = this.sandbox.dom.attr(this.sandbox.dom.parents(
-                        event.currentTarget, '.' + constants.columnClass), 'data-column'),
+                    event.currentTarget, '.' + constants.columnClass), 'data-column'),
                     item = this.sandbox.dom.attr(this.sandbox.dom.parents(
                         event.currentTarget, '.' + constants.columnItemClass), 'data-id');
                 this.resetOrderInput(column, item);
@@ -1106,10 +1134,21 @@ define([], function() {
         },
 
         bindCustomEvents: function() {
+            if (!!this.customEvents) {
+                return;
+            }
+
             this.sandbox.on(BREADCRUMB.call(this), this.getBreadCrumb.bind(this));
             this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
             this.sandbox.on(HIGHLIGHT.call(this), this.highlight.bind(this));
             this.sandbox.on(ORDER.call(this), this.startOrderModeItem.bind(this));
+            this.sandbox.on(SET_OPTIONS.call(this), function(options) {
+                this.unBindDOMEvents();
+                this.$el.children().remove();
+                this.options = this.sandbox.util.extend(true, {}, this.options, options);
+
+                this.initialize();
+            }.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
@@ -1119,6 +1158,8 @@ define([], function() {
                     this.setOverflowClass();
                 }.bind(this));
             }
+
+            this.customEvents = true;
         },
 
         /**
@@ -1498,7 +1539,11 @@ define([], function() {
             }
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit(ACTION.call(this), item);
+            if (!!this.options.actionCallback) {
+                this.options.actionCallback(item)
+            } else {
+                this.sandbox.emit(ACTION.call(this), item);
+            }
         }
     };
 });
