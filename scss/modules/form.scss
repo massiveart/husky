@@ -119,10 +119,16 @@ input {
 
 // Labels
 // -------------------------
+
+label.choice {
+    color: $labelChoiceColor;
+    margin-bottom: 10px;
+}
+
 label {
     display: block;
     font-size: 14px;
-    color: #999999;
+    color: $labelColor;
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
@@ -144,9 +150,11 @@ label {
         display: inline;
         vertical-align: middle;
     }
+
     &.spacing-right {
         margin-right: 10px;
     }
+
     &.spacing-left {
         margin-left: 10px;
     }
