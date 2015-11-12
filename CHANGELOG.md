@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #579 Fixed datagrid error when window resize is emitted before initialization
     * FEATURE     #582 Added currency type to datagrid
     * BUGFIX      #581 Fixed input component change event
 

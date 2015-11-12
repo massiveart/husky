@@ -31049,6 +31049,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
+            if (!this.table.$container) {
+                return false;
+            }
+
             return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
         },
 
