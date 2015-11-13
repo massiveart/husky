@@ -580,6 +580,10 @@ define(function() {
                 domObject = item.domObject,
                 parent;
 
+            if ($(domObject).hasClass('is-selected')) {
+                return;
+            }
+
             if (this.sandbox.dom.hasClass(domObject, 'js-navigation-sub-item')) {
                 parent = this.sandbox.dom.closest(domObject, '.navigation-items');
 
@@ -824,7 +828,6 @@ define(function() {
          * @param {Object} options Extends the item
          */
         selectSubItem: function(event, customTarget, emit, options) {
-
             if (!!event) {
                 event.preventDefault();
             } else {

@@ -1,6 +1,14 @@
 # Upgrade
 
-## Dev-develop
+## 0.17.0
+
+### DataNavigation events
+
+The data navigation events `husky.data-navigation.select` have been renamed to
+`husky.data-navigation.selected`, because they are emitted after an element has
+been selected.
+
+## 0.16.0
 
 ### Infinite scroll
 The infinite-scroll-extension got refactored. To initialize infinite-scroll on an element, use
