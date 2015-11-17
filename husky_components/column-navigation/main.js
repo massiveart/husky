@@ -941,7 +941,7 @@ define(function() {
             }
         },
 
-        unBindDOMEvents: function() {
+        unbindDOMEvents: function() {
             this.$el.off();
             if (!!this.dom.$add) {
                 this.dom.$add.off();
@@ -1142,7 +1142,7 @@ define(function() {
             this.sandbox.on(HIGHLIGHT.call(this), this.highlight.bind(this));
             this.sandbox.on(ORDER.call(this), this.startOrderModeItem.bind(this));
             this.sandbox.on(SET_OPTIONS.call(this), function(options) {
-                this.unBindDOMEvents();
+                this.unbindDOMEvents();
                 this.$el.children().remove();
                 this.options = this.sandbox.util.extend(true, {}, this.options, options);
 
