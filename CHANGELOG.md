@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #581 Fixed input component change event
+
 * 0.17.0 (2015-11-18)
     * FEATURE     #580 Added set options event for column-navigation
     * ENHANCEMENT #580 Added events to data navigation for selecting items
