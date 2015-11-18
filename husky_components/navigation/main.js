@@ -580,7 +580,7 @@ define(function() {
                 domObject = item.domObject,
                 parent;
 
-            if (this.sandbox.dom.hasClass(domObject, 'is-selected')) {
+            if ($(domObject).hasClass('is-selected')) {
                 return;
             }
 
@@ -828,7 +828,6 @@ define(function() {
          * @param {Object} options Extends the item
          */
         selectSubItem: function(event, customTarget, emit, options) {
-
             if (!!event) {
                 event.preventDefault();
             } else {
