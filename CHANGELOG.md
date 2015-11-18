@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #580 Added set options event for column-navigation
     * ENHANCEMENT #580 Added events to data navigation for selecting items
     * BUGFIX      #576 Fixed update of data navigation
 
