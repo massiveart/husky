@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.17.0 (2015-11-18)
     * ENHANCEMENT #580 Added events to data navigation for selecting items
     * BUGFIX      #576 Fixed update of data navigation
 
