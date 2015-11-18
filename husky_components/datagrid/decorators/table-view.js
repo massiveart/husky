@@ -50,7 +50,7 @@ define(function() {
             cssClass: '',
             thumbnailFormat: '50x50',
             showHead: true,
-            hideChildrenAtBeginning: true,
+            hideChildrenAtBeginning: false,
             openChildId: null,
             highlightSelected: false,
             icons: [],
