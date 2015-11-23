@@ -38,6 +38,9 @@
                     },
                     getTimePatter: function() {
                         return Globalize.culture().calendar.patterns.t;
+                    },
+                    setCurrency: function(symbol) {
+                        Globalize.culture().numberFormat.currency.symbol = symbol;
                     }
                 };
 
@@ -181,6 +184,8 @@
 
                     app.setLanguage(app.config.culture.name, app.config.culture.messages);
                 }
+
+                app.sandbox.globalize.setCurrency('');
             }
         };
     });
