@@ -358,6 +358,9 @@ define([], function() {
             this.changeFrontLink();
         },
 
+        /**
+         * Lock-input specific actions. Makes sure the correct icon is rendered and the dom data is set.
+         */
         renderLock: function() {
             var locked = this.options.lockOptions.locked;
             // always enable front icon
@@ -372,9 +375,13 @@ define([], function() {
          * @param {Object} event
          */
         lockClickedCallback: function(event) {
-            event.stopPropagation();
+
+            if (this.options.disabled === true) {
+                return;
+            }
 
             var locked = !this.options.lockOptions.locked;
+
             // set options value
             this.options.lockOptions.locked = locked;
             // en/disable input
@@ -387,13 +394,14 @@ define([], function() {
             // trigger event
             if (locked) {
                 this.sandbox.emit(LOCKED.call(this));
+                event.stopPropagation();
             } else {
                 this.sandbox.emit(UNLOCKED.call(this));
             }
         },
 
         /**
-         *
+         * Renders the appropiate locked icon.
          */
         renderLockIcon: function() {
             var removeIcon = constants.lockIconClass,
@@ -408,9 +416,10 @@ define([], function() {
         },
 
         /**
-         * Exchanges a
-         * @param addClass
-         * @param removeClass
+         * Exchanges a icon class with another.
+         *
+         * @param {String} addClass
+         * @param {String} removeClass
          */
         exchangeFrontIconClass: function(addClass, removeClass) {
             var selector = this.sandbox.dom.find('a', this.input.$front);
