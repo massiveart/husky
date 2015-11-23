@@ -95,7 +95,8 @@
                 RADIO: 'radio',
                 COUNT: 'count',
                 TRANSLATION: 'translation',
-                NUMBER: 'number'
+                NUMBER: 'number',
+                CURRENCY: 'currency'
             },
 
             decorators = {
@@ -158,6 +159,16 @@
                  */
                 number: function(val) {
                     return this.sandbox.numberFormat(val, 'n');
+                },
+
+
+                /**
+                 * Formats a float as culture specific currency
+                 * @param val {String} the string to format
+                 * @returns {String}
+                 */
+                currency: function(val) {
+                    return this.sandbox.numberFormat(val, 'c');
                 },
 
                 /**

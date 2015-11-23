@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #582 Added currency type to datagrid
     * BUGFIX      #581 Fixed input component change event
 
 * 0.17.0 (2015-11-18)
