@@ -162,6 +162,14 @@ define([], function() {
             return createEventName.call(this, 'initialized');
         },
 
+        LOCKED = function() {
+            return createEventName.call(this, 'locked');
+        },
+
+        UNLOCKED = function() {
+            return createEventName.call(this, 'unlocked');
+        },
+
         /** returns normalized event names */
         createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -365,6 +373,7 @@ define([], function() {
          */
         lockClickedCallback: function(event) {
             event.stopPropagation();
+
             var locked = !this.options.lockOptions.locked;
             // set options value
             this.options.lockOptions.locked = locked;
@@ -374,6 +383,13 @@ define([], function() {
             this.renderLockIcon();
             // set data
             this.$el.data('locked', locked);
+
+            // trigger event
+            if (locked) {
+                this.sandbox.emit(LOCKED.call(this));
+            } else {
+                this.sandbox.emit(UNLOCKED.call(this));
+            }
         },
 
         /**
