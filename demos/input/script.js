@@ -25,7 +25,8 @@ require(['lib/husky'], function(Husky) {
             email: 'donald.duck@disney.com',
             date: '2014-01-03T00:00:00+0200',
             time: '09 - 51',
-            color: '#a7d7a7'
+            color: '#a7d7a7',
+            lock: 12.34
         });
     }.bind(this));
 
