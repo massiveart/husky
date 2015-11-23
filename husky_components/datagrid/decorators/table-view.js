@@ -990,7 +990,7 @@ define(function() {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
                                 content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
-                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);;
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
