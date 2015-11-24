@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #583 Added new input skin for locked-inputs
     * BUGFIX      #579 Fixed datagrid error when window resize is emitted before initialization
     * FEATURE     #582 Added currency type to datagrid
     * BUGFIX      #581 Fixed input component change event
