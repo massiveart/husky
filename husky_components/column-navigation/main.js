@@ -1450,7 +1450,7 @@ define(function() {
                 }
 
                 // scroll for add column
-                if (!selectedItem.hasSub) {
+                if (!selectedItem[this.options.hasSubName]) {
                     this.insertAddColumn(selectedItem, column);
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
