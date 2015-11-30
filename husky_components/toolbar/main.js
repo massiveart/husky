@@ -390,10 +390,10 @@ define(function() {
                 var index = getItemIndexById.call(this, itemId, button);
                 changeMainListItem.call(this, button.$el, button.dropdownItems[index]);
                 this.sandbox.emit(ITEM_MARK.call(this), button.dropdownItems[index].id);
-                if (executeCallback === true || !!button.dropdownItems[index].callback) {
-                    if (typeof button.dropdownItems[index].callback === 'function') {
-                        button.dropdownItems[index].callback();
-                    }
+                if (executeCallback === true || !!button.dropdownItems[index].callback
+                    && typeof button.dropdownItems[index].callback === 'function'
+                ) {
+                    button.dropdownItems[index].callback();
                 }
             }.bind(this));
         },
