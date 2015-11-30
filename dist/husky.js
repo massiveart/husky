@@ -36378,20 +36378,14 @@ define('__component__$toolbar@husky',[],function() {
             var button = this.items[buttonId];
 
             button.initialized.then(function() {
-                // if id is null - unset icon and title when no item selected
-                if (itemId === null) {
-                    resetMainListItem.call(this, button.$el);
-                    return;
-                }
-
                 // update icon
                 var index = getItemIndexById.call(this, itemId, button);
                 changeMainListItem.call(this, button.$el, button.dropdownItems[index]);
                 this.sandbox.emit(ITEM_MARK.call(this), button.dropdownItems[index].id);
-                if (executeCallback === true || !!button.dropdownItems[index].callback) {
-                    if (typeof button.dropdownItems[index].callback === 'function') {
-                        button.dropdownItems[index].callback();
-                    }
+                if (executeCallback === true || !!button.dropdownItems[index].callback
+                    && typeof button.dropdownItems[index].callback === 'function'
+                ) {
+                    button.dropdownItems[index].callback();
                 }
             }.bind(this));
         },
