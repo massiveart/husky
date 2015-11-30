@@ -648,7 +648,7 @@
             });
 
             $('#reset').on('click', function() {
-                app.sandbox.emit('husky.toolbar.contact.item.change', 'state', null);
+                app.sandbox.emit('husky.toolbar.contact.item.reset', 'state');
             });
 
             $('#load').on('click', function() {

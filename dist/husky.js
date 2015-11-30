@@ -36173,12 +36173,22 @@ define('__component__$toolbar@husky',[],function() {
          * event to change a buttons selected dropdown-item
          *
          * @event husky.toolbar.[INSTANCE_NAME.]item.change
-         * @param {string} button The id of the button
-         * @param {string} item the id or the index of the dropdown-item
-         * @param {boolean} executeCallback if true callback of dropdown item gets executed
+         * @param {string} buttonId The id of the button
+         * @param {string} itemId The id or the index of the dropdown-item
+         * @param {boolean} executeCallback If true callback of dropdown item gets executed
          */
         ITEM_CHANGE = function() {
             return createEventName.call(this, 'item.change');
+        },
+
+        /**
+         * Event to reset a buttons and it's dropdown-items into original state.
+         *
+         * @event husky.toolbar.[INSTANCE_NAME.]item.reset
+         * @param {string} buttonId The id of the button
+         */
+        ITEM_RESET = function() {
+            return createEventName.call(this, 'item.reset');
         },
 
         /**
@@ -36326,11 +36336,9 @@ define('__component__$toolbar@husky',[],function() {
 
             this.sandbox.on(ITEM_UNMARK.call(this), unmarkItem.bind(this));
 
-            this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
-                if (!!this.items[button]) {
-                    this.items[button].initialized.then(changeButton.bind(this, button,id, executeCallback));
-                }
-            }.bind(this));
+            this.sandbox.on(ITEM_CHANGE.call(this), changeButton.bind(this));
+
+            this.sandbox.on(ITEM_RESET.call(this), resetButton.bind(this));
 
             this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
                 changeMainListItem.call(this, this.items[button].$el, newData);
@@ -36358,24 +36366,50 @@ define('__component__$toolbar@husky',[],function() {
          * Changes a button text and icon.
          *
          * @param {String} button
-         * @param {String|Number} id
+         * @param {String|Number} itemId
          * @param {Bool} executeCallback
          */
-        changeButton = function(button, id, executeCallback) {
-            // if id is null - unset icon and title when no item selected
-            if (id === null) {
-                resetMainListItem.call(this, this.items[button].$el);
+        changeButton = function(buttonId, itemId, executeCallback) {
+            // check if button exists
+            if (!this.items[buttonId]) {
                 return;
             }
-            // update icon
-            var index = getItemIndexById.call(this, id, this.items[button]);
-            changeMainListItem.call(this, this.items[button].$el, this.items[button].dropdownItems[index]);
-            this.sandbox.emit(ITEM_MARK.call(this), this.items[button].dropdownItems[index].id);
-            if (executeCallback === true || !!this.items[button].dropdownItems[index].callback) {
-                if (typeof this.items[button].dropdownItems[index].callback === 'function') {
-                    this.items[button].dropdownItems[index].callback();
+
+            var button = this.items[buttonId];
+
+            button.initialized.then(function() {
+                // if id is null - unset icon and title when no item selected
+                if (itemId === null) {
+                    resetMainListItem.call(this, button.$el);
+                    return;
                 }
+
+                // update icon
+                var index = getItemIndexById.call(this, itemId, button);
+                changeMainListItem.call(this, button.$el, button.dropdownItems[index]);
+                this.sandbox.emit(ITEM_MARK.call(this), button.dropdownItems[index].id);
+                if (executeCallback === true || !!button.dropdownItems[index].callback) {
+                    if (typeof button.dropdownItems[index].callback === 'function') {
+                        button.dropdownItems[index].callback();
+                    }
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Resets button to its original state.
+         *
+         * @param {String} buttonId
+         */
+        resetButton = function(buttonId) {
+            // check if button exists
+            if (!this.items[buttonId]) {
+                return;
             }
+
+            this.items[buttonId].initialized.then(function() {
+                resetMainListItem.call(this, this.items[buttonId].$el);
+            }.bind(this));
         },
 
         /**
@@ -36442,7 +36476,6 @@ define('__component__$toolbar@husky',[],function() {
          * @param highlight {boolean} if true a highlight effect is played
          */
         toggleEnabled = function(enabled, id, highlight) {
-
             // check if toolbar has an item with specified id
             if (!this.items[id]) {
                 return;
@@ -36701,8 +36734,7 @@ define('__component__$toolbar@husky',[],function() {
 
             // remove marked class from dropdown-item
             if (!!item.dropdownItems) {
-                var dropdown = this.sandbox.dom.find(selectors.dropdownMenu + ' li', listElement);
-                this.sandbox.dom.removeClass(dropdown, 'marked');
+                this.sandbox.dom.removeClass(selectors.dropdownMenu + ' li', 'marked');
             }
 
             if (this.options.responsive === true) {
@@ -37139,7 +37171,6 @@ define('__component__$toolbar@husky',[],function() {
                 // save to items array
                 this.items[item.id] = item;
                 this.items[item.id].initialized = dfd.promise();
-
 
                 // create class array
                 classArray = ['toolbar-item'];

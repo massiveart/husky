@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
-    * ENHANCEMENT #584 Implemented reset function of toolbar button
+    * ENHANCEMENT #584 Implemented reset event for toolbar button
     * FEATURE     #583 Added new input skin for locked-inputs
     * BUGFIX      #579 Fixed datagrid error when window resize is emitted before initialization
     * FEATURE     #582 Added currency type to datagrid
