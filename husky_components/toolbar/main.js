@@ -328,11 +328,7 @@ define(function() {
 
             this.sandbox.on(ITEM_UNMARK.call(this), unmarkItem.bind(this));
 
-            this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
-                if (!!this.items[button]) {
-                    this.items[button].initialized.then(changeButton.bind(this, button,id, executeCallback));
-                }
-            }.bind(this));
+            this.sandbox.on(ITEM_CHANGE.call(this), changeButton.bind(this));
 
             this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
                 changeMainListItem.call(this, this.items[button].$el, newData);
@@ -364,19 +360,24 @@ define(function() {
          * @param {Bool} executeCallback
          */
         changeButton = function(button, id, executeCallback) {
-            // if id is null - unset icon and title when no item selected
-            if (id === null) {
-                resetMainListItem.call(this, this.items[button].$el);
-                return;
-            }
-            // update icon
-            var index = getItemIndexById.call(this, id, this.items[button]);
-            changeMainListItem.call(this, this.items[button].$el, this.items[button].dropdownItems[index]);
-            this.sandbox.emit(ITEM_MARK.call(this), this.items[button].dropdownItems[index].id);
-            if (executeCallback === true || !!this.items[button].dropdownItems[index].callback) {
-                if (typeof this.items[button].dropdownItems[index].callback === 'function') {
-                    this.items[button].dropdownItems[index].callback();
-                }
+            if (!!this.items[button]) {
+                this.items[button].initialized.then(function() {
+                    // if id is null - unset icon and title when no item selected
+                    if (id === null) {
+                        resetMainListItem.call(this, this.items[button].$el);
+                        return;
+                    }
+
+                    // update icon
+                    var index = getItemIndexById.call(this, id, this.items[button]);
+                    changeMainListItem.call(this, this.items[button].$el, this.items[button].dropdownItems[index]);
+                    this.sandbox.emit(ITEM_MARK.call(this), this.items[button].dropdownItems[index].id);
+                    if (executeCallback === true || !!this.items[button].dropdownItems[index].callback) {
+                        if (typeof this.items[button].dropdownItems[index].callback === 'function') {
+                            this.items[button].dropdownItems[index].callback();
+                        }
+                    }
+                }.bind(this));
             }
         },
 
@@ -703,8 +704,7 @@ define(function() {
 
             // remove marked class from dropdown-item
             if (!!item.dropdownItems) {
-                var dropdown = this.sandbox.dom.find(selectors.dropdownMenu + ' li', listElement);
-                this.sandbox.dom.removeClass(dropdown, 'marked');
+                this.sandbox.dom.removeClass(selectors.dropdownMenu + ' li', 'marked');
             }
 
             if (this.options.responsive === true) {
@@ -1141,7 +1141,6 @@ define(function() {
                 // save to items array
                 this.items[item.id] = item;
                 this.items[item.id].initialized = dfd.promise();
-
 
                 // create class array
                 classArray = ['toolbar-item'];
