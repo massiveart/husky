@@ -36079,6 +36079,10 @@ define('__component__$toolbar@husky',[],function() {
             markedClass: 'marked'
         },
 
+        selectors = {
+            dropdownMenu: '.toolbar-dropdown-menu'
+        },
+
         /** templates container */
         templates = {
             skeleton: [
@@ -36324,16 +36328,7 @@ define('__component__$toolbar@husky',[],function() {
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
                 if (!!this.items[button]) {
-                    this.items[button].initialized.then(function() {
-                        var index = getItemIndexById.call(this, id, this.items[button]);
-                        changeMainListItem.call(this, this.items[button].$el, this.items[button].dropdownItems[index]);
-                        this.sandbox.emit(ITEM_MARK.call(this), this.items[button].dropdownItems[index].id);
-                        if (executeCallback === true || !!this.items[button].dropdownItems[index].callback) {
-                            if (typeof this.items[button].dropdownItems[index].callback === 'function') {
-                                this.items[button].dropdownItems[index].callback();
-                            }
-                        }
-                    }.bind(this));
+                    this.items[button].initialized.then(changeButton.bind(this, button,id, executeCallback));
                 }
             }.bind(this));
 
@@ -36357,6 +36352,30 @@ define('__component__$toolbar@husky',[],function() {
                     }
                 }
             }.bind(this));
+        },
+
+        /**
+         * Changes a button text and icon.
+         *
+         * @param {String} button
+         * @param {String|Number} id
+         * @param {Bool} executeCallback
+         */
+        changeButton = function(button, id, executeCallback) {
+            // if id is null - unset icon and title when no item selected
+            if (id === null) {
+                resetMainListItem.call(this, this.items[button].$el);
+                return;
+            }
+            // update icon
+            var index = getItemIndexById.call(this, id, this.items[button]);
+            changeMainListItem.call(this, this.items[button].$el, this.items[button].dropdownItems[index]);
+            this.sandbox.emit(ITEM_MARK.call(this), this.items[button].dropdownItems[index].id);
+            if (executeCallback === true || !!this.items[button].dropdownItems[index].callback) {
+                if (typeof this.items[button].dropdownItems[index].callback === 'function') {
+                    this.items[button].dropdownItems[index].callback();
+                }
+            }
         },
 
         /**
@@ -36549,7 +36568,7 @@ define('__component__$toolbar@husky',[],function() {
 
                 if (!visible) {
                     this.sandbox.dom.addClass($list, 'is-expanded');
-                    this.sandbox.dom.show(this.sandbox.dom.find('.toolbar-dropdown-menu', $list));
+                    this.sandbox.dom.show(this.sandbox.dom.find(selectors.dropdownMenu, $list));
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                     // on every click remove sub-menu
@@ -36584,7 +36603,7 @@ define('__component__$toolbar@husky',[],function() {
          */
         hideDropdowns = function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
-            this.sandbox.dom.hide(this.$find('.toolbar-dropdown-menu'));
+            this.sandbox.dom.hide(this.$find(selectors.dropdownMenu));
             if (this.options.responsive === true) {
                 unlockToolbarScroll.call(this);
             }
@@ -36597,7 +36616,6 @@ define('__component__$toolbar@husky',[],function() {
          * @param event
          */
         selectItem = function(event) {
-
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.dom.preventDefault(event);
 
@@ -36627,7 +36645,6 @@ define('__component__$toolbar@husky',[],function() {
          * @param $parent
          */
         triggerSelectEvent = function(item, $parent) {
-
             var parentItem,
                 original = item._original || item,
                 $content = this.sandbox.dom.find('.content', this.items[item.id].$el);
@@ -36661,7 +36678,43 @@ define('__component__$toolbar@husky',[],function() {
         },
 
         /**
-         * changes the list items icon and title
+         * Resets the list items icon and title. Tries to set to default, otherwise to null.
+         *
+         * @param listElement
+         */
+        resetMainListItem = function(listElement) {
+            var listItems = this.sandbox.dom.find('span', listElement),
+                itemId = this.sandbox.dom.data(listElement).id,
+                item = this.items[itemId];
+
+            // reset icon
+            this.sandbox.dom.removeClass(listItems.eq(0), '');
+            item.icon = item.defaultIcon;
+            if (!!item.defaultIcon) {
+                this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
+            }
+
+            // reset title
+            item.title = this.sandbox.translate(item.defaultTitle);
+            this.sandbox.dom.html(listItems.eq(1), item.title);
+            this.items[itemId].title = item.title;
+
+            // remove marked class from dropdown-item
+            if (!!item.dropdownItems) {
+                var dropdown = this.sandbox.dom.find(selectors.dropdownMenu + ' li', listElement);
+                this.sandbox.dom.removeClass(dropdown, 'marked');
+            }
+
+            if (this.options.responsive === true) {
+                updateOverflow.call(this);
+            }
+
+            this.sandbox.emit(BUTTON_CHANGED.call(this));
+        },
+
+        /**
+         * Changes the list items icon and title.
+         *
          * @param listElement
          * @param item
          */
@@ -36927,7 +36980,7 @@ define('__component__$toolbar@husky',[],function() {
         deleteDropdown = function(button) {
             if (!!button.dropdownItems) {
                 // remove the related stuff
-                this.sandbox.dom.remove(this.sandbox.dom.find('.toolbar-dropdown-menu', button.$el));
+                this.sandbox.dom.remove(this.sandbox.dom.find(selectors.dropdownMenu, button.$el));
                 this.sandbox.dom.hide(this.sandbox.dom.find('.dropdown-toggle', button.$el));
 
                 // delete JS related stuff
@@ -37079,9 +37132,14 @@ define('__component__$toolbar@husky',[],function() {
 
                 var dfd = this.sandbox.data.deferred();
 
+                // set default title and icon
+                item.defaultTitle = item.title;
+                item.defaultIcon = item.icon;
+
                 // save to items array
                 this.items[item.id] = item;
                 this.items[item.id].initialized = dfd.promise();
+
 
                 // create class array
                 classArray = ['toolbar-item'];
@@ -37108,7 +37166,6 @@ define('__component__$toolbar@husky',[],function() {
 
                 // if has-search is true render a search bar, else render the item normally
                 if (item.hasSearch === true) {
-
                     insertSearch.call(this, $listItem);
                 } else {
                     if (!!item.icon) {
