@@ -1,6 +1,14 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * ENHANCEMENT #584 Implemented reset event for toolbar button
+    * FEATURE     #583 Added new input skin for locked-inputs
+    * BUGFIX      #579 Fixed datagrid error when window resize is emitted before initialization
+    * FEATURE     #582 Added currency type to datagrid
+    * BUGFIX      #581 Fixed input component change event
+
 * 0.17.0 (2015-11-18)
+    * FEATURE     #580 Added set options event for column-navigation
     * ENHANCEMENT #580 Added events to data navigation for selecting items
     * BUGFIX      #576 Fixed update of data navigation
 

@@ -30153,7 +30153,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             cssClass: '',
             thumbnailFormat: '50x50',
             showHead: true,
-            hideChildrenAtBeginning: true,
+            hideChildrenAtBeginning: false,
             openChildId: null,
             highlightSelected: false,
             icons: [],
@@ -31049,6 +31049,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
+            if (!this.table.$container) {
+                return false;
+            }
+
             return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
         },
 
@@ -31093,7 +31097,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
                                 content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
-                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);;
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
@@ -32782,7 +32786,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 RADIO: 'radio',
                 COUNT: 'count',
                 TRANSLATION: 'translation',
-                NUMBER: 'number'
+                NUMBER: 'number',
+                CURRENCY: 'currency'
             },
 
             decorators = {
@@ -32845,6 +32850,16 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                  */
                 number: function(val) {
                     return this.sandbox.numberFormat(val, 'n');
+                },
+
+
+                /**
+                 * Formats a float as culture specific currency
+                 * @param val {String} the string to format
+                 * @returns {String}
+                 */
+                currency: function(val) {
+                    return this.sandbox.numberFormat(val, 'c');
                 },
 
                 /**
@@ -36064,6 +36079,10 @@ define('__component__$toolbar@husky',[],function() {
             markedClass: 'marked'
         },
 
+        selectors = {
+            dropdownMenu: '.toolbar-dropdown-menu'
+        },
+
         /** templates container */
         templates = {
             skeleton: [
@@ -36154,12 +36173,22 @@ define('__component__$toolbar@husky',[],function() {
          * event to change a buttons selected dropdown-item
          *
          * @event husky.toolbar.[INSTANCE_NAME.]item.change
-         * @param {string} button The id of the button
-         * @param {string} item the id or the index of the dropdown-item
-         * @param {boolean} executeCallback if true callback of dropdown item gets executed
+         * @param {string} buttonId The id of the button
+         * @param {string} itemId The id or the index of the dropdown-item
+         * @param {boolean} executeCallback If true callback of dropdown item gets executed
          */
         ITEM_CHANGE = function() {
             return createEventName.call(this, 'item.change');
+        },
+
+        /**
+         * Event to reset a buttons and it's dropdown-items into original state.
+         *
+         * @event husky.toolbar.[INSTANCE_NAME.]item.reset
+         * @param {string} buttonId The id of the button
+         */
+        ITEM_RESET = function() {
+            return createEventName.call(this, 'item.reset');
         },
 
         /**
@@ -36307,20 +36336,9 @@ define('__component__$toolbar@husky',[],function() {
 
             this.sandbox.on(ITEM_UNMARK.call(this), unmarkItem.bind(this));
 
-            this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
-                if (!!this.items[button]) {
-                    this.items[button].initialized.then(function() {
-                        var index = getItemIndexById.call(this, id, this.items[button]);
-                        changeMainListItem.call(this, this.items[button].$el, this.items[button].dropdownItems[index]);
-                        this.sandbox.emit(ITEM_MARK.call(this), this.items[button].dropdownItems[index].id);
-                        if (executeCallback === true || !!this.items[button].dropdownItems[index].callback) {
-                            if (typeof this.items[button].dropdownItems[index].callback === 'function') {
-                                this.items[button].dropdownItems[index].callback();
-                            }
-                        }
-                    }.bind(this));
-                }
-            }.bind(this));
+            this.sandbox.on(ITEM_CHANGE.call(this), changeButton.bind(this));
+
+            this.sandbox.on(ITEM_RESET.call(this), resetButton.bind(this));
 
             this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
                 changeMainListItem.call(this, this.items[button].$el, newData);
@@ -36341,6 +36359,50 @@ define('__component__$toolbar@husky',[],function() {
                         this.sandbox.dom.hide(this.sandbox.dom.find('.dropdown-toggle', this.items[button].$el));
                     }
                 }
+            }.bind(this));
+        },
+
+        /**
+         * Changes a button text and icon.
+         *
+         * @param {String} button
+         * @param {String|Number} itemId
+         * @param {Bool} executeCallback
+         */
+        changeButton = function(buttonId, itemId, executeCallback) {
+            // check if button exists
+            if (!this.items[buttonId]) {
+                return;
+            }
+
+            var button = this.items[buttonId];
+
+            button.initialized.then(function() {
+                // update icon
+                var index = getItemIndexById.call(this, itemId, button);
+                changeMainListItem.call(this, button.$el, button.dropdownItems[index]);
+                this.sandbox.emit(ITEM_MARK.call(this), button.dropdownItems[index].id);
+                if (executeCallback === true || !!button.dropdownItems[index].callback
+                    && typeof button.dropdownItems[index].callback === 'function'
+                ) {
+                    button.dropdownItems[index].callback();
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Resets button to its original state.
+         *
+         * @param {String} buttonId
+         */
+        resetButton = function(buttonId) {
+            // check if button exists
+            if (!this.items[buttonId]) {
+                return;
+            }
+
+            this.items[buttonId].initialized.then(function() {
+                resetMainListItem.call(this, this.items[buttonId].$el);
             }.bind(this));
         },
 
@@ -36408,7 +36470,6 @@ define('__component__$toolbar@husky',[],function() {
          * @param highlight {boolean} if true a highlight effect is played
          */
         toggleEnabled = function(enabled, id, highlight) {
-
             // check if toolbar has an item with specified id
             if (!this.items[id]) {
                 return;
@@ -36534,7 +36595,7 @@ define('__component__$toolbar@husky',[],function() {
 
                 if (!visible) {
                     this.sandbox.dom.addClass($list, 'is-expanded');
-                    this.sandbox.dom.show(this.sandbox.dom.find('.toolbar-dropdown-menu', $list));
+                    this.sandbox.dom.show(this.sandbox.dom.find(selectors.dropdownMenu, $list));
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                     // on every click remove sub-menu
@@ -36569,7 +36630,7 @@ define('__component__$toolbar@husky',[],function() {
          */
         hideDropdowns = function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
-            this.sandbox.dom.hide(this.$find('.toolbar-dropdown-menu'));
+            this.sandbox.dom.hide(this.$find(selectors.dropdownMenu));
             if (this.options.responsive === true) {
                 unlockToolbarScroll.call(this);
             }
@@ -36582,7 +36643,6 @@ define('__component__$toolbar@husky',[],function() {
          * @param event
          */
         selectItem = function(event) {
-
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.dom.preventDefault(event);
 
@@ -36612,7 +36672,6 @@ define('__component__$toolbar@husky',[],function() {
          * @param $parent
          */
         triggerSelectEvent = function(item, $parent) {
-
             var parentItem,
                 original = item._original || item,
                 $content = this.sandbox.dom.find('.content', this.items[item.id].$el);
@@ -36646,7 +36705,42 @@ define('__component__$toolbar@husky',[],function() {
         },
 
         /**
-         * changes the list items icon and title
+         * Resets the list items icon and title. Tries to set to default, otherwise to null.
+         *
+         * @param listElement
+         */
+        resetMainListItem = function(listElement) {
+            var listItems = this.sandbox.dom.find('span', listElement),
+                itemId = this.sandbox.dom.data(listElement).id,
+                item = this.items[itemId];
+
+            // reset icon
+            this.sandbox.dom.removeClass(listItems.eq(0), '');
+            item.icon = item.defaultIcon;
+            if (!!item.defaultIcon) {
+                this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
+            }
+
+            // reset title
+            item.title = this.sandbox.translate(item.defaultTitle);
+            this.sandbox.dom.html(listItems.eq(1), item.title);
+            this.items[itemId].title = item.title;
+
+            // remove marked class from dropdown-item
+            if (!!item.dropdownItems) {
+                this.sandbox.dom.removeClass(selectors.dropdownMenu + ' li', 'marked');
+            }
+
+            if (this.options.responsive === true) {
+                updateOverflow.call(this);
+            }
+
+            this.sandbox.emit(BUTTON_CHANGED.call(this));
+        },
+
+        /**
+         * Changes the list items icon and title.
+         *
          * @param listElement
          * @param item
          */
@@ -36912,7 +37006,7 @@ define('__component__$toolbar@husky',[],function() {
         deleteDropdown = function(button) {
             if (!!button.dropdownItems) {
                 // remove the related stuff
-                this.sandbox.dom.remove(this.sandbox.dom.find('.toolbar-dropdown-menu', button.$el));
+                this.sandbox.dom.remove(this.sandbox.dom.find(selectors.dropdownMenu, button.$el));
                 this.sandbox.dom.hide(this.sandbox.dom.find('.dropdown-toggle', button.$el));
 
                 // delete JS related stuff
@@ -37064,6 +37158,10 @@ define('__component__$toolbar@husky',[],function() {
 
                 var dfd = this.sandbox.data.deferred();
 
+                // set default title and icon
+                item.defaultTitle = item.title;
+                item.defaultIcon = item.icon;
+
                 // save to items array
                 this.items[item.id] = item;
                 this.items[item.id].initialized = dfd.promise();
@@ -37093,7 +37191,6 @@ define('__component__$toolbar@husky',[],function() {
 
                 // if has-search is true render a search bar, else render the item normally
                 if (item.hasSearch === true) {
-
                     insertSearch.call(this, $listItem);
                 } else {
                     if (!!item.icon) {
@@ -40341,8 +40438,9 @@ define('__component__$password-fields@husky',[], function() {
  * @params {Boolean} [options.tooltipTranslations.unpublished] translation-keys for unpublished
  * @params {Boolean} [options.tooltipTranslations.internalLink] translation-keys for internal-link
  * @params {Boolean} [options.tooltipTranslations.externalLink] translation-keys for external-link
+ * @params {Callback} [options.actionCallback] callback which will be called on action
  */
-define('__component__$column-navigation@husky',[], function() {
+define('__component__$column-navigation@husky',[],function() {
 
     'use strict';
 
@@ -40381,7 +40479,8 @@ define('__component__$column-navigation@husky',[], function() {
                 unpublished: 'public.unpublished',
                 internalLink: 'public.internal-link',
                 externalLink: 'public.external-link'
-            }
+            },
+            actionCallback: null
         },
 
         constants = {
@@ -40447,7 +40546,7 @@ define('__component__$column-navigation@husky',[], function() {
             item: [
                 '<li data-id="<%= id %>" class="' + constants.columnItemClass + '">',
                 '    <span class="' + constants.iconsLeftClass + '"></span>',
-                '    <span title="<%= title %>" class="' + constants.itemTextClass + '"><%= title%></span>',
+                '    <span title="<%= title %>" class="' + constants.itemTextClass + '"><%= title %></span>',
                 '    <span class="' + constants.iconsRightClass + '"></span>',
                 '</li>'
             ].join(''),
@@ -40587,6 +40686,15 @@ define('__component__$column-navigation@husky',[], function() {
          */
         RESIZE = function() {
             return createEventName.call(this, 'resize');
+        },
+
+        /**
+         * @event husky.column-navigation.set-options
+         * @description the element will be rerendered with given options
+         * @param {{url, selected}} options
+         */
+        SET_OPTIONS = function() {
+            return createEventName.call(this, 'set-options');
         },
 
         createContext = function(column) {
@@ -40972,7 +41080,7 @@ define('__component__$column-navigation@husky',[], function() {
          */
         renderItem: function(data) {
             var $item = this.sandbox.dom.createElement(this.sandbox.util.template(templates.item)({
-                    title: this.sandbox.util.escapeHtml(data[this.options.titleName]),
+                    title: this.sandbox.translate(this.sandbox.util.escapeHtml(data[this.options.titleName])),
                     id: data[this.options.idName]
                 })),
                 disabled = (this.options.disableIds.indexOf(data[this.options.idName]) !== -1);
@@ -41224,6 +41332,22 @@ define('__component__$column-navigation@husky',[], function() {
             }
         },
 
+        unbindDOMEvents: function() {
+            this.$el.off();
+            if (!!this.dom.$add) {
+                this.dom.$add.off();
+            }
+            if (!!this.dom.$container) {
+                this.dom.$container.off();
+            }
+            if (!!this.dom.$wrapper) {
+                this.dom.$wrapper.off();
+            }
+            if (!!this.dom.$ok) {
+                this.dom.$ok.off();
+            }
+        },
+
         /**
          * Handles the key-down event of a order-input
          * @param event
@@ -41234,7 +41358,7 @@ define('__component__$column-navigation@husky',[], function() {
             }
             if (event.keyCode === 27) { // cancel on esc
                 var column = this.sandbox.dom.attr(this.sandbox.dom.parents(
-                        event.currentTarget, '.' + constants.columnClass), 'data-column'),
+                    event.currentTarget, '.' + constants.columnClass), 'data-column'),
                     item = this.sandbox.dom.attr(this.sandbox.dom.parents(
                         event.currentTarget, '.' + constants.columnItemClass), 'data-id');
                 this.resetOrderInput(column, item);
@@ -41400,10 +41524,21 @@ define('__component__$column-navigation@husky',[], function() {
         },
 
         bindCustomEvents: function() {
+            if (!!this.customEvents) {
+                return;
+            }
+
             this.sandbox.on(BREADCRUMB.call(this), this.getBreadCrumb.bind(this));
             this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
             this.sandbox.on(HIGHLIGHT.call(this), this.highlight.bind(this));
             this.sandbox.on(ORDER.call(this), this.startOrderModeItem.bind(this));
+            this.sandbox.on(SET_OPTIONS.call(this), function(options) {
+                this.unbindDOMEvents();
+                this.$el.children().remove();
+                this.options = this.sandbox.util.extend(true, {}, this.options, options);
+
+                this.initialize();
+            }.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
@@ -41413,6 +41548,8 @@ define('__component__$column-navigation@husky',[], function() {
                     this.setOverflowClass();
                 }.bind(this));
             }
+
+            this.customEvents = true;
         },
 
         /**
@@ -41704,7 +41841,7 @@ define('__component__$column-navigation@husky',[], function() {
                 }
 
                 // scroll for add column
-                if (!selectedItem.hasSub) {
+                if (!selectedItem[this.options.hasSubName]) {
                     this.insertAddColumn(selectedItem, column);
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
@@ -41792,7 +41929,11 @@ define('__component__$column-navigation@husky',[], function() {
             }
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit(ACTION.call(this), item);
+            if (!!this.options.actionCallback) {
+                this.options.actionCallback(item)
+            } else {
+                this.sandbox.emit(ACTION.call(this), item);
+            }
         }
     };
 });
@@ -44306,6 +44447,7 @@ define('__component__$dropzone@husky',[], function() {
  * @params {String} [options.skin] name of the skin to use. Currently 'phone', 'password', 'url', 'email', 'date', 'time', 'color'. Each skin brings it's own default values. For example the password skin has automatically inputType: 'password'
  * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component - you can find possible values here http://bootstrap-datepicker.readthedocs.org/en/release/options.html
  * @params {Object} [options.colorPickerOptions] config-object to pass to the colorpicker component
+ * @params {Object} [options.lockOptions] config-object to pass to the lock component
  * @params {String} [options.frontIcon] name of icon to display in front
  * @params {String} [options.frontText] text to display in front
  * @params {String} [options.frontHtml] html to display in front
@@ -44334,6 +44476,9 @@ define('__component__$input@husky',[], function() {
                 todayHighlight: true
             },
             colorPickerOptions: {},
+            lockOptions: {
+                locked: false
+            },
             frontIcon: null,
             frontText: null,
             frontHtml: null,
@@ -44354,7 +44499,9 @@ define('__component__$input@husky',[], function() {
             colorFieldClass: 'color-field',
             colorpickerClass: 'colorpicker',
             datepickerClass: 'pickdate',
-            linkClickableClass: 'clickable'
+            linkClickableClass: 'clickable',
+            lockIconClass: 'fa-lock',
+            unlockIconClass: 'fa-unlock'
         },
 
         templates = {
@@ -44377,6 +44524,15 @@ define('__component__$input@husky',[], function() {
             },
             email: function() {
                 this.renderLink('mailto:');
+            },
+            lock: function() {
+                this.renderLock();
+            }
+        },
+
+        frontClickedCallbacks = {
+            lock: function(event) {
+                this.lockClickedCallback(event);
             }
         },
 
@@ -44409,6 +44565,10 @@ define('__component__$input@husky',[], function() {
                 frontIcon: 'clock-o',
                 placeholder: 'HH - MM',
                 renderMethod: 'time'
+            },
+            lock: {
+                frontIcon: 'lock',
+                renderMethod: 'lock'
             }
         },
 
@@ -44424,6 +44584,14 @@ define('__component__$input@husky',[], function() {
          */
         INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
+        },
+
+        LOCKED = function() {
+            return createEventName.call(this, 'locked');
+        },
+
+        UNLOCKED = function() {
+            return createEventName.call(this, 'unlocked');
         },
 
         /** returns normalized event names */
@@ -44483,6 +44651,20 @@ define('__component__$input@husky',[], function() {
          * Binds Dom-related events
          */
         bindDomEvents: function() {
+            this.sandbox.dom.on(this.$el, 'change', function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                this.$el.trigger('change');
+            }.bind(this), 'input');
+
+            this.sandbox.dom.on(this.$el.find('.' + constants.frontClass), 'click', function(event) {
+                // check if input has custom functionality, when front is clicked
+                if (frontClickedCallbacks.hasOwnProperty(this.options.skin)) {
+                    frontClickedCallbacks[this.options.skin].call(this, event);
+                }
+            }.bind(this));
+
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
@@ -44598,6 +44780,81 @@ define('__component__$input@husky',[], function() {
             this.linkProtocol = protocol;
             this.sandbox.dom.on(this.input.$input, 'keyup', this.changeFrontLink.bind(this));
             this.changeFrontLink();
+        },
+
+        /**
+         * Lock-input specific actions. Makes sure the correct icon is rendered and the dom data is set.
+         */
+        renderLock: function() {
+            var locked = this.options.lockOptions.locked;
+            // always enable front icon
+            this.sandbox.dom.addClass(this.sandbox.dom.find('a', this.input.$front), constants.linkClickableClass);
+            this.renderLockIcon();
+            this.$el.data('locked', locked);
+        },
+
+        /**
+         * Gets called, when front icon of lock-input is clicked.
+         *
+         * @param {Object} event
+         */
+        lockClickedCallback: function(event) {
+
+            if (this.options.disabled === true) {
+                return;
+            }
+
+            var locked = !this.options.lockOptions.locked;
+
+            // set options value
+            this.options.lockOptions.locked = locked;
+            // en/disable input
+            this.sandbox.dom.prop(this.input.$input, 'disabled', locked);
+            // render appropiate icon
+            this.renderLockIcon();
+            // set data
+            this.$el.data('locked', locked);
+
+            // trigger event
+            if (locked) {
+                this.sandbox.emit(LOCKED.call(this));
+                event.stopPropagation();
+            } else {
+                this.sandbox.emit(UNLOCKED.call(this));
+            }
+        },
+
+        /**
+         * Renders the appropiate locked icon.
+         */
+        renderLockIcon: function() {
+            var removeIcon = constants.lockIconClass,
+                addIcon = constants.unlockIconClass;
+
+            if (this.options.lockOptions.locked) {
+                removeIcon = constants.unlockIconClass;
+                addIcon = constants.lockIconClass;
+            }
+
+            this.exchangeFrontIconClass(addIcon, removeIcon);
+        },
+
+        /**
+         * Exchanges a icon class with another.
+         *
+         * @param {String} addClass
+         * @param {String} removeClass
+         */
+        exchangeFrontIconClass: function(addClass, removeClass) {
+            var selector = this.sandbox.dom.find('a', this.input.$front);
+            this.sandbox.dom.removeClass(selector, removeClass);
+            this.sandbox.dom.addClass(selector, addClass);
+
+            // if clickable-class is set, set it behind icon class
+            if (this.sandbox.dom.hasClass(selector, constants.linkClickableClass)) {
+                this.sandbox.dom.removeClass(selector, constants.linkClickableClass);
+                this.sandbox.dom.addClass(selector, constants.linkClickableClass);
+            }
         },
 
         /**
@@ -50059,6 +50316,9 @@ define("datepicker-zh-TW", function(){});
                     },
                     getTimePatter: function() {
                         return Globalize.culture().calendar.patterns.t;
+                    },
+                    setCurrency: function(symbol) {
+                        Globalize.culture().numberFormat.currency.symbol = symbol;
                     }
                 };
 
@@ -50202,6 +50462,8 @@ define("datepicker-zh-TW", function(){});
 
                     app.setLanguage(app.config.culture.name, app.config.culture.messages);
                 }
+
+                app.sandbox.globalize.setCurrency('');
             }
         };
     });

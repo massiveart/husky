@@ -50,7 +50,7 @@ define(function() {
             cssClass: '',
             thumbnailFormat: '50x50',
             showHead: true,
-            hideChildrenAtBeginning: true,
+            hideChildrenAtBeginning: false,
             openChildId: null,
             highlightSelected: false,
             icons: [],
@@ -946,6 +946,10 @@ define(function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
+            if (!this.table.$container) {
+                return false;
+            }
+
             return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
         },
 
@@ -990,7 +994,7 @@ define(function() {
                             $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
                             if (crop === true) {
                                 content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
-                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);;
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
                                 this.tableCropped = true;
                                 this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
