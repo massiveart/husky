@@ -1,4 +1,4 @@
-# Husky - The wuff wuff framework [![Build Status](https://api.travis-ci.org/massiveart/husky.png?branch=develop)](http://travis-ci.org/massiveart/husky)
+# Husky - The wuff wuff framework
 
 Husky is an awesome front-end framework.
 
@@ -19,14 +19,14 @@ Install [bower](http://bower.io)
 And now install all dependencies:
 
     bower install
-	
+
 Install [Compass](http://compass-style.org/install/) with [animations](https://github.com/ericam/compass-animation):
 
-	
+
     gem update --system
     gem install compass
     gem install animation --pre
-    
+
 Command to start an npm server, which returns data to the demos:
 
     apimocker --config apimocker_config.json
