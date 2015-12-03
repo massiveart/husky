@@ -8344,19 +8344,23 @@ a.btn-black, a.btn-highlight {
 }
 /* line 52, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .show-elements {
-  color: #999;
   float: left;
 }
-/* line 56, ../scss/modules/pagination.scss */
+/* line 55, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .show-elements .text {
+  color: #999;
   padding-right: 5px;
 }
-/* line 61, ../scss/modules/pagination.scss */
+/* line 60, ../scss/modules/pagination.scss */
+.pagination-wrapper.dropdowns .show-elements .dropdown {
+  background-color: #fff;
+}
+/* line 65, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .pagination {
   height: 30px;
   float: right;
 }
-/* line 65, ../scss/modules/pagination.scss */
+/* line 69, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .pagination .pagination-main {
   display: inline-block;
   list-style: none;
@@ -8366,7 +8370,7 @@ a.btn-black, a.btn-highlight {
   height: 30px;
   margin: 0 2px;
 }
-/* line 74, ../scss/modules/pagination.scss */
+/* line 78, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .pagination .pagination-prev {
   padding: 0 13px 0 8px;
   border: 1px solid #ccc;
@@ -8377,13 +8381,13 @@ a.btn-black, a.btn-highlight {
   background-color: #fff;
   border-left: 0px;
 }
-/* line 84, ../scss/modules/pagination.scss */
+/* line 88, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .pagination .pagination-prev::after {
   content: "";
   display: inline-block;
   font-size: 16px;
 }
-/* line 91, ../scss/modules/pagination.scss */
+/* line 95, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .pagination .pagination-next {
   padding: 0 13px 0 8px;
   border: 1px solid #ccc;
@@ -8393,42 +8397,44 @@ a.btn-black, a.btn-highlight {
   text-align: center;
   background-color: #fff;
 }
-/* line 100, ../scss/modules/pagination.scss */
+/* line 104, ../scss/modules/pagination.scss */
 .pagination-wrapper.dropdowns .pagination .pagination-next::after {
   content: "";
   display: inline-block;
   font-size: 16px;
 }
-/* line 110, ../scss/modules/pagination.scss */
+/* line 114, ../scss/modules/pagination.scss */
 .pagination-wrapper.showall {
   cursor: pointer;
   margin-top: 0;
   padding-left: 10px;
   display: inline-block;
 }
-/* line 116, ../scss/modules/pagination.scss */
+/* line 120, ../scss/modules/pagination.scss */
 .pagination-wrapper.showall .square {
   width: 50px;
   height: 50px;
   border: 1px dashed #ccc;
   float: left;
 }
-/* line 122, ../scss/modules/pagination.scss */
+/* line 126, ../scss/modules/pagination.scss */
 .pagination-wrapper.showall .text {
   display: inline-block;
   padding-left: 10px;
   line-height: 50px;
   float: left;
 }
-/* line 130, ../scss/modules/pagination.scss */
+/* line 134, ../scss/modules/pagination.scss */
 .pagination-wrapper .page-label {
   color: #999;
   line-height: 30px;
   margin-right: 20px;
 }
-/* line 135, ../scss/modules/pagination.scss */
+/* line 139, ../scss/modules/pagination.scss */
 .pagination-wrapper .page-label .form-element, .pagination-wrapper .page-label .husky-input {
   width: 50px;
+  min-width: 50px;
+  max-width: 150px;
   text-align: center;
   margin-left: 10px;
   margin-right: 10px;

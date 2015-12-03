@@ -50,11 +50,15 @@
         }
 
         .show-elements {
-            color: $grayLight;
             float: left;
 
             .text {
+                color: $grayLight;
                 padding-right: 5px;
+            }
+
+            .dropdown {
+                background-color: $white;
             }
         }
 
@@ -134,6 +138,8 @@
 
         .form-element {
             width: 50px;
+            min-width: 50px;
+            max-width: 150px;
             text-align: center;
 
             margin-left: 10px;

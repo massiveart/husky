@@ -177,6 +177,11 @@ define(function() {
          * Binds dom related events
          */
         bindDomEvents: function() {
+            var $element = this.sandbox.dom.find('input.' + constants.inputClass, this.$el),
+                fontSize = parseInt($element.css('font-size'), 10),
+                minWidth = parseInt($element.css('min-width'), 10),
+                maxWidth = parseInt($element.css('max-width'), 10);
+
             // next page
             this.sandbox.dom.on(
                 this.sandbox.dom.find('.' + constants.nextClass, this.$el),
@@ -192,27 +197,32 @@ define(function() {
             );
 
             this.sandbox.dom.on(
-                this.sandbox.dom.find('input.' + constants.inputClass, this.$el),
+                $element,
                 'focusout',
                 this.inputHandler.bind(this)
             );
 
             this.sandbox.dom.on(
-                this.sandbox.dom.find('input.' + constants.inputClass, this.$el),
-                'keyup',
-                function(event) {
-                    if (event.which !== 13) {
+                $element,
+                'keydown',
+                function() {
+                    if (event.which === 13) {
+                        this.inputHandler(event);
                         return;
                     }
 
-                    this.inputHandler(event);
+                    var width = 50 + (($element.val().length * fontSize) / 2);
+
+                    if (width > minWidth && width <= maxWidth) {
+                        $element.css({width: width + 'px'});
+                    }
                 }.bind(this)
             );
         },
 
         inputHandler: function(event) {
             var $element = this.sandbox.dom.find(event.currentTarget),
-                page = parseInt($element.val());
+                page = parseInt($element.val(), 10);
 
             if (isNaN(page)) {
                 $element.val(this.data.page);
