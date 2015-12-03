@@ -236,6 +236,7 @@ define(function() {
         initialize: function(context, options) {
             // store context of the datagrid-component
             this.datagrid = context;
+            this.keys = {id: this.datagrid.options.idKey};
 
             // make sandbox available in this-context
             this.sandbox = this.datagrid.sandbox;
@@ -560,7 +561,7 @@ define(function() {
                 $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null,
                 hasParent = this.hasParent(record);
 
-            record.id = (!!record.id) ? record.id : constants.newRecordId;
+            record.id = (!!record[this.keys.id]) ? record[this.keys.id] : constants.newRecordId;
             this.sandbox.dom.data($row, 'id', record.id);
 
             // render the parents before rendering the children
