@@ -16,7 +16,7 @@ define(function() {
     'use strict';
 
     var defaults = {
-            showElementsSteps: [10, 20, 50, 100, 500],
+            showElementsSteps: [10, 20, 50, 100, 200],
             limit: 20
         },
 
@@ -25,7 +25,8 @@ define(function() {
             paginationElementClass: 'pagination',
             prevClass: 'previous',
             nextClass: 'next',
-            pageChangeClass: 'page-change',
+            inputClass: 'page-input',
+            pageLabelClass: 'page-label',
             sizeChangeClass: 'size-change',
             loaderClass: 'pagination-loader'
         },
@@ -35,17 +36,16 @@ define(function() {
          */
         templates = {
             pageLabel: [
-                '<%= translate("pagination.page") %>',
-                '<strong> <%= i %> </strong>',
-                '<%= translate("pagination.of") %> <%= pages %>'
+                '<div class="', constants.pageLabelClass, '">',
+                '    <%= translate("pagination.page") %>',
+                '    <input type="text" class="form-element ', constants.inputClass, '" value="<%= i %>" />',
+                '    <%= translate("pagination.of") %> <%= pages %>',
+                '</div>'
             ].join(''),
 
             pageChanger: [
-                '<div class="', constants.nextClass, ' pagination-prev pull-right pointer"></div>',
-                '<div class="', constants.pageChangeClass, ' pagination-main pull-right pointer">',
                 '<span class="inline-block"><%= label %></span>',
-                '<span class="dropdown-toggle inline-block"></span>',
-                '</div>',
+                '<div class="', constants.nextClass, ' pagination-prev pull-right pointer"></div>',
                 '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
             ].join(''),
 
@@ -145,12 +145,6 @@ define(function() {
          * Binds custom related events
          */
         bindCustomEvents: function() {
-            // pagination dropdown item clicked
-            this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown.item.click', function(item) {
-                this.startLoader();
-                this.datagrid.changePage.call(this.datagrid, null, item.id);
-            }.bind(this));
-
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
@@ -183,6 +177,11 @@ define(function() {
          * Binds dom related events
          */
         bindDomEvents: function() {
+            var $element = this.sandbox.dom.find('input.' + constants.inputClass, this.$el),
+                fontSize = parseInt($element.css('font-size'), 10),
+                minWidth = parseInt($element.css('min-width'), 10),
+                maxWidth = parseInt($element.css('max-width'), 10);
+
             // next page
             this.sandbox.dom.on(
                 this.sandbox.dom.find('.' + constants.nextClass, this.$el),
@@ -196,6 +195,54 @@ define(function() {
                 'click',
                 this.prevPage.bind(this)
             );
+
+            this.sandbox.dom.on(
+                $element,
+                'focusout',
+                this.inputHandler.bind(this)
+            );
+
+            this.sandbox.dom.on(
+                $element,
+                'keydown',
+                function() {
+                    if (event.which === 13) {
+                        this.inputHandler(event);
+                        return;
+                    }
+
+                    var width = 50 + (($element.val().length * fontSize) / 2);
+
+                    if (width > minWidth && width <= maxWidth) {
+                        $element.css({width: width + 'px'});
+                    }
+                }.bind(this)
+            );
+        },
+
+        inputHandler: function(event) {
+            var $element = this.sandbox.dom.find(event.currentTarget),
+                page = parseInt($element.val(), 10);
+
+            if (isNaN(page)) {
+                $element.val(this.data.page);
+                return;
+            }
+
+            if (page < 1) {
+                page = 1;
+            }
+
+            if (page > this.data.pages) {
+                page = this.data.pages;
+            }
+
+            if (page === this.data.page) {
+                return;
+            }
+
+            this.startLoader();
+            this.datagrid.changePage.call(this.datagrid, null, page);
         },
 
         /**
@@ -244,7 +291,7 @@ define(function() {
                     text: translations.elementsPerPage,
                     translate: this.sandbox.translate
                 }));
-                this.sandbox.dom.append(this.$paginationContainer, '<span></span>')
+                this.sandbox.dom.append(this.$paginationContainer, '<span></span>');
                 this.sandbox.dom.append(this.$paginationContainer, $showElements);
 
                 this.prepareShowElementsDropdown();
@@ -261,8 +308,6 @@ define(function() {
                 this.sandbox.dom.append($pagination, this.sandbox.util.template(templates.pageChanger)({
                     label: paginationLabel
                 }));
-
-                this.preparePaginationDropdown();
             }
         },
 
@@ -279,33 +324,6 @@ define(function() {
             };
 
             return this.sandbox.util.template(templates.pageLabel, defaults);
-        },
-
-        /**
-         * Prepares and initializes the dropdown used for the pagination
-         */
-        preparePaginationDropdown: function() {
-
-            var data = [], i, name;
-
-            for (i = 1; i <= this.data.pages; i++) {
-                name = this.renderPaginationRow(i, this.data.pages);
-                data.push({id: i, name: name});
-            }
-
-            this.sandbox.start([
-                {
-                    name: 'dropdown@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.' + constants.pageChangeClass, this.$paginationContainer),
-                        setParentDropDown: true,
-                        instanceName: this.datagrid.options.instanceName + '-pagination-dropdown',
-                        alignment: 'right',
-                        verticalAlignment: this.options.verticalAlignment,
-                        data: data
-                    }
-                }
-            ]);
         },
 
         /**

@@ -53,14 +53,12 @@
             float: left;
 
             .text {
+                color: $grayLight;
                 padding-right: 5px;
             }
-            .dropdown-trigger {
-                border: none;
-                background: $white;
-            }
-            .dropdown-menu {
-                width: 120px;
+
+            .dropdown {
+                background-color: $white;
             }
         }
 
@@ -69,7 +67,6 @@
             float: right;
 
             .pagination-main {
-                margin: 0;
                 display: inline-block;
                 list-style: none;
                 border: 1px solid $grayLighter;
@@ -85,6 +82,8 @@
                 line-height: 32px;
                 height: 30px;
                 text-align: center;
+                background-color: $white;
+                border-left: 0px;
 
                 &::after {
                     @extend .fa;
@@ -100,6 +99,7 @@
                 line-height: 32px;
                 height: 30px;
                 text-align: center;
+                background-color: $white;
 
                 &::after {
                     @extend .fa;
@@ -107,9 +107,6 @@
                     display: inline-block;
                     font-size: 16px;
                 }
-            }
-            .dropdown-menu {
-                width: 200px;
             }
         }
     }
@@ -131,6 +128,22 @@
             padding-left: 10px;
             line-height: 50px;
             float: left;
+        }
+    }
+
+    .page-label {
+        color: $grayLight;
+        line-height: 30px;
+        margin-right: 20px;
+
+        .form-element {
+            width: 50px;
+            min-width: 50px;
+            max-width: 150px;
+            text-align: center;
+
+            margin-left: 10px;
+            margin-right: 10px;
         }
     }
 }
