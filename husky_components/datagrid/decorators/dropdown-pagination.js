@@ -45,8 +45,8 @@ define(function() {
 
             pageChanger: [
                 '<span class="inline-block"><%= label %></span>',
-                '<div class="', constants.nextClass, ' pagination-prev pull-right pointer"></div>',
-                '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
+                '<div class="', constants.nextClass, ' pagination-prev pull-right pointer <%= prevButtonClass %>"></div>',
+                '<div class="' + constants.prevClass + ' pagination-next pull-right pointer <%= nextButtonClass %>"></div>'
             ].join(''),
 
             loader: [
@@ -238,6 +238,7 @@ define(function() {
             }
 
             if (page === this.data.page) {
+                $element.val(this.data.page);
                 return;
             }
 
@@ -305,8 +306,10 @@ define(function() {
 
                 paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
 
-                this.sandbox.dom.append($pagination, this.sandbox.util.template(templates.pageChanger)({
-                    label: paginationLabel
+                this.sandbox.dom.append($pagination, this.sandbox.util.template(templates.pageChanger, {
+                    label: paginationLabel,
+                    prevButtonClass: (this.data.page < this.data.pages) ? '' : 'disabled',
+                    nextButtonClass: (this.data.page > 1) ? '' : 'disabled'
                 }));
             }
         },
