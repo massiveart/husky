@@ -1,7 +1,10 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #587 Fixed language changer in overlay
+
 * 0.18.0 (2015-12-02)
-    * BGFIX       #585 Fixed language changer in overlay
+    * BUGFIX      #585 Fixed language changer in overlay
     * ENHANCEMENT #584 Implemented reset event for toolbar button
     * FEATURE     #583 Added new input skin for locked-inputs
     * BUGFIX      #579 Fixed datagrid error when window resize is emitted before initialization
