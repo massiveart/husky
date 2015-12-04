@@ -82,7 +82,6 @@
                 line-height: 32px;
                 height: 30px;
                 text-align: center;
-                background-color: $white;
                 border-left: 0px;
 
                 &::after {
@@ -90,6 +89,10 @@
                     content: $fa-var-chevron-right;
                     display: inline-block;
                     font-size: 16px;
+                }
+
+                &:hover {
+                    background-color: $grayLighterer;
                 }
             }
             .pagination-next {
@@ -99,7 +102,6 @@
                 line-height: 32px;
                 height: 30px;
                 text-align: center;
-                background-color: $white;
 
                 &::after {
                     @extend .fa;
@@ -107,11 +109,19 @@
                     display: inline-block;
                     font-size: 16px;
                 }
+
+                &:hover {
+                    background-color: $grayLighterer;
+                }
             }
 
             .disabled {
-                color: $grayLightest;
+                color: $grayLighter;
                 cursor: default;
+
+                &:hover {
+                    background-color: $grayLightest;
+                }
             }
         }
     }
