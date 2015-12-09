@@ -1104,8 +1104,8 @@
             /**
              * Parses data and returns normalized embedded items.
              *
-             * @param data
-             * @param parent
+             * @param {Array} data
+             * @param {Object} parent
              */
             parseEmbedded: function(data, parent) {
                 var embedded = [];
