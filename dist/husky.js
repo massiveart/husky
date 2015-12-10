@@ -32827,6 +32827,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 TITLE: 'title',
                 BYTES: 'bytes',
                 RADIO: 'radio',
+                CHECKBOX: 'checkbox',
+                CHECKBOX_READONLY: 'checkbox_readonly',
                 COUNT: 'count',
                 TRANSLATION: 'translation',
                 NUMBER: 'number',
@@ -32941,8 +32943,29 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                  * checks for bool value and sets radio to true
                  */
                 radio: function(content, index, columnName) {
-                    var checked = (!content) ? false : true;
-                    return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
+                    return this.sandbox.util.template(templates.radio, {checked: !!content, columnName: columnName});
+                },
+
+                /**
+                 * checks for bool value and renders a checkbox with value.
+                 */
+                checkbox: function(content, index, columnName) {
+                    return this.sandbox.util.template(templates.checkbox, {
+                        checked: !!content,
+                        columnName: columnName,
+                        readonly: false
+                    });
+                },
+
+                /**
+                 * checks for bool value and renders a readonly checkbox with value.
+                 */
+                checkbox_readonly: function(content, index, columnName) {
+                    return this.sandbox.util.template(templates.checkbox, {
+                        checked: !!content,
+                        columnName: columnName,
+                        readonly: true
+                    });
                 }
             },
 
@@ -32950,6 +32973,14 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 radio: [
                     '<div class="custom-radio custom-filter">',
                     '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                    '   <span class="icon"></span>',
+                    '</div>'
+                ].join(''),
+                checkbox: [
+                    '<div class="custom-checkbox custom-filter">',
+                    '   <input name="radio-<%= columnName %>" type="checkbox" class="form-element"',
+                    '       <% if (readonly) { %>readonly="readonly"<% } %>',
+                    '       <% if (checked) { %>checked<% } %>/>',
                     '   <span class="icon"></span>',
                     '</div>'
                 ].join(''),

@@ -183,6 +183,15 @@ label {
         padding: 0;
         cursor: pointer;
 
+        &[readonly],
+        &[readonly="readonly"] {
+            display: none;
+
+            & + .icon {
+                border: 1px solid $grayLight;
+            }
+        }
+
         &:checked,
         &.is-checked {
             & + .icon {
