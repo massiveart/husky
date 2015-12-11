@@ -1661,7 +1661,6 @@
                     if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].showSelected &&
                         this.getSelectedItemIds().length === 0
                     ) {
-                        this.gridViews[this.viewId].showSelected(false);
                         this.show = false;
                     }
 
