@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.18.2 (2015-12-11)
     * HOTFIX      #589 Fixed opened children at startup
 
 * 0.18.1 (2015-12-07)
