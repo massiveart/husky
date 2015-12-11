@@ -50,7 +50,7 @@ define(function() {
             cssClass: '',
             thumbnailFormat: '50x50',
             showHead: true,
-            hideChildrenAtBeginning: false,
+            hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
             icons: [],
@@ -61,7 +61,7 @@ define(function() {
             actionIcon: 'pencil',
             actionIconColumn: null,
             croppedMaxLength: 35,
-            openPathToSelectedChildren: false,
+            openPathToSelectedChildren: true,
             cropContents: true
         },
 
@@ -1638,6 +1638,20 @@ define(function() {
             );
         },
 
+        /**
+         * Collapses all child nodes.
+         */
+        collapseAllChildren: function() {
+            for (var i = 0, length = this.data.embedded.length; i < length; i++) {
+                this.hideChildren(this.data.embedded[i].id);
+            }
+        },
+
+        /**
+         * Show only selected items.
+         *
+         * @param {Boolean} show
+         */
         showSelected: function(show) {
             // TODO this is a really basic implementation
             // - here should all selected be loaded
@@ -1648,6 +1662,11 @@ define(function() {
                 $items.hide();
             } else {
                 $items.show();
+
+                this.collapseAllChildren();
+                if (!!this.options.openPathToSelectedChildren) {
+                    this.openPathToSelectedChildren();
+                }
             }
         }
     };

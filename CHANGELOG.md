@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #589 Fixed opened children at startup
+
 * 0.18.1 (2015-12-07)
     * HOTFIX      #587 Fixed language changer in overlay
 
