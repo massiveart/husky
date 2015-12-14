@@ -34140,7 +34140,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * @returns {String} the manipulated content
              */
             manipulateContent: function(content, type, argument, columnName) {
-                if (filters.hasOwnProperty(type)) {
+                if (typeof type === 'function') {
+                    return type(content, argument, columnName);
+                } else if (filters.hasOwnProperty(type)) {
                     return filters[type].call(this, content, argument, columnName);
                 }
                 return content;
