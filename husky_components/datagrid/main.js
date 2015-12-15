@@ -764,7 +764,7 @@
                         this.data.embedded = this.parseEmbedded(this.options.data);
                     }
 
-                    this.renderView();
+                    this.render();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].render(this.data, this.$element);
                     }
