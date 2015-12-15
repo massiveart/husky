@@ -50858,13 +50858,7 @@ define("datepicker-zh-TW", function(){});
                     },
 
                     getObject: function(selector) {
-                        if (typeof selector === 'string') {
-                            return $(selector).data('form-object');
-                        } else if (typeof selector === 'object') {
-                            return selector;
-                        } else {
-                            throw 'Not supported';
-                        }
+                        return $(selector).data('form-object');
                     },
 
                     validate: function(selector, force) {
