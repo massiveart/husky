@@ -229,6 +229,15 @@
             &.right {
                 float: right;
             }
+
+            &.no-hover {
+                opacity: 1 !important;
+            }
+
+            &.simple {
+                background: transparent;
+                color: $black;
+            }
         }
 
         .grid-image {
