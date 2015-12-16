@@ -32944,6 +32944,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             templates = {
+                errorIcon: [
+                    '<span id="error-icon" class="fa fa-exclamation-triangle"></span>'
+                ].join(''),
                 radio: [
                     '<div class="custom-radio custom-filter">',
                     '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
@@ -33404,6 +33407,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
                 this.$el.append(this.$element);
 
+                // add error icon
+                this.$element.append(templates.errorIcon);
+
                 this.dataGridWindowResize = null;
 
                 this.sort = {
@@ -33511,9 +33517,14 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                             params.success(response);
                         }
                     }.bind(this))
-                    .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(LOADING_FAILED.call(this), jqXHR, textStatus, error);
-                    }.bind(this));
+                    .fail(this.loadingFailedHandler.bind(this));
+            },
+
+            loadingFailedHandler: function(jqXHR, textStatus, error) {
+                this.stopLoading();
+                this.showErrorIcon();
+
+                this.sandbox.emit(LOADING_FAILED.call(this), jqXHR, textStatus, error);
             },
 
             /**
@@ -33683,9 +33694,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                             params.success(response);
                         }
                     }.bind(this))
-                    .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(LOADING_FAILED.call(this), jqXHR, textStatus, error);
-                    }.bind(this));
+                    .fail(this.loadingFailedHandler.bind(this));
             },
 
             /**
@@ -33800,6 +33809,20 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         }
                     }
                 ]);
+            },
+
+            /**
+             * Displays the error icon
+             */
+            showErrorIcon: function() {
+                this.$find('#error-icon').show()
+            },
+
+            /**
+             * Hides the error icon
+             */
+            hideErrorIcon: function() {
+                this.$find('#error-icon').hide()
             },
 
             /**
@@ -34752,7 +34775,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         url: this.data.links.self.href,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this));
-                        }.bind(this)
+                        }.bind(this),
+                        fail: this.loadingFailedHandler.bind(this)
                     });
                 }
             },
@@ -34778,7 +34802,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         url: url,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this));
-                        }.bind(this)
+                        }.bind(this),
+                        fail: this.loadingFailedHandler.bind(this)
                     });
                 }
             },
@@ -34807,7 +34832,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                             url: url,
                             success: function(data) {
                                 this.sandbox.emit(UPDATED.call(this), data);
-                            }.bind(this)
+                            }.bind(this),
+                            fail: this.loadingFailedHandler.bind(this)
                         });
                     }
                 }
@@ -34861,7 +34887,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         url: url,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this));
-                        }.bind(this)
+                        }.bind(this),
+                        fail: this.loadingFailedHandler.bind(this)
                     });
                 }
             },

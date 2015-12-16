@@ -10526,6 +10526,15 @@ a.btn-black, a.btn-highlight {
   margin-top: -30px;
 }
 
+/* line 346, ../scss/modules/datagrid.scss */
+#error-icon {
+  display: none;
+  font-size: 120px;
+  color: #ccc;
+  text-align: center;
+  width: 100%;
+}
+
 /* line 1, ../scss/modules/label.scss */
 .husky-label-error,
 .husky-label-warning,
