@@ -1,5 +1,9 @@
 # CHANGELOG for husky
 
+* Unreleased
+
+    * ENHANCEMENT #590 Added event when datagrid calls errouneous url (loading.failed)
+    
 * 0.18.2 (2015-12-11)
     * HOTFIX      #589 Fixed opened children at startup
 
