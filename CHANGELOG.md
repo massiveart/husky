@@ -1,7 +1,6 @@
 # CHANGELOG for husky
 
 * dev-master
-
     * ENHANCEMENT #592 Added event when datagrid calls erroneous url (loading.failed)
     
 * 0.18.2 (2015-12-11)
