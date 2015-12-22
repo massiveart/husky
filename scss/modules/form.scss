@@ -183,19 +183,12 @@ label {
         padding: 0;
         cursor: pointer;
 
-        &:checked,
-        &.is-checked {
+        &[readonly],
+        &[readonly="readonly"] {
+            display: none;
+
             & + .icon {
-                border-color: $green;
-                background-color: $green;
-                color: $white;
-                &::after {
-                    @extend .fa;
-                    display: inline-block;
-                    margin-top: -1px;
-                    margin-left: -1px;
-                    content: $checkboxIcon;
-                }
+                border: 1px solid $grayLight;
             }
         }
 
@@ -212,6 +205,30 @@ label {
                     content: $checkboxIcon;
                 }
             }
+        }
+
+        &:checked,
+        &.is-checked {
+            & + .icon {
+                border-color: $green;
+                background-color: $green;
+                color: $white;
+                &::after {
+                    @extend .fa;
+                    display: inline-block;
+                    margin-top: -1px;
+                    margin-left: -1px;
+                    content: $checkboxIcon;
+                }
+            }
+
+            &[readonly] + .icon,
+            &[readonly="readonly"] + .icon {
+                border: 1px solid $grayLight;
+                background-color: $grayLight;
+                color: $white;
+            }
+
         }
 
         & + .icon {
