@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * FEATURE     #586 Enhanced table view
+
 * 0.18.3 (2015-12-18)
     * ENHANCEMENT #592 Added event when datagrid calls erroneous url (loading.failed)
 
