@@ -192,6 +192,21 @@ label {
             }
         }
 
+        &:indeterminate,
+        &.is-indeterminate {
+            & + .icon {
+                background-color: $grayLight;
+                color: $white;
+                &::after {
+                    @extend .fa;
+                    display: inline-block;
+                    margin-top: -1px;
+                    margin-left: -1px;
+                    content: $checkboxIcon;
+                }
+            }
+        }
+
         &:checked,
         &.is-checked {
             & + .icon {
@@ -206,21 +221,14 @@ label {
                     content: $checkboxIcon;
                 }
             }
-        }
 
-        &:indeterminate,
-        &.is-indeterminate {
-            & + .icon {
+            &[readonly] + .icon,
+            &[readonly="readonly"] + .icon {
+                border: 1px solid $grayLight;
                 background-color: $grayLight;
                 color: $white;
-                &::after {
-                    @extend .fa;
-                    display: inline-block;
-                    margin-top: -1px;
-                    margin-left: -1px;
-                    content: $checkboxIcon;
-                }
             }
+
         }
 
         & + .icon {
