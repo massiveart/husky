@@ -17496,6 +17496,10 @@ define('form/mapper',[
                             }
                         }
 
+                        // FIXME the old DOM elements should be reused, instead of generated over and over again
+                        // remove all prefilled items from the collection, because the DOM elements are recreated
+                        collection.items = [];
+
                         // foreach collection elements: create a new dom element, call setData recursively
                         $.each(data, function(key, value) {
                             that.appendChildren.call(this, collection, child, value).then(function($newElement) {
@@ -17587,9 +17591,11 @@ define('form/mapper',[
                  * @return {Object|null} the dom object or null
                  **/
                 getElementByMapperId: function(mapperId) {
-                    for (var i = -1, length = this.collections.length; ++i < length;) {
-                        if (this.collections[i].data('mapper-id') === mapperId) {
-                            return this.collections[i];
+                    for (var i = -1, iLength = this.collections.length; ++i < iLength;) {
+                        for (var j = -1, jLength = this.collections[i].items.length; ++j < jLength;) {
+                            if (this.collections[i].items[j].data('mapper-id') === mapperId) {
+                                return this.collections[i].items[j];
+                            }
                         }
                     }
                     return null;
@@ -17612,9 +17618,12 @@ define('form/mapper',[
                             templateName = item.attr('data-mapper-property-tpl');
                             item.remove();
                             collection.items.splice(j, 1);
+
+                            return false;
                         });
                     }.bind(this));
-                    return false;
+
+                    return templateName;
                 },
 
                 remove: function($element) {
@@ -17676,7 +17685,7 @@ define('form/mapper',[
                                 // if first element of collection, clear collection
                                 if (!this.collectionsSet.hasOwnProperty(collection.id)) {
                                     collection.$element.children().each(function(key, value) {
-                                        that.remove.call(this, $(value));
+                                        $(value).remove();
                                     }.bind(this));
                                 }
                                 this.collectionsSet[collection.id] = true;
@@ -17741,6 +17750,22 @@ define('form/mapper',[
                         // process it
                         data[property] = that.processData.call(this, $element);
                     }
+                },
+
+                getDataFromElements: function(elements, elementGroups, returnMapperId) {
+                    var data = {};
+
+                    elements.forEach(function(element) {
+                        that.addDataFromElement.call(this, element, data, returnMapperId);
+                    }.bind(this));
+
+                    for (var key in elementGroups) {
+                        if (elementGroups.hasOwnProperty(key)) {
+                            data[key] = elementGroups[key].getValue();
+                        }
+                    }
+
+                    return data;
                 }
             },
 
@@ -17759,19 +17784,16 @@ define('form/mapper',[
                  * @param {Boolean} [returnMapperId=false] returnMapperId
                  */
                 getData: function($el, returnMapperId) {
-                    var data = {};
-
-                    form.elements.forEach(function(element) {
-                        that.addDataFromElement.call(this, element, data, returnMapperId);
-                    }.bind(this));
-
-                    for(var key in form.elementGroups) {
-                        if (form.elementGroups.hasOwnProperty(key)) {
-                            data[key] = form.elementGroups[key].getValue();
-                        }
+                    if (!!$el && !!$el.data('mapper-id')) {
+                        var collection = that.getElementByMapperId.call(this, $el.data('mapper-id')).data('collection');
+                        return that.getDataFromElements(
+                            collection.childElements,
+                            collection.childElementGroups,
+                            returnMapperId
+                        );
+                    } else {
+                        return that.getDataFromElements(form.elements, form.elementGroups, returnMapperId);
                     }
-
-                    return data;
                 },
 
                 addCollectionFilter: function(name, callback) {
@@ -18011,7 +18033,12 @@ define('form',[
 
                 addGroupedFields: function($el) {
                     $.each(Util.getCheckboxes($el || this.$el), function(key, value) {
-                        that.addSingleGroupedField.call(this, key, value, false);
+                        if (value.length > 1) {
+                            that.addSingleGroupedField.call(this, key, value, false);
+                        } else {
+                            // backwards compatibility: single checkbox are handled as boolean values
+                            that.addField.call(this, value);
+                        }
                     }.bind(this));
 
                     $.each(Util.getRadios($el || this.$el), function(key, value) {
