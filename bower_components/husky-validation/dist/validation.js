@@ -648,8 +648,8 @@ define('form/elementGroup',[],function() {
             }
         };
 
-    return function(elements, singleValue) {
-        return {
+    return function(elements, isSingleValue) {
+        var result = {
             getValue: function() {
                 var value = [];
                 elements.forEach(function(element) {
@@ -658,7 +658,7 @@ define('form/elementGroup',[],function() {
                     }
                 });
 
-                if (!!singleValue) {
+                if (!!isSingleValue) {
                     if (value.length > 1) {
                         throw new Error('Single value element group cannot return more than one value');
                     }
@@ -670,11 +670,11 @@ define('form/elementGroup',[],function() {
             },
 
             setValue: function(values) {
-                if (!!singleValue && !!$.isArray(values)) {
+                if (!!isSingleValue && !!$.isArray(values)) {
                     throw new Error('Single value element cannot be set to an array value');
                 }
 
-                if (!singleValue && !$.isArray(values)) {
+                if (!isSingleValue && !$.isArray(values)) {
                     throw new Error('Field with multiple values cannot be set to a single value');
                 }
 
@@ -684,7 +684,13 @@ define('form/elementGroup',[],function() {
                     setSingleValue.call(this, elements, values);
                 }
             }
-        }
+        };
+
+        elements.forEach(function(element) {
+            element.$el.data('elementGroup', result);
+        });
+
+        return result;
     };
 });
 
@@ -1221,6 +1227,7 @@ define('form/mapper',[
                             }
                         }
                     }
+
                     return null;
                 },
 
