@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #578 Adjusted design for multiple select
     * FEATURE     #586 Enhanced table view
 
 * 0.18.3 (2015-12-18)
