@@ -9,7 +9,6 @@
     top: 0;
     left: 0;
     color: $white;
-    line-height: $height;
     padding-left: 55px;
     font-size: $smallFontSize;
     z-index: 15000;
@@ -17,6 +16,11 @@
     strong {
         font-weight: bold;
         padding-right: 3px;
+    }
+    .text {
+        display: table-cell;
+        vertical-align: middle;
+        height: $height;
     }
     .close {
         position: absolute;
