@@ -2,6 +2,7 @@
 
 * dev-develop
     * ENHANCEMENT #595 Added default label for is-native selects
+    * ENHANCEMENT #594 Changed style of warning label
     * ENHANCEMENT #593 Changed toggler to only use data attribute
     * FEATURE     #578 Adjusted design for multiple select
     * FEATURE     #586 Enhanced table view
