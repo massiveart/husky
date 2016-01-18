@@ -6,8 +6,8 @@
     width: 100%;
     height: $height;
     position: relative;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     color: $white;
     line-height: $height;
     padding-left: 55px;
@@ -103,6 +103,7 @@
 
 .husky-label-warning {
     background: $yellow;
+    color: $black;
     .counter {
         color: $yellow;
     }

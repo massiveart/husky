@@ -10562,8 +10562,8 @@ a.btn-black, a.btn-highlight {
   width: 100%;
   height: 70px;
   position: relative;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   color: #fff;
   line-height: 70px;
   padding-left: 55px;
@@ -10679,17 +10679,18 @@ a.btn-black, a.btn-highlight {
 /* line 104, ../scss/modules/label.scss */
 .husky-label-warning {
   background: #F2D212;
+  color: #000;
 }
-/* line 106, ../scss/modules/label.scss */
+/* line 107, ../scss/modules/label.scss */
 .husky-label-warning .counter {
   color: #F2D212;
 }
 
-/* line 111, ../scss/modules/label.scss */
+/* line 112, ../scss/modules/label.scss */
 .husky-label-success {
   background: #5DC774;
 }
-/* line 113, ../scss/modules/label.scss */
+/* line 114, ../scss/modules/label.scss */
 .husky-label-success .counter {
   color: #5DC774;
 }
