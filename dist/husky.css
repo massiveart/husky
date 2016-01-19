@@ -10567,7 +10567,7 @@ a.btn-black, a.btn-highlight {
   color: #fff;
   padding-left: 55px;
   font-size: 12px;
-  z-index: 15000;
+  z-index: 200;
 }
 /* line 16, ../scss/modules/label.scss */
 .husky-label-error strong,
