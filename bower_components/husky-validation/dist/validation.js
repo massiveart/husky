@@ -10,7 +10,7 @@
 
 define('form/util',[], function() {
 
-    
+    'use strict';
 
     var ignoredKeys = [
         'form',
@@ -222,7 +222,7 @@ define('form/util',[], function() {
 
 define('form/element',['form/util'], function(Util) {
 
-    
+    'use strict';
 
     return function(el, form, options) {
 
@@ -610,7 +610,7 @@ define('form/validation',[
     'form/util'
 ], function(Util) {
 
-    
+    'use strict';
 
     return function(form) {
         var valid,
@@ -710,7 +710,7 @@ define('form/mapper',[
     'form/util'
 ], function(Util) {
 
-    
+    'use strict';
 
     return function(form) {
 
@@ -1390,7 +1390,7 @@ define('form',[
     'form/util'
 ], function(Element, Validation, Mapper, Util) {
 
-    
+    'use strict';
 
     return function(el, options) {
         var defaults = {
@@ -1535,7 +1535,7 @@ define('type/default',[
     'form/util'
 ],function(Util) {
 
-    
+    'use strict';
 
     return function($el, defaults, options, name, typeInterface, form) {
 
@@ -1611,7 +1611,7 @@ define('type/string',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = { },
@@ -1645,7 +1645,7 @@ define('type/date',[
     'form/util'
 ], function(Default, Util) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -1707,7 +1707,7 @@ define('type/decimal',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -1765,7 +1765,7 @@ define('type/hiddenData',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -1819,7 +1819,7 @@ define('type/mappingData',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -1894,7 +1894,7 @@ define('type/email',[
     'form/util'
 ], function(Default, Util) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -1936,7 +1936,7 @@ define('type/url',[
     'form/util'
 ], function(Default, Util) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -1980,7 +1980,7 @@ define('type/label',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -2043,7 +2043,7 @@ define('type/select',[
     'form/util'
 ], function(Default, Util) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -2103,7 +2103,7 @@ define('type/readonly-select',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -2184,7 +2184,7 @@ define('type/collection',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -2242,7 +2242,7 @@ define('type/attributes',[
     'type/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, options) {
         var defaults = {
@@ -2282,7 +2282,7 @@ define('type/attributes',[
 
 define('validator/default',[],function() {
 
-    
+    'use strict';
 
     return function($el, form, defaults, options, name) {
 
@@ -2346,7 +2346,7 @@ define('validator/min',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = {
@@ -2380,7 +2380,7 @@ define('validator/max',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = {
@@ -2414,7 +2414,7 @@ define('validator/minLength',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = {
@@ -2448,7 +2448,7 @@ define('validator/maxLength',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = {
@@ -2482,46 +2482,38 @@ define('validator/required',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = { },
 
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
-                validate: function(value, recursion) {
-                    if (recursion && !value) {
-                        return false;
-                    }
+                validate: function() {
                     if (!!this.data.required) {
-                        var val = value || this.data.element.getValue(), i;
-                        // for checkboxes and select multiples.
-                        // check there is at least one required value
-                        if ('object' === typeof val) {
-                            for (i in val) {
-                                if (val.hasOwnProperty(i)) {
-                                    if (this.validate(val[i]), true) {
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
+                        var val = this.data.element.getValue();
+
+                        if (typeof val === 'number') {
+                            return true;
                         }
 
-                        if(typeof val === 'undefined'){
-                            return false;
+                        if (!!_.isString(val)) {
+                            val = val.trim();
                         }
-
-                        // the following condition works only for strings
-                        val = val.toString();
 
                         // notNull && notBlank && not undefined
-                        return val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                        if (!val) {
+                            return false;
+                        }
+
+                        // not empty array, object and string
+                        return _.size(val) > 0;
                     }
                     return true;
                 }
             });
 
         result.initialize();
+
         return result;
     };
 
@@ -2542,7 +2534,7 @@ define('validator/unique',[
     'form/util'
 ], function(Default, Util) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
 
@@ -2650,7 +2642,7 @@ define('validator/equal',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = {
@@ -2755,7 +2747,7 @@ define('validator/regex',[
     'validator/default'
 ], function(Default) {
 
-    
+    'use strict';
 
     return function($el, form, element, options) {
         var defaults = {
