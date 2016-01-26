@@ -7,7 +7,7 @@ define(['husky', 'jquery'], function(husky, $) {
     describe('Husky', function() {
 
         it('version check', function() {
-            app = husky({ debug: { enable: true }});
+            app = husky({ debug: { enable: false }});
 
             expect(app.version).toBe('0.1.0');
         });
