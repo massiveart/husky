@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.18.4 (2016-01-26)
     * HOTFIX      #595 Fixed required validator in husky validation
 
 * 0.18.3 (2015-12-18)
