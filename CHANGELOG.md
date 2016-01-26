@@ -6,6 +6,9 @@
     * FEATURE     #578 Adjusted design for multiple select
     * FEATURE     #586 Enhanced table view
 
+* 0.18.4 (2016-01-26)
+    * HOTFIX      #595 Fixed required validator in husky validation
+
 * 0.18.3 (2015-12-18)
     * ENHANCEMENT #592 Added event when datagrid calls erroneous url (loading.failed)
 
