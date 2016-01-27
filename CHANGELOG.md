@@ -8,6 +8,7 @@
     * FEATURE     #610 Added save parameter for datagrid
     * BUGFIX      #612 Fixed link style in white-boxes
     * ENHANCEMENT #614 Added evaluate tab-conditions
+    * ENHANCEMENT #611 Added style for label-description
     * FEATURE     #608 Allows each row in the matrix component to have different values
     * ENHANCEMENT #595 Added default label for is-native selects
     * ENHANCEMENT #594 Changed style of warning label
