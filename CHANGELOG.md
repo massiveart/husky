@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master (2016-02-03)
-    * BUGFIX      #496 Fixed globalazation of datetime value which has a time component in it
+    * BUGFIX      #496 Fixed globalization of datetime value which has a time component in it
 
 * dev-master
     * HOTFIX      #599 Fixed rendering preselected

@@ -64,17 +64,17 @@
                     /**
                      * returns formatted date string
                      * @param {string|Date} date
-                     * @param {Boolean} returnDateOnly
+                     * @param {Boolean} returnDateAndTime
                      * @returns {string}
                      */
-                    format: function(date, returnDateOnly) {
+                    format: function(date, returnDateAndTime) {
                         var returnDate, returnTime;
                         if(typeof date === 'string'){
                             date = this.parse(date);
                         }
 
                         returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
-                        if (returnDateOnly !== true) {
+                        if (returnDateAndTime === true) {
                             returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
                         }
 

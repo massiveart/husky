@@ -89,6 +89,7 @@
 
             types = {
                 DATE: 'date',
+                DATETIME: 'datetime',
                 THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
                 BYTES: 'bytes',
@@ -141,6 +142,19 @@
                         return parsedDate;
                     }
                     return date;
+                },
+                
+                /**
+                 * Brings a datetime into the right format
+                 * @param date {String} the date to parse
+                 * @returns {String}
+                 */
+                datetime: function(datetime) {
+                    var parsedDate = this.sandbox.date.format(datetime, true);
+                    if (parsedDate !== null) {
+                        return parsedDate;
+                    }
+                    return datetime;
                 },
 
                 /**
