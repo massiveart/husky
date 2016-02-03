@@ -2,6 +2,7 @@
 
 * dev-master (2016-02-03)
     * BUGFIX      #496 Fixed globalazation of datetime value which has a time component in it
+    * HOTFIX      #599 Fixed rendering preselected
 
 * 0.18.4 (2016-01-26)
     * HOTFIX      #595 Fixed required validator in husky validation
