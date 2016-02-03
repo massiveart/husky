@@ -7,6 +7,9 @@
     * FEATURE     #578 Adjusted design for multiple select
     * FEATURE     #586 Enhanced table view
 
+* dev-master
+    * HOTFIX      #599 Fixed rendering preselected
+
 * 0.18.4 (2016-01-26)
     * HOTFIX      #595 Fixed required validator in husky validation
 
