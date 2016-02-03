@@ -74,7 +74,7 @@
                         }
 
                         returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
-                        if (returnDateOnly === true) {
+                        if (returnDateOnly !== true) {
                             returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
                         }
 
