@@ -71,10 +71,13 @@ define([], function() {
     templates = {
         main: [
             '<div class="husky-auto-complete <%= dropdownSizeClass %>">',
-                '<div class="front">',
-                    '<a class="fa-<%= autoCompleteIcon %>"></a>',
-                '</div>',
-                '<div class="input"></div>',
+            '    <div class="front">',
+            '       <a class="fa-<%= autoCompleteIcon %>"></a>',
+            '    </div>',
+            '    <div class="input"></div>',
+            '    <div class="back">',
+            '       <div class="loader" style="display: none;"></div>',
+            '    </div>',
             '</div>'
         ].join('')
     },
@@ -294,6 +297,17 @@ define([], function() {
             this.initValueField();
             this.appendValueField();
 
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: this.$el.find('.loader'),
+                        color: '#ccc',
+                        size: '20px'
+                    }
+                }
+            ]);
+
             this.bindTypeahead();
         },
 
@@ -361,13 +375,17 @@ define([], function() {
             if (!!this.options.remoteUrl) {
                 configs.remote = {
                     url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
-                    beforeSend: function() {
-                        this.sandbox.emit(REMOTE_LOAD.call(this));
-                    }.bind(this),
+                    ajax: {
+                        beforeSend: function() {
+                            this.sandbox.emit(REMOTE_LOAD.call(this));
+                            this.showLoader();
+                        }.bind(this)
+                    },
                     filter: function(data) {
                         this.sandbox.emit(REMOTE_RETRIEVE.call(this));
-                        this.handleData(data);
-                        return this.data;
+                        this.hideLoader();
+
+                        return this.handleData(data);
                     }.bind(this)
                 };
             }
@@ -383,6 +401,20 @@ define([], function() {
             if (this.options.hint === false) {
                 this.sandbox.dom.remove(this.sandbox.dom.find('.tt-hint', this.$el));
             }
+        },
+
+        /**
+         * Show loader to indicate loading suggestions.
+         */
+        showLoader: function() {
+            this.$el.find('.loader').show();
+        },
+
+        /**
+         * Hide loader after loading suggestions.
+         */
+        hideLoader: function() {
+            this.$el.find('.loader').hide();
         },
 
         /**
