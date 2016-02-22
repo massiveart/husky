@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #607 Fixed data-attribute id for auto-complete
     * ENHANCEMENT #606 Added data to retrieve event
     * ENHANCEMENT #605 Added loader to indicate loading suggestions
 
