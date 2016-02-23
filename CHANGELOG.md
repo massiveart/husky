@@ -7,6 +7,10 @@
     * FEATURE     #578 Adjusted design for multiple select
     * FEATURE     #586 Enhanced table view
 
+* dev-master
+    * ENHANCEMENT #606 Added data to retrieve event
+    * ENHANCEMENT #605 Added loader to indicate loading suggestions
+
 * 0.18.5 (2016-02-05)
     * HOTFIX      #496 Fixed globalization of datetime value which has a time component in it
     * HOTFIX      #599 Fixed rendering preselected
