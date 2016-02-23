@@ -33020,6 +33020,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 sortable: true,
                 matchings: [],
                 url: null,
+                saveParams: {},
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
@@ -33100,7 +33101,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     }
                     return date;
                 },
-                
+
                 /**
                  * Brings a datetime into the right format
                  * @param date {String} the date to parse
@@ -35184,6 +35185,10 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     method = 'PUT';
                     isNewRecord = false;
                     url = url + '/' + data.id;
+                }
+
+                for (var key in this.options.saveParams) {
+                    url = setGetParameter.call(this, url, key, this.options.saveParams[key]);
                 }
 
                 this.sandbox.emit(DATA_CHANGED.call(this));
