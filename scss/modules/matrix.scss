@@ -20,10 +20,9 @@
 
     td {
         &.value {
-            width: 20px;
-            padding: 3px;
             margin: 0;
             border: none;
+            white-space: nowrap;
         }
 
         &.all {
@@ -45,6 +44,7 @@
         width: 24px;
         height: 24px;
         line-height: 22px;
+        margin: 3px;
 
         display: inline-block;
         text-align: center;
