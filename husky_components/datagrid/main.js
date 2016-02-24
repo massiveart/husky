@@ -2258,7 +2258,7 @@
                         }
                     }.bind(this))
                     .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error);
+                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error, data);
 
                         if (typeof fail === 'function') {
                             fail(jqXHR, textStatus, error);
