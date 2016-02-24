@@ -15,21 +15,14 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
-    <style>
-        #container {
-            width: 800px;
-            margin-left: 300px;
-            margin-top: 100px;
-        }
-    </style>
 </head>
 <body>
-<div id="container">
+
+<div id="matrix">
 
     <button id="set-all">Set All</button>
     <button id="unset-all">Unset All</button>
 </div>
-
 
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
@@ -43,17 +36,18 @@
     require(['lib/husky'], function(Husky) {
         'use strict';
 
-        var app = Husky({ debug: { enable: true }}),
-                _ = app.sandbox.util._;
+        var app = Husky({debug: {enable: true}}),
+            _ = app.sandbox.util._;
 
         app.start().then(function() {
             app.logger.log('Aura started...');
+
 
             app.sandbox.start([
                 {
                     name: 'matrix@husky',
                     options: {
-                        el: '#container',
+                        el: '#matrix',
                         captions: {
                             all: 'Select all',
                             none: 'Select none',
@@ -65,20 +59,34 @@
                         values: {
                             vertical: ['sulu.assets.videos', 'sulu.assets.documents', 'sulu.assets.images'],
                             horizontal: [
-                                {value: 'value1', icon: 'plus'},
-                                {value: 'value2', icon: 'edit'},
-                                {value: 'value3', icon: 'search'},
-                                {value: 'value4', icon: 'times'},
-                                {value: 'value5', icon: 'gear'},
-                                {value: 'value6', icon: 'check'},
-                                {value: 'value7', icon: 'building'}
-                            ],
-                            titles: ['add', 'edit', 'search', 'remove', 'settings', 'circle-ok', 'building']
+                                [
+                                    {value: 'value1', icon: 'plus', title: 'add'},
+                                    {value: 'value2', icon: 'edit', title: 'edit'},
+                                    {value: 'value3', icon: 'search', title: 'search'},
+                                    {value: 'value4', icon: 'times', title: 'remove'},
+                                    {value: 'value5', icon: 'gear', title: 'settings'},
+                                    {value: 'value6', icon: 'check', title: 'circle-ok'},
+                                    {value: 'value7', icon: 'building', title: 'building'}
+                                ],
+                                [
+                                    {value: 'value2', icon: 'edit', title: 'edit'},
+                                    {value: 'value4', icon: 'times', title: 'remove'},
+                                    {value: 'value5', icon: 'gear', title: 'settings'},
+                                    {value: 'value7', icon: 'building', title: 'building'}
+                                ],
+                                [
+                                    {value: 'value1', icon: 'plus', title: 'add'},
+                                    {value: 'value2', icon: 'edit', title: 'edit'},
+                                    {value: 'value3', icon: 'search', title: 'search'},
+                                    {value: 'value4', icon: 'times', title: 'remove'},
+                                    {value: 'value5', icon: 'gear', title: 'settings'},
+                                ]
+                            ]
                         },
                         data: [
                             [true, false, true, false, false, false, false],
-                            [true, true, true, true, true, true, true],
-                            [false, true, true, false, true, false, true]
+                            [true, true, true, true],
+                            [false, true, true, false, true]
                         ]
                     }
                 }

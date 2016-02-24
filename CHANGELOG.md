@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #608 Allows each row in the matrix component to have different values
     * ENHANCEMENT #595 Added default label for is-native selects
     * ENHANCEMENT #594 Changed style of warning label
     * ENHANCEMENT #593 Changed toggler to only use data attribute
