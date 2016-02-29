@@ -3,6 +3,7 @@
 * dev-develop
     * BUGFIX      #616 Fixed label tick in firefox
     * ENHANCEMENT #615 Introduced no-img-icon as function to use record dependent icons
+    * FEATURE     #610 Added save parameter for datagrid
     * FEATURE     #608 Allows each row in the matrix component to have different values
     * ENHANCEMENT #595 Added default label for is-native selects
     * ENHANCEMENT #594 Changed style of warning label
