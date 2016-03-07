@@ -8,7 +8,9 @@
     * FEATURE     #578 Adjusted design for multiple select
     * FEATURE     #586 Enhanced table view
 
-* dev-master
+* 0.18.6 (2016-03-07)
+    * HOTFIX      #609 Fixed input back class overlapping
+    * HOTFIX      #607 Fixed data-attribute id for auto-complete
     * ENHANCEMENT #606 Added data to retrieve event
     * ENHANCEMENT #605 Added loader to indicate loading suggestions
 

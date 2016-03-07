@@ -527,7 +527,7 @@ define([], function() {
                     var dataId = this.sandbox.dom.attr(this.$valueField, 'data-id');
                     if (dataId != null && dataId !== 'null') {
                         this.sandbox.dom.removeAttr(this.$valueField, 'data-id');
-                        this.sandbox.dom.data(this.$valueField, 'data-id', 'null');
+                        this.sandbox.dom.data(this.$valueField, 'id', 'null');
                         this.sandbox.emit(SELECTION_REMOVED.call(this));
                     }
                 }
@@ -646,6 +646,7 @@ define([], function() {
          */
         setValueFieldId: function(id) {
             this.sandbox.dom.attr(this.$valueField, {'data-id': id});
+            this.sandbox.dom.data(this.$valueField, 'id',  id);
         },
 
         /**
