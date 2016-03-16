@@ -40,25 +40,32 @@
         }
     }
 
+    .search-icon, .remove-icon {
+        background: transparent;
+        border: 0px;
+        line-height: 25px;
+    }
+
     .search-icon {
         position: absolute;
         padding-left: 8px;
+        padding-right: 15px;
         font-size: 16px;
-        line-height: $inputHeight;
         vertical-align: middle;
         text-decoration: none;
+        cursor: pointer;
     }
 
     .remove-icon {
         display: none;
         position: absolute;
         right: 10px;
-        line-height: $inputHeight;
         vertical-align: middle;
         margin: auto;
         background-color: $white;
         padding-left: 3px;
         text-decoration: none;
+        cursor: pointer;
     }
 
     /** look and feel **/
@@ -104,7 +111,6 @@
             font-size: 12px;
         }
         .search-icon {
-            padding-right: 15px;
             font-size: 12px;
         }
     }
