@@ -1,12 +1,9 @@
 # CHANGELOG for husky
 
 * dev-develop
-<<<<<<< a872d4178f8a432f69f5a5a7e456af3a06e01799
     * BUGFIX      #616 Fixed label tick in firefox
     * ENHANCEMENT #615 Introduced no-img-icon as function to use record dependent icons
-=======
     * BUGFIX      #613 Fixed search-icon to prevent routing
->>>>>>> fixed routing for search-icon by replacing a with button
     * FEATURE     #608 Allows each row in the matrix component to have different values
     * ENHANCEMENT #595 Added default label for is-native selects
     * ENHANCEMENT #594 Changed style of warning label
