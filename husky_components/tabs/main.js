@@ -50,6 +50,7 @@ define(function() {
             forceReload: false,
             callback: null,
             forceSelect: true,
+            values: {},
             preSelectEvent: {
                 enabled: false,
                 triggerSelectItem: true
@@ -125,6 +126,15 @@ define(function() {
         },
 
         /**
+         * used to update the tab-component.
+         * @event husky.tabs.initialized
+         * @param {Object} values object
+         */
+        UPDATE = function() {
+            return this.createEventName('update');
+        },
+
+        /**
          * triggered when component was initialized
          * @event husky.tabs.initialized
          */
@@ -196,6 +206,20 @@ define(function() {
             setMarker.call(this);
         },
 
+        update = function(values) {
+            this.sandbox.util.foreach(this.data, function(item) {
+                var $item = this.$find('li[data-id="' + item.id + '"]');
+
+                if (!!item.displayConditions && !this.evaluate(item.displayConditions, values)) {
+                    this.sandbox.dom.hide($item);
+                } else {
+                    this.sandbox.dom.show($item);
+                }
+            }.bind(this));
+
+            setMarker.call(this);
+        },
+
         bindDOMEvents = function() {
             if (!!this.options.preSelectEvent.enabled) {
                 this.sandbox.dom.on(this.$el, 'click', preSelectEvent.bind(this), 'li');
@@ -211,14 +235,11 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(ACTIVATE.call(this), this.activate.bind(this));
-
             this.sandbox.on(DEACTIVATE.call(this), this.deactivate.bind(this));
-
             this.sandbox.on(ITEM_SHOW.call(this), showItem.bind(this));
-
             this.sandbox.on(ITEM_HIDE.call(this), hideItem.bind(this));
-
             this.sandbox.on(ITEM_CLICKED.call(this), selectItem.bind(this));
+            this.sandbox.on(UPDATE.call(this), update.bind(this));
         };
 
     return {
@@ -232,18 +253,19 @@ define(function() {
             this.domItems = {};
 
             bindDOMEvents.call(this);
-
             bindCustomEvents.call(this);
 
             // load data and call render
             if (!!this.options.url) {
                 this.sandbox.util.load(this.options.url)
-                    .then(this.render.bind(this))
+                    .then(function(data) {
+                        this.render(data, this.options.values);
+                    }.bind(this))
                     .fail(function(data) {
                         this.sandbox.logger.log('data could not be loaded:', data);
                     }.bind(this));
             } else if (!!this.options.data) {
-                this.render(this.options.data);
+                this.render(this.options.data, this.options.values);
             } else {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
@@ -251,6 +273,7 @@ define(function() {
 
         createEventName: function(ending) {
             var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+
             return 'husky.tabs.' + instanceName + ending;
         },
 
@@ -290,8 +313,55 @@ define(function() {
             return Math.floor((Math.random() * 1677721500000000)).toString(16);
         },
 
-        render: function(data) {
-            data = this.generateIds(data);
+        /**
+         * Evaluates the given display-conditions against the condition-data.
+         *
+         * @param {[{property, operator, value}]} displayConditions
+         * @param {Object} values
+         *
+         * @returns {boolean}
+         */
+        evaluate: function(displayConditions, values) {
+            for (var i = 0, length = displayConditions.length; i < length; i++) {
+                var item = this.sandbox.util.extend(
+                    true,
+                    {},
+                    {
+                        property: null,
+                        operator: null,
+                        value: null
+                    }, displayConditions[i]
+                );
+
+                if (!values.hasOwnProperty(item.property)) {
+                    this.sandbox.logger.warn('property "' + item.property + '" does not exists in data');
+
+                    return false;
+                }
+
+                switch (item.operator) {
+                    case 'eq':
+                        if (values[item.property] !== item.value) {
+                            return false;
+                        }
+                        break;
+                    case 'neq':
+                        if (values[item.property] === item.value) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        this.sandbox.logger.error('operator "' + item.operator + '" is not implemented.');
+
+                        return false;
+                }
+            }
+
+            return true;
+        },
+
+        render: function(data, values) {
+            this.data = this.generateIds(data);
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
@@ -307,14 +377,16 @@ define(function() {
             this.items = [];
             this.domItems = {};
 
-            this.sandbox.util.foreach(data, function(item, index) {
+            this.sandbox.util.foreach(this.data, function(item, index) {
                 this.items[item.id] = item;
                 $item = this.sandbox.dom.createElement(
                     '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.name) + '</a></li>'
                 );
                 this.sandbox.dom.append($list, $item);
 
-                if (!!item.disabled && item.disabled.toString() === 'true') {
+                if ((!!item.disabled && item.disabled.toString() === 'true')
+                    || (!!item.displayConditions && !this.evaluate(item.displayConditions, values))
+                ) {
                     this.sandbox.dom.hide($item);
                 }
 
@@ -339,6 +411,7 @@ define(function() {
                 this.sandbox.dom.addClass(this.sandbox.dom.find('li', $list).eq(0), 'is-selected');
             }
             setMarker.call(this);
+
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }
