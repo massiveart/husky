@@ -2,11 +2,12 @@
 // Toggler
 // --------------------------------------------------
 
+$togglerHeight: 20px;
+$togglerWidth: 35px;
+
 .husky-toggler {
     $transDuration: 100ms;
     $transFunction: ease-in;
-    $togglerHeight: 20px;
-    $togglerWidth: 35px;
     $togglerOutlineColor: $milkeyBlue2;
 
     width: $togglerWidth;
@@ -16,21 +17,19 @@
     vertical-align: middle;
     cursor: pointer;
 
-
-  &.outline {
-      margin-top: -2px;
-      .toggler-wrapper {
-        border-color: $togglerOutlineColor;
-        height: $togglerHeight + 2px;
-        border-radius: ($togglerHeight + 2px)/2;
-      }
-      .switch {
-          border-color: $togglerOutlineColor;
-          top: 1px;
-          left: 1px;
-      }
-  }
-
+    &.outline {
+        margin-top: -2px;
+        .toggler-wrapper {
+            border-color: $togglerOutlineColor;
+            height: $togglerHeight + 2px;
+            border-radius: ($togglerHeight + 2px)/2;
+        }
+        .switch {
+            border-color: $togglerOutlineColor;
+            top: 1px;
+            left: 1px;
+        }
+    }
 
     .toggler-wrapper {
         background: $white;
@@ -69,19 +68,18 @@
     }
 
     &.checked {
+        &.outline {
+            .toggler-wrapper {
+                border-color: $togglerOutlineColor;
+                .switch {
+                    left: 14px;
+                }
+            }
+        }
 
-      &.outline {
-          .toggler-wrapper {
-              border-color: $togglerOutlineColor;
-              .switch {
-                  left: 14px;
-              }
-          }
-      }
-
-      .toggler-wrapper {
-          background: $green;
-          border-color: $green;
+        .toggler-wrapper {
+            background: $green;
+            border-color: $green;
         }
 
         .switch {
@@ -92,4 +90,12 @@
             left: 17px;
         }
     }
+}
+
+.husky-toggler-label {
+    color: $black;
+}
+
+label.husky-toggler-label ~ .input-description {
+    margin-left: $togglerWidth + 5px;
 }
