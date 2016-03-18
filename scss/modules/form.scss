@@ -40,7 +40,7 @@ input[type="text"] {
 input
 .input-description {
     margin-top: -5px;
-    font-size: 10px;
+    font-size: $smallFontSize;
     color: $grayLight;
 }
 
@@ -158,6 +158,12 @@ label {
     &.spacing-left {
         margin-left: 10px;
     }
+}
+
+label ~ .input-description {
+    margin-top: -5px;
+    font-size: $smallFontSize;
+    color: $grayLight;
 }
 
 // Checkboxes

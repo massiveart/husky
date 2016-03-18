@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #597 added additional callback for select and fixed css bugs
     * BUGFIX      #616 Fixed label tick in firefox
     * ENHANCEMENT #615 Introduced no-img-icon as function to use record dependent icons
     * BUGFIX      #613 Fixed search-icon to prevent routing

@@ -151,7 +151,7 @@
 
                 /**
                  * Brings a datetime into the right format
-                 * @param date {String} the date to parse
+                 * @param datetime {String} the date to parse
                  * @returns {String}
                  */
                 datetime: function(datetime) {
