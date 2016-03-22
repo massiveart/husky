@@ -5,6 +5,7 @@
 .dropdown {
     display: inline-block;
     position: relative;
+    font-family: $baseFontFamily;
 
     &.dropdown-show {
         .dropdown-menu {
@@ -43,9 +44,9 @@
     border-radius: $borderRadius;
 
     &.top {
-      top: auto;
-      bottom: 25px;
-      margin-bottom: 0;
+        top: auto;
+        bottom: 25px;
+        margin-bottom: 0;
     }
 
     & > ul {
@@ -57,19 +58,43 @@
             padding: 0 20px;
             line-height: 30px;
             text-align: left;
+
+            .info, .info-clicked {
+                display: none;
+                font-size: $smallFontSize;
+                padding: 0 20px;
+                position: absolute;
+                right: 0;
+                background-color: transparent;
+            }
+
+            .info-clicked.clicked {
+                display: inline;
+                float: right;
+            }
+
             &:hover,
             &.hover {
                 background-color: $highlightColor;
                 cursor: pointer;
                 color: $white;
+
+                .info {
+                    display: inline;
+                    float: right;
+
+                    &.clicked {
+                        display: none;
+                    }
+                }
             }
             &.divider {
-              height: 1px;
-              margin: 5px 0 10px 0;
-              padding: 0;
-              overflow: hidden;
-              background-color: $grayLighterer;
-              cursor: default;
+                height: 1px;
+                margin: 5px 0 10px 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: $grayLighterer;
+                cursor: default;
             }
             &.disabled {
                 color: $grayLight;
