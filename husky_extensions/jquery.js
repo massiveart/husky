@@ -312,7 +312,7 @@
             };
 
             app.core.dom.text = function(selector, value) {
-                if (!!value) {
+                if (!!value || value === '') {
                     return $(selector).text(value);
                 } else {
                     return $(selector).text();

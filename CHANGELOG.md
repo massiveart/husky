@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #617 Fixed jquery text function with empty value
     * FEATURE     #597 added additional callback for select and fixed css bugs
     * BUGFIX      #616 Fixed label tick in firefox
     * ENHANCEMENT #615 Introduced no-img-icon as function to use record dependent icons
