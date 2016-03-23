@@ -1641,7 +1641,7 @@
              */
             addRecordHandler: function(recordData) {
                 if (!!this.gridViews[this.viewId].addRecord) {
-                    if (!!recordData.id) {
+                    if (!!recordData[this.options.idKey]) {
                         this.pushRecords([recordData]);
                     }
                     this.gridViews[this.viewId].addRecord(recordData, false);
@@ -1658,7 +1658,7 @@
             addRecordsHandler: function(records, callback) {
                 if (!!this.gridViews[this.viewId].addRecord) {
                     this.sandbox.util.foreach(records, function(record) {
-                        if (!!record.id) {
+                        if (!!record[this.options.idKey]) {
                             this.pushRecords([record]);
                             this.gridViews[this.viewId].addRecord(record, false);
                         }

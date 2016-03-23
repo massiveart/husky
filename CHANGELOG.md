@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #618 Fixed update of record with a different id property
     * BUGFIX      #617 Fixed jquery text function with empty value
     * FEATURE     #597 added additional callback for select and fixed css bugs
     * BUGFIX      #616 Fixed label tick in firefox
