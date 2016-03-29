@@ -57,7 +57,7 @@
                         return key;
                     }
 
-                    return !!translation ? translation : key;
+                    return (!!translation || translation === '') ? translation : key;
                 };
 
                 app.sandbox.date = {
@@ -162,13 +162,17 @@
                 };
 
                 /**
+                 * Set culture with given name and messages
                  *
                  * @param cultureName
                  * @param messages
+                 * @param defaultMessages will be used as fallback messages
                  */
-                app.setLanguage = function(cultureName, messages) {
+                app.setLanguage = function(cultureName, messages, defaultMessages) {
                     Globalize.culture(cultureName);
+
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
+                    app.sandbox.globalize.addCultureInfo('default', defaultMessages);
                 };
 
                 if (!!app.config.culture && !!app.config.culture.name && app.config.culture.name !== 'en') {
@@ -182,7 +186,11 @@
                         app.config.culture.messages = {};
                     }
 
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
+                    app.setLanguage(
+                        app.config.culture.name,
+                        app.config.culture.messages,
+                        app.config.culture.defaultMessages
+                    );
                 }
 
                 app.sandbox.globalize.setCurrency('');

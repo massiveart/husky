@@ -29224,8 +29224,11 @@ define('__component__$navigation@husky',[],function() {
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
 
-                if (!!section.title) {
-                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span></div>');
+                var title;
+                if (!!section.title && !!(title = this.sandbox.translate(section.title))) {
+                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + title.toUpperCase() + '</span></div>');
+                } else if (!!$elem && $elem.children().length > 0) {
+                    this.sandbox.dom.append($sectionDiv, '<hr class="section-headline-divider"/>');
                 }
 
                 this.sandbox.dom.append($sectionDiv, $sectionList);
@@ -50831,7 +50834,7 @@ define("datepicker-zh-TW", function(){});
                         return key;
                     }
 
-                    return !!translation ? translation : key;
+                    return (!!translation || translation === '') ? translation : key;
                 };
 
                 app.sandbox.date = {
@@ -50936,13 +50939,17 @@ define("datepicker-zh-TW", function(){});
                 };
 
                 /**
+                 * Set culture with given name and messages
                  *
                  * @param cultureName
                  * @param messages
+                 * @param defaultMessages will be used as fallback messages
                  */
-                app.setLanguage = function(cultureName, messages) {
+                app.setLanguage = function(cultureName, messages, defaultMessages) {
                     Globalize.culture(cultureName);
+
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
+                    app.sandbox.globalize.addCultureInfo('default', defaultMessages);
                 };
 
                 if (!!app.config.culture && !!app.config.culture.name && app.config.culture.name !== 'en') {
@@ -50956,7 +50963,11 @@ define("datepicker-zh-TW", function(){});
                         app.config.culture.messages = {};
                     }
 
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
+                    app.setLanguage(
+                        app.config.culture.name,
+                        app.config.culture.messages,
+                        app.config.culture.defaultMessages
+                    );
                 }
 
                 app.sandbox.globalize.setCurrency('');

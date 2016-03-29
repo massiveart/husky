@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #622 Added navigation divider for sections with no title
     * ENHANCEMENT #620 Fixed gap between different containers and input-description
     * ENHANCEMENT #621 Made badge usable outside of datagrid
     * BUGFIX      #618 Fixed update of record with a different id property
