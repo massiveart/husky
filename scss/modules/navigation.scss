@@ -46,6 +46,13 @@ $fadeDuration: 100ms;
     }
 }
 
+.section-headline-divider {
+    position: relative;
+    margin: 10px $verticalMargin 0;
+    cursor: default;
+    border: 0px;
+}
+
 .husky-navigation {
     height: 100%;
     position: relative;
