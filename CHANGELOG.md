@@ -2,6 +2,7 @@
 
 * dev-develop
     * ENHANCEMENT #620 Fixed gap between different containers and input-description
+    * ENHANCEMENT #621 Made badge usable outside of datagrid
     * BUGFIX      #618 Fixed update of record with a different id property
     * BUGFIX      #617 Fixed jquery text function with empty value
     * FEATURE     #597 added additional callback for select and fixed css bugs
