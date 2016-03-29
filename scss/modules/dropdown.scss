@@ -5,7 +5,6 @@
 .dropdown {
     display: inline-block;
     position: relative;
-    font-family: $baseFontFamily;
 
     &.dropdown-show {
         .dropdown-menu {
@@ -42,6 +41,8 @@
     border: 1px solid $borderColor;
     z-index: 90;
     border-radius: $borderRadius;
+    font-family: $baseFontFamily;
+    font-size: $baseFontSize;
 
     &.top {
         top: auto;
@@ -62,15 +63,15 @@
             .info, .info-clicked {
                 display: none;
                 font-size: $smallFontSize;
-                padding: 0 20px;
+                padding: 0 20px 0 10px;
                 position: absolute;
                 right: 0;
-                background-color: transparent;
             }
 
             .info-clicked.clicked {
                 display: inline;
                 float: right;
+                background-color: $white;
             }
 
             &:hover,
@@ -80,8 +81,11 @@
                 color: $white;
 
                 .info {
-                    display: inline;
-                    float: right;
+                    display: inline
+                }
+
+                .info, .info-clicked {
+                    background-color: $highlightColor;
 
                     &.clicked {
                         display: none;
