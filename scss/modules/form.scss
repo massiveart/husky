@@ -160,10 +160,23 @@ label {
     }
 }
 
-label ~ .input-description {
-    margin-top: -5px;
+.input-description {
     font-size: $smallFontSize;
     color: $grayLight;
+}
+
+h2 ~ .input-description {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+label ~ .input-description {
+    margin-top: -5px;
+}
+
+div ~ .input-description,
+input ~ .input-description {
+    margin-top: 0;
 }
 
 // Checkboxes
