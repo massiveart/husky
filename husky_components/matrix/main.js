@@ -248,7 +248,7 @@ define(function() {
                 this.sandbox.dom.data($span, 'section', section);
 
                 // set activated if set in delivered data
-                if (!!value[i]) {
+                if (!!value && !!value[i]) {
                     this.sandbox.dom.addClass($span, activeClass);
                 } else {
                     // set the flag to false if there is one
