@@ -6,7 +6,8 @@
     margin-bottom: 30px;
 
     th {
-        vertical-align: baseline;
+        vertical-align: middle;
+        line-height: 22px;
 
         &.general {
             width: 140px;
@@ -36,7 +37,6 @@
     }
 
     .matrix-icon {
-
         border: 1px solid $black;
         color: $black;
         border-radius: 12px;
