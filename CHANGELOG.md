@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #624 Fixed ui bugs in overlay, navigation and data-navigation
     * BUGFIX      #623 Added missing value check to matrix component
     * ENHANCEMENT #622 Added navigation divider for sections with no title
     * ENHANCEMENT #620 Fixed gap between different containers and input-description

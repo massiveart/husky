@@ -26,6 +26,7 @@ $footerTopMargin: 10;
 }
 
 $verticalMargin: 20px;
+$verticalMarginDivider: 30px;
 $verticalItemPadding: 35px;
 $transitionDuration: 0.5s;
 $transDurationIcons: 0.2s;
@@ -48,7 +49,7 @@ $fadeDuration: 100ms;
 
 .section-headline-divider {
     position: relative;
-    margin: 10px $verticalMargin 0;
+    margin: $verticalMarginDivider 0;
     cursor: default;
     border: 0px;
 }
