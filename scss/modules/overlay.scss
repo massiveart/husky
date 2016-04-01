@@ -25,6 +25,18 @@
         overflow: hidden;
     }
 
+    &.wide {
+        width: $overlayContainerWidthExtraWide;
+
+        .slides .slide {
+            width: $overlayContainerWidthExtraWide;
+
+            .overlay-footer {
+                width: $overlayContainerWidthExtraWide;
+            }
+        }
+    }
+
     &.dropzone {
         width: $overlayContainerWidthExtraWide;
         .slides {
