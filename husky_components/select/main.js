@@ -347,6 +347,11 @@ define([], function() {
         },
 
         render: function() {
+            // if preselected items are not present in the data.
+            this.options.preSelectedElements = _.filter(this.options.preSelectedElements, function(item) {
+                return _.contains(this.options.data, item);
+            }.bind(this));
+
             // add husky-select class to component
             this.sandbox.dom.addClass(this.$el, constants.selectClass);
 
