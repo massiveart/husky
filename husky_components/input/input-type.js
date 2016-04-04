@@ -9,8 +9,9 @@
  */
 
 define([
-    'type/default'
-], function(Default) {
+    'type/default',
+    'services/husky/url-validator'
+], function(Default, urlValidator) {
 
     'use strict';
 
@@ -37,8 +38,7 @@ define([
                     return regex.test(value);
                 },
                 url: function(value) {
-                    var regex = /^([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-\?\$\#])*\/?/;
-                    return regex.test(value);
+                    return urlValidator.test(value, []);
                 },
                 time: function(value) {
                     return Globalize.parseDate(value, this.options.timeFormat) !== null;

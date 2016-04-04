@@ -1,7 +1,8 @@
 require.config({
     baseUrl: '../../',
     paths: {
-        "type/husky-input": "husky_components/input/input-type"
+        'type/husky-input': 'husky_components/input/input-type',
+        'services/husky/url-validator': 'husky_services/url-validator'
     }
 });
 
