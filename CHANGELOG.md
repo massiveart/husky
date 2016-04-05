@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #628 Fixed inheriting font from FontAwesome
     * BUGFIX      #627 Fixed preselection filtering bug
     * BUGFIX      #626 Added filtering of preselected items
     * BUGFIX      #624 Fixed ui bugs in overlay, navigation and data-navigation
