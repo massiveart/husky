@@ -128,3 +128,15 @@ h1, h2, h3, h4, h5 {
 .grey-font {
     color: $grayLight;
 }
+
+// fontawesome fix
+// see https://github.com/FortAwesome/Font-Awesome/issues/2695
+// -------------------------
+
+[class^=fa-] {
+    font-family: inherit;
+}
+
+[class^=fa-]::before {
+    font-family: FontAwesome;
+}
