@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #630 Added overlay-loader
     * BUGFIX      #629 Avoid having scientific representation of number in formatBytes method
     * BUGFIX      #628 Fixed inheriting font from FontAwesome
     * BUGFIX      #627 Fixed preselection filtering bug
