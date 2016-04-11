@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #632 Fixed wrong index of regex
     * BUGFIX      #631 Fixed javascript error when clicking on column navigation options
     * FEATURE     #630 Added overlay-loader
     * BUGFIX      #629 Avoid having scientific representation of number in formatBytes method
