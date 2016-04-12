@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #633 Removed bound effect respectively additional scrollbar
+
 * 0.19.0 (2016-04-12)
     * FEATURE     #632 Fixed wrong index of regex
     * BUGFIX      #631 Fixed javascript error when clicking on column navigation options
