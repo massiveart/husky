@@ -63,6 +63,7 @@ define([], function() {
             deselectField: false,             // field for deselection is added to dropdown if value is a string
             disabled: false,                  // if true button is disabled
             selectCallback: null,
+            preselectCallback: null,
             deselectCallback: null,
             style: 'normal',
             skin: '',
@@ -124,7 +125,7 @@ define([], function() {
                     '</div>',
                     '<div class="grid-row">',
                     '   <div id="addRow" class="addButton">',
-                    this.sandbox.translate(defaults.translations.addItem),
+                    '   <span>', this.sandbox.translate(defaults.translations.addItem), '</span>',
                     '   </div>',
                     '</div>'
                 ].join('');
@@ -346,6 +347,17 @@ define([], function() {
         },
 
         render: function() {
+            // if preselected items are not present in the data.
+            this.options.preSelectedElements = _.filter(this.options.preSelectedElements, function(item) {
+                return _.contains(this.options.data, item)
+                    || _.filter(
+                        this.options.data,
+                        function(data){
+                            return data.id == item;
+                        }.bind(this)
+                    ).length > 0;
+            }.bind(this));
+
             // add husky-select class to component
             this.sandbox.dom.addClass(this.$el, constants.selectClass);
 
@@ -1100,16 +1112,18 @@ define([], function() {
 
             // callback, if defined
             if (!!this.options.selectCallback) {
-                this.options.selectCallback.call(this, key);
+                this.options.selectCallback.call(this, key, selectedValue);
             } else {
-                this.sandbox.emit(EVENT_SELECTED_ITEM.call(this), key);
+                this.sandbox.emit(EVENT_SELECTED_ITEM.call(this), key, selectedValue);
             }
         },
 
         // triggers select callback or emits event
         triggerPreSelect: function(key) {
             // callback, if defined
-            if (!!this.options.selectCallback) {
+            if (!!this.options.preselectCallback) {
+                this.options.preselectCallback.call(this, key);
+            } else if (!!this.options.selectCallback) {
                 this.options.selectCallback.call(this, key);
             } else {
                 this.sandbox.emit(EVENT_PRESELECTED_ITEM.call(this), key);
@@ -1233,7 +1247,12 @@ define([], function() {
                     '<div class="husky-select-container">',
                     '   <div class="dropdown-label pointer">',
                     '       <% if (isNative) { %>',
-                    '           <select class="' + constants.listClass + '"></select>',
+                    '           <select class="' + constants.listClass + '">',
+                    (
+                        this.options.preSelectedElements.length === 0 ?
+                        '           <option selected="true" disabled="true">' + defaultLabel + '</option>' : ''
+                    ),
+                    '           </select>',
                     '       <% } %>',
                     '       <div class="checkbox">',
                                 iconSpan,

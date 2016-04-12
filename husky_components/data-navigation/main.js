@@ -337,7 +337,7 @@ define([
             this.$el.on('click', '.data-navigation-search > .icon-container', function() {
                 if (!$('.data-navigation-header').hasClass('header-search')) {
                     $('.data-navigation-header').addClass('header-search');
-                    $('.data-navigation-search span').attr('class', 'fa-times');
+                    $('.data-navigation-search .icon-container span').attr('class', 'fa-times');
                     $('.data-navigation-search input').select();
                 } else {
                     this.clearSearch();
@@ -443,7 +443,7 @@ define([
          */
         clearSearch: function() {
             $('.data-navigation-header').removeClass('header-search');
-            $('.data-navigation-search span').attr('class', 'fa-search fa-flip-horizontal');
+            $('.data-navigation-search .icon-container span').attr('class', 'fa-search fa-flip-horizontal');
             this.sandbox.emit('husky.search.data-navigation.clear');
             if (!!this.searchTerm) {
                 this.sandbox.emit('husky.search.data-navigation.reset');

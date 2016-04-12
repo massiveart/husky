@@ -320,8 +320,11 @@ define(function() {
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
 
-                if (!!section.title) {
-                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span></div>');
+                var title;
+                if (!!section.title && !!(title = this.sandbox.translate(section.title))) {
+                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + title.toUpperCase() + '</span></div>');
+                } else if (!!$elem && $elem.children().length > 0) {
+                    this.sandbox.dom.append($sectionDiv, '<hr class="section-headline-divider"/>');
                 }
 
                 this.sandbox.dom.append($sectionDiv, $sectionList);

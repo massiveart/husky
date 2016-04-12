@@ -15,6 +15,7 @@
  * @param {String} [options.icons[].icon] the actual icon which sould be displayed
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
+ * @param {String} [options.icons[].disableCallback] callback to determine if icon is displayed
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
@@ -94,7 +95,7 @@ define(function() {
             editedErrorClass: 'server-validation-error',
             newRecordId: 'newrecord',
             gridIconClass: 'grid-icon',
-            gridBadgeClass: 'grid-badge',
+            gridBadgeClass: 'badge',
             gridImageClass: 'grid-image',
             childWrapperClass: 'child-wrapper',
             parentClass: 'children-toggler',
@@ -149,7 +150,7 @@ define(function() {
             childWrapper: '<div class="' + constants.childWrapperClass + '"></div>',
             toggleIcon: '<span class="' + constants.toggleIconClass + '"></span>',
             icon: [
-                '<span class="' + constants.gridIconClass + ' <%= align %>" data-icon-index="<%= index %>">',
+                '<span class="', constants.gridIconClass, ' <%= cssClass %> <%= align %>" data-icon-index="<%= index %>">',
                 '   <span class="fa-<%= icon %>"></span>',
                 '</span>'
             ].join(''),
@@ -157,7 +158,7 @@ define(function() {
                 '<span class="' + constants.gridBadgeClass + ' <%= cssClass %>">',
                 '   <% if(!!icon) { %><span class="fa-<%= icon %>"></span><% } %>',
                 '   <% if(!!title) { %><%= title %><% } %>',
-                '</span>'
+                '</span> '
             ].join(''),
             checkbox: [
                 '<div class="custom-checkbox">',
@@ -236,6 +237,7 @@ define(function() {
         initialize: function(context, options) {
             // store context of the datagrid-component
             this.datagrid = context;
+            this.keys = {id: this.datagrid.options.idKey};
 
             // make sandbox available in this-context
             this.sandbox = this.datagrid.sandbox;
@@ -560,7 +562,7 @@ define(function() {
                 $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null,
                 hasParent = this.hasParent(record);
 
-            record.id = (!!record.id) ? record.id : constants.newRecordId;
+            record.id = (!!record[this.keys.id]) ? record[this.keys.id] : constants.newRecordId;
             this.sandbox.dom.data($row, 'id', record.id);
 
             // render the parents before rendering the children
@@ -740,7 +742,8 @@ define(function() {
                 content = this.sandbox.util.template(templates.img)({
                     alt: content[constants.thumbAltKey],
                     src: content[constants.thumbSrcKey],
-                    noImgIcon: this.options.noImgIcon
+                    noImgIcon: typeof this.options.noImgIcon === 'function' ?
+                        this.options.noImgIcon(record) : this.options.noImgIcon
                 });
             } else {
                 content = this.datagrid.processContentFilter(
@@ -760,7 +763,7 @@ define(function() {
             }
 
             if (!!this.icons) {
-                content = this.addIconsToCellContent(content, column, $cell);
+                content = this.addIconsToCellContent(content, column, $cell, record);
             }
 
             if (!!this.badges) {
@@ -830,15 +833,17 @@ define(function() {
          * @param content {String|Object} html or a dom object. If its a string icons get added to the string, if its an object it gets appended
          * @param column {Object} the column data object
          * @param $cell {Object} the cell-dom-element
+         * @param record {Object} the record object
          * @returns content {String|Object} html or a dom object
          */
-        addIconsToCellContent: function(content, column, $cell) {
+        addIconsToCellContent: function(content, column, $cell, record) {
             var iconStr;
             this.sandbox.util.foreach(this.icons, function(icon, index) {
-                if (icon.column === column.attribute) {
+                if (icon.column === column.attribute && (!icon.disableCallback || icon.disableCallback(record))) {
                     iconStr = this.sandbox.util.template(templates.icon)({
                         icon: icon.icon,
                         align: icon.align,
+                        cssClass: icon.cssClass,
                         index: index
                     });
                     if (typeof content === 'object') {

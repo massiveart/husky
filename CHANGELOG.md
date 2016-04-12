@@ -1,5 +1,36 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * FEATURE     #632 Fixed wrong index of regex
+    * BUGFIX      #631 Fixed javascript error when clicking on column navigation options
+    * FEATURE     #630 Added overlay-loader
+    * BUGFIX      #629 Avoid having scientific representation of number in formatBytes method
+    * BUGFIX      #628 Fixed inheriting font from FontAwesome
+    * BUGFIX      #627 Fixed preselection filtering bug
+    * BUGFIX      #626 Added filtering of preselected items
+    * BUGFIX      #625 Improved regex for urls
+    * BUGFIX      #624 Fixed ui bugs in overlay, navigation and data-navigation
+    * BUGFIX      #623 Added missing value check to matrix component
+    * ENHANCEMENT #622 Added navigation divider for sections with no title
+    * ENHANCEMENT #620 Fixed gap between different containers and input-description
+    * ENHANCEMENT #621 Made badge usable outside of datagrid
+    * BUGFIX      #618 Fixed update of record with a different id property
+    * FEATURE     #619 Introduced info text for dropdown
+    * BUGFIX      #617 Fixed jquery text function with empty value
+    * FEATURE     #597 added additional callback for select and fixed css bugs
+    * BUGFIX      #616 Fixed label tick in firefox
+    * ENHANCEMENT #615 Introduced no-img-icon as function to use record dependent icons
+    * BUGFIX      #613 Fixed search-icon to prevent routing
+    * FEATURE     #610 Added save parameter for datagrid
+    * BUGFIX      #612 Fixed link style in white-boxes
+    * ENHANCEMENT #614 Added evaluate tab-conditions
+    * FEATURE     #608 Allows each row in the matrix component to have different values
+    * ENHANCEMENT #595 Added default label for is-native selects
+    * ENHANCEMENT #594 Changed style of warning label
+    * ENHANCEMENT #593 Changed toggler to only use data attribute
+    * FEATURE     #578 Adjusted design for multiple select
+    * FEATURE     #586 Enhanced table view
+
 * 0.18.6 (2016-03-07)
     * HOTFIX      #609 Fixed input back class overlapping
     * HOTFIX      #607 Fixed data-attribute id for auto-complete

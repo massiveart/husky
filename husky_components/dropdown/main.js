@@ -20,7 +20,7 @@
  * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
  */
 
-define([], function() {
+define(['underscore'], function(_) {
 
     'use strict';
 
@@ -33,14 +33,16 @@ define([], function() {
             shadow: true,  // if box-shadow should be shown
             toggleClassOn: null, // container to set is-active class
             valueName: 'name', // name of text property
+            infoName: 'info', // name of info property (used to display hover info)
+            clickedName: 'clickedInfo', // name of info property (used to display clicked info)
             setParentDropDown: false, // set class dropdown for parent dom object
             excludeItems: [], // items to filter,
             instanceName: 'undefined',  // instance name
             alignment: 'left',  // alignment of the arrow and the box
             verticalAlignment: 'bottom', // alignment of the box
-            translateLabels: true   // translate labels withe globalize
+            translateLabels: true,   // translate labels withe globalize
+            clickDelay: 1000
         };
-
 
     return {
         initialize: function() {
@@ -80,19 +82,18 @@ define([], function() {
                 this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element), 'dropdown');
             }
 
-            // check alginment
+            // check alignment
             if (this.options.alignment === 'right') {
                 this.sandbox.dom.addClass(this.$dropDown, 'dropdown-align-right');
             }
 
-            // check vertical alginment
+            // check vertical alignment
             if (this.options.verticalAlignment === 'top') {
                 this.sandbox.dom.addClass(this.$dropDown, 'dropdown-align-top');
             }
 
             // bind dom elements
             this.bindDOMEvents();
-
             this.bindCustomEvents();
 
             // load data
@@ -112,17 +113,19 @@ define([], function() {
             // init drop-down
             if (this.options.trigger !== '') {
                 if (this.options.triggerOutside) {
+                    $(this.options.trigger).addClass('husky-dropdown-trigger');
                     this.sandbox.dom.on(this.options.trigger, 'click', this.triggerClick.bind(this));
                 } else {
+                    $(this.options.el).addClass('husky-dropdown-trigger');
                     this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
                 }
             } else {
+                $(this.options.el).addClass('husky-dropdown-trigger');
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
             }
 
             // on click on list item
             this.sandbox.dom.on(this.$dropDownList, 'click', function(event) {
-                event.stopPropagation();
                 if (!this.sandbox.dom.hasClass(event.currentTarget, 'disabled')) {
                     this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
                 }
@@ -151,36 +154,65 @@ define([], function() {
         },
 
         itemEnable: function(id) {
-            this.sandbox.dom.removeClass(this.$find('li[data-id="'+ id +'"]'), 'disabled');
+            this.sandbox.dom.removeClass(this.$find('li[data-id="' + id + '"]'), 'disabled');
         },
 
         itemDisable: function(id) {
-            this.sandbox.dom.addClass(this.$find('li[data-id="'+ id +'"]'), 'disabled');
+            this.sandbox.dom.addClass(this.$find('li[data-id="' + id + '"]'), 'disabled');
         },
 
         // trigger event with clicked item
         clickItem: function(id) {
-            this.sandbox.util.foreach(this.options.data, function(item) {
+            var item = this.getItemById(id),
+                $item = this.$el.find('*[data-id="' + id + '"]'),
+                $infos;
+
+            if (!item) {
+                return;
+            }
+
+            if (!!item.callback && typeof item.callback === 'function') {
+                item.callback.call(this);
+            } else if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
+                this.options.clickCallback(item, this.$el);
+            } else {
+                this.sandbox.emit(this.getEvent('item.click'), item, this.$el);
+            }
+
+            if (!item[this.options.clickedName]) {
+                return this.hideDropDown();
+            }
+
+            $infos = $item.find('.info, .info-clicked');
+            $item.addClass('highlight-animation');
+            $infos.addClass('clicked');
+
+            _.delay(function() {
+                $item.removeClass('highlight-animation');
+                $infos.removeClass('clicked');
+
+                return this.hideDropDown();
+            }.bind(this), this.options.clickDelay);
+        },
+
+        getItemById: function(id) {
+            for (var i = 0, length = this.options.data.length, item; i < length; ++i) {
+                item = this.options.data[i];
                 if (typeof item.id !== 'undefined' && item.id.toString() === id.toString()) {
-                    this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
-
-                    if (!!item.callback && typeof item.callback === 'function') {
-                        item.callback.call(this);
-                    } else if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
-                        this.options.clickCallback(item, this.$el);
-                    } else {
-                        this.sandbox.emit(this.getEvent('item.click'), item, this.$el);
-                    }
-
-                    return false;
+                    return item;
                 }
-            }.bind(this));
-            this.hideDropDown();
+            }
         },
 
         // trigger click event handler toggles the dropDown
         triggerClick: function(event) {
-            event.stopPropagation();
+            var $target = $(event.target);
+            if ($target.hasClass('husky-dropdown-item')
+                || $target.parents().hasClass('husky-dropdown-item')
+            ) {
+                return;
+            }
+
             this.toggleDropDown();
         },
 
@@ -192,6 +224,7 @@ define([], function() {
                 this.loadData();
             }
         },
+
         // load data with ajax
         loadData: function() {
             var url = this.getUrl();
@@ -230,11 +263,26 @@ define([], function() {
                 items.forEach(function(item) {
                     if (item.divider !== true) {
                         if (this.isVisible(item)) {
-                            var label = item[this.options.valueName];
+                            var label = item[this.options.valueName],
+                                info = item[this.options.infoName],
+                                clicked = item[this.options.clickedName],
+                                template;
                             if (this.options.translateLabels) {
                                 label = this.sandbox.translate(label);
+                                info = this.sandbox.translate(info);
+                                clicked = this.sandbox.translate(clicked);
                             }
-                            this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
+
+                            label = this.sandbox.util.cropMiddle(label, 35);
+                            template = [
+                                '<li class="husky-dropdown-item" data-id="', item.id, '">',
+                                '<span class="label">', label, '</span>',
+                                (info !== undefined ? ('<span class="info">' + info + '</span>') : ''),
+                                (clicked !== undefined ? ('<span class="info-clicked">' + clicked + '</span>') : ''),
+                                '</li>'
+                            ].join('');
+
+                            this.sandbox.dom.append(this.$dropDownList, template);
                         }
                     } else {
                         this.sandbox.dom.append(this.$dropDownList, '<li class="divider"/>');
@@ -243,6 +291,8 @@ define([], function() {
             } else {
                 this.sandbox.dom.append(this.$dropDownList, '<li>No data received</li>');
             }
+
+            this.sandbox.emit(this.getEvent('rendered'));
         },
 
         // is item visible (filter)
@@ -253,6 +303,7 @@ define([], function() {
                     result = false;
                 }
             }.bind(this));
+
             return result;
         },
 
@@ -291,7 +342,21 @@ define([], function() {
         },
 
         // hide dropDown
-        hideDropDown: function() {
+        hideDropDown: function(event) {
+            // do not hide if the target is children of trigger but not children of item or the element was highlighted
+            // reapply the hide listener
+            if (!!event) {
+                var $target = $(event.target);
+
+                if ($target.is('.husky-dropdown-trigger:not(.husky-dropdown-item), .highlight-animation')
+                    || $target.parents().is('.husky-dropdown-trigger:not(.husky-dropdown-item), .highlight-animation')
+                ) {
+                    this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+
+                    return;
+                }
+            }
+
             this.sandbox.logger.log(this.name, 'hide dropdown');
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));

@@ -6,7 +6,6 @@
  *
  */
 
-
 /**
  * @class Search
  * @constructor
@@ -22,8 +21,8 @@ define([], function() {
 
     var templates = {
             skeleton: [
-                '<a class="fa-search fa-flip-horizontal search-icon" href="#"></a>',
-                '<a class="fa-times-circle remove-icon" href="#"></a>',
+                '<button class="fa-search fa-flip-horizontal search-icon" />',
+                '<button class="fa-times-circle remove-icon" />',
                 '<input id="search-input" type="text" class="form-element input-round search-input" placeholder="<%= placeholderText %>"/>'
             ].join('')
         },
@@ -161,13 +160,8 @@ define([], function() {
             }
         },
 
-        submitSearch: function(event) {
-            if (!!event) {
-                event.preventDefault();
-            }
-
+        submitSearch: function() {
             // get search value
-
             var searchString = this.sandbox.dom.val(this.sandbox.dom.find('#search-input', this.$el));
 
             // if searchstring is emtpy, emit reset
@@ -175,6 +169,7 @@ define([], function() {
                 if (this.searchSubmitted) {
                     this.resetSearch();
                 }
+
                 return;
             }
 
@@ -185,16 +180,13 @@ define([], function() {
         },
 
         removeSearch: function(event, noEmit) {
-            if (!!event) {
-                event.preventDefault();
-            } else {
+            if (!event) {
                 event = {
                     target: this.sandbox.dom.find('.remove-icon', this.$el),
                     currentTarget: this.sandbox.dom.find('.remove-icon', this.$el)
                 };
             }
-            var $input;
-            $input = this.sandbox.dom.next(event.currentTarget, 'input');
+            var $input = this.sandbox.dom.next(event.currentTarget, 'input');
 
             this.sandbox.dom.hide(event.target);
             this.sandbox.dom.val($input, '');

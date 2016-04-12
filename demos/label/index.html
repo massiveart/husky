@@ -45,7 +45,9 @@
         <div class="grid-row">
             <div class="grid-col-6">
                 <div id="successLabel"></div>
+                <div id="warningLabelWithoutTitle"></div>
                 <div id="warningLabel"></div>
+                <div id="warningLabelLong"></div>
             </div>
         </div>
         <div class="grid-row">
@@ -104,10 +106,29 @@
             {
                 name: 'label@husky',
                 options: {
+                    el: '#warningLabelWithoutTitle',
+                    type: 'WARNING',
+                    instanceName: 'warning',
+                    title: '',
+                    description: 'This is a neat warning-label without a title'
+                }
+            },
+            {
+                name: 'label@husky',
+                options: {
                     el: '#warningLabel',
                     type: 'WARNING',
                     instanceName: 'warning',
                     description: 'This is a neat warning-label'
+                }
+            },
+            {
+                name: 'label@husky',
+                options: {
+                    el: '#warningLabelLong',
+                    type: 'WARNING',
+                    instanceName: 'warning',
+                    description: 'This is a neat warning-label<br/>including multiple lines'
                 }
             },
             {

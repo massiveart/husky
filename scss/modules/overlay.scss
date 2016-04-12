@@ -25,6 +25,18 @@
         overflow: hidden;
     }
 
+    &.wide {
+        width: $overlayContainerWidthExtraWide;
+
+        .slides .slide {
+            width: $overlayContainerWidthExtraWide;
+
+            .overlay-footer {
+                width: $overlayContainerWidthExtraWide;
+            }
+        }
+    }
+
     &.dropzone {
         width: $overlayContainerWidthExtraWide;
         .slides {
@@ -157,6 +169,13 @@
     &.right .btn {
         float: right;
         margin-left: 20px;
+    }
+
+    .loader {
+        float: right;
+        margin-left: 20px;
+        margin-right: 0;
+        width: 115px;
     }
 }
 

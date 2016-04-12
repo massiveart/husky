@@ -11,12 +11,12 @@
     "normalize.scss",
     "animations.scss",
     "utilities.scss",
-    "typo.scss",
     "various.scss",
     "colorpicker.scss",
     "datepicker.scss",
     "fontawesome/font-awesome.scss",
-    "dropdown-menu.scss";
+    "dropdown-menu.scss",
+    "typo.scss";
 
 
 // Husky Modules
@@ -50,7 +50,8 @@
     "modules/dropzone",
     "modules/input",
     "modules/thumbnails",
-    "modules/data-navigation";
+    "modules/data-navigation",
+    "modules/badge";
 
 // so you don't have to add the 'fa' class to every icon container
 [class^="fa-"] {

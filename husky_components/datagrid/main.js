@@ -36,6 +36,7 @@
  * @param {Function} [options.clickCallback] callback for clicking an item - first parameter item id, second parameter the dataset of the clicked item
  * @param {Function} [options.actionCallback] action callback. E.g. executed on double-click in table-view - first parameter item id, second parameter the dataset of the clicked item
  * @param {Function} [options.idKey] the name of the id property
+ * @param {Function} [options.childrenKey] the name of the children property
  */
 (function() {
 
@@ -66,6 +67,7 @@
                 sortable: true,
                 matchings: [],
                 url: null,
+                saveParams: {},
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
@@ -84,7 +86,8 @@
                 viewSpacingBottom: 110,
                 clickCallback: null,
                 actionCallback: null,
-                idKey: 'id'
+                idKey: 'id',
+                childrenKey: 'children'
             },
 
             types = {
@@ -94,6 +97,8 @@
                 TITLE: 'title',
                 BYTES: 'bytes',
                 RADIO: 'radio',
+                CHECKBOX: 'checkbox',
+                CHECKBOX_READONLY: 'checkbox_readonly',
                 COUNT: 'count',
                 TRANSLATION: 'translation',
                 NUMBER: 'number',
@@ -118,13 +123,7 @@
                  * @returns {string}
                  */
                 bytes: function(bytes) {
-                    if (bytes === 0) {
-                        return '0 Byte';
-                    }
-                    var k = 1000,
-                        sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                        i = Math.floor(Math.log(bytes) / Math.log(k));
-                    return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+                    return this.sandbox.util.formatBytes(bytes);
                 },
 
                 title: function(content) {
@@ -143,10 +142,10 @@
                     }
                     return date;
                 },
-                
+
                 /**
                  * Brings a datetime into the right format
-                 * @param date {String} the date to parse
+                 * @param datetime {String} the date to parse
                  * @returns {String}
                  */
                 datetime: function(datetime) {
@@ -221,8 +220,29 @@
                  * checks for bool value and sets radio to true
                  */
                 radio: function(content, index, columnName) {
-                    var checked = (!content) ? false : true;
-                    return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
+                    return this.sandbox.util.template(templates.radio, {checked: !!content, columnName: columnName});
+                },
+
+                /**
+                 * checks for bool value and renders a checkbox with value.
+                 */
+                checkbox: function(content, index, columnName) {
+                    return this.sandbox.util.template(templates.checkbox, {
+                        checked: !!content,
+                        columnName: columnName,
+                        readonly: false
+                    });
+                },
+
+                /**
+                 * checks for bool value and renders a readonly checkbox with value.
+                 */
+                checkbox_readonly: function(content, index, columnName) {
+                    return this.sandbox.util.template(templates.checkbox, {
+                        checked: !!content,
+                        columnName: columnName,
+                        readonly: true
+                    });
                 }
             },
 
@@ -230,6 +250,14 @@
                 radio: [
                     '<div class="custom-radio custom-filter">',
                     '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                    '   <span class="icon"></span>',
+                    '</div>'
+                ].join(''),
+                checkbox: [
+                    '<div class="custom-checkbox custom-filter">',
+                    '   <input name="radio-<%= columnName %>" type="checkbox" class="form-element"',
+                    '       <% if (readonly) { %>readonly="readonly"<% } %>',
+                    '       <% if (checked) { %>checked<% } %>/>',
                     '   <span class="icon"></span>',
                     '</div>'
                 ].join(''),
@@ -740,9 +768,9 @@
                     this.sandbox.logger.log('load data from array');
                     this.data = {};
                     if (!!this.options.resultKey && !!this.options.data[this.options.resultKey]) {
-                        this.data.embedded = this.options.data[this.options.resultKey];
+                        this.data.embedded = this.parseEmbedded(this.options.data[this.options.resultKey]);
                     } else {
-                        this.data.embedded = this.options.data;
+                        this.data.embedded = this.parseEmbedded(this.options.data);
                     }
 
                     this.render();
@@ -1106,11 +1134,42 @@
             parseData: function(data) {
                 this.data = {};
                 this.data.links = this.parseLinks(data._links);
-                this.data.embedded = data._embedded[this.options.resultKey];
+                this.data.embedded = this.parseEmbedded(data._embedded[this.options.resultKey]);
                 this.data.total = data.total;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
                 this.data.limit = data.limit;
+            },
+
+            /**
+             * Parses data and returns normalized embedded items.
+             *
+             * @param {Array} data
+             * @param {Object} parent
+             */
+            parseEmbedded: function(data, parent) {
+                var embedded = [];
+                for (var i = 0, len = data.length; i < len; i++) {
+                    var children = [];
+                    if (!!parent) {
+                        data[i].parent = parent;
+                    }
+
+                    data[i].id = data[i][this.options.idKey];
+                    if (!data[i][this.options.childrenPropertyName]) {
+                        data[i][this.options.childrenPropertyName] = false;
+                    }
+
+                    if (data[i].hasOwnProperty(this.options.childrenKey)) {
+                        children = this.parseEmbedded(data[i][this.options.childrenKey], data[i].id);
+                        data[i][this.options.childrenPropertyName] = (children.length > 0);
+                    }
+
+                    embedded.push(data[i]);
+                    embedded = embedded.concat(children);
+                }
+
+                return embedded;
             },
 
             /**
@@ -1358,7 +1417,9 @@
              * @returns {String} the manipulated content
              */
             manipulateContent: function(content, type, argument, columnName) {
-                if (filters.hasOwnProperty(type)) {
+                if (typeof type === 'function') {
+                    return type(content, argument, columnName);
+                } else if (filters.hasOwnProperty(type)) {
                     return filters[type].call(this, content, argument, columnName);
                 }
                 return content;
@@ -1574,7 +1635,7 @@
              */
             addRecordHandler: function(recordData) {
                 if (!!this.gridViews[this.viewId].addRecord) {
-                    if (!!recordData.id) {
+                    if (!!recordData[this.options.idKey]) {
                         this.pushRecords([recordData]);
                     }
                     this.gridViews[this.viewId].addRecord(recordData, false);
@@ -1591,7 +1652,7 @@
             addRecordsHandler: function(records, callback) {
                 if (!!this.gridViews[this.viewId].addRecord) {
                     this.sandbox.util.foreach(records, function(record) {
-                        if (!!record.id) {
+                        if (!!record[this.options.idKey]) {
                             this.pushRecords([record]);
                             this.gridViews[this.viewId].addRecord(record, false);
                         }
@@ -1902,7 +1963,7 @@
              */
             updateRecord: function(record) {
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (record.id === this.data.embedded[i].id) {
+                    if (record[this.options.idKey] === this.data.embedded[i].id) {
                         this.data.embedded[i] = record;
                         return true;
                     }
@@ -1916,9 +1977,9 @@
              * @returns {Boolean} returns true if changed successfully
              */
             changeRecord: function(record) {
-                if (!!record.id) {
+                if (!!record[this.options.idKey]) {
                     for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                        if (record.id === this.data.embedded[i].id) {
+                        if (record[this.options.idKey] === this.data.embedded[i].id) {
                             this.data.embedded[i] = this.sandbox.util.extend(true, {}, this.data.embedded[i], record);
                             return true;
                         }
@@ -2167,6 +2228,10 @@
                     url = url + '/' + data.id;
                 }
 
+                for (var key in this.options.saveParams) {
+                    url = setGetParameter.call(this, url, key, this.options.saveParams[key]);
+                }
+
                 this.sandbox.emit(DATA_CHANGED.call(this));
 
                 this.sandbox.util.save(url, method, data)
@@ -2187,7 +2252,7 @@
                         }
                     }.bind(this))
                     .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error);
+                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), jqXHR, textStatus, error, data);
 
                         if (typeof fail === 'function') {
                             fail(jqXHR, textStatus, error);

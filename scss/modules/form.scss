@@ -40,7 +40,7 @@ input[type="text"] {
 input
 .input-description {
     margin-top: -5px;
-    font-size: 10px;
+    font-size: $smallFontSize;
     color: $grayLight;
 }
 
@@ -119,10 +119,16 @@ input {
 
 // Labels
 // -------------------------
+
+label.choice {
+    color: $labelChoiceColor;
+    margin-bottom: 10px;
+}
+
 label {
     display: block;
     font-size: 14px;
-    color: #999999;
+    color: $labelColor;
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
@@ -144,12 +150,33 @@ label {
         display: inline;
         vertical-align: middle;
     }
+
     &.spacing-right {
         margin-right: 10px;
     }
+
     &.spacing-left {
         margin-left: 10px;
     }
+}
+
+.input-description {
+    font-size: $smallFontSize;
+    color: $grayLight;
+}
+
+h2 ~ .input-description {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+label ~ .input-description {
+    margin-top: -5px;
+}
+
+div ~ .input-description,
+input ~ .input-description {
+    margin-top: 0;
 }
 
 // Checkboxes
@@ -183,19 +210,12 @@ label {
         padding: 0;
         cursor: pointer;
 
-        &:checked,
-        &.is-checked {
+        &[readonly],
+        &[readonly="readonly"] {
+            display: none;
+
             & + .icon {
-                border-color: $green;
-                background-color: $green;
-                color: $white;
-                &::after {
-                    @extend .fa;
-                    display: inline-block;
-                    margin-top: -1px;
-                    margin-left: -1px;
-                    content: $checkboxIcon;
-                }
+                border: 1px solid $grayLight;
             }
         }
 
@@ -212,6 +232,30 @@ label {
                     content: $checkboxIcon;
                 }
             }
+        }
+
+        &:checked,
+        &.is-checked {
+            & + .icon {
+                border-color: $green;
+                background-color: $green;
+                color: $white;
+                &::after {
+                    @extend .fa;
+                    display: inline-block;
+                    margin-top: -1px;
+                    margin-left: -1px;
+                    content: $checkboxIcon;
+                }
+            }
+
+            &[readonly] + .icon,
+            &[readonly="readonly"] + .icon {
+                border: 1px solid $grayLight;
+                background-color: $grayLight;
+                color: $white;
+            }
+
         }
 
         & + .icon {

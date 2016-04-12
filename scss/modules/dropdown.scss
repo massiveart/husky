@@ -41,11 +41,12 @@
     border: 1px solid $borderColor;
     z-index: 90;
     border-radius: $borderRadius;
+    font-size: $baseFontSize;
 
     &.top {
-      top: auto;
-      bottom: 25px;
-      margin-bottom: 0;
+        top: auto;
+        bottom: 25px;
+        margin-bottom: 0;
     }
 
     & > ul {
@@ -57,19 +58,46 @@
             padding: 0 20px;
             line-height: 30px;
             text-align: left;
+
+            .info, .info-clicked {
+                display: none;
+                font-size: $smallFontSize;
+                padding: 0 20px 0 10px;
+                position: absolute;
+                right: 0;
+            }
+
+            .info-clicked.clicked {
+                display: inline;
+                float: right;
+                background-color: $white;
+            }
+
             &:hover,
             &.hover {
                 background-color: $highlightColor;
                 cursor: pointer;
                 color: $white;
+
+                .info {
+                    display: inline
+                }
+
+                .info, .info-clicked {
+                    background-color: $highlightColor;
+
+                    &.clicked {
+                        display: none;
+                    }
+                }
             }
             &.divider {
-              height: 1px;
-              margin: 5px 0 10px 0;
-              padding: 0;
-              overflow: hidden;
-              background-color: $grayLighterer;
-              cursor: default;
+                height: 1px;
+                margin: 5px 0 10px 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: $grayLighterer;
+                cursor: default;
             }
             &.disabled {
                 color: $grayLight;

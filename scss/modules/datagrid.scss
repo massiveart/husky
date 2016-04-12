@@ -200,19 +200,6 @@
             }
         }
 
-        .grid-badge {
-            vertical-align: middle;
-            display: inline-block;
-            background: $accentColor;
-            padding: 0px 2px;
-            margin-right: 8px;
-            margin-top: -3px;
-            color: $white;
-            border-radius: $borderRadius;
-            font-size: $reallySmallFontSize;
-            line-height: 15px;
-        }
-
         .grid-icon {
             width: 30px;
             height: 20px;
@@ -228,6 +215,15 @@
             @include single-transition(opacity, 100ms, ease-in, 200ms);
             &.right {
                 float: right;
+            }
+
+            &.no-hover {
+                opacity: 1 !important;
+            }
+
+            &.simple {
+                background: transparent;
+                color: $black;
             }
         }
 

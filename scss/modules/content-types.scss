@@ -355,6 +355,15 @@
                     color: $grayLight;
                     padding-right: 15px;
                 }
+
+                a {
+                    text-decoration: none;
+
+                    .value, .title {
+                        color: black;
+                    }
+                }
+
                 .value {
                     color: $grayLight;
                 }

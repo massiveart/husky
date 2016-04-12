@@ -182,11 +182,12 @@ define([], function() {
             ].join(''),
             okButton: [
                 '<div class="btn action overlay-ok<%= classes %>">',
-                '<% if (!!icon) { %>',
-                '<span class="fa-<%= icon %>"></span>',
-                '<% } %>',
-                '<span class="text"><%= text %></span>',
-                '</div>'
+                '   <% if (!!icon) { %>',
+                '   <span class="fa-<%= icon %>"></span>',
+                '   <% } %>',
+                '   <span class="text"><%= text %></span>',
+                '</div>',
+                '<div class="loader" style="display: none;"></div>'
             ].join(''),
             cancelButton: [
                 '<div class="btn gray black-text overlay-cancel<%= classes %>">',
@@ -288,6 +289,22 @@ define([], function() {
          */
         CLOSE = function() {
             return createEventName.call(this, 'close');
+        },
+
+        /**
+         * show loader instead of save button
+         * @event husky.overlay.<instance-name>.show-loader
+         */
+        SHOW_LOADER = function() {
+            return createEventName.call(this, 'show-loader');
+        },
+
+        /**
+         * hide loader and show of save button
+         * @event husky.overlay.<instance-name>.hide-loader
+         */
+        HIDE_LOADER = function() {
+            return createEventName.call(this, 'hide-loader');
         },
 
         /**
@@ -494,6 +511,8 @@ define([], function() {
                     this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
 
                     this.insertOverlay(true);
+
+                    this.sandbox.start([{name: 'loader@husky', options: {el: this.$el.find('.loader'), size: '30px'}}]);
                 } else {
                     this.insertOverlay(true);
                 }
@@ -507,6 +526,18 @@ define([], function() {
             this.sandbox.on(SLIDE_LEFT.call(this), this.slideLeft.bind(this));
             this.sandbox.on(SLIDE_RIGHT.call(this), this.slideRight.bind(this));
             this.sandbox.on(SLIDE_TO.call(this), this.slideEvent.bind(this));
+            this.sandbox.on(SHOW_LOADER.call(this), this.showLoader.bind(this));
+            this.sandbox.on(HIDE_LOADER.call(this), this.hideLoader.bind(this));
+        },
+
+        showLoader: function() {
+            this.$el.find('.btn').hide();
+            this.$el.find('.loader').show();
+        },
+
+        hideLoader: function() {
+            this.$el.find('.btn').show();
+            this.$el.find('.loader').hide();
         },
 
         /**
