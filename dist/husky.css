@@ -6534,16 +6534,17 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 
-/* line 17, ../scss/modules/core.scss */
+/* line 18, ../scss/modules/core.scss */
 body {
   font-size: 14px;
   color: #000;
   background: #f1f1f1;
 }
 
-/* line 23, ../scss/modules/core.scss */
+/* line 24, ../scss/modules/core.scss */
 hr.divider {
   color: #fff;
   height: 0;
@@ -6551,17 +6552,17 @@ hr.divider {
   border-top: none;
   margin: 0px 0 20px 0;
 }
-/* line 29, ../scss/modules/core.scss */
+/* line 30, ../scss/modules/core.scss */
 hr.divider.dark {
   color: #ccc;
   border-color: #ccc;
 }
-/* line 33, ../scss/modules/core.scss */
+/* line 34, ../scss/modules/core.scss */
 hr.divider.small {
   margin-bottom: 10px;
 }
 
-/* line 41, ../scss/modules/core.scss */
+/* line 42, ../scss/modules/core.scss */
 .options-dropdown-container {
   position: absolute;
   right: 0;
@@ -6569,13 +6570,13 @@ hr.divider.small {
   z-index: 10;
 }
 
-/* line 48, ../scss/modules/core.scss */
+/* line 49, ../scss/modules/core.scss */
 .options-toggle {
   background-color: #f1f1f1;
   font-size: 16px;
   color: black;
 }
-/* line 53, ../scss/modules/core.scss */
+/* line 54, ../scss/modules/core.scss */
 .options-toggle::after {
   content: "";
   display: inline-block;
