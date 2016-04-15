@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #635 Fixed communication with front dropdown in url-input
     * HOTFIX      #634 Fixed wrong spacing between more than two checkboxes
 
 * 0.19.0 (2016-04-12)
