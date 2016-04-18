@@ -44240,6 +44240,7 @@ define('__component__$overlay@husky',[], function() {
  * @param {Number} [options.showDuration] duration of the show effect in ms
  * @param {Function} [options.closeCallback] callback to execute if the close-button is clicked
  * @param {String} [options.insertMethod] insert method to use for inserting the label (append or prepend)
+ * @param {String} [options.size] The size of the label (big or small)
  */
 define('__component__$label@husky',[],function() {
 
@@ -44259,7 +44260,8 @@ define('__component__$label@husky',[],function() {
         vanishDuration: 250,
         showDuration: 250,
         closeCallback: null,
-        insertMethod: 'append'
+        insertMethod: 'append',
+        size: 'big'
     },
 
     insertMethods = {
@@ -44306,14 +44308,15 @@ define('__component__$label@husky',[],function() {
      * generates template template
      */
     templates = {
-        basic: ['<div class="' + constants.textClass + '">',
+        basic: [
+                '<div class="' + constants.closeClass + '">',
+                '   <% if (!!hasClose) { %><span class="' + constants.closeIconClass + '"></span><% } %>',
+                '</div>',
+                '<div class="' + constants.textClass + '">',
                 '   <% if (!!title) { %><strong><%= title %></strong><% } %>',
                 '   <span><%= description %></span>',
                 '   <div class="' + constants.counterClass + '"><span><%= counter %></span></div>',
-                '</div>'].join(''),
-        closeButton: ['<div class="' + constants.closeClass + '">',
-                      '<span class="' + constants.closeIconClass + '"></span>',
-                      '</div>'].join('')
+                '</div>'].join('')
     },
 
     eventNamespace = 'husky.label.',
@@ -44467,7 +44470,6 @@ define('__component__$label@husky',[],function() {
         render: function() {
             this.renderElement();
             this.renderContent();
-            this.renderClose();
 
             this.updateCounterVisibility();
             this.insertLabel();
@@ -44478,7 +44480,9 @@ define('__component__$label@husky',[],function() {
          * Renders the main element
          */
         renderElement: function() {
-            this.label.$el = this.sandbox.dom.createElement('<div class="'+ this.options.labelClass +'"/>');
+            this.label.$el = this.sandbox.dom.createElement(
+                '<div class="' + this.options.labelClass + (!!this.options.size ? ' ' + this.options.size : '') + '"/>'
+            );
             this.label.$el.hide();
         },
 
@@ -44492,9 +44496,12 @@ define('__component__$label@husky',[],function() {
                 this.label.$content = this.sandbox.dom.createElement(this.sandbox.util.template(templates.basic, {
                     title: this.options.title,
                     description: this.options.description,
-                    counter: this.options.counter
+                    counter: this.options.counter,
+                    hasClose: this.options.hasClose
                 }));
             }
+
+            this.label.$close = this.label.$content.find('.' + constants.closeIconClass);
 
             //append content to main element
             this.sandbox.dom.append(this.label.$el, this.label.$content);
@@ -44508,18 +44515,6 @@ define('__component__$label@husky',[],function() {
                 this.sandbox.dom.show(this.label.$el.find('.' + constants.counterClass));
             } else {
                 this.sandbox.dom.hide(this.label.$el.find('.' + constants.counterClass));
-            }
-        },
-
-        /**
-         * Renders the close button
-         */
-        renderClose: function() {
-            if (this.options.hasClose === true) {
-                this.label.$close = this.sandbox.dom.createElement(templates.closeButton);
-
-                //append close to main element
-                this.sandbox.dom.append(this.label.$el, this.label.$close);
             }
         },
 

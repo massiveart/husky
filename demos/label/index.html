@@ -48,6 +48,8 @@
                 <div id="warningLabelWithoutTitle"></div>
                 <div id="warningLabel"></div>
                 <div id="warningLabelLong"></div>
+                <div id="warningLabelSmall"></div>
+                <div id="warningLabelSmallWithoutClose"></div>
             </div>
         </div>
         <div class="grid-row">
@@ -87,6 +89,7 @@
             options: {
                 el: '#errorLabel',
                 type: 'ERROR',
+                autoVanish: false,
                 description: 'This is a neat error-label',
                 instanceName: 'error',
                 closeCallback: function() {
@@ -99,6 +102,7 @@
                 options: {
                     el: '#successLabel',
                     type: 'SUCCESS',
+                    autoVanish: false,
                     instanceName: 'success',
                     description: 'This is a neat success-label'
                 }
@@ -108,6 +112,7 @@
                 options: {
                     el: '#warningLabelWithoutTitle',
                     type: 'WARNING',
+                    autoVanish: false,
                     instanceName: 'warning',
                     title: '',
                     description: 'This is a neat warning-label without a title'
@@ -118,6 +123,7 @@
                 options: {
                     el: '#warningLabel',
                     type: 'WARNING',
+                    autoVanish: false,
                     instanceName: 'warning',
                     description: 'This is a neat warning-label'
                 }
@@ -127,6 +133,7 @@
                 options: {
                     el: '#warningLabelLong',
                     type: 'WARNING',
+                    autoVanish: false,
                     instanceName: 'warning',
                     description: 'This is a neat warning-label<br/>including multiple lines'
                 }
@@ -134,8 +141,32 @@
             {
                 name: 'label@husky',
                 options: {
+                    el: '#warningLabelSmall',
+                    type: 'WARNING',
+                    autoVanish: false,
+                    instanceName: 'warning',
+                    description: 'This is a neat warning-label',
+                    additionalLabelClasses: 'small'
+                }
+            },
+            {
+                name: 'label@husky',
+                options: {
+                    el: '#warningLabelSmallWithoutClose',
+                    type: 'WARNING',
+                    autoVanish: false,
+                    instanceName: 'warning',
+                    description: 'This is a neat warning-label',
+                    additionalLabelClasses: 'small',
+                    hasClose: false
+                }
+            },
+            {
+                name: 'label@husky',
+                options: {
                     el: '#successIconLabel',
                     type: 'SUCCESS_ICON',
+                    autoVanish: false,
                     instanceName: 'success',
                     description: 'Data saved'
                 }
@@ -145,6 +176,7 @@
                 options: {
                     el: '#successIconLabelSmall',
                     type: 'SUCCESS_ICON',
+                    autoVanish: false,
                     instanceName: 'success',
                     description: 'Saved'
                 }

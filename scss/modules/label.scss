@@ -1,35 +1,42 @@
 .husky-label-error,
 .husky-label-warning,
 .husky-label-success {
-    $height: 70px;
-
     width: 100%;
-    height: $height;
     position: relative;
     top: 0;
     left: 0;
     color: $white;
-    padding-left: 55px;
     font-size: $smallFontSize;
     z-index: 200;
 
+    &.big {
+        height: 70px;
+    }
+    &.small {
+        height: 30px;
+    }
+
+    &:before {
+        // allows to vertical align text and close elements
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+    }
     strong {
         font-weight: bold;
         padding-right: 3px;
     }
     .text {
-        display: table-cell;
+        display: inline-block;
         vertical-align: middle;
-        height: $height;
     }
     .close {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: $height;
-        line-height: $height;
+        width: 55px;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
         cursor: pointer;
-        padding: 0 20px;
         font-size: 15px;
     }
 }
