@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
-    * HOTFIX      #639 Load correct globalize.culture file
+    * HOTFIX      #640 Load correct globalize.culture file
     * HOTFIX      #635 Fixed communication with front dropdown in url-input
     * HOTFIX      #634 Fixed wrong spacing between more than two checkboxes
 
