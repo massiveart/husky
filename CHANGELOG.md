@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* dev-master
     * BUGFIX      #637 Load correct globalize.culture file
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
