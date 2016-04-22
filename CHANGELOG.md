@@ -1,8 +1,8 @@
 # CHANGELOG for husky
 
 * dev-master
-    * BUGFIX      #637 Load correct globalize.culture file
-    * BUGFIX      #633 Removed bound effect respectively additional scrollbar
+    * HOTFIX      #637 Load correct globalize.culture file
+    * HOTFIX      #633 Removed bound effect respectively additional scrollbar
 
 * 0.19.0 (2016-04-12)
     * FEATURE     #632 Fixed wrong index of regex
