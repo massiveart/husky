@@ -410,6 +410,7 @@ module.exports = function(grunt) {
         'requirejs:dev',
         'compass',
         'cssmin',
+        'copy:ckeditor_theme',
         'copy:dist',
         'yuidoc'
     ]);
