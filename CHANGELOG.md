@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #644 Fixed scrollable tabs
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
 * 0.19.1 (2016-04-26)
