@@ -2,6 +2,7 @@
 
 * dev-develop
     * BUGFIX      #644 Fixed scrollable tabs
+    * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
 * 0.19.1 (2016-04-26)
