@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #646 Added a scrolling mechanism to the select dropdown
+
 * 0.19.1 (2016-04-26)
     * HOTFIX      #640 Load correct globalize.culture file
     * HOTFIX      #635 Fixed communication with front dropdown in url-input
