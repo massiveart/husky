@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.19.2 (2016-05-09)
     * HOTFIX      #646 Added a scrolling mechanism to the select dropdown
 
 * 0.19.1 (2016-04-26)
