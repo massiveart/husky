@@ -39578,6 +39578,7 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {Boolean} [options.isNative] should use native select
  * @param {Boolean} [options.showToolTip] Show tool-tip on hover - only works for single-selects
  * @param {Array} [options.defaultValue] Array of default items that should be selected if no item has been preselected
+ * @param {Number} [options.dropdownPadding] The amount of padding on top or bottom of the dropdown list
  */
 
 define('__component__$select@husky',[], function() {
@@ -39615,7 +39616,8 @@ define('__component__$select@husky',[], function() {
             showToolTip: false,
             translations: translations,
             isNative: false,
-            defaultValue: null
+            defaultValue: null,
+            dropdownPadding: 0,
         },
 
         constants = {
@@ -40726,24 +40728,30 @@ define('__component__$select@husky',[], function() {
                 return;
             }
 
-            this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
             this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
             this.dropdownVisible = true;
 
             this.sandbox.dom.removeClass(this.$dropdownContainer, constants.dropdownTopClass);
-            var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
-                ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
+            var dropdownHeight = this.sandbox.dom.height(this.$dropdownContainer),
+                dropdownTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
                 windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
-                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window);
+                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window),
+                dropdownMaxHeight = windowHeight - dropdownTop;
+
             if (this.options.direction === 'top') {
                 this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
-            } else if (this.options.direction !== 'bottom') {
-                // check if dropdown container overlaps bottom of browser
-                if (ddHeight + ddTop > windowHeight + scrollTop) {
-                    this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
-                }
+            } else if (
+                this.options.direction !== 'bottom'
+                && dropdownHeight + dropdownTop > windowHeight + scrollTop
+                // only change direction if there is more space on the other side    
+                && windowHeight / 2 < dropdownTop - scrollTop
+            ) {
+                this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
+                dropdownMaxHeight = dropdownHeight + this.$dropdownContainer.offset().top;
             }
+
+            this.$dropdownContainer.css({maxHeight: dropdownMaxHeight - this.options.dropdownPadding + 'px'});
         },
 
         // hide dropDown
@@ -40755,7 +40763,6 @@ define('__component__$select@husky',[], function() {
                     this.sandbox.dom.off(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName);
                 }
             }
-            this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
             this.dropdownVisible = false;
             return true;
@@ -46525,14 +46532,7 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
 
         templates = {
             skeleton: [
-                '<div class="front"',
-                '<% if (items.length > 1) { %>',
-                '     data-aura-component="dropdown@husky"',
-                '     data-aura-trigger=".<%= constants.triggerClass %>"',
-                '     data-aura-instance-name="<%= options.instanceName %>"',
-                '     data-aura-data=\'<%= JSON.stringify(items) %>\'',
-                '<% } %>',
-                '     >',
+                '<div class="front">',
                 '    <a class="<%= constants.schemeClass %> <%= constants.linkClass %> text text-link"',
                 '       href="<%= url %>" target="_blank"><%= data.scheme %></a>',
                 '<% if (items.length > 1) { %>',
@@ -46568,7 +46568,6 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
 
             this.prepareItems(this.options.schemes);
             this.render();
-            this.bindCustomEvents();
             this.bindDomEvents();
         },
 
@@ -46598,6 +46597,17 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
                 data: data,
                 items: this.items
             }));
+
+            this.sandbox.start([{
+                name: 'dropdown@husky',
+                options: {
+                    el: this.$find('.front'),
+                    trigger: this.$find('.' + constants.triggerClass),
+                    instanceName: constants.instanceName,
+                    data: this.items,
+                    clickCallback: this.selectSchemeHandler.bind(this)
+                }
+            }]);
         },
 
         /**
@@ -46663,16 +46673,6 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
             this.$find('.' + constants.specificPartClass).val(data.specificPart);
             this.$find('.' + constants.schemeClass).html(data.scheme);
             this.$find('.' + constants.schemeClass).attr('href', this.getUrl(data));
-        },
-
-        /**
-         * Bind necessary aura events.
-         */
-        bindCustomEvents: function() {
-            this.sandbox.on(
-                'husky.dropdown.' + this.options.instanceName + '.item.click',
-                this.selectSchemeHandler.bind(this)
-            );
         },
 
         /**
@@ -51071,7 +51071,7 @@ define("datepicker-zh-TW", function(){});
                 };
 
                 if (!!app.config.culture && !!app.config.culture.name && app.config.culture.name !== 'en') {
-                    return require(['cultures/globalize.culture.' + app.config.culture.name]);
+                    return require(['cultures/globalize.culture.' + app.config.culture.name.replace("_", "-")]);
                 }
             },
 

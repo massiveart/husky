@@ -59,12 +59,13 @@
         min-width: 100%;
         position: absolute;
         top: 20px;
-        left: 0px;
+        left: 0;
         margin-top: 5px;
         background-color: #FFF;
         border: 1px solid $grayLighter;
         z-index: 2000;
         border-radius: $borderRadius;
+        overflow: auto;
 
         .divider {
             max-width: 100%;

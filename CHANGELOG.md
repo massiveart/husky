@@ -3,6 +3,14 @@
 * dev-develop
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
+* 0.19.2 (2016-05-09)
+    * HOTFIX      #646 Added a scrolling mechanism to the select dropdown
+
+* 0.19.1 (2016-04-26)
+    * HOTFIX      #640 Load correct globalize.culture file
+    * HOTFIX      #635 Fixed communication with front dropdown in url-input
+    * HOTFIX      #634 Fixed wrong spacing between more than two checkboxes
+
 * 0.19.0 (2016-04-12)
     * FEATURE     #632 Fixed wrong index of regex
     * BUGFIX      #631 Fixed javascript error when clicking on column navigation options
