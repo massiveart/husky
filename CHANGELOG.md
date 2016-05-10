@@ -1,6 +1,8 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #644 Fixed scrollable tabs
+    * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
 * 0.19.2 (2016-05-09)
