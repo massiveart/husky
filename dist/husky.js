@@ -50932,6 +50932,7 @@ define("datepicker-zh-TW", function(){});
             initialize: function(app) {
                 app.sandbox.globalize = {
                     addCultureInfo: function(cultureName, messages) {
+                        cultureName = normalizeCultureName(cultureName);
                         Globalize.addCultureInfo(cultureName, {
                             messages: messages
                         });
@@ -51077,6 +51078,10 @@ define("datepicker-zh-TW", function(){});
                  */
                 app.setLanguage = function(cultureName, messages, defaultMessages) {
                     cultureName = normalizeCultureName(cultureName);
+
+                    if (cultureName !== 'en') {
+                        require(['cultures/globalize.culture.' + cultureName]);
+                    }
 
                     Globalize.culture(cultureName);
 
