@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
-    * HOTFIX      #640 Use correct culture name
+    * HOTFIX      #647 Use correct culture name when loocale includes country
 
 * 0.19.2 (2016-05-09)
     * HOTFIX      #646 Added a scrolling mechanism to the select dropdown
