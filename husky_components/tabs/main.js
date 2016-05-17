@@ -135,8 +135,19 @@ define(function() {
         },
 
         /**
+         * used to update the tab-component.
+         * @event husky.tabs.initialized
+         * @param {Number} visibleTabs object
+         */
+        UPDATED = function() {
+            return this.createEventName('updated');
+        },
+
+        /**
          * triggered when component was initialized
          * @event husky.tabs.initialized
+         * @param {Object} selectedItem
+         * @param {Number} visibleTabs
          */
         INITIALIZED = function() {
             return this.createEventName('initialized');
@@ -207,6 +218,7 @@ define(function() {
         },
 
         update = function(values) {
+            var visibleTabs = 0;
             this.sandbox.util.foreach(this.data, function(item) {
                 var $item = this.$find('li[data-id="' + item.id + '"]');
 
@@ -214,8 +226,17 @@ define(function() {
                     this.sandbox.dom.hide($item);
                 } else {
                     this.sandbox.dom.show($item);
+                    ++visibleTabs;
                 }
             }.bind(this));
+
+            if (visibleTabs >= 2) {
+                this.$el.show();
+            } else {
+                this.$el.hide();
+            }
+
+            this.sandbox.emit(UPDATED.call(this), visibleTabs);
 
             setMarker.call(this);
         },
@@ -377,6 +398,7 @@ define(function() {
             this.items = [];
             this.domItems = {};
 
+            var visibleTabs = 0;
             this.sandbox.util.foreach(this.data, function(item, index) {
                 this.items[item.id] = item;
                 $item = this.sandbox.dom.createElement(
@@ -388,6 +410,9 @@ define(function() {
                     || (!!item.displayConditions && !this.evaluate(item.displayConditions, values))
                 ) {
                     this.sandbox.dom.hide($item);
+                } else {
+                    // count only visible items
+                    ++visibleTabs;
                 }
 
                 // set min-width of element
@@ -413,7 +438,11 @@ define(function() {
             setMarker.call(this);
 
             // initialization finished
-            this.sandbox.emit(INITIALIZED.call(this), selectedItem);
+            this.sandbox.emit(INITIALIZED.call(this), selectedItem, visibleTabs);
+
+            if (visibleTabs < 2) {
+                this.$el.hide();
+            }
         }
     };
 });
