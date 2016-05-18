@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #650 Added hide tabs for only one single tab
     * HOTFIX      #649 Use correct culture name when loocale includes country
 
 * 0.19.2 (2016-05-09)
