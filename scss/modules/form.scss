@@ -300,6 +300,11 @@ textarea.form-element {
     }
 }
 
+textarea.ckeditor-preview {
+    height: 70px;
+    min-height: 70px;
+}
+
 // Radio
 // -------------------------
 .custom-radio {
