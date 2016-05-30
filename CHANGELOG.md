@@ -2,6 +2,7 @@
 
 * dev-develop
     * BUGFIX      #652 Added hide tabs for only one single tab
+    * ENHANCEMENT #651 Added auto-start option for ckeditor component
     * BUGFIX      #644 Fixed scrollable tabs
     * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
