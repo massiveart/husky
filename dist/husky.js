@@ -47028,7 +47028,7 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
         }
     });
 
-    define('husky_extensions/ckeditor-extension',['underscore', 'ckeditor', 'jqueryAdapter'], function(_) {
+    define('husky_extensions/ckeditor-extension',['underscore', 'services/husky/util', 'ckeditor', 'jqueryAdapter'], function(_, Util) {
 
         var getConfig = function() {
             return {
@@ -47072,7 +47072,7 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
         };
 
         /**
-         * Add toolbar items.
+         * Remove toolbar items.
          *
          * @param {String} name
          * @param {String[]} items
@@ -47153,12 +47153,12 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
                         toolbar[toolbarName].push(button);
 
                         if (!!icon) {
-                            icons.push(icon);
+                            icons[button] = icon;
                         }
                     },
 
                     getToolbar: function() {
-                        return JSON.parse(JSON.stringify(toolbar));
+                        return Util.deepCopy(toolbar);
                     },
 
                     getIcon: function(button) {

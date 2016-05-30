@@ -23,7 +23,7 @@
         }
     });
 
-    define(['underscore', 'ckeditor', 'jqueryAdapter'], function(_) {
+    define(['underscore', 'services/husky/util', 'ckeditor', 'jqueryAdapter'], function(_, Util) {
 
         var getConfig = function() {
             return {
@@ -67,7 +67,7 @@
         };
 
         /**
-         * Add toolbar items.
+         * Remove toolbar items.
          *
          * @param {String} name
          * @param {String[]} items
@@ -148,12 +148,12 @@
                         toolbar[toolbarName].push(button);
 
                         if (!!icon) {
-                            icons.push(icon);
+                            icons[button] = icon;
                         }
                     },
 
                     getToolbar: function() {
-                        return JSON.parse(JSON.stringify(toolbar));
+                        return Util.deepCopy(toolbar);
                     },
 
                     getIcon: function(button) {
