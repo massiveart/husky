@@ -28,7 +28,6 @@ define([], function() {
             table: true,
             link: true,
             pasteFromWord: true,
-            height: 65,
             autoStart: true
         },
 
