@@ -339,6 +339,15 @@ module.exports = function(grunt) {
                         cwd: '.bower_components/ckeditor',
                         src: ['**'],
                         dest: 'bower_components/ckeditor'
+                    },
+                    // sprintf
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/sprintf/src/sprintf.js'
+                        ],
+                        dest: 'bower_components/sprintf'
                     }
                 ]
             },
