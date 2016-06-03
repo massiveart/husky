@@ -33484,7 +33484,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
-             * Deletes all records, sets given records and updateds the view
+             * Deletes all records, sets given records and updates the view
              * @event husky.datagrid.records.set
              * @param {Array} array of data-records
              */
@@ -34686,7 +34686,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
-             * Deletes all records, sets given records and updateds the view
+             * Deletes all records, sets given records and updates the view
              * @param records {Array} array of data-records
              */
             setRecordsHandler: function(records) {
