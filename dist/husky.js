@@ -33484,6 +33484,15 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
+             * listens on and sets one or more data-records with a given ones
+             * @event husky.datagrid.records.set
+             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             */
+            RECORDS_SET = function() {
+                return this.createEventName('records.set');
+            },
+
+            /**
              * raised when limit of request changed
              * @event husky.datagrid.page-size.changed
              * @param {Integer} pageSize new size
@@ -34488,6 +34497,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
                 this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
+                this.sandbox.on(RECORDS_SET.call(this), this.setRecordsHandler.bind(this));
                 this.sandbox.on(NUMBER_SELECTIONS.call(this), this.updateSelectedCounter.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
@@ -34670,6 +34680,25 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.sandbox.util.foreach(records, function(record) {
                     this.changeRecord(record);
                 }.bind(this));
+
+                this.rerenderView();
+                this.rerenderPagination();
+            },
+
+            /**
+             * Delets all records and sets one or more data-records with a given ones and updates the view
+             * @param records {Object|Array} the new data-record or an array of data-records
+             */
+            setRecordsHandler: function(records) {
+                if (!this.sandbox.dom.isArray(records)) {
+                    records = [records];
+                }
+
+                // Delete all records.
+                this.data.embedded = [];
+
+                // Add the records.
+                this.pushRecords(records);
 
                 this.rerenderView();
                 this.rerenderPagination();
