@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
-    * ENHANCEMENT #655 Added new function 'records.set' for datagrid
+    * ENHANCEMENT #657 Added new function 'records.set' for datagrid
 
 * 0.19.3 (2016-06-01)
     * HOTFIX      #649 Use correct culture name when loocale includes country
