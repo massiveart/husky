@@ -1698,7 +1698,7 @@
 
             /**
              * Merges one or more data-records with a given ones and updates the view
-             * @param records {Object|Array} the new data-record or an array of data-records
+             * @param {Object|Array} records the new data-record or an array of data-records
              */
             changeRecordsHandler: function(records) {
                 if (!this.sandbox.dom.isArray(records)) {
@@ -1714,7 +1714,7 @@
 
             /**
              * Deletes all records, sets given records and updates the view
-             * @param records {Array} array of data-records
+             * @param {Array} records array of data-records
              */
             setRecordsHandler: function(records) {
                 // Delete all records.
@@ -1729,7 +1729,7 @@
 
             /**
              * calls the clickCallback for an item
-             * @param id {Number|String} the id of the item
+             * @param {Number|String} id the id of the item
              */
             itemClicked: function(id) {
                 if (typeof this.options.clickCallback === 'function') {
