@@ -511,9 +511,9 @@
             },
 
             /**
-             * listens on and sets one or more data-records with a given ones
+             * Deletes all records, sets given records and updateds the view
              * @event husky.datagrid.records.set
-             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             * @param {Array} array of data-records
              */
             RECORDS_SET = function() {
                 return this.createEventName('records.set');
@@ -1713,14 +1713,10 @@
             },
 
             /**
-             * Delets all records and sets one or more data-records with a given ones and updates the view
-             * @param records {Object|Array} the new data-record or an array of data-records
+             * Deletes all records, sets given records and updateds the view
+             * @param records {Array} array of data-records
              */
             setRecordsHandler: function(records) {
-                if (!this.sandbox.dom.isArray(records)) {
-                    records = [records];
-                }
-
                 // Delete all records.
                 this.data.embedded = [];
 
