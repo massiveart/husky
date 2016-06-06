@@ -1219,6 +1219,11 @@
                 // not an husky decorator, try to load external decorator
                 else {
                     require([viewId], function(view) {
+                        // this will keep BC
+                        if (typeof view === 'function') {
+                            view = new view();
+                        }
+
                         this.gridViews[this.viewId] = view;
                         this.initializeViewDecorator();
                         def.resolve();
