@@ -30,6 +30,7 @@
             "services/husky/mediator": "husky_services/mediator",
             "services/husky/translator": "husky_services/translator",
             "services/husky/url-validator": "husky_services/url-validator",
+            "services/husky/local-storage": "husky_services/local-storage",
 
             "bootstrap-datepicker": "bower_components/bootstrap-datepicker/bootstrap-datepicker",
             "datepicker-ar": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az",
@@ -149,6 +150,7 @@
             "services/husky/mediator",
             "services/husky/translator",
             "services/husky/url-validator",
+            "services/husky/local-storage",
 
             "husky",
             "__component__$navigation@husky",

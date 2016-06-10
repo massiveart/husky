@@ -28050,6 +28050,77 @@ define('services/husky/translator',[],function() {
     return Translator.getInstance();
 });
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+/**
+ * Introduces functionality used by multiple components, which are displaying some items in a list
+ */
+define('services/husky/local-storage',[],function() {
+
+    'use strict';
+
+    function DummyStorage(name) {
+        this.name = name;
+    }
+
+    DummyStorage.prototype.set = function(key, value) {
+    };
+
+    DummyStorage.prototype.get = function(key, defaultValue) {
+        return defaultValue;
+    };
+
+    DummyStorage.prototype.has = function(key) {
+        return false;
+    };
+
+    function ArrayStorage(name) {
+        this.values = {};
+        this.name = name;
+    }
+
+    ArrayStorage.prototype.set = function(key, value) {
+        this.values[key] = value;
+    };
+
+    ArrayStorage.prototype.get = function(key, defaultValue) {
+        if (!this.values[key]) {
+            return defaultValue;
+        }
+
+        return this.values[key];
+    };
+
+    ArrayStorage.prototype.has = function(key) {
+        return !!this.values[key];
+    };
+
+    return {
+
+        storages: {},
+
+        create: function(name) {
+            if (!!this.storages[name]) {
+                return this.storages[name];
+            }
+
+            return this.storages[name] = new ArrayStorage(name);
+        },
+
+        createDummy: function(name) {
+            return new ArrayStorage(name);
+        }
+    };
+});
+
 define('bower_components/aura/lib/platform',[],function() {
   // The bind method is used for callbacks.
   //
@@ -33019,8 +33090,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
-        'husky_components/datagrid/decorators/infinite-scroll-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination) {
+        'husky_components/datagrid/decorators/infinite-scroll-pagination',
+        'services/husky/local-storage'
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination, LocalStorage) {
 
         /* Default values for options */
 
@@ -33663,6 +33735,12 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+                if (!!this.options.instanceName) {
+                    this.storage = LocalStorage.create(this.options.instanceName);
+                } else {
+                    this.storage = LocalStorage.createDummy('dummy');
+                }
+
                 this.matchings = [];
                 this.requestFields = [];
                 this.selectedItems = [];
@@ -33708,7 +33786,6 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
                 }.bind(this));
-
             },
 
             remove: function() {
@@ -33723,6 +33800,10 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 var url;
                 if (!!this.options.url) {
                     url = this.options.url;
+
+                    if (this.storage.has('currentUrl')) {
+                        url = this.storage.get('currentUrl');
+                    }
 
                     this.sandbox.logger.log('load data from url');
                     if (this.requestFields.length > 0) {
@@ -33952,6 +34033,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              */
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
+                this.storage.set('currentUrl', this.currentUrl);
+
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
@@ -35896,7 +35979,7 @@ define('__component__$matrix@husky',[],function() {
  * @param {String} [options.placeholderText=Search...] the text to be shown as placeholder
  * @param {String} [options.appearance=gray] appearance can be 'gray', 'white' or 'small'
  */
-define('__component__$search@husky',[], function() {
+define('__component__$search@husky',['services/husky/local-storage'], function(LocalStorage) {
 
     'use strict';
 
@@ -35904,7 +35987,7 @@ define('__component__$search@husky',[], function() {
             skeleton: [
                 '<button class="fa-search fa-flip-horizontal search-icon" />',
                 '<button class="fa-times-circle remove-icon" />',
-                '<input id="search-input" type="text" class="form-element input-round search-input" placeholder="<%= placeholderText %>"/>'
+                '<input id="search-input" type="text" class="form-element input-round search-input" value="<%= value %>" placeholder="<%= placeholderText %>"/>'
             ].join('')
         },
         defaults = {
@@ -35958,6 +36041,12 @@ define('__component__$search@husky',[], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+            if (!!this.options.instanceName) {
+                this.storage = LocalStorage.create(this.options.instanceName);
+            } else {
+                this.storage = LocalStorage.createDummy('dummy');
+            }
+
             this.render();
 
             this.bindDOMEvents();
@@ -35980,7 +36069,10 @@ define('__component__$search@husky',[], function() {
                 this.collapse();
             }
 
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
+                placeholderText: this.sandbox.translate(this.options.placeholderText),
+                value: this.storage.get('search')
+            }));
         },
 
         // bind dom elements
@@ -36013,6 +36105,7 @@ define('__component__$search@husky',[], function() {
         },
 
         resetSearch: function(noEmit) {
+            this.storage.set('search', null);
             if(!noEmit) {
                 this.sandbox.emit(RESET.call(this));
             }
@@ -36055,6 +36148,8 @@ define('__component__$search@husky',[], function() {
             }
 
             this.searchSubmitted = true;
+
+            this.storage.set('search', searchString);
 
             // emit event
             this.sandbox.emit(SEARCH.call(this), searchString);

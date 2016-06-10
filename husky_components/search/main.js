@@ -15,7 +15,7 @@
  * @param {String} [options.placeholderText=Search...] the text to be shown as placeholder
  * @param {String} [options.appearance=gray] appearance can be 'gray', 'white' or 'small'
  */
-define([], function() {
+define(['services/husky/local-storage'], function(LocalStorage) {
 
     'use strict';
 
@@ -23,7 +23,7 @@ define([], function() {
             skeleton: [
                 '<button class="fa-search fa-flip-horizontal search-icon" />',
                 '<button class="fa-times-circle remove-icon" />',
-                '<input id="search-input" type="text" class="form-element input-round search-input" placeholder="<%= placeholderText %>"/>'
+                '<input id="search-input" type="text" class="form-element input-round search-input" value="<%= value %>" placeholder="<%= placeholderText %>"/>'
             ].join('')
         },
         defaults = {
@@ -77,10 +77,20 @@ define([], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+            if (!!this.options.instanceName) {
+                this.storage = LocalStorage.create(this.options.instanceName);
+            } else {
+                this.storage = LocalStorage.createDummy('dummy');
+            }
+
             this.render();
 
             this.bindDOMEvents();
             this.bindCustomEvents();
+
+            if (!!this.storage.get('search')) {
+                this.searchSubmitted = true;
+            }
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
@@ -99,7 +109,10 @@ define([], function() {
                 this.collapse();
             }
 
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
+                placeholderText: this.sandbox.translate(this.options.placeholderText),
+                value: this.storage.get('search')
+            }));
         },
 
         // bind dom elements
@@ -132,6 +145,7 @@ define([], function() {
         },
 
         resetSearch: function(noEmit) {
+            this.storage.set('search', null);
             if(!noEmit) {
                 this.sandbox.emit(RESET.call(this));
             }
@@ -174,6 +188,8 @@ define([], function() {
             }
 
             this.searchSubmitted = true;
+
+            this.storage.set('search', searchString);
 
             // emit event
             this.sandbox.emit(SEARCH.call(this), searchString);

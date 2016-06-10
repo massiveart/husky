@@ -46,8 +46,9 @@
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
-        'husky_components/datagrid/decorators/infinite-scroll-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination) {
+        'husky_components/datagrid/decorators/infinite-scroll-pagination',
+        'services/husky/local-storage'
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, infiniteScrollPagination, LocalStorage) {
 
         /* Default values for options */
 
@@ -690,6 +691,12 @@
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+                if (!!this.options.instanceName) {
+                    this.storage = LocalStorage.create(this.options.instanceName);
+                } else {
+                    this.storage = LocalStorage.createDummy('dummy');
+                }
+
                 this.matchings = [];
                 this.requestFields = [];
                 this.selectedItems = [];
@@ -735,7 +742,6 @@
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
                 }.bind(this));
-
             },
 
             remove: function() {
@@ -750,6 +756,10 @@
                 var url;
                 if (!!this.options.url) {
                     url = this.options.url;
+
+                    if (this.storage.has('currentUrl')) {
+                        url = this.storage.get('currentUrl');
+                    }
 
                     this.sandbox.logger.log('load data from url');
                     if (this.requestFields.length > 0) {
@@ -979,6 +989,8 @@
              */
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
+                this.storage.set('currentUrl', this.currentUrl);
+
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
