@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #660 Fixed timing of localization initialization
     * ENHANCEMENT #657 Added new function 'records.set' for datagrid
 
 * 0.19.3 (2016-06-01)

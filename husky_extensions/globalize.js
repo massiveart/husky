@@ -184,15 +184,26 @@
                 app.setLanguage = function(cultureName, messages, defaultMessages) {
                     cultureName = normalizeCultureName(cultureName);
 
-                    if (cultureName !== 'en') {
-                        require(['cultures/globalize.culture.' + cultureName]);
-                    }
 
                     Globalize.culture(cultureName);
 
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
                     app.sandbox.globalize.addCultureInfo('default', defaultMessages);
                 };
+
+                app.loadLanguage = function(cultureName) {
+                    var deferred = $.Deferred();
+
+                    if (cultureName !== 'en') {
+                        require(['cultures/globalize.culture.' + cultureName], function() {
+                            deferred.resolve();
+                        });
+                    } else {
+                        deferred.resolve();
+                    }
+
+                    return deferred.promise();
+                }
             },
 
             afterAppStart: function(app) {
@@ -201,11 +212,13 @@
                         app.config.culture.messages = {};
                     }
 
-                    app.setLanguage(
-                        app.config.culture.name,
-                        app.config.culture.messages,
-                        app.config.culture.defaultMessages
-                    );
+                    app.loadLanguage(app.config.culture.name).then(function() {
+                        app.setLanguage(
+                            app.config.culture.name,
+                            app.config.culture.messages,
+                            app.config.culture.defaultMessages
+                        );
+                    });
                 }
 
                 app.sandbox.globalize.setCurrency('');
