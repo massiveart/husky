@@ -2,6 +2,8 @@
 // Column-Navigation
 // --------------------------------------------------
 
+$publishedColor: $green;
+
 .husky-column-navigation {
     height: 100%;
 
@@ -122,9 +124,25 @@
                     color: $grayLighter;
                 }
 
+                .not-published-state,
                 .not-published {
-                    color: $infoColor;
-                    font-size: 40px;
+                    border: 1px $white solid;
+                    border-radius: 6px;
+                    width: 11px;
+                    height: 11px;
+                    margin-top: 4px;
+                }
+
+                .not-published-state {
+                    background-color: $infoColor;
+                }
+
+                .not-published {
+                    background-color: $publishedColor;
+                }
+
+                .not-published + .not-published-state {
+                    margin-left: -11px;
                 }
 
                 .orderer {
