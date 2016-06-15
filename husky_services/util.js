@@ -7,7 +7,7 @@
  * with this source code in the file LICENSE.
  */
 
-define(function() {
+define(['sprintf'], function(sprintf) {
 
     'use strict';
 
@@ -306,6 +306,16 @@ define(function() {
 
         return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
     };
+
+    /**
+     * Return a formatted string.
+     *
+     * @param {String} format
+     * @param {String...} arguments
+     *
+     * @return {String}
+     */
+    Util.prototype.sprintf = sprintf.sprintf;
 
     Util.getInstance = function() {
         if (instance == null) {

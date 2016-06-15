@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #654 Added util function sprintf
     * BUGFIX      #652 Added hide tabs for only one single tab
     * ENHANCEMENT #651 Added auto-start option for ckeditor component
     * FEATURE     #643 Added ckeditor plugin registry
