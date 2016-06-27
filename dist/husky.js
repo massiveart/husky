@@ -27884,6 +27884,12 @@ define('type/url-input',[
  * with this source code in the file LICENSE.
  */
 
+require.config({
+    paths: {
+        'sprintf': 'bower_components/sprintf/sprintf'
+    }
+});
+
 define('services/husky/util',['sprintf'], function(sprintf) {
 
     'use strict';
@@ -37334,7 +37340,12 @@ define('__component__$toolbar@husky',[],function() {
          * @param $button
          */
         hideItem = function($button) {
+            var $list = $button.parent('.toolbar-dropdown-menu');
             this.sandbox.dom.addClass($button, 'hidden');
+
+            if ($list.length > 0) {
+                updateDropdownArrow.call(this, $list);
+            }
         },
 
         /**
@@ -37342,7 +37353,12 @@ define('__component__$toolbar@husky',[],function() {
          * @param $button
          */
         showItem = function($button) {
+            var $list = $button.parent('.toolbar-dropdown-menu');
             this.sandbox.dom.removeClass($button, 'hidden');
+
+            if ($list.length > 0) {
+                updateDropdownArrow.call(this, $list);
+            }
         },
 
         /**
@@ -37402,8 +37418,11 @@ define('__component__$toolbar@husky',[],function() {
                 visible;
             if (!!this.sandbox.dom.find('.dropdown-toggle', $list).length) {
                 // abort if disabled or dropdown-arrow wasn't clicked and but the onlyOnClickOnArrow option was true
-                if (!item || item.disabled ||
-                    (item.dropdownOptions.onlyOnClickOnArrow === true && !this.sandbox.dom.hasClass(event.target, 'dropdown-toggle'))) {
+                if (!item
+                    || item.disabled
+                    || (item.dropdownOptions.onlyOnClickOnArrow === true && !this.sandbox.dom.hasClass(event.target, 'dropdown-toggle'))
+                    || !countVisibleItemsInDropdown($list.children('.toolbar-dropdown-menu'))
+                ) {
                     return false;
                 }
 
@@ -37469,8 +37488,12 @@ define('__component__$toolbar@husky',[],function() {
                 $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null;
 
             // stop if loading or the dropdown gets opened
-            if (item.loading || (!!item.dropdownItems && item.dropdownOptions.onlyOnClickOnArrow !== true) ||
-                this.sandbox.dom.hasClass(event.target, 'dropdown-toggle')) {
+            if (item.loading || (
+                    !!item.dropdownItems
+                    && item.dropdownOptions.onlyOnClickOnArrow !== true
+                    && !!countVisibleItemsInDropdown($(event.currentTarget).children('.toolbar-dropdown-menu'))
+                ) || this.sandbox.dom.hasClass(event.target, 'dropdown-toggle')
+            ) {
                 return false;
             }
             hideDropdowns.call(this);
@@ -37651,6 +37674,21 @@ define('__component__$toolbar@husky',[],function() {
                 }
                 this.sandbox.dom.append($list, $item);
             }.bind(this));
+
+            updateDropdownArrow.call(this, $list);
+        },
+
+        countVisibleItemsInDropdown = function($list) {
+            return $list.children('li:not(.hidden)').length;
+        },
+
+        updateDropdownArrow = function($list) {
+            var $dropdownToggle = $list.siblings('.dropdown-toggle');
+            if (!!countVisibleItemsInDropdown($list)) {
+                $dropdownToggle.css('display', '');
+            } else {
+                $dropdownToggle.css('display', 'none');
+            }
         },
 
         /**

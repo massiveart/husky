@@ -16,6 +16,9 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.css">
     <style>
+        html, body {
+            overflow: auto;
+        }
         body {
             margin: 20px;
         }
@@ -76,6 +79,15 @@
     <div class="grid-row">
         <div class="darkBackground">
             <div id="toolbar7"></div>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="actions">
+            <div class="btn fit inline" id="hideSaveItems">Hide "Save" items</div>
+            <div class="btn fit inline" id="showSaveItems">Show "Save" items</div>
+        </div>
+        <div class="blueBackground">
+            <div id="toolbar8"></div>
         </div>
     </div>
 </div>
@@ -596,6 +608,49 @@
                             }
                         ]
                     }
+                },
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar8',
+                        instanceName: 'save',
+                        skin: 'big',
+                        responsive: true,
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            },
+                            {
+                                id: 2,
+                                align: 'right'
+                            }
+                        ],
+                        buttons: [
+                            {
+                                icon: 'floppy-o',
+                                group: 1,
+                                title: 'Save',
+                                id: 'save',
+                                dropdownItems: [
+                                    {
+                                        id: 'saveNew',
+                                        title: 'Save and new'
+                                    },
+                                    {
+                                        id: 'saveBack',
+                                        title: 'Save and back'
+                                    }
+                                ],
+                                dropdownOptions: {
+                                    onlyOnClickOnArrow: false
+                                },
+                                callback: function() {
+                                    app.sandbox.emit('husky.toolbar.contact3.item.loading', 'save');
+                                }
+                            }
+                        ]
+                    }
                 }
             ]);
 
@@ -653,6 +708,16 @@
 
             $('#load').on('click', function() {
                 app.sandbox.emit('husky.toolbar.contact3.item.loading', 'template');
+            });
+
+            $('#hideSaveItems').on('click', function() {
+                app.sandbox.emit('husky.toolbar.save.item.hide', 'saveNew');
+                app.sandbox.emit('husky.toolbar.save.item.hide', 'saveBack');
+            });
+
+            $('#showSaveItems').on('click', function() {
+                app.sandbox.emit('husky.toolbar.save.item.show', 'saveNew');
+                app.sandbox.emit('husky.toolbar.save.item.show', 'saveBack');
             });
         });
     });
