@@ -9,6 +9,13 @@
     * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
+* 0.20.0 (2016-06-28)
+    * HOTFIX      #660 Fixed timing of localization initialization
+    * ENHANCEMENT #657 Added new function 'records.set' for datagrid
+
+* 0.19.3 (2016-06-01)
+    * HOTFIX      #649 Use correct culture name when loocale includes country
+
 * 0.19.2 (2016-05-09)
     * HOTFIX      #646 Added a scrolling mechanism to the select dropdown
 

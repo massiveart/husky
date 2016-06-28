@@ -33703,6 +33703,15 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
+             * Deletes all records, sets given records and updates the view
+             * @event husky.datagrid.records.set
+             * @param {Array} array of data-records
+             */
+            RECORDS_SET = function() {
+                return this.createEventName('records.set');
+            },
+
+            /**
              * raised when limit of request changed
              * @event husky.datagrid.page-size.changed
              * @param {Integer} pageSize new size
@@ -34707,6 +34716,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
                 this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
+                this.sandbox.on(RECORDS_SET.call(this), this.setRecordsHandler.bind(this));
                 this.sandbox.on(NUMBER_SELECTIONS.call(this), this.updateSelectedCounter.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
@@ -34880,7 +34890,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
 
             /**
              * Merges one or more data-records with a given ones and updates the view
-             * @param records {Object|Array} the new data-record or an array of data-records
+             * @param {Object|Array} records the new data-record or an array of data-records
              */
             changeRecordsHandler: function(records) {
                 if (!this.sandbox.dom.isArray(records)) {
@@ -34895,8 +34905,23 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
             },
 
             /**
+             * Deletes all records, sets given records and updates the view
+             * @param {Array} records array of data-records
+             */
+            setRecordsHandler: function(records) {
+                // Delete all records.
+                this.data.embedded = [];
+
+                // Add the records.
+                this.pushRecords(records);
+
+                this.rerenderView();
+                this.rerenderPagination();
+            },
+
+            /**
              * calls the clickCallback for an item
-             * @param id {Number|String} the id of the item
+             * @param {Number|String} id the id of the item
              */
             itemClicked: function(id) {
                 if (typeof this.options.clickCallback === 'function') {
@@ -51318,12 +51343,25 @@ define("datepicker-zh-TW", function(){});
     });
 
     define('husky_extensions/globalize',['globalize_lib'], function() {
+        var normalizeCultureName = function(cultureName) {
+            cultureName = cultureName.replace('_', '-');
+
+            if (cultureName.indexOf('-') > -1) {
+                cultureName =
+                    cultureName.substring(0, cultureName.indexOf('-')) +
+                    cultureName.substring(cultureName.indexOf('-'), cultureName.length).toUpperCase();
+            }
+
+            return cultureName;
+        };
+
         return  {
             name: 'husky-validation',
 
             initialize: function(app) {
                 app.sandbox.globalize = {
                     addCultureInfo: function(cultureName, messages) {
+                        cultureName = normalizeCultureName(cultureName);
                         Globalize.addCultureInfo(cultureName, {
                             messages: messages
                         });
@@ -51345,12 +51383,12 @@ define("datepicker-zh-TW", function(){});
 
                 app.sandbox.translate = function(key) {
                     var translation;
-                    if (!app.config.culture || !app.config.culture.name) {
+                    if (!app.config.culture || !Globalize.culture().name) {
                         return key;
                     }
 
                     try {
-                        translation = Globalize.localize(key, app.config.culture.name);
+                        translation = Globalize.localize(key, Globalize.culture().name);
                     } catch (e) {
                         app.logger.warn('Globalize threw an error when translating key "' + key + '", failling back to key. Error: ' + e);
                         return key;
@@ -51468,14 +51506,27 @@ define("datepicker-zh-TW", function(){});
                  * @param defaultMessages will be used as fallback messages
                  */
                 app.setLanguage = function(cultureName, messages, defaultMessages) {
+                    cultureName = normalizeCultureName(cultureName);
+
+
                     Globalize.culture(cultureName);
 
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
                     app.sandbox.globalize.addCultureInfo('default', defaultMessages);
                 };
 
-                if (!!app.config.culture && !!app.config.culture.name && app.config.culture.name !== 'en') {
-                    return require(['cultures/globalize.culture.' + app.config.culture.name.replace("_", "-")]);
+                app.loadLanguage = function(cultureName) {
+                    var deferred = $.Deferred();
+
+                    if (cultureName !== 'en') {
+                        require(['cultures/globalize.culture.' + cultureName], function() {
+                            deferred.resolve();
+                        });
+                    } else {
+                        deferred.resolve();
+                    }
+
+                    return deferred.promise();
                 }
             },
 
@@ -51485,11 +51536,13 @@ define("datepicker-zh-TW", function(){});
                         app.config.culture.messages = {};
                     }
 
-                    app.setLanguage(
-                        app.config.culture.name,
-                        app.config.culture.messages,
-                        app.config.culture.defaultMessages
-                    );
+                    app.loadLanguage(app.config.culture.name).then(function() {
+                        app.setLanguage(
+                            app.config.culture.name,
+                            app.config.culture.messages,
+                            app.config.culture.defaultMessages
+                        );
+                    });
                 }
 
                 app.sandbox.globalize.setCurrency('');

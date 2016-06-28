@@ -19,12 +19,25 @@
     });
 
     define(['globalize_lib'], function() {
+        var normalizeCultureName = function(cultureName) {
+            cultureName = cultureName.replace('_', '-');
+
+            if (cultureName.indexOf('-') > -1) {
+                cultureName =
+                    cultureName.substring(0, cultureName.indexOf('-')) +
+                    cultureName.substring(cultureName.indexOf('-'), cultureName.length).toUpperCase();
+            }
+
+            return cultureName;
+        };
+
         return  {
             name: 'husky-validation',
 
             initialize: function(app) {
                 app.sandbox.globalize = {
                     addCultureInfo: function(cultureName, messages) {
+                        cultureName = normalizeCultureName(cultureName);
                         Globalize.addCultureInfo(cultureName, {
                             messages: messages
                         });
@@ -46,12 +59,12 @@
 
                 app.sandbox.translate = function(key) {
                     var translation;
-                    if (!app.config.culture || !app.config.culture.name) {
+                    if (!app.config.culture || !Globalize.culture().name) {
                         return key;
                     }
 
                     try {
-                        translation = Globalize.localize(key, app.config.culture.name);
+                        translation = Globalize.localize(key, Globalize.culture().name);
                     } catch (e) {
                         app.logger.warn('Globalize threw an error when translating key "' + key + '", failling back to key. Error: ' + e);
                         return key;
@@ -169,14 +182,27 @@
                  * @param defaultMessages will be used as fallback messages
                  */
                 app.setLanguage = function(cultureName, messages, defaultMessages) {
+                    cultureName = normalizeCultureName(cultureName);
+
+
                     Globalize.culture(cultureName);
 
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
                     app.sandbox.globalize.addCultureInfo('default', defaultMessages);
                 };
 
-                if (!!app.config.culture && !!app.config.culture.name && app.config.culture.name !== 'en') {
-                    return require(['cultures/globalize.culture.' + app.config.culture.name.replace("_", "-")]);
+                app.loadLanguage = function(cultureName) {
+                    var deferred = $.Deferred();
+
+                    if (cultureName !== 'en') {
+                        require(['cultures/globalize.culture.' + cultureName], function() {
+                            deferred.resolve();
+                        });
+                    } else {
+                        deferred.resolve();
+                    }
+
+                    return deferred.promise();
                 }
             },
 
@@ -186,11 +212,13 @@
                         app.config.culture.messages = {};
                     }
 
-                    app.setLanguage(
-                        app.config.culture.name,
-                        app.config.culture.messages,
-                        app.config.culture.defaultMessages
-                    );
+                    app.loadLanguage(app.config.culture.name).then(function() {
+                        app.setLanguage(
+                            app.config.culture.name,
+                            app.config.culture.messages,
+                            app.config.culture.defaultMessages
+                        );
+                    });
                 }
 
                 app.sandbox.globalize.setCurrency('');
