@@ -7,6 +7,12 @@
  * with this source code in the file LICENSE.
  */
 
+require.config({
+    paths: {
+        'sprintf': 'bower_components/sprintf/sprintf'
+    }
+});
+
 define(['sprintf'], function(sprintf) {
 
     'use strict';
