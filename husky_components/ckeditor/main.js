@@ -168,13 +168,11 @@ define([], function() {
         renderStartTemplate: function() {
             var $content = $(this.$el.val()),
                 text = $content.text(),
-                $trigger = $(
-                    '<textarea class="form-element ckeditor-preview">' + text + '</textarea>'
-                );
+                $trigger = $('<textarea class="form-element ckeditor-preview">' + text + '</textarea>');
 
             this.$el.parent().append($trigger);
 
-            $trigger.one('click', function(e) {
+            $trigger.one('click, focus', function(e) {
                 $(e.currentTarget).remove();
 
                 this.startEditor();
