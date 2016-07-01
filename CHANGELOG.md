@@ -2,6 +2,7 @@
 
 * dev-develop
     * FEATURE     #664 Collapse dropdown button without visible items in list
+    * FEATURE     #636 Added possibility to display small labels
     * BUGFIX      #666 Added auto-start on focus
     * FEATURE     #654 Added util function sprintf
     * BUGFIX      #652 Added hide tabs for only one single tab
