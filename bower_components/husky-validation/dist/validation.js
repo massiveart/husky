@@ -1937,7 +1937,8 @@ define('type/decimal',[
     return function($el, options) {
         var defaults = {
                 format: 'n', // n, d, c, p
-                regExp: /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/
+                regExp: /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/,
+                nullable: false
             },
 
             typeInterface = {
@@ -1947,7 +1948,7 @@ define('type/decimal',[
                 validate: function() {
                     var val = this.getValue();
 
-                    if (val === '') {
+                    if (val === '' || (this.options.nullable === true && val === null)) {
                         return true;
                     }
 
@@ -1956,6 +1957,10 @@ define('type/decimal',[
 
                 getModelData: function(val) {
                     if(val === '') {
+                        if (this.options.nullable === true) {
+                            return null;
+                        }
+                        
                         return '';
                     }
                     return Globalize.parseFloat(val);
