@@ -32,7 +32,7 @@
         },
 
         initializeLanguages = function(app) {
-            if (!!app.config.culture && !!app.config.culture) {
+            if (!!app.config.culture) {
                 if (!app.config.culture.messages) {
                     app.config.culture.messages = {};
                 }
