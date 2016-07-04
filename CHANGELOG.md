@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #671 Updated to current version of husky-validation
     * BUGFIX      #670 Fixed Globalizing timing issue
     * FEATURE     #664 Collapse dropdown button without visible items in list
     * FEATURE     #636 Added possibility to display small labels
