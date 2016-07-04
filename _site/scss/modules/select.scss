@@ -1,0 +1,183 @@
+.husky-select-container {
+    position: relative;
+    color: $black;
+
+    &.big {
+        .dropdown-label {
+            font-size: $baseFontSize;
+            padding: 5px 10px 5px 15px;
+
+            .toggle-icon {
+                right: 15px;
+                top: 5px;
+            }
+        }
+    }
+
+    .dropdown-label {
+        background: $grayLighter;
+        padding: 0px 5px 0px 10px;
+        line-height: 30px;
+        border-radius: $borderRadius;
+        font-size: $smallFontSize;
+        @include clear-float;
+        .checkbox {
+            padding-right: 20px;
+        }
+        .icon {
+            float: left;
+            font-size: 15px;
+            padding-right: 4px;
+            display: block;
+            line-height: 30px;
+        }
+        .toggle-icon {
+            position: absolute;
+            top: 0px;
+            right: 10px;
+            font-size: 14px;
+            line-height: 30px;
+        }
+    }
+
+    &.disabled {
+        .dropdown-label {
+            background: $grayLighterer;
+            color: $gray;
+            cursor: default;
+        }
+    }
+
+    .husky-select-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+    }
+
+    .dropdown-list {
+        width: 100%;
+        /*display: inline-block;*/
+        position: absolute;
+        top: 20px;
+        left: 0px;
+        margin-top: 5px;
+        background-color: #FFF;
+        border: 1px solid $grayLighter;
+        z-index: 2000;
+        border-radius: $borderRadius;
+
+        .divider {
+            max-width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            margin: 5px 0 10px;
+        }
+
+        &.top {
+            top: inherit;
+            bottom: 5px;
+        }
+
+        .disabled,
+        .disabled:hover {
+            background: none;
+            cursor: default;
+            .item-value {
+                color: $grayLight;
+            }
+        }
+        .check {
+            display:inline;
+            width: 20px;
+            margin-right: 10px;
+            padding-top: 7px;
+        }
+        .item-value {
+            display:inline;
+            line-height: 30px;
+        }
+
+        & > ul {
+            list-style: none;
+            margin: 0;
+            padding: 10px 0;
+
+            input {
+                margin: 0;
+            }
+
+            & > li {
+                padding: 0px 10px 0px 20px;
+                clear: both;
+                height: 30px;
+
+                &>div{
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+
+                &:hover,
+                &.hover {
+                    background-color: $highlightColor;
+                    cursor: pointer;
+                }
+                &:hover .item-value {
+                    color: $white;
+                }
+
+                &:hover > div {
+                    color: $white;
+                }
+            }
+        }
+    }
+
+    &.small {
+        .dropdown-label {
+            font-size: $reallySmallFontSize;
+            line-height: 20px;
+        }
+        .toggle-icon {
+          line-height: 20px;
+        }
+        .dropdown-list {
+            top: 12px;
+            min-width: 200px;
+            max-width: 100%;
+            border-radius: $borderRadiusSmall;
+
+            &.top {
+                top: auto;
+                bottom: -3px;
+            }
+        }
+    }
+
+    &.white {
+        .dropdown-label {
+            background: $white;
+        }
+    }
+
+    &.action {
+        .dropdown-label {
+            background: $blue;
+            color: $white;
+        }
+    }
+
+    select {
+        opacity: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        -webkit-appearance: none;
+        z-index: 5;
+        cursor: pointer;
+    }
+
+}

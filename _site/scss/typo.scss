@@ -1,0 +1,119 @@
+//
+// Typography
+// --------------------------------------------------
+
+// Base font definitions
+// -------------------------
+body {
+    font-size: $baseFontSize;
+    font-family: $baseFontFamily;
+    line-height: $baseLineHeight;
+}
+
+// Heading
+// -------------------------
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $headingsFontFamily;
+    font-weight: $headingsFontWeight;
+    color: $grayLight;
+}
+
+h1 {
+    color: $highlightColor;
+    font-size: 36px;
+    line-height: 40px;
+    margin: 10px 0 40px 0;
+
+    &.bright {
+        color: $milkeyBlue;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 30px;
+    margin: 0 0 10px 0;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 25px;
+}
+
+h4 {
+    font-size: 18px;
+    line-height: 20px;
+}
+
+h5 {
+    font-size: 14px;
+    line-height: 15px;
+}
+
+h6 {
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0;
+}
+
+
+.compoundedHeadlines {
+    :first-child {
+        color: $highlightColor;
+        font-size: 14px;
+        margin: 0;
+        line-height: 20px;
+    }
+    :nth-child(2) {
+        margin-top: 0;
+    }
+}
+
+
+
+h1, h2, h3, h4, h5 {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    &.divider:after {
+        position: absolute;
+        top: 50%;
+        margin-left: 10px;
+        overflow: hidden;
+        width: 100%;
+        height: 1px;
+        content: '\a0';
+        background-color: $grayLighter;
+    }
+}
+
+// Bold fonts
+// -------------------------
+
+%bold {
+    font-family: $baseFontFamily !important;
+
+}
+
+.bold {
+    @extend %bold;
+}
+
+.small-font {
+    font-size: $smallFontSize;
+}
+
+.smaller-font {
+    font-size: $reallySmallFontSize;
+}
+
+.grey-font {
+    color: $grayLight;
+}

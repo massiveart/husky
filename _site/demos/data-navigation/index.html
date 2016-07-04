@@ -1,0 +1,62 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.css">
+
+        <style>
+            #content {
+                overflow: hidden;
+                height: 100%;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div id="content" class="grid" style="width: 250px">
+            <div id="data-navigation" class="data-navigation-container"></div>
+        </div>
+
+        <script src="../../bower_components/jquery/jquery.js"></script>
+        <script src="../js/require.js"></script>
+
+        <script>
+            require.config({
+                baseUrl: '../../',
+                paths: {
+                    "data-navigation": "husky_components/data-navigation"
+                }
+            });
+
+            require(['lib/husky'], function (Husky) {
+                'use strict';
+
+                var app = new Husky({ debug: { enable: true }});
+
+                app.start([
+                    {
+                        name: 'data-navigation@husky',
+                        options: {
+                            el: '#data-navigation',
+                            url: 'http://husky.lo:7878/admin/api/collections',
+                            childrenLinkPropertyName: 'self',
+                            showAddButton: false
+                        }
+                    }
+                ]);
+            });
+        </script>
+    </body>
+</html>

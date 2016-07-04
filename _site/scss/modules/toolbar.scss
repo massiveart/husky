@@ -1,0 +1,359 @@
+//
+// Toolbar
+// --------------------------------------------------
+
+$toolbarHeight: 30px;
+$toolbarSmallHeight: 20px;
+
+/*styles related to the whole container*/
+.husky-toolbar {
+    @include clear-float;
+
+    .toolbar-search {
+        display: inline-block;
+        float: left;
+    }
+
+    &.small {
+        .group {
+            height: $toolbarSmallHeight;
+        }
+
+        .toolbar-item {
+            line-height: $toolbarSmallHeight;
+            min-width: 30px;
+
+            a  {
+                line-height: $toolbarSmallHeight - 3px;
+                min-width: 30px;
+
+                .icon, &.icon {
+                    font-size: 10px;
+                }
+                .title {
+                    font-size: 9px;
+                }
+            }
+
+            .item-loader {
+                height: 14px;
+                margin-top: ($toolbarSmallHeight - 2px)/2 - 7px;
+            }
+        }
+    }
+}
+
+/*group specific styles*/
+.group {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    height: $toolbarHeight;
+
+    &.right {
+        float: right;
+        padding-left: 10px;
+
+        .toolbar-dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+    }
+    &.left {
+        float: left;
+        padding-right: 10px;
+        &.last {
+            padding-right: 0;
+        }
+    }
+
+    .toolbar-item {
+        border-style: solid;
+        border-color: $grayLighter2;
+        border-width: 1px 1px 1px 0;
+
+        &:first-child,
+        &:first-child.hidden + .toolbar-item {
+            border-radius: $borderRadius 0 0 $borderRadius;
+            border-width: 1px;
+        }
+        &:last-child {
+            border-top-right-radius: $borderRadius !important;
+            border-bottom-right-radius: $borderRadius !important;
+        }
+        &:only-child {
+            border-radius: $borderRadius;
+        }
+    }
+}
+
+/** styles for the toolbar-items **/
+.toolbar-item {
+    min-width: 50px;
+    float: left;
+    position: relative;
+    display: block;
+    list-style: none;
+    height: 100%;
+    line-height: $toolbarHeight;
+    text-align: center;
+
+    &.dropdown {
+        position: relative;
+        display: block;
+        list-style: none;
+        float: left;
+    }
+
+    .dropdown-toggle::after {
+        top: -3px;
+    }
+
+    .item-loader {
+        display: inline-block;
+        height: 20px;
+        margin-top: ($toolbarHeight - 2px)/2 - 10px;
+    }
+
+    &.disabled:hover,
+    &.disabled {
+        background-color: inherit;
+        cursor: default;
+        a {
+            cursor: default;
+            color: $grayLight;
+        }
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    &.highlight {
+        background-color: $highlightColor;
+        border-color: transparent;
+
+        &.disabled:hover,
+        &.disabled {
+            background-color: $grayLighter;
+            border-color: transparent;
+            cursor: default;
+            a {
+                cursor: default;
+                color: $grayDark;
+            }
+        }
+
+        &:hover {
+            background-color: lighten($highlightColor, 3%);
+        }
+        &:active {
+            background-color: lighten($highlightColor, 5%);
+        }
+
+        & > a {
+            color: $white;
+
+            &.dropdown-toggle::after {
+              border-top-color: $white;
+            }
+        }
+
+        &.is-expanded {
+            background-color: $highlightColor;
+        }
+    }
+
+    &.highlight-gray {
+        background-color: $grayLighter;
+        border-color: transparent;
+
+        &:hover {
+            background-color: $grayLighter;
+        }
+        &:active {
+            background-color: $grayLighter;
+        }
+
+    }
+
+    &.is-expanded {
+        background-color: $grayLighter;
+
+        ul.toolbar-dropdown-menu {
+            display: block;
+        }
+    }
+
+    &:hover {
+        background-color: $grayLighter;
+    }
+    &:active {
+        background-color: darken($grayLighter, 3%);
+    }
+
+    /** link styling **/
+    a {
+        text-align: center;
+        color: black;
+        padding: 0 10px 0 8px;
+        display: table;
+        text-decoration: none;
+        height: 100%;
+        line-height: $toolbarHeight;
+        outline: none;
+        width: 100%;
+        min-width: 50px;
+
+        .icon, &.icon {
+            font-size: 16px;
+            padding-right: 0px;
+            display: inline-block;
+        }
+
+        .title {
+            font-size: $smallFontSize;
+            display: table-cell;
+            vertical-align: middle;
+        }
+    }
+}
+
+// Compass 1.0.1 specificity bug
+.toolbar-item .icon + .title:not(:empty) {
+    padding-left: 10px;
+}
+
+/**  dropdown styles **/
+.toolbar-dropdown-menu {
+  background-color: white;
+  border: 1px solid $grayLighter;
+  border-radius: $borderRadiusSmall;
+
+  display: none;
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+  left: 0;
+  min-width: 160px;
+  list-style: none;
+  font-size: $smallFontSize;
+
+  padding: 5px 0;
+  margin-top: -7px;
+  margin-left: 0px;
+  z-index: 2000;
+
+  @include standard-box-shadow(2px);
+
+  &.right-aligned {
+    left: auto;
+    right: 0;
+  }
+
+  li {
+    display: list-item;
+    float: none;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+    left: 0;
+
+    padding: 0 20px;
+
+    a {
+      color: black;
+      text-decoration: none;
+      padding: 0;
+    }
+
+    &.is-selected,
+    &:hover {
+      background-color: $highlightColor;
+      color: $white;
+      a {
+        color: $white;
+      }
+    }
+
+    &.marked {
+      &::before {
+        @extend .fa;
+        content: $fa-var-caret-right;
+        display: block;
+        position: absolute;
+        top: 9px;
+        left: 7px;
+        font-size: 12px;
+      }
+    }
+
+    &.disabled:hover,
+    &.disabled {
+      cursor: default;
+      background-color: inherit;
+      a {
+        cursor: default;
+        color: $grayLight;
+      }
+    }
+
+    &:active {
+      background-color: lighten($highlightColor, 5%);
+    }
+
+    &.divider {
+      height: 1px;
+      margin: 5px 0;
+      overflow: hidden;
+      background-color: $grayLighterer;
+    }
+
+    a {
+      clear: both;
+      text-align: left;
+    }
+  }
+}
+
+//
+// blueish skin
+// --------------------------------------------------
+
+
+.blueish {
+
+    .toolbar-item {
+        background-color: $milkeyBlue;
+        border-color: $blue;
+
+        &.highlight {
+            background-color: $yellowWarning;
+            & > a {
+                color: $black;
+            }
+        }
+
+        &.highlight-white {
+            background-color: $white;
+            .title {
+                text-align: left;
+            }
+        }
+
+        &.disabled, &.disabled:hover {
+            background-color: $milkeyBlue;
+            border-color: $blue;
+
+            a {
+                color: $white;
+                &.dropdown-toggle::after {
+                    border-top-color: $white;
+                }
+            }
+        }
+    }
+}

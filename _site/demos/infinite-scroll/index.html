@@ -1,0 +1,122 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+
+        <style>
+            #content-inner {
+                width: 400px;
+
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 200px;
+            }
+
+            .iscroll {
+                border: 1px #000 solid;
+                height: 400px;
+                overflow: scroll;
+                padding: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <div id="content-inner">
+                <div class="iscroll">
+                    <div class="iscroll-inner">
+                        <h1>Page 1</h1>
+
+                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+                            invidunt
+                            ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo
+                            duo
+                            dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+                            dolor
+                            sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                            tempor
+                            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
+                            et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+                            ipsum dolor sit amet.</p>
+
+                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+                            invidunt
+                            ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo
+                            duo
+                            dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+                            dolor
+                            sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                            tempor
+                            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
+                            et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+                            ipsum dolor sit amet.</p>
+
+                        <hr/>
+
+                    </div>
+
+                    <div data-aura-component="loader@husky" data-aura-size="60px" data-aura-color="#f00"
+                         data-aura-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="../js/jquery.js"></script>
+        <script src="../js/require.js"></script>
+
+        <script>
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var data = $('.iscroll-inner').children().clone(),
+                    page = 1,
+                    app = Husky({debug: {enable: true}}),
+                    _ = app.sandbox.util._;
+
+                app.start().then(function() {
+                    app.logger.log('Aura started...');
+
+                    app.sandbox.infiniteScroll('.iscroll', function() {
+                        var def = app.sandbox.data.deferred();
+
+                        app.sandbox.emit('husky.loader.show');
+
+                        setTimeout(function() {
+                            app.sandbox.emit('husky.loader.hide');
+
+                            page++;
+                            var $newPage = data.clone();
+
+                            $newPage.first().text('Page ' + page);
+
+                            $('.iscroll-inner').append($newPage);
+
+                            def.resolve();
+                        }, 1000);
+
+                        return def;
+                    }, 50);
+                });
+            });
+        </script>
+    </body>
+</html>

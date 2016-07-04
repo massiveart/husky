@@ -1,0 +1,77 @@
+@import "compass/css3/user-interface";
+
+$columnOptionsListItemHeight: 50px;
+$columnOptionsContainerWidth: 400px;
+
+
+.column-options-parent {
+    .overlay-content {
+        margin: 0;
+    }
+}
+
+.column-options-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 10px 0;
+
+    li {
+        display: list-item;
+        float: none;
+        line-height: 1;
+        height: $columnOptionsListItemHeight;
+        line-height: $columnOptionsListItemHeight;
+        white-space: nowrap;
+        padding-right: 20px;
+        position: relative;
+        top: 0px;
+        left: 0px;
+    }
+}
+
+.column-options-list-item {
+
+    &.is-selected,
+    &.hover-style {
+        background-color: $grayLighter;
+    }
+
+    &.disabled {
+        cursor: default;
+        color: $grayLight;
+        &.hover-style {
+            background-color: lighten($grayLighter, 10%);
+        }
+    }
+
+    .move {
+        line-height: 0;
+        vertical-align: middle;
+        padding-right: 10px;
+        padding-left: 20px;
+        font-size: 22px;
+        cursor: move;
+    }
+
+    .visibility-toggle {
+        position: absolute;
+        top: 0px;
+        padding-right: 10px;
+        padding-left: 5px;
+        right: 10px;
+        font-size: 18px;
+        &::before {
+            line-height: 50px;
+            vertical-align:center;
+        }
+        cursor:pointer;
+    }
+}
+
+.sortable-placeholder {
+    border: 1px dashed rgba(0,0,0,0.3);
+    width: 95%;
+    height: 95%;
+    margin: auto;
+    text-align: center;
+}

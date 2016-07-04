@@ -1,0 +1,23 @@
+%abstract-error {
+    label,
+    .control-label {
+        color: #EA524E;
+    }
+
+    .husky-validate:not(label) {
+        border-color: #EA524E;
+        border-width: 2px;
+    }
+}
+
+%abstract-success {
+    .husky-validate:not(label):not(span):not(p) {
+        border-color: #1FCA23;
+        border-width: 1px;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%0A%3C%21--%20Generated%20by%20IcoMoon.io%20--%3E%0A%3C%21DOCTYPE%20svg%20PUBLIC%20%22-//W3C//DTD%20SVG%201.1//EN%22%20%22http%3A//www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd%22%3E%0A%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%0A%3Cg%3E%0A%3C/g%3E%0A%09%3Cpath%20d%3D%22M13.5%202l-7.5%207.5-3.5-3.5-2.5%202.5%206%206%2010-10z%22%20fill%3D%22%231fca23%22%20/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        padding-right: 30px;
+    }
+}
+

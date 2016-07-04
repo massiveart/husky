@@ -1,0 +1,125 @@
+.auto-complete-list-container {
+    position: relative;
+    ul {
+        margin: 0;
+        list-style: none;
+    }
+
+    .toggler {
+        position: absolute;
+        right: 0px;
+        bottom: 6px;
+        content: "";
+        display: inline-block;
+        height: 20px;
+        width: auto;
+        padding: 5px 10px;
+        cursor: pointer;
+        text-align: center;
+        color: $iconGray;
+    }
+
+    label {
+        cursor: default;
+    }
+
+    .auto-complete-list {
+        font-size: $smallFontSize;
+        min-height: 30px;
+        border-radius: $borderRadius $borderRadius 0 0;
+        margin: 0;
+    }
+    .tt-suggestions {
+        width: 100%;
+    }
+}
+
+.auto-complete-list {
+    border-radius: $borderRadius;
+    background-color: #fff;
+    margin: 0;
+    border: 1px solid $grayLighter;
+
+    .husky-auto-complete {
+        background: none;
+        border-radius: 0;
+        position: static;
+        margin: 0;
+        display: block;
+        margin-bottom: -5px;
+        border: 0;
+
+        input[type="text"] {
+            margin: 7px 10px 7px 0 !important;
+            padding: 0;
+            font-size: 12px;
+            width: 100px;
+            border: 0;
+            outline: 0;
+            border-radius: 0;
+            height: auto;
+            float: left;
+        }
+    }
+}
+
+.auto-complete-list-selection {
+    display: inline-block;
+    margin: 4px 5px 4px 0;
+    padding: 0 4px 0px 4px;
+    border-radius: $borderRadiusSmall;
+    background-color: #ccc;
+    color: #000;
+    font-size: 12px;
+    line-height: 20px;
+    float: left;
+
+    .tm-tag-remove {
+        @extend .fa;
+        &::before {
+          content: $fa-var-times;
+        }
+        padding-left: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        color: $iconGray;
+        font-size: 14px;
+    }
+}
+
+.auto-complete-list-suggestions {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ddd;
+    @include standard-box-shadow(2px, rgba(0,0,0,0.06));
+
+    h5 {
+        margin: 0;
+        padding: 5px 8px;
+        border-bottom: 1px solid #e9e9e9;
+        color: #999999;
+        font-size: 12px;
+    }
+
+    ul {
+        padding: 8px 8px 15px;
+        margin: 0;
+    }
+
+    li {
+        display: inline-block;
+        margin-right: 5px;
+        padding: 0 4px;
+        border-radius: $borderRadius;
+        background-color: #fff;
+        color: #000;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .deactivated {
+        cursor: auto;
+        color: $grayLight;
+    }
+}

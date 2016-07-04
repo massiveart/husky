@@ -1,0 +1,337 @@
+//
+// Datagrid
+// --------------------------------------------------
+
+.husky-datagrid {
+    $overflowIconSpacing: 30px;
+
+    position: relative;
+    padding-top: 10px;
+
+    .husky-table {
+        position: relative;
+        top: 0px;
+        left: 0px;
+        @include user-select(none);
+
+        &.overflow {
+            padding-right: $overflowIconSpacing;
+            & + .pagination-wrapper {
+                padding-right: $overflowIconSpacing;
+            }
+            td, th {
+                max-width: 500px;
+                overflow: hidden;
+            }
+            &:after {
+                @extend .fa;
+                display: block;
+                content: $fa-var-arrow-right;
+                color: $grayLight;
+                font-size: 16px;
+                position: absolute;
+                right: 5px;
+                margin-top: -28px;
+                top: 50%;
+            }
+        }
+
+        &.minimal {
+            padding: 0;
+            tbody {
+                td {
+                    img {
+                        height: 30px;
+                    }
+                }
+            }
+        }
+
+        /** After render effect (start) **/
+        &.rendering {
+            table {
+                tbody tr {
+                    opacity: 0.3;
+                }
+            }
+        }
+        /** After render effect (end) **/
+
+        .fit {
+            width: 1%; //table-cells with width 1% have the behaviour that they fit the content inside them
+        }
+        .thumbnail-cell {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .checkbox-placeholder {
+            display: inline-block;
+            width: 12px;
+            height: 15px;
+        }
+
+        .row-remover {
+            display: block;
+            cursor: pointer;
+        }
+
+        .header-loader {
+            display: inline-block;
+            width: 0;
+            padding-left: 5px;
+            margin-right: -5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            margin: -$inputHeight 0 0 -4px;
+            height: $inputHeight;
+            display: none;
+        }
+        .editable-input {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 0 7px;
+        }
+
+        .has-action:hover, .has-action.selected:hover {
+            td:first-child {
+                position: relative;
+                &::before {
+                    content: "";
+                    display: block;
+                    width: 2px;
+                    height: 100%;
+                    background: $blue;
+                    position: absolute;
+                    top: 0px;
+                    left: 0px;
+                }
+            }
+        }
+
+        // Remove when validation type for serverside validation is implemented
+        .server-validation-error .editable-input {
+            border-color: $red !important;
+            border-width: 2px !important;
+        }
+    }
+
+    .table {
+        white-space: nowrap;
+        color: $black;
+    }
+
+    thead {
+        .cell-content {
+            display: block;
+        }
+        .is-sortable {
+            color: black;
+            cursor: pointer;
+            .cell-content {
+                margin-right: 5px;
+            }
+            &.is-loading .cell-content {
+                margin-right: 0;
+            }
+            &.is-loading .cell-content:after {
+                margin-right: 5px;
+            }
+            .cell-content::after {
+                @extend .fa;
+                margin-left: 5px;
+                font-size: $smallFontSize;
+                float: right;
+                line-height: 50px;
+            }
+        }
+        .sorted-asc {
+            font-weight: bold;
+            .cell-content::after {
+                content: $fa-var-caret-up;
+            }
+        }
+        .sorted-desc {
+            font-weight: bold;
+            .cell-content::after {
+                content: $fa-var-caret-down;
+            }
+        }
+    }
+
+    tbody {
+
+        .row {
+            &.even {
+                background: $white;
+            }
+            &.odd {
+                background: $grayLightest2;
+            }
+            &.has-action, td.has-action {
+                cursor: pointer;
+                .cell-content {
+                    color: $black;
+                    cursor: pointer;
+                }
+            }
+            &.inactive, td.inactive {
+                cursor: auto;
+                .cell-content {
+                    cursor: auto;
+                    color: $grayLight;
+                }
+            }
+        }
+
+        .child-wrapper {
+            .toggle-icon {
+                margin-right: 9px;
+            }
+            .custom-checkbox {
+                margin-right: 16px;
+            }
+        }
+        .row:hover {
+            .grid-icon {
+                opacity: 1;
+            }
+        }
+
+        .grid-badge {
+            vertical-align: middle;
+            display: inline-block;
+            background: $accentColor;
+            padding: 0px 2px;
+            margin-right: 10px;
+            margin-top: -3px;
+            color: $white;
+            border-radius: $borderRadius;
+            font-size: $reallySmallFontSize;
+            line-height: 15px;
+        }
+
+        .grid-icon {
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            color: $white;
+            background: $blue;
+            text-align: center;
+            border-radius: $borderRadiusSmall;
+            margin-left: 10px;
+            display: inline-block;
+            opacity: 0;
+            @include single-transition(opacity, 100ms, ease-in, 200ms);
+            &.right {
+                float: right;
+            }
+        }
+
+        .grid-image {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .fa-coffee {
+                color: #ccc;
+                font-size: 1.6em;
+            }
+        }
+    }
+
+    .table-container {
+        width: 100%;
+        overflow: auto;
+        border-radius: $borderRadius;
+
+        &.no-head {
+            thead {
+                display: none;
+            }
+            tbody {
+                tr:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+
+    .datagrid-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -50px 0 0 -50px;
+    }
+
+    .dropdown-menu {
+        margin-top: 5px;
+    }
+    .dropdown-toggle::after {
+        margin-left: 12px;
+    }
+
+    &.loading {
+        min-height: 150px;
+    }
+
+    .empty-list {
+        text-align: center;
+        color: $grayLighter;
+        padding: 20px 0;
+        background: $white;
+
+        .icon {
+            display: block;
+            font-size: 50px;
+            padding-bottom: 5px;
+        }
+        span {
+            display: block;
+        }
+    }
+
+    .selected-elements {
+        margin-top: -10px;
+        display: block;
+        padding-bottom: 10px;
+        &.indent {
+            padding-left: 60px;
+        }
+    }
+
+    .medium-loader {
+        overflow: hidden;
+        height: 0px;
+        transition: all 200ms;
+        margin-top: 0px;
+
+        &.show {
+            height: 70px;
+            margin-top: 10px;
+        }
+    }
+}
+
+.editable .husky-validate-error {
+    .husky-input {
+        input {
+            height: $inputHeight;
+            margin-top: -$inputHeight;
+        }
+    }
+}

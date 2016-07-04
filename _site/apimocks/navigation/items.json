@@ -1,0 +1,147 @@
+{
+    "title": "Sulu 2.0",
+    "id": "1",
+    "items": [
+        {
+            "title": "",
+            "items": [
+                {
+                    "title": "Dashboard",
+                    "action": "dashboard",
+                    "icon": "dashboard",
+                    "id": "2",
+                    "hasSettings": "true"
+                },
+                {
+                    "title": "Contacts",
+                    "hasSettings": "true",
+                    "icon": "user",
+                    "id": "3",
+                    "items": [
+                        {
+                            "title": "Companies",
+                            "action": "contacts/accounts",
+                            "id": "4"
+                        },
+                        {
+                            "title": "People",
+                            "action": "contacts/contacts",
+                            "id": "5"
+                        }
+                    ]
+                },
+                {
+                    "title": "Media",
+                    "icon": "image",
+                    "hasSettings": "true",
+                    "id": "6",
+                    "items": [
+                        {
+                            "title": "Collections",
+                            "id": "7",
+                            "dataNavigation": {
+                                "url": "http://husky.lo:7878/admin/api/collections"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "title": "Messages",
+                    "icon": "asterisk",
+                    "id": "10"
+                },
+                {
+                    "title": "Settings",
+                    "icon": "gear",
+                    "id": "11",
+                    "items": [
+                        {
+                            "title": "Roles &amp; Permissions",
+                            "action": "settings/roles",
+                            "type": "content",
+                            "id": "12"
+                        },
+                        {
+                            "title": "Translate",
+                            "action": "settings/translate",
+                            "id": "13"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Web-Spaces",
+            "items": [
+                {
+                    "title": "Americas",
+                    "icon": "bullseye",
+                    "hasSettings": "true",
+                    "id": "14",
+                    "items": [
+                        {
+                            "title": "en_us",
+                            "action": "webspaces/en_us",
+                            "id": "15"
+                        },
+                        {
+                            "title": "en_cn",
+                            "action": "webspaces/en_cn",
+                            "id": "16"
+                        },
+                        {
+                            "title": "es_mx",
+                            "action": "webspaces/es_mx",
+                            "id": "17"
+                        }
+                    ]
+                },
+                {
+                    "title": "Europe",
+                    "icon": "bullseye",
+                    "hasSettings": "true",
+                    "id": "18",
+                    "items": [
+                        {
+                            "title": "en_gb",
+                            "action": "webspaces/en_gb",
+                            "id": "19"
+                        },
+                        {
+                            "title": "de_de",
+                            "action": "webspaces/de_de",
+                            "id": "20"
+                        },
+                        {
+                            "title": "de_at",
+                            "action": "webspaces/de_at",
+                            "id": "21"
+                        }
+                    ]
+                },
+                {
+                    "title": "Asia",
+                    "icon": "bullseye",
+                    "id": "22",
+                    "items": [
+                        {
+                            "title": "cn_cn",
+                            "action": "webspaces/cn_cn",
+                            "id": "23"
+                        },
+                        {
+                            "title": "jp_jp",
+                            "action": "webspaces/jp_jp",
+                            "id": "24"
+                        },
+                        {
+                            "title": "This item has a way to long text",
+                            "action": "webspaces/jps_jps",
+                            "id": "25"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

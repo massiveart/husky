@@ -1,0 +1,68 @@
+//
+// Core Styling
+// --------------------------------------------------
+
+
+@import "compass/css3/box-sizing";
+
+* {
+    @include box-sizing(border-box);
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-size: $baseFontSize;
+    color: $baseFontColor;
+    background: $baseBackgroundColor;
+}
+
+hr.divider{
+	color:#fff;
+	height: 0;
+	border-bottom: 1px solid #fff;
+    border-top: none;
+	margin: 0px 0 20px 0;
+    &.dark {
+      color: $grayLighter;
+      border-color: $grayLighter;
+    }
+    &.small {
+      margin-bottom: 10px;
+    }
+}
+
+
+// options dropdown
+
+.options-dropdown-container {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    z-index: 100;
+}
+
+.options-toggle {
+    background-color: $baseBackgroundColor;
+    padding-left: 10px;
+    font-size: 15px;
+    color: black;
+
+    &::after {
+        content: "";
+        display: inline-block;
+        position: relative;
+        top: -4px;
+        margin-left: 5px;
+        width: 0;
+        height: 0;
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+
+        border-top: 5px solid #000;
+    }
+}
+

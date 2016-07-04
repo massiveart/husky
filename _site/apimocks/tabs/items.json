@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Details",
+        "action": "details"
+    },
+    {
+        "name": "Permissions",
+        "action": "permissions"
+    },
+    {
+        "id": "disable-tab",
+        "name": "Disabled Tab",
+        "action": "disabled",
+        "disabled": "true"
+    },
+    {
+        "name": "Settings",
+        "action": "settings"
+    }
+]

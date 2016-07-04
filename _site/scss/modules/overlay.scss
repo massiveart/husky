@@ -1,0 +1,232 @@
+//
+// Overlay
+// --------------------------------------------------
+@import "compass/css3/transition";
+
+.husky-overlay-container {
+    width: $overlayContainerWidth;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    background-color: $white;
+    z-index: 1000;
+    border-radius: $borderRadius;
+    @include standard-box-shadow;
+
+    // workaround for overlapping bug:
+    // Only in chrome: if the overlay is displayed on a page which contains an iframe which contains
+    // elements with the translate3d transform-property things get messed up. This line fixes the issue
+    -webkit-transform: translate3d(0, 0, 0);
+    // workaround (end)
+
+    &.right-aligned {
+        left: auto;
+        right: 0;
+    }
+
+    &.overflow-hidden {
+        /* FIXME select in slides hidden */
+        overflow: hidden;
+    }
+
+    &.wide {
+        width: $overlayContainerWidthWide;
+
+        .slides .slide {
+            width: $overlayContainerWidthWide;
+        }
+    }
+
+    &.medium {
+        width: $overlayContainerMediumWidth;
+
+        .slides .slide {
+            width: $overlayContainerMediumWidth;
+        }
+    }
+
+    &.dropzone {
+        width: $overlayContainerWidthExtraWide;
+        .slides .slide {
+          width: $overlayContainerWidthExtraWide
+        }
+        .overlay-content {
+            margin-bottom: 20px;
+        }
+        .overlay-footer {
+            display: none;
+        }
+    }
+
+    .draggable {
+        .overlay-header {
+            cursor: move;
+            @include user-select(none);
+        }
+    }
+
+    &.error {
+        .overlay-header {
+            background: $red;
+            color: $white;
+            .title {
+                color: $black;
+            }
+        }
+    }
+
+    &.warning {
+        .overlay-header {
+            background: $yellow;
+            .title {
+                color: $black;
+            }
+        }
+    }
+
+    .slides {
+        position: relative;
+        left: 0px;
+        @include single-transition(left, 500ms);
+
+        .slide {
+            float: left;
+            width: $overlayContainerWidth;
+        }
+    }
+}
+
+.overlay-header {
+    min-height: 50px;
+    background: $grayLightest;
+    position: relative;
+    border-radius: $borderRadius $borderRadius 0 0;
+
+    .title {
+        color: $grayLight;
+        font-size: 23px;
+        vertical-align: text-top;
+        display: block;
+        padding: 15px 0 10px 20px;
+        margin-right: 40px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    &.with-sub-title {
+        .title {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .sub-title {
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-bottom: 10px;
+
+            font-size: smaller;
+            color: $grayLight;
+        }
+    }
+
+    .close-button {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        font-size: 16px;
+        text-decoration: none;
+        color: black;
+        line-height: 12px;
+        padding: 8px;
+    }
+
+    .tabs {
+        display: inline-block;
+    }
+
+    .language-changer {
+        width: 80px;
+        position: absolute;
+        bottom: 10px;
+        right: 20px;
+    }
+
+    &.small-header {
+      background: transparent;
+      min-height: 0;
+      height: 25px;
+    }
+}
+
+.overlay-footer {
+    padding: 10px;
+    border-top: 1px solid $grayLighter;
+    text-align: center;
+    border-radius: 0 0 $borderRadius $borderRadius;
+    @include clear-float;
+
+    .btn {
+        display: inline-block;
+        min-width: 70px;
+        margin: 0 auto;
+        padding: 0;
+
+        &.tick {
+            width: 70px;
+            line-height: 28px;
+        }
+        // individual button align
+        &.left {
+            float: left;
+            margin-right: 20px;
+            margin-right: 0;
+        }
+        &.right {
+            float: right;
+            margin-left: 20px;
+            margin-right: 0;
+        }
+    }
+
+    &.center .btn {
+        margin: 0 auto;
+    }
+
+    &.left .btn {
+        float: left;
+        margin-right: 20px;
+    }
+
+    &.right .btn {
+        float: right;
+        margin-left: 20px;
+    }
+}
+
+.overlay-content {
+    overflow: auto;
+    padding-left: 0;
+    margin: 0 20px 10px 20px;
+
+    .message {
+        padding: 20px 0 25px 0;
+        font-size: $bigFontSize;
+        color: $grayLight;
+    }
+}
+
+.husky-overlay-backdrop {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: #000;
+    z-index: 999;
+
+    // workaround for overlapping bug:
+    // Only in chrome: if the overlay is displayed on a page which contains an iframe which contains
+    // elements with the translate3d transform-property things get messed up. This line fixes the issue
+    -webkit-transform: translate3d(0, 0, 0);
+    // workaround (end)
+}
