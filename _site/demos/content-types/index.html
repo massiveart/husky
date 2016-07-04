@@ -1,0 +1,166 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Content types Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style type="text/css">
+        body {
+            padding: 50px 0 0 50px;
+            width: 820px;
+        }
+    </style>
+</head>
+<body>
+<h1>Content types - style demo</h1>
+<div class="grid-row">
+    <div class="text-block">
+        <div class="head">
+            <label>Text block</label>
+            <div class="fa-times options-remove"></div>
+            <div class="options-change">
+                <span class="fa-gear"></span>
+                <span class="dropdown-toggle"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="grid-row form-group">
+                <label for="block1" class="pointer required">Title</label>
+                <input id="block1" type="text" class="form-element preview-update trigger-save-button husky-validate" data-mapper-property="title" data-validation-required="true">
+            </div>
+            <div class="grid-row no-spacing form-group">
+                <label for="block1text" class="pointer required">Article</label>
+                <textarea id="block1text" class="form-element"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="text-block">
+        <div class="head">
+            <label>Text block</label>
+            <div class="fa-times options-remove"></div>
+            <div class="options-change">
+                <span class="fa-gear"></span>
+                <span class="dropdown-toggle"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="grid-row form-group">
+                <label for="block2" class="pointer required">Title</label>
+                <input id="block2" type="text" class="form-element preview-update trigger-save-button husky-validate" data-mapper-property="title" data-validation-required="true">
+            </div>
+            <div class="grid-row no-spacing form-group">
+                <div class="grid-col-2">
+                    <label for="block2textMore" class="pointer required">Article</label>
+                    <textarea id="block2textMore" class="form-element"></textarea>
+                </div>
+                <div class="grid-col-10">
+                    <label for="block2text" class="pointer required">Article</label>
+                    <textarea id="block2text" class="form-element"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-block-footer">
+        <div class="btn action small fit">
+            <div class="fa-plus-circle"></div>
+            <div class="text">Add text block</div>
+        </div>
+        <span class="desc">(2 out of 10)</span>
+    </div>
+    <div class="text-block-footer">
+        <div class="btn action small fit full">
+            <div class="fa-plus-circle"></div>
+            <div class="text">Add text block</div>
+        </div>
+        <span class="desc">(2 out of 10)</span>
+    </div>
+</div>
+<div class="grid-row">
+    <h2 class="divider m-bottom-40">White box style</h2>
+
+    <div class="white-box">
+        <div class="header">
+            <span class="fa-plus-circle icon left action"></span>
+            <span class="fa-coffee icon left border"></span>
+            <span class="fa-coffee icon right action"></span>
+            <span class="fa-plus-circle icon right border"></span>
+            <div class="position">
+                <div class="husky-position">
+                    <div class="top left selected"></div>
+                    <div class="top middle"></div>
+                    <div class="top right"></div>
+
+                    <div class="middle left"></div>
+                    <div class="middle middle inactive"></div>
+                    <div class="middle right"></div>
+
+                    <div class="bottom left"></div>
+                    <div class="bottom middle"></div>
+                    <div class="bottom right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <ul class="items-list">
+                <li data-id="1"></span><span class="num">1</span><span class="value">Produkt X</span></li>
+                <li data-id="2"><span class="num">2</span><span class="value">Produkt Y</span></li>
+            </ul>
+        </div>
+        <div class="footer"></div>
+    </div>
+
+    <div class="m-bottom-30"></div>
+    <div class="white-box">
+        <div class="header">
+            <span class="text">Roses are red violets are blue. This poem makes no sense.</span>
+        </div>
+        <div class="content">
+            <ul class="items-list">
+                <li data-id="1">
+                    <span class="fa-ellipsis-v icon"></span>
+                    <span class="num">1</span>
+                    <img src="http://placehold.it/50x50"/>
+                    <span class="value">Media X</span>
+                    <span class="fa-times remove"></span>
+                </li>
+                <li data-id="2">
+                    <span class="fa-ellipsis-v icon"></span>
+                    <span class="num">2</span>
+                    <img src="http://placehold.it/50x50"/>
+                    <span class="value">Media Y</span>
+                    <span class="fa-times remove"></span>
+                </li>
+            </ul>
+        </div>
+        <div class="footer">
+            <span class="text">Roses are <strong>still</strong> red violets are  <strong>still</strong> blue. This poem  <strong>still</strong> makes no sense.</span>
+        </div>
+    </div>
+
+    <div class="m-bottom-30"></div>
+    <div class="white-box">
+        <div class="header">
+            <span class="text">Roses are red violets are blue. This poem makes no sense.</span>
+            <span class="fa-plus-circle icon right border"></span>
+        </div>
+        <div class="content">
+            <div class="no-content">
+                <span class="fa-coffee icon"></span>
+                <div class="text">Nothing to see here. Move on</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

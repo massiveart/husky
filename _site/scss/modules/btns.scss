@@ -1,0 +1,162 @@
+//
+// Buttons
+// --------------------------------------------------
+
+.btn {
+    padding: 0 25px;
+    border: 0;
+    border-radius: $borderRadius;
+    background-color: #FFF;
+    color: #000;
+    cursor: pointer;
+    line-height: 30px;
+    height: 30px;
+    outline: 0;
+
+    &.fit {
+        display: inline-block;
+        padding-right: 30px;
+    }
+
+    &.only-icon {
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+        min-width: 40px;
+    }
+
+    &.action {
+        background-color: $highlightColor;
+        color: $white;
+    }
+
+    &.action2 {
+        background-color: $yellow;
+        color: $white;
+    }
+
+    &.large {
+        line-height: 40px;
+        height: 40px;
+    }
+
+    &.small {
+      font-size: $smallFontSize;
+      height: 20px;
+      line-height: 20px;
+      border-radius: $borderRadiusSmall;
+
+      [class^="fa-"] {
+          font-size: 10px;
+
+          & + .text {
+              font-size: $smallFontSize;
+          }
+      }
+    }
+
+    &.grey, &.gray {
+        background-color: $grayLighter;
+        color: $white;
+    }
+
+    &.black-text {
+        color: $black;
+    }
+
+    &.gray-dark {
+        background-color: $grayLight;
+        color: $white;
+    }
+
+    &.black {
+      background-color: $black;
+      color: $white;
+    }
+
+    &.inactive {
+        cursor: default;
+    }
+
+    &.link {
+        background: transparent;
+    }
+
+    [class^="fa-"] {
+        font-size: 18px;
+        margin-left: -15px;
+        display: inline;
+        line-height: 32px;
+
+        & + .text {
+          font-size: $baseFontSize;
+          display: inline-block;
+          margin-right: -20px;
+          margin-left: 5px;
+          padding: 0;
+        }
+
+        &:only-child {
+            margin-left: 0;
+        }
+    }
+
+    .text {
+        padding: 0 8px;
+    }
+}
+
+/**
+** Buttons-classes on the bottom and should be replaced in the code with the classes above
+**/
+a.btn {
+    color: #000;
+    text-decoration: none;
+}
+
+.btn-large {
+    padding: 0 25px;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.btn-black {
+    background-color: #000;
+    color: $white;
+}
+
+.btn-highlight {
+    background-color: $highlightColor;
+    color: $white;
+}
+
+a.btn-black, a.btn-highlight {
+    color: $white;
+}
+
+
+.btn-gray {
+  background-color: $grayLighter;
+  color: $black;
+}
+
+
+.addButton {
+    @extend .fa;
+    border-radius: $borderRadius;
+    display: inline-block;
+    font-size: 12px;
+    color: white;
+    background-color: $highlightColor;
+    padding: 0 10px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &:before {
+        content: $fa-var-plus-circle;
+        font-size: 10px;
+        padding-right: 5px;
+    }
+}

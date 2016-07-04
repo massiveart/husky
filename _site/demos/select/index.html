@@ -1,0 +1,547 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Select</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!--<link rel="stylesheet" href="../../.tmp/husky.css">-->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+
+    <style>
+        .container {
+            width: 800px;
+            margin-left: 50px;
+            margin-top: 50px;
+        }
+        td {
+            padding-bottom: 20px;
+        }
+        #ddms9 {
+            width: 94px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Husky Select Demo</h1>
+    <div class="grid-row">
+
+        <table style="table-layout: fixed">
+            <tbody>
+            <tr>
+                <td width="50%">
+                    <div class="grid-col-11" id="ddms"></div>
+                </td>
+                <td width="50%">
+                    <div class="grid-col-11" id="ddms2"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-11" id="ddms3"></div>
+                </td>
+                <td>
+                    <div class="grid-col-11" id="ddms4"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form id="mylittleform">
+                        <div class="grid-col-11" id="ddms5" data-type-label="category" data-mapper-property="dropdown" data-type="husky-select" data-form="true"></div>
+                    </form>
+                </td>
+                <td>
+                    <div class="grid-col-11" id="ddms6"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-11" id="ddms7"></div>
+                </td>
+                <td>
+                    <div class="grid-col-11" id="ddms8"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-11" id="ddms12"></div>
+                </td>
+                <td>
+                    <div class="grid-col-11" id="ddms13"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-6" id="ddms9"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div class="grid-col-6" id="actionSelect"></div>
+                </td>
+                <td>
+                    <div class="grid-col-6" id="actionSelectSingle"></div>
+                </td>
+            </tr>
+                <tr>
+                    <td>
+                        <button id="toggleState">toggle state of button 7</button>
+                    </td>
+                    <td>
+                        <button id="update">update</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <button id="changeData5">change data ddms 5</button>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <button id="setDataDDMS5">set data ddms 5</button>
+                    </td>
+                    <td>
+                        <button id="getDataDDMS5">get data ddms 5</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="emptyDataDDMS5">empty data ddms 5</button>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+
+    <div class="grid-row m-top-30"><input type="text" class="form-element"/></div>
+    <div class="grid-row" style="margin-top:150px;">
+        <div class="grid-col-3 pointer" id="show">Show</div>
+        <div class="grid-col-3 pointer" id="hide">Hide</div>
+        <div class="grid-col-3 pointer" id="toggle">Toggle</div>
+        <div class="grid-col-3 pointer" id="get">getChecked</div>
+    </div>
+
+    <div style="position:absolute;bottom:0;width:200px;">
+        <td>
+            <div class="grid-col-11" id="ddms10"></div>
+        </td>
+    </div>
+</div>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+
+<script>
+    require.config({
+        baseUrl: '../../',
+        paths: {
+            "form": "bower_components/husky-validation/dist/validation",
+            "type/husky-select": "husky_components/select/select-type"
+        }
+    });
+
+    require(['lib/husky', 'form'], function(Husky, Form) {
+        'use strict';
+
+        var app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._,
+                form = new Form($('#mylittleform')),
+                state7 = 0;
+
+        app.start([
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms',
+                            instanceName: 'ddms',
+                            multipleSelect: true,
+                            defaultLabel: 'Please choose ...',
+                            data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
+                            preSelectedElements: ['Deutsch', 'English', 'Italienisch']
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms2',
+                            instanceName: 'ddms2',
+                            multipleSelect: true,
+                            defaultLabel: 'Please choose ...',
+                            valueName: 'name',
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'},
+                                {id: 4, name: 'Italienisch mit sehr sehr sehr sehr sehr langem Titel und viel Bla bla'}
+
+                            ],
+                            preSelectedElements: [1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms3',
+                            instanceName: 'ddms3',
+                            defaultLabel: 'Please choose ...',
+                            value: 'name',
+                            multipleSelect: true,
+                            data: ['Deutsch', 'English', 'Spanish', 'divider','Italienisch']
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms4',
+                            instanceName: 'ddms4',
+                            multipleSelect: true,
+                            defaultLabel: 'Please choose ...',
+                            valueName: 'name',
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms5',
+                            instanceName: 'ddms5',
+                            defaultLabel: 'This one is single select.. try it',
+                            valueName: 'category',
+                            multipleSelect: false,
+                            emitValues: true,
+                            preSelectedElements: [0],
+                            data: [
+                                {id: 0, category: 'Deutsch'},
+                                {id: 1, category: 'English'},
+                                {id: 2, category: 'Spanish'},
+                                {id: 3, category: 'Italienisch'},
+                                {id: 4, category: 'Italienisch mit sehr sehr sehr sehr sehr langem Titel und viel Bla bla'},
+                                {divider: true},
+                                {
+                                    category: 'i am a callback',
+                                    updateLabel: false,
+                                    callback: function(){
+                                        console.log("called function");
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms6',
+                            instanceName: 'ddms6',
+                            multipleSelect: false,
+                            defaultLabel: 'with deselect..',
+                            valueName: 'name',
+                            deselectField: '',
+                            small: true,
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms7',
+                            instanceName: 'ddms7',
+                            defaultLabel: 'I am disabled',
+                            valueName: 'name',
+                            multipleSelect: true,
+                            disabled: true,
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms8',
+                            instanceName: 'ddms8',
+                            defaultLabel: 'I have disabled items',
+                            valueName: 'name',
+                            preSelectedElements: [null],
+                            isNative: true,
+                            data: [
+                                {id: null, name: 'Deselect with null item'},
+                                {id: 0, name: 'Deutsch', disabled: true},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish', disabled: true},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms10',
+                            instanceName: 'ddms10',
+                            defaultLabel: 'I stick to the bottom',
+                            valueName: 'name',
+                            preSelectedElements: [null],
+                            data: [
+                                {id: 0, name: 'Deutsch', disabled: true},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish', disabled: true},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms9',
+                            instanceName: 'ddms9',
+                            data: ['EN_EN', 'EN_US', 'DE_DE', 'DE_AT'],
+                            preSelectedElements: ['EN_EN'],
+                            style: 'big',
+                            isNative: true
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms12',
+                            instanceName: 'ddms12',
+                            defaultLabel: 'I have editable items',
+                            valueName: 'category',
+                            multipleSelect: true,
+                            preSelectedElements: ['English', 'Spanish'],
+                            data: [
+                                {id: 0, category: 'German'},
+                                {id: 1, category: 'English'},
+                                {id: 2, category: 'Spanish'},
+                                {id: 3, category: 'Italian'}
+                                ],
+                            editable: true
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms13',
+                            instanceName: 'ddms13',
+                            multipleSelect: false,
+                            showToolTip: true,
+                            defaultLabel: 'i have a tool-tip when you select a value',
+                            valueName: 'name',
+                            small: true,
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#actionSelect',
+                            defaultLabel: 'Action select',
+                            instanceName: 'actionSelect',
+                            fixedLabel: true,
+                            style: 'action',
+                            icon: 'plus-circle',
+                            repeatSelect: true,
+                            noItemsCallback: function() {alert('no items. default callback called')}, // pass no data to the component to see this option in action
+                            data: [
+                                {
+                                    name: 'Action 1',
+                                    callback: function() {
+                                        alert('action 1')
+                                    }
+                                },
+                                {
+                                    name: 'Action 2',
+                                    callback: function() {
+                                        alert('action 2')
+                                    }
+                                },
+                                {
+                                    name: 'Action 3',
+                                    callback: function() {
+                                        alert('action 3')
+                                    }
+                                },
+                                {
+                                    name: 'Action 4',
+                                    callback: function() {
+                                        alert('action 4')
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#actionSelectSingle',
+                            defaultLabel: 'Action select',
+                            instanceName: 'actionSelect',
+                            fixedLabel: true,
+                            style: 'action',
+                            icon: 'circle-plus',
+                            repeatSelect: true,
+                            noItemsCallback: function() {
+                                alert('no items. default callback called')
+                            }, // pass no data to the component to see this option in action
+                            data: []
+                        }
+                    }
+                ]).then(function() {
+
+            app.sandbox.on('husky.select.ddms.deselected.item', function(item) {
+                console.log("drop-down multiple select ddms: deselected item: " + item);
+            });
+
+            app.sandbox.on('husky.select.ddms.selected.item', function(item) {
+                console.log("drop-down multiple select ddms: selected item: " + item);
+            });
+
+            app.sandbox.dom.on('#show', 'click', function(event) {
+                app.sandbox.dom.stopPropagation(event);
+                app.sandbox.emit('husky.select.ddms.show');
+            });
+
+            app.sandbox.dom.on('#hide', 'click', function(event) {
+                app.sandbox.dom.stopPropagation(event);
+                app.sandbox.emit('husky.select.ddms.hide');
+            });
+
+            app.sandbox.dom.on('#toggle', 'click', function(event) {
+                app.sandbox.dom.stopPropagation(event);
+                app.sandbox.emit('husky.select.ddms.toggle');
+            });
+
+            app.sandbox.dom.on('#get', 'click', function(event) {
+                app.sandbox.emit('husky.select.ddms.get-checked', function(selected) {
+                    console.log('selected items', selected);
+                });
+            });
+
+
+            app.sandbox.on('husky.select.ddms2.deselected.item', function(item) {
+                console.log("drop-down multiple select ddms2: deselected item: " + item);
+            });
+
+            app.sandbox.on('husky.select.ddms2.selected.item', function(item) {
+                console.log("drop-down multiple select ddms2: selected item: " + item);
+            });
+
+            $('#toggleState').on('click', function() {
+                if (state7 === 0) {
+                    app.sandbox.emit('husky.select.ddms7.enable');
+                    state7 = 1;
+                } else {
+                    app.sandbox.emit('husky.select.ddms7.disable');
+                    state7 = 0;
+                }
+            });
+
+            $('#update').on('click', function() {
+
+                var data = [
+                    {id: 0, category: 'Deutsch 1'},
+                    {id: 1, category: 'English 1'},
+                    {id: 2, category: 'Spanish 1'},
+                    {id: 3, category: 'Italienisch 1'},
+                    {divider: true},
+                    {
+                        category: 'Add new 1',
+                        updateLabel: false,
+                        callback: function(){
+                            console.log("called function");
+                        }
+                    }
+                ];
+
+                app.sandbox.emit('husky.select.ddms5.update',data, [1500]);
+                console.log('updated dropdown 5');
+            });
+
+            $('#changeData5').on('click', function() {
+                $('#ddms5').data({
+                    'selection': '3',
+                    'selection-values': 'Italienisch'
+                }).trigger('data-changed');
+            });
+
+            $('#setDataDDMS5').on('click', function() {
+                console.log('started setdata');
+
+                form.initialized.then(function() {
+                    form.mapper.setData({
+                        dropdown: {
+                            id: 3,
+                            category: "Italienisch"
+                        }
+                    }).then(
+                            function() {
+                                console.log('resolved setdata');
+                            }
+                    );
+                });
+            });
+
+            $('#emptyDataDDMS5').on('click', function() {
+                console.log('started emptying');
+
+                app.sandbox.emit('husky.select.ddms5.update', [], []);
+            });
+
+
+            $('#getDataDDMS5').on('click', function() {
+                console.log(form.mapper.getData());
+            });
+
+            $('#ddms5').on('change', function() {
+                alert("i got changed");
+            });
+        });
+
+    });
+
+
+</script>
+</body>
+</html>

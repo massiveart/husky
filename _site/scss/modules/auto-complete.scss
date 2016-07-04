@@ -1,0 +1,153 @@
+@import "modules/input";
+
+.auto-complete-container {
+    position: relative;
+
+    label {
+        cursor: default;
+    }
+}
+
+.auto-complete-footer {
+    position: relative;
+    z-index: 5;
+    padding: 5px;
+    font-size: 14px;
+    background-color: $grayLighter;
+    color: #000;
+    text-align: center;
+
+    &:hover {
+        color: #fff;
+        background-color: $highlightColor;
+        cursor: pointer;
+    }
+}
+
+.husky-auto-complete {
+    @include input-decorations;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+    margin-top: 10px;
+    display: table;
+    width: 100%;
+    font-size: $smallFontSize;
+    border: 1px solid $grayLighter;
+    border-radius: $borderRadius $borderRadius 0 0;
+    background: $white;
+
+    input[type="text"] {
+        font-size: 14px;
+
+        &:focus {
+            outline: 0 none;
+        }
+    }
+
+    .front {
+        padding-left: 5px;
+    }
+
+    .form-horizontal & {
+        margin-top: 0;
+    }
+}
+
+.twitter-typeahead {
+    width: 100%;
+    
+    input[type="text"] {
+        border-radius: $borderRadius $borderRadius 0 0;
+    }
+}
+
+.tt-suggestions {
+    width: 100%;
+    top: 37px;
+    background: $white;
+    border-radius: $borderRadius;
+}
+
+.tt-dropdown-menu {
+    min-width: 100%;
+    border: 1px solid $grayLighter;
+    margin-top: -1px;
+    border-radius: $borderRadius;
+    @extend .dropdown-shadow;
+}
+
+.tt-hint {
+    display: none;
+}
+
+.tt-suggestion {
+    height: 25px;
+    width: 100%;
+}
+
+.suggestion:hover,
+.tt-cursor .suggestion {
+    background: $highlightColor;
+    color: $white;
+
+    &.disabled {
+      background: $grayLightest;
+    }
+}
+
+.suggestion {
+    white-space: nowrap;
+    color: $black;
+    padding: 0 6px;
+    position: relative;
+
+    .border {
+        height: 25px;
+        white-space: nowrap;
+      
+        .icon {
+            display: inline-block;
+            margin: 0 10px 0 10px;
+            width: 12px;
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+            position: absolute;
+            left: 4px;
+            top: 0;
+
+            & + .text {
+                padding-left: 30px;
+            }
+        }
+
+        .text {
+            display: inline-block;
+            width: 100%;
+            line-height: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+
+    &.disabled {
+        color: $grayLight;
+        cursor: default;
+    }
+}
+
+.suggestion-column {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.husky-auto-complete-success {
+    @extend %abstract-success;
+}
+
+.husky-auto-complete-error {
+    @extend %abstract-error;
+}

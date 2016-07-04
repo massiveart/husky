@@ -48,6 +48,18 @@
             "verbs": ["GET"],
             "mockFile": "datagrid/children/level1.json"
         },
+        "admin/api/datagrid/children/5": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/level2_1.json"
+        },
+        "admin/api/datagrid/children/8": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/level2_2.json"
+        },
+        "admin/api/datagrid/children/6": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/level3_1.json"
+        },
         "admin/api/datagrid/children/all": {
             "verbs": ["GET"],
             "mockFile": "datagrid/children/all.json"
@@ -55,11 +67,6 @@
         "admin/api/datagrid/children/all-sorted": {
             "verbs": ["GET"],
             "mockFile": "datagrid/children/all-sorted.json"
-        },
-        "admin/api/datagrid/actualchildren": {
-            "verbs": ["GET"],
-            "mockFile": "datagrid/children/children.json",
-            "switch": "parent"
         },
         "admin/api/datagrid/children/sorted": {
             "verbs": ["GET"],

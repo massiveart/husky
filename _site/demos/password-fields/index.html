@@ -1,0 +1,86 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style>
+        .container {
+            width: 800px;
+            margin-left: 300px;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form id="form">
+        <div class="grid" id="password-fields"></div>
+        <div id="getPasswords" class="pointer">Get Passwords</div>
+    </form>
+</div>
+
+<script src="../js/jquery.js"></script>
+
+<script src="../js/require.js"></script>
+
+<script type="text/javascript">
+
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._;
+
+        app.start([{
+            name: 'password-fields@husky',
+            options: {
+                instanceName: "instance1",
+                labels: {
+                    inputPassword1: 'Passwort',
+                    inputPassword2: 'Wiederhole Passwort',
+                    generateLabel: 'Generiere Passwort'
+                },
+                values: {
+                    inputPassword1: 'test',
+                    inputPassword2: 'test2'
+                },
+                validation: '#form',
+                el: '#password-fields'
+            }
+        }]).then(function() {
+                    app.logger.log('Aura started...');
+                    var form = app.sandbox.form.create('#form');
+                });
+
+            $('#getPasswords').on('click', function(){
+
+                app.sandbox.emit('husky.password.fields.instance1.get.passwords', function(password1, password2){
+                    console.log("Password 1", password1);
+                    console.log("Password 2", password2);
+                });
+
+            });
+
+
+    });
+
+</script>
+
+</body>
+</html>

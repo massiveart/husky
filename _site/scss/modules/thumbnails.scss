@@ -1,0 +1,274 @@
+//
+// Thumbnails
+// --------------------------------------------------
+
+.husky-thumbnails {
+  $thumbnailSmallHeight: 70px;
+  $thumbnailSmallWidth: 260px;
+  $imgSmallWidth: 70px;
+
+  $thumbnailLargeHeight: 250px;
+  $thumbnailLargeWidth: 190px;
+  $imgLargeHeight: 170px;
+
+  @include clear-float;
+  @include user-select(none);
+
+  .download {
+    font-size: 15px;
+    height: 15px;
+    width: 15px;
+  }
+  .description {
+    font-size: $reallySmallFontSize;
+    color: $grayLight;
+  }
+  .text {
+    line-height: 14px;
+  }
+
+  .item {
+    float: left;
+    position: relative;
+    cursor: pointer;
+    @include clear-float;
+
+    &.small {
+      width: $thumbnailSmallWidth - 1px;
+      height: $thumbnailSmallHeight;
+      margin-bottom: 20px;
+      margin-right: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      .image {
+        float: left;
+        width: $imgSmallWidth;
+        text-align: center;
+        line-height: $thumbnailSmallHeight - 20px;
+        padding: 8px;
+        position: relative;
+        img {
+            display: block;
+            position: relative;
+            z-index: 10;
+            vertical-align: middle;
+            max-width: 100%;
+            max-height: 100%;
+        }
+      }
+      .text {
+        float: left;
+        padding-top: 20px;
+        width: $thumbnailSmallWidth - $imgSmallWidth -1px;
+      }
+      .checkbox {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+        display: none;
+      }
+      .download {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        display: none;
+      }
+      .empty {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: $thumbnailSmallHeight;
+        line-height: $thumbnailSmallHeight;
+        z-index: 5;
+        font-size: 25px;
+        color: $grayLighter;
+      }
+    }
+
+    &.large {
+      border: 1px solid $grayLighter;
+      width: $thumbnailLargeWidth - 3px;
+      height: $thumbnailLargeHeight - 2px;
+      margin-bottom: 40px;
+      margin-right: 18px;
+      padding: 10px;
+
+      .image {
+        width: 100%;
+        height: $imgLargeHeight;
+        text-align: center;
+        line-height: $imgLargeHeight;
+        margin-bottom: 10px;
+        position: relative;
+        img {
+          display: block;
+          position: relative;
+          z-index: 10;
+          vertical-align: bottom;
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+      .text {
+        text-align: center;
+      }
+      .checkbox {
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        top: auto;
+      }
+      .download {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+      }
+      .empty {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 5;
+        height: $imgLargeHeight - 10px;
+        line-height: $imgLargeHeight - 10px;
+        font-size: 70px;
+        color: $grayLighter;
+      }
+    }
+
+    &:hover,
+    &.is-selected {
+      background: $white;
+
+      &.large {
+        border-color: $white;
+      }
+      .checkbox {
+        display: block;
+      }
+      .download {
+        display: block;
+      }
+    }
+  }
+}
+
+//
+// Thumbnail-Group
+// --------------------------------------------------
+
+.husky-groups {
+  $width: 190px;
+  $thumbnailWidth: 150px;
+  $thumbnailHeight: 100px;
+
+  @include clear-float;
+
+  .grid-group {
+    width: $width;
+    margin-right: 20px;
+    margin-bottom: 30px;
+    float: left;
+    cursor: pointer;
+
+    .thumbnails {
+      position: relative;
+      width: 100%;
+      height: 125px;
+
+      .thumbnail {
+        position: absolute;
+        width: $thumbnailWidth;
+        height: $thumbnailHeight;
+        @include box-sizing(border-box);
+        border: 3px solid $white;
+        background: $white;
+        border-radius: $borderRadiusSmall;
+        @include single-transition(all, 200ms, ease, 200ms);
+
+        img {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+        &.empty {
+          width: 145px;
+          height: 95px;
+          background: $white;
+          text-align: center;
+          line-height: 95px;
+          font-size: 40px;
+          color: $grayLighter;
+        }
+        &.first {
+          top: 0px;
+          right: 0px;
+          z-index: 50;
+          @include rotate(0deg);
+
+          &:only-child {
+            @include single-transition(none);
+            position: relative;
+            margin: 0 auto;
+          }
+        }
+
+        &.second {
+          right: 10px;
+          top: 3px;
+          z-index: 40;
+          @include rotate(-3deg);
+        }
+
+        &.third {
+          right: 20px;
+          top: 6px;
+          z-index: 30;
+          @include rotate(-5deg);
+        }
+      }
+
+      &:hover {
+        .thumbnail {
+          &.first {
+            top: -10px;
+            right: -20px;
+            @include rotate(5deg);
+            &:only-child {
+              @include rotate(0deg);
+              top: 0px;
+              left: 0px;
+            }
+          }
+
+          &.second {
+            right: 10px;
+            top: -2px;
+            @include rotate(-2deg);
+          }
+
+          &.third {
+            top: 15px;
+            right: 35px;
+            @include rotate(-8deg);
+          }
+        }
+      }
+    }
+    .title {
+      display: block;
+      line-height: 14px;
+      text-align: center;
+    }
+    .addition {
+      display: block;
+      text-align: center;
+      font-size: $reallySmallFontSize;
+      color: $grayLight;
+      line-height: 14px;
+    }
+  }
+}

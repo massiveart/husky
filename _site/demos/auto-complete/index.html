@@ -1,0 +1,169 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Autocomplete Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="stylesheet" href="../../dist/husky.min.css">
+	<style>
+		.container {
+			width: 800px;
+			margin: 30px auto;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="grid">
+		<div class="grid-row">
+			<div class="grid-col-6">
+				<div class="auto-complete-container">
+                    <label>
+                        Autocomplete
+                        <div id="autocomplete1"></div>
+                    </label>
+				</div>
+			</div>
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete2
+                        <div id="autocomplete2"></div>
+                    </label>
+                </div>
+            </div>
+		</div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">
+                Search for 'A'
+            </div>
+            <div class="grid-col-6">
+                Search for 'B'
+            </div>
+        </div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete3 (no new Values)
+                        <div id="autocomplete3"></div>
+                    </label>
+                </div>
+            </div>
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete4 (Albanien and Frankreich are excluded)
+                        <div id="autocomplete4"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">
+                <button id="dynamicExlude">Exclude Altach for 1.</button>
+            </div>
+        </div>
+	</div>
+</div>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+<script type="text/javascript">
+	require.config({
+		baseUrl: '../../'
+	});
+	require(['lib/husky'], function(Husky) {
+		'use strict';
+
+		var app = Husky({
+					debug: {
+						enable: false
+					}
+				}),
+				_ = app.sandbox.util._;
+
+
+		app.start([{
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete1',
+                        instanceName: 'I1',
+                        prefetchUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        remoteUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        suggestionIcon: 'tag',
+                        autoCompleteIcon: 'tag',
+                        footerContent: 'Hallo',
+                        fields: [
+                            {
+                                id: 'id',
+                                width: '130px'
+                            },
+                            {
+                                id: 'name',
+                                width: '250px'
+                            },
+                            {
+                                id: 'country',
+                                width: '200px'
+                            }
+                        ],
+                        localData: [{id: 89, name: 'Albanien das Land der Kämpfer und der Träumer die Kämpften um Albanien', country: 'Deutschland'}, {id: 77, name: 'Altach', country: 'Deutschland'}, {id: 899, name: 'Andelsbuch', country: 'Deutschland'}]
+                    }
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete2',
+                        instanceName: 'I2',
+                        prefetchUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        remoteUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        suggestionIcon: 'tag',
+                        localData: [{id: 81, name: 'Brüssel'}, {id: 71, name: 'Bern'}, {id: 891, name: 'Berlin'}]
+                    }
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete3',
+                        instanceName: 'I3',
+                        prefetchUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        remoteUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        suggestionIcon: 'tag',
+                        noNewValues: true,
+                        localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                    }
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete4',
+                        instanceName: 'I4',
+                        prefetchUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        remoteUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                        suggestionIcon: 'tag',
+                        excludes: [{id: 89, name: null}, {id: null, name: 'Frankreich'}],
+                        localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                    }
+                    }]).then(function() {
+			app.logger.log('Aura started...');
+		});
+
+        $('#dynamicExlude').on('click', function() {
+           app.sandbox.emit('husky.auto-complete.I1.set-excludes', ['Altach']);
+        });
+
+	});
+</script>
+</body>
+</html>

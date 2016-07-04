@@ -1,0 +1,21 @@
+[
+    {
+        "id": "title",
+        "translation": "Title",
+        "disabled": "true"
+    },
+    {
+        "id": "firstName",
+        "translation": "First Name",
+        "disabled": false
+    },
+    {
+        "id": "lastName",
+        "translation": "Last Name"
+    },
+    {
+        "id": "middleName",
+        "translation": "Middle Name",
+        "disabled": true
+    }
+]

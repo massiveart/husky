@@ -1,0 +1,31 @@
+{
+    "_links": {
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/8?depth=0"
+        },
+        "children": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/{parent}?depth=0"
+        },
+        "sortable": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
+        }
+    },
+    "_embedded": {
+        "categories": [
+            {
+                "id": 10,
+                "key": "second-child-key",
+                "name": "second-child-c",
+                "created": "2014-10-02T16:26:28+0200",
+                "changed": "2014-10-03T08:36:18+0200",
+                "depth": 1,
+                "parent": 8,
+                "children": false
+            }
+        ]
+    },
+    "total": 1,
+    "pages": 1,
+    "page": 1,
+    "limit": 1
+}

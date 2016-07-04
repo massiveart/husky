@@ -1,0 +1,48 @@
+{
+    "title": "A good example (3)",
+    "path": "/path-3",
+    "_embedded": {
+        "products": [
+            {
+                "id": 1,
+                "title": "Produkt A"
+            },
+            {
+                "id": 2,
+                "title": "Produkt B"
+            },
+            {
+                "id": 3,
+                "title": "Produkt C"
+            },
+            {
+                "id": 4,
+                "title": "Produkt D"
+            },
+            {
+                "id": 5,
+                "title": "Produkt E"
+            },
+            {
+                "id": 6,
+                "title": "Produkt F"
+            },
+            {
+                "id": 7,
+                "title": "Produkt G"
+            },
+            {
+                "id": 8,
+                "title": "Produkt H"
+            },
+            {
+                "id": 9,
+                "title": "Produkt I"
+            },
+            {
+                "id": 10,
+                "title": "Produkt J"
+            }
+        ]
+    }
+}
