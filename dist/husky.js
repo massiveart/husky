@@ -44240,7 +44240,7 @@ define('__component__$overlay@husky',[], function() {
  * @param {Number} [options.showDuration] duration of the show effect in ms
  * @param {Function} [options.closeCallback] callback to execute if the close-button is clicked
  * @param {String} [options.insertMethod] insert method to use for inserting the label (append or prepend)
- * @param {String} [options.size] The size of the label (big or small)
+ * @param {String} [options.additionalLabelClasses] Additional classes which will be appended to the label
  */
 define('__component__$label@husky',[],function() {
 
@@ -44261,7 +44261,7 @@ define('__component__$label@husky',[],function() {
         showDuration: 250,
         closeCallback: null,
         insertMethod: 'append',
-        size: 'big'
+        additionalLabelClasses: 'big'
     },
 
     insertMethods = {
@@ -44481,7 +44481,9 @@ define('__component__$label@husky',[],function() {
          */
         renderElement: function() {
             this.label.$el = this.sandbox.dom.createElement(
-                '<div class="' + this.options.labelClass + (!!this.options.size ? ' ' + this.options.size : '') + '"/>'
+                '<div class="' + this.options.labelClass
+                    + (!!this.options.additionalLabelClasses ? ' ' + this.options.additionalLabelClasses : '')
+                    + '"/>'
             );
             this.label.$el.hide();
         },
