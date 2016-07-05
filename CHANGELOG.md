@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.21.0 (2016-07-05)
     * BUGFIX      #670 Fixed Globalizing timing issue
 
 * 0.20.0 (2016-06-28)
