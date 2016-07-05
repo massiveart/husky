@@ -42,8 +42,13 @@
 
     .search-icon, .remove-icon {
         background: transparent;
-        border: 0px;
-        line-height: 25px;
+        border: 0;
+        display: inline-block;
+        line-height: 30px;
+        vertical-align: middle;
+        text-decoration: none;
+        cursor: pointer;
+        outline: 0;
     }
 
     .search-icon {
@@ -51,21 +56,14 @@
         padding-left: 8px;
         padding-right: 15px;
         font-size: 16px;
-        vertical-align: middle;
-        text-decoration: none;
-        cursor: pointer;
     }
 
     .remove-icon {
         display: none;
         position: absolute;
         right: 10px;
-        vertical-align: middle;
-        margin: auto;
         background-color: $white;
         padding-left: 3px;
-        text-decoration: none;
-        cursor: pointer;
     }
 
     /** look and feel **/
