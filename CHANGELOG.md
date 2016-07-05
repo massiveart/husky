@@ -15,6 +15,9 @@
     * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
+* 0.21.0 (2016-07-05)
+    * BUGFIX      #670 Fixed Globalizing timing issue
+
 * 0.20.0 (2016-06-28)
     * HOTFIX      #660 Fixed timing of localization initialization
     * ENHANCEMENT #657 Added new function 'records.set' for datagrid
