@@ -37170,8 +37170,6 @@ define('__component__$toolbar@husky',[],function() {
                 hideDropdowns.call(this);
 
                 if (!visible) {
-                    this.sandbox.dom.addClass($list, 'is-expanded');
-                    this.sandbox.dom.show(this.sandbox.dom.find(selectors.dropdownMenu, $list));
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                     // on every click remove sub-menu
@@ -37180,6 +37178,12 @@ define('__component__$toolbar@husky',[],function() {
                     if (this.options.responsive === true) {
                         lockToolbarScroll.call(this);
                     }
+
+                    // IMPORTANT (FIX FOR IE11/EDGE rendering Bug): The following
+                    // two lines must remain at end of the method. More specifically
+                    // they must come after "lockToolbarScroll"
+                    this.sandbox.dom.addClass($list, 'is-expanded');
+                    this.sandbox.dom.show(this.sandbox.dom.find(selectors.dropdownMenu, $list));
 
                     this.sandbox.emit(DROPDOWN_OPENED.call(this));
                 }
