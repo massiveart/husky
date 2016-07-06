@@ -244,6 +244,7 @@ define(function() {
             this.hidden = false;
             this.tooltipsEnabled = true;
             this.animating = false;
+            this.dataNavigationIsLoading = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -930,6 +931,9 @@ define(function() {
          * @param options
          */
         renderDataNavigation: function(options) {
+            if (!!this.dataNavigationIsLoading) return;
+
+            this.dataNavigationIsLoading = true;
             this.collapse();
 
             var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'}), key;
@@ -939,7 +943,8 @@ define(function() {
                 el: $element,
                 url: options.url,
                 rootUrl: options.rootUrl
-            };
+            },
+                initializedEvent = 'husky.data-navigation.initialized';
 
             // optional options
             if (!!options.resultKey) {
@@ -953,6 +958,7 @@ define(function() {
             }
             if (!!options.instanceName) {
                 componentOptions.instanceName = options.instanceName;
+                initializedEvent = 'husky.data-navigation.' + options.instanceName + '.initialized';
             }
             if (!!options.showAddBtn) {
                 componentOptions.showAddBtn = options.showAddBtn;
@@ -971,6 +977,10 @@ define(function() {
                 $element.addClass('expanded');
             }, 0);
 
+            this.sandbox.once(initializedEvent, function() {
+                this.dataNavigationIsLoading = false;
+            }.bind(this));
+
             // init data-navigation
             this.sandbox.start([{
                 name: 'data-navigation@husky',
@@ -982,6 +992,8 @@ define(function() {
          * Remove data navigation
          */
         removeDataNavigation: function() {
+            if (!!this.dataNavigationIsLoading) return;
+
             this.sandbox.dom.removeClass(this.$el, 'data-navigation-opened');
 
             this.sandbox.stop(this.$find('.navigation-data-container'));

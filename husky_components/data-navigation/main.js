@@ -120,7 +120,7 @@ define([
          * @event husky.data-navigation.select
          */
         SELECTED = function() {
-            return createEventName.call(this, 'selected')
+            return createEventName.call(this, 'selected');
         },
 
         /**
@@ -425,7 +425,6 @@ define([
                 .then(this.parse.bind(this))
                 .then(function(data) {
                     this.loading = false;
-
                     return data;
                 }.bind(this));
         },
