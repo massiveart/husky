@@ -37462,8 +37462,6 @@ define('__component__$toolbar@husky',[],function() {
                 hideDropdowns.call(this);
 
                 if (!visible) {
-                    this.sandbox.dom.addClass($list, 'is-expanded');
-                    this.sandbox.dom.show(this.sandbox.dom.find(selectors.dropdownMenu, $list));
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                     // on every click remove sub-menu
@@ -37472,6 +37470,9 @@ define('__component__$toolbar@husky',[],function() {
                     if (this.options.responsive === true) {
                         lockToolbarScroll.call(this);
                     }
+
+                    this.sandbox.dom.addClass($list, 'is-expanded');
+                    this.sandbox.dom.show(this.sandbox.dom.find(selectors.dropdownMenu, $list));
 
                     this.sandbox.emit(DROPDOWN_OPENED.call(this));
                 }
