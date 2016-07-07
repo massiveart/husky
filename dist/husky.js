@@ -30650,7 +30650,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             actionIconColumn: null,
             croppedMaxLength: 35,
             openPathToSelectedChildren: true,
-            cropContents: true
+            cropContents: true,
+            editableOptions: {}
         },
 
         constants = {
@@ -30722,12 +30723,21 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             textContainer: '<span class="' + constants.textContainerClass + '"><%= content %></span>',
             headerCellLoader: '<div class="' + constants.headerCellLoaderClass + '"></div>',
             removeCellContent: '<span class="fa-<%= icon %> ' + constants.rowRemoverClass + '"></span>',
-            editableCellContent: [
-                '<span class="' + constants.editableItemClass + '"><%= value %></span>',
-                '<div class="' + constants.inputWrapperClass + '">',
-                '   <input type="text" class="form-element husky-validate ' + constants.editableInputClass + '" value="<%= value %>">',
-                '</div>'
-            ].join(''),
+            editableCellContent: {
+                string: [
+                    '<span class="' + constants.editableItemClass + '"><%= value %></span>',
+                    '<div class="' + constants.inputWrapperClass + '">',
+                    '   <input type="text" class="form-element husky-validate ' + constants.editableInputClass + '" value="<%= value %>">',
+                    '</div>'
+                ].join(''),
+                select: [
+                    '<select class="form-element husky-validate ' + constants.editableInputClass + '">',
+                    '<% _.each(options.values, function(title, index) { %>',
+                    '   <option value="<%= index %>" <% if (value === index) { %>selected<% } %>><%= translate(title) %></option>',
+                    '<% }); %>',
+                    '</select>'
+                ].join('')
+            },
             img: [
                 '<div class="' + constants.gridImageClass + '">',
                 '   <img alt="<%= alt %>" src="<%= src %>"/>',
@@ -31342,7 +31352,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 );
             }
             if (this.options.editable === true && column.editable === true) {
-                content = this.getEditableCellContent(content);
+                content = this.getEditableCellContent(content, column.attribute, column.type);
             } else {
                 content = this.sandbox.util.template(templates.textContainer)({
                     content: content
@@ -31407,11 +31417,18 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         /**
          * Takes a string and retruns the markup for an editable cell
          * @param content {String} the original value
+         * @param type {String} the type of value
+         * @param columnName {String} the name of value
          * @returns {String|Object} html or a dom object
          */
-        getEditableCellContent: function(content) {
-            return this.sandbox.util.template(templates.editableCellContent)({
-                value: content
+        getEditableCellContent: function(content, columnName, type) {
+            type = !!type ? type : 'string';
+            var options = !!this.options.editableOptions[columnName] ? this.options.editableOptions[columnName] : {};
+
+            return this.sandbox.util.template(templates.editableCellContent[type], {
+                value: content,
+                options: options,
+                translate: this.sandbox.translate
             });
         },
 
@@ -31638,6 +31655,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.sandbox.dom.on(this.table.$body, 'click', this.editableItemClickHandler.bind(this), '.' + constants.editableItemClass);
                 this.sandbox.dom.on(this.table.$body, 'focusout', this.editableInputFocusoutHandler.bind(this), '.' + constants.editableInputClass);
                 this.sandbox.dom.on(this.table.$body, 'keydown', this.editableInputKeyHandler.bind(this), '.' + constants.editableInputClass);
+                this.sandbox.dom.on(this.table.$body, 'change', this.editableInputEventHandler.bind(this), '.' + constants.editableInputClass);
             }
             if (!!this.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
@@ -31761,7 +31779,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             var $parent = this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass),
                 recordId = this.sandbox.dom.data($parent, 'id');
 
-            if (!!this.editStatuses[recordId]) {
+            if (!!this.editStatuses[recordId] || $(event.currentTarget).is('select')) {
                 this.editRow(recordId);
             }
 
