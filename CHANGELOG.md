@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
-    * HOTFIX      #671 Globalize: Fixed loading correct file when culture name includes country
+    * HOTFIX      #679 Globalize: Fixed loading correct file when culture name includes country
 
 * 0.21.0 (2016-07-05)
     * BUGFIX      #670 Fixed Globalizing timing issue
