@@ -16,6 +16,10 @@
     * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
+* 0.21.1 (2016-07-11)
+    * HOTFIX      #670 workaround for ie dorpdown issue
+    * HOTFIX      #679 Globalize: Fixed loading correct file when culture name includes country
+
 * 0.21.0 (2016-07-05)
     * BUGFIX      #670 Fixed Globalizing timing issue
 
@@ -24,7 +28,7 @@
     * ENHANCEMENT #657 Added new function 'records.set' for datagrid
 
 * 0.19.3 (2016-06-01)
-    * HOTFIX      #649 Use correct culture name when loocale includes country
+    * HOTFIX      #649 Use correct culture name when locale includes country
 
 * 0.19.2 (2016-05-09)
     * HOTFIX      #646 Added a scrolling mechanism to the select dropdown

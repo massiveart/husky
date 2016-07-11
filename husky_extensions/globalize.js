@@ -203,7 +203,6 @@
                 app.setLanguage = function(cultureName, messages, defaultMessages) {
                     cultureName = normalizeCultureName(cultureName);
 
-
                     Globalize.culture(cultureName);
 
                     app.sandbox.globalize.addCultureInfo(cultureName, messages);
@@ -212,6 +211,8 @@
 
                 app.loadLanguage = function(cultureName) {
                     var deferred = $.Deferred();
+
+                    cultureName = normalizeCultureName(cultureName);
 
                     if (cultureName !== 'en') {
                         require(['cultures/globalize.culture.' + cultureName], function() {
