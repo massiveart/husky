@@ -38632,6 +38632,7 @@ define('__component__$auto-complete@husky',[], function() {
  * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
  * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
  * @param {String} [options.footerContent] Could be a template or just text
+ * @param {String} [options.valueKey] Name of value-property in suggestion
  */
 define('__component__$auto-complete-list@husky',[], function() {
 
@@ -38672,7 +38673,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                 autoCompleteIcon: 'search',
                 suggestionIcon: 'tag',
                 delimiters: [9, 188, 13],
-                noNewTags: false
+                noNewTags: false,
+                valueKey: 'name'
             },
 
             templates = {
@@ -38918,7 +38920,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 suggestionIcon: this.options.suggestionIcon,
                                 autoCompleteIcon: this.options.autoCompleteIcon,
                                 resultKey: this.options.resultKey,
-                                footerContent: this.options.footerContent
+                                footerContent: this.options.footerContent,
+                                valueKey: this.options.valueKey
                             },
                             this.options.autocompleteOptions
                         )
@@ -38983,7 +38986,7 @@ define('__component__$auto-complete-list@husky',[], function() {
 
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
                 this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.select', function(d) {
-                    this.pushTag(d.name);
+                    this.pushTag(d[this.options.valueKey]);
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$input, 'keydown', function(event) {
@@ -39121,7 +39124,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                             name: this.options.suggestions[i],
                             $el: this.sandbox.dom.createElement('<li/>')
                         };
-                        this.sandbox.dom.html(this.suggestions[i].$el, this.suggestions[i].name);
+                        this.sandbox.dom.html(this.suggestions[i].$el, this.suggestions[i][this.options.valueKey]);
                     }
                 }
             },
@@ -39223,7 +39226,7 @@ define('__component__$auto-complete-list@husky',[], function() {
             bindSuggestionEvents: function(suggestion) {
                 this.sandbox.dom.on(suggestion.$el, 'click', function() {
                     if (!this.sandbox.dom.hasClass(suggestion, this.options.suggestionDeactivatedClass)) {
-                        this.pushTag(suggestion.name);
+                        this.pushTag(suggestion[this.options.valueKey]);
                         this.deactivateSuggestion(suggestion);
                         this.sandbox.emit(SUGGESTION_ADDED.call(this), suggestion);
                     }
@@ -39275,7 +39278,7 @@ define('__component__$auto-complete-list@husky',[], function() {
             suggestionContainedInTags: function(suggestion) {
                 var tags = this.getTags(), i, length;
                 for (i = -1, length = tags.length; ++i < length;) {
-                    if (tags[i] === suggestion.name) {
+                    if (tags[i] === suggestion[this.options.valueKey]) {
                         return true;
                     }
                 }
