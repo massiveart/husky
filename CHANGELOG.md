@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.21.1 (2016-07-11)
     * HOTFIX      #670 workaround for ie dorpdown issue
     * HOTFIX      #679 Globalize: Fixed loading correct file when culture name includes country
 
