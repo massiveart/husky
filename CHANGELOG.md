@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #684 Added parameter 'valueKey' to auto-complete-list
     * BUGFIX      #673 changed markup of search icon (fixes redirect bug)
     * ENHANCEMENT #671 Updated to current version of husky-validation
     * BUGFIX      #670 Fixed Globalizing timing issue
