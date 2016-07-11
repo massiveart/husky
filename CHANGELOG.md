@@ -1,7 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
-    * ENHANCEMENT #XXX Added parameter 'valueKey' to auto-complete-list
+    * ENHANCEMENT #683 Added parameter 'valueKey' to auto-complete-list
     * HOTFIX      #670 workaround for ie dorpdown issue
     * HOTFIX      #679 Globalize: Fixed loading correct file when culture name includes country
 
