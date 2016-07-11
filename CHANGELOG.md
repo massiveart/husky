@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #XXX Added parameter 'valueKey' to auto-complete-list
     * BUGFIX      #673 changed markup of search icon (fixes redirect bug)
     * ENHANCEMENT #671 Updated to current version of husky-validation
     * BUGFIX      #670 Fixed Globalizing timing issue
@@ -24,7 +25,7 @@
     * ENHANCEMENT #657 Added new function 'records.set' for datagrid
 
 * 0.19.3 (2016-06-01)
-    * HOTFIX      #649 Use correct culture name when loocale includes country
+    * HOTFIX      #649 Use correct culture name when locale includes country
 
 * 0.19.2 (2016-05-09)
     * HOTFIX      #646 Added a scrolling mechanism to the select dropdown
