@@ -30128,8 +30128,8 @@ define('__component__$navigation@husky',[],function() {
          */
         markItemSelected: function($item) {
             this.unmarkSelectedItem();
-            this.sandbox.dom.addClass($item, 'is-selected');
-            this.sandbox.dom.addClass($item.closest('.js-navigation-items'), 'is-active');
+            $item.addClass('is-selected');
+            $item.closest('.js-navigation-items').addClass('is-active');
         },
 
         /**
@@ -30196,9 +30196,9 @@ define('__component__$navigation@husky',[],function() {
          * @param itemData the item data
          */
         refreshDataNavigation: function(itemData) {
-            if (this.dataNavigationIsLoading) return;
+            if (!!this.dataNavigationIsLoading) return;
 
-            if (this.hasDataNavigation()) {
+            if (!!this.hasDataNavigation()) {
                 this.removeDataNavigation();
             }
 
