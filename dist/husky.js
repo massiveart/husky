@@ -29295,7 +29295,7 @@ define('__component__$navigation@husky',[],function() {
             /** main navigation items (with icons)*/
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
-                '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
+                '   <div <% if (!!item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
                 '       <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
@@ -29303,7 +29303,7 @@ define('__component__$navigation@husky',[],function() {
                 '       <% if (item.hasSettings) { %>',
                 '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
                 '       <% } %>',
-                '       <% if (item.items && item.items.length > 0) { %>',
+                '       <% if (!!item.items && item.items.length > 0) { %>',
                 '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       <% } %>',
                 '   </div>',
@@ -29483,6 +29483,7 @@ define('__component__$navigation@husky',[],function() {
             this.hidden = false;
             this.tooltipsEnabled = true;
             this.animating = false;
+            this.selectedItemId = null;
 
             // binding dom events
             this.bindDOMEvents();
@@ -29601,7 +29602,7 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.util.foreach(data.items, function(item) {
                 item.parentTitle = data.title;
                 this.items.push(item);
-                if (item.items && item.items.length > 0) {
+                if (!!item.items && item.items.length > 0) {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {
                         item: item,
                         translate: this.sandbox.translate
@@ -30086,7 +30087,15 @@ define('__component__$navigation@husky',[],function() {
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
             }
+            if ($items.length === 0) {
+                $items = $subItem;
+            }
 
+            // if clicked item is already selected do nothing
+            if (this.sandbox.dom.data($subItem, 'id') === this.selectedItemId) {
+                return;
+            }
+            this.selectedItemId = this.sandbox.dom.data($subItem, 'id');
             item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
 
             // if toggle was clicked, do not set active and selected
@@ -34968,7 +34977,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * calls the funciton of the view responsible for the responsiveness
              */
             windowResizeListener: function() {
-                if (!!this.gridViews[this.viewId].onResize) {
+                if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].onResize) {
                     this.gridViews[this.viewId].onResize();
                 }
             },

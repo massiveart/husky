@@ -1635,7 +1635,7 @@
              * calls the funciton of the view responsible for the responsiveness
              */
             windowResizeListener: function() {
-                if (!!this.gridViews[this.viewId].onResize) {
+                if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].onResize) {
                     this.gridViews[this.viewId].onResize();
                 }
             },
