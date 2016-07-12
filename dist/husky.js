@@ -29300,9 +29300,6 @@ define('__component__$navigation@husky',[],function() {
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
-                '       <% if (item.hasSettings) { %>',
-                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
-                '       <% } %>',
                 '       <% if (!!item.items && item.items.length > 0) { %>',
                 '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       <% } %>',
@@ -29313,9 +29310,6 @@ define('__component__$navigation@husky',[],function() {
                 '   <li class="js-navigation-items navigation-subitems" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
                 '           <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
-                '           <% if (item.hasSettings) { %>',
-                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
-                '           <% } %>',
                 '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       </div>',
                 '</li>'].join(''),
@@ -29673,7 +29667,6 @@ define('__component__$navigation@husky',[],function() {
          */
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this), '.navigation-items-toggle, .navigation-subitems-toggle');
-            this.sandbox.dom.on(this.$el, 'click', this.settingsClicked.bind(this), '.js-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this), '.js-navigation-sub-item, .js-navigation-item');
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit(EVENT_HEADER_CLICKED);
@@ -29837,25 +29830,6 @@ define('__component__$navigation@husky',[],function() {
             }
             this.selectSubItem(null, domObject, false, options);
             this.checkBottomHit(null, domObject);
-        },
-
-
-        /**
-         * gets called when settings icon is clicked
-         * @emits husky.navigation.item.settings (name, id, parent)
-         * @param event
-         */
-        settingsClicked: function(event) {
-
-            event.stopPropagation();
-            event.preventDefault();
-
-            // emit event
-            var listItem = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
-                item = this.getItemById(this.sandbox.dom.data(listItem, 'id'));
-
-            this.sandbox.emit('husky.navigation.item.settings', item);
-
         },
 
         /**
@@ -30125,7 +30099,7 @@ define('__component__$navigation@husky',[],function() {
                 }
             }
 
-            if (this.hasDataNavigation()) {
+            if (!!this.hasDataNavigation()) {
                 this.removeDataNavigation();
             }
 
