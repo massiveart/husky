@@ -6,6 +6,7 @@
     * BUGFIX      #673 changed markup of search icon (fixes redirect bug)
     * ENHANCEMENT #671 Updated to current version of husky-validation
     * BUGFIX      #670 Fixed Globalizing timing issue
+    * FEATURE     #661 Added second dot in column navigation for draft
     * FEATURE     #664 Collapse dropdown button without visible items in list
     * FEATURE     #636 Added possibility to display small labels
     * BUGFIX      #666 Added auto-start on focus

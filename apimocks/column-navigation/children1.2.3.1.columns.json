@@ -10,6 +10,7 @@
                 "id": "1",
                 "hasSub": true,
                 "publishedState": true,
+                "published": "2016-06-14T15:03:59.000+02:00",
                 "linked": "internal",
                 "type": {
                     "name": "false",
@@ -346,6 +347,7 @@
                 "id": "7",
                 "hasSub": false,
                 "publishedState": false,
+                "published": "2016-06-14T15:03:59.000+02:00",
                 "linked": false,
                 "type": false,
                 "_links": {
