@@ -527,7 +527,7 @@ define([], function() {
                     var dataId = this.sandbox.dom.attr(this.$valueField, 'data-id');
                     if (dataId != null && dataId !== 'null') {
                         this.sandbox.dom.removeAttr(this.$valueField, 'data-id');
-                        this.sandbox.dom.data(this.$valueField, 'id', 'null'); // https://github.com/massiveart/husky/issues/682
+                        this.sandbox.dom.data(this.$valueField, 'id', 'null');
                         this.sandbox.emit(SELECTION_REMOVED.call(this));
                     }
                 }

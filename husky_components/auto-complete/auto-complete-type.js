@@ -38,7 +38,6 @@ define([
                 getValue: function() {
                     var $input = $el.find('input');
 
-                    // https://github.com/massiveart/husky/issues/682
                     if (!$input.data('id') || $input.data('id') === 'null') {
                         return;
                     }
