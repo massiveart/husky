@@ -24,6 +24,7 @@
             "jquery-minicolors" : "bower_components/jquery-minicolors/jquery.minicolors",
             "husky": "lib/husky",
             "type/husky-select": "husky_components/select/select-type",
+            "type/husky-auto-complete": "husky_components/auto-complete/auto-complete-type",
             "type/husky-input": "husky_components/input/input-type",
             "type/url-input": "husky_components/url-input/url-input",
 
@@ -144,6 +145,7 @@
             "dropzone",
             "tagsManager",
             "type/husky-select",
+            "type/husky-auto-complete",
             "type/husky-input",
             "type/url-input",
 

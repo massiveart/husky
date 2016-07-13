@@ -29,7 +29,13 @@
 			<div class="grid-col-6">
 				<div class="auto-complete-container">
                     <label>Autocomplete</label>
-                    <div id="autocomplete1"></div>
+                    <form id="mylittleform">
+                        <div id="autocomplete1"
+                             data-type="husky-auto-complete"
+                             data-mapper-property="country"
+                             data-form="true"
+                        ></div>
+                    </form>
                 </div>
 			</div>
             <div class="grid-col-6">
@@ -68,6 +74,12 @@
             <div class="grid-col-6">
                 <button id="overlay">Show overlay with auto-complete</button>
             </div>
+            <div class="grid-col-6">
+                <button id="set-data">set data</button>
+            </div>
+            <div class="grid-col-6">
+                <button id="get-data">get data</button>
+            </div>
         </div>
 	</div>
 </div>
@@ -77,9 +89,14 @@
 <script src="../js/defaults.js"></script>
 <script type="text/javascript">
 	require.config({
-		baseUrl: '../../'
+		baseUrl: '../../',
+        paths: {
+            'form': 'bower_components/husky-validation/dist/validation',
+            'type/husky-auto-complete': 'husky_components/auto-complete/auto-complete-type'
+        }
 	});
-	require(['lib/husky'], function(Husky) {
+
+    require(['lib/husky', 'form'], function(Husky, Form) {
 		'use strict';
 
 		var app = Husky({
@@ -87,6 +104,7 @@
 						enable: true
 					}
 				}),
+                form = new Form($('#mylittleform')),
 				_ = app.sandbox.util._;
 
 
@@ -206,6 +224,25 @@
                     }
                 ]);
             });
+        });
+
+        $('#set-data').on('click', function() {
+            form.initialized.then(function() {
+                form.mapper.setData({
+                    country: {
+                        id: 3,
+                        name: "USA"
+                    }
+                }).then(
+                    function() {
+                        // console.log('resolved setdata');
+                    }
+                );
+            });
+        });
+
+        $('#get-data').on('click', function() {
+            alert(JSON.stringify(form.mapper.getData()));
         });
 	});
 </script>
