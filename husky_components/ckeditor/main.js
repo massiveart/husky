@@ -172,7 +172,7 @@ define([], function() {
 
             this.$el.parent().append($trigger);
 
-            $trigger.one('click, focus', function(e) {
+            $trigger.one('focus', function(e) {
                 $(e.currentTarget).remove();
 
                 this.startEditor();
