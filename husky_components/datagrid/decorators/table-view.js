@@ -153,8 +153,11 @@ define(function() {
             },
             img: [
                 '<div class="' + constants.gridImageClass + '">',
+                '<% if (!!src) { %>',
                 '   <img alt="<%= alt %>" src="<%= src %>"/>',
+                '<% } else { %>',
                 '   <div class="<%= noImgIcon %> empty"></div>',
+                '<% } %>',
                 '</div>'
             ].join(''),
             childWrapper: '<div class="' + constants.childWrapperClass + '"></div>',
