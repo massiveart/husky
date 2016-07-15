@@ -20,7 +20,8 @@
     * FEATURE     #641 Added preselect callback for toolbar button
     * BUGFIX      #633 Removed bound effect respectively additional scrollbar
 
-* 0.21.1 (2016-07-11)
+* 0.21.1 (2016-07-14)
+    * HOTFIX      #688 fixed child order in datagrid
     * HOTFIX      #670 workaround for ie dorpdown issue
     * HOTFIX      #679 Globalize: Fixed loading correct file when culture name includes country
 
