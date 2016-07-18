@@ -56,15 +56,12 @@ define(function() {
             /** main navigation items (with icons)*/
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
-                '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
+                '   <div <% if (!!item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
                 '       <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
-                '       <% if (item.hasSettings) { %>',
-                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
-                '       <% } %>',
-                '       <% if (item.items && item.items.length > 0) { %>',
+                '       <% if (!!item.items && item.items.length > 0) { %>',
                 '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       <% } %>',
                 '   </div>',
@@ -74,9 +71,6 @@ define(function() {
                 '   <li class="js-navigation-items navigation-subitems" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
                 '           <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
-                '           <% if (item.hasSettings) { %>',
-                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
-                '           <% } %>',
                 '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       </div>',
                 '</li>'].join(''),
@@ -244,6 +238,8 @@ define(function() {
             this.hidden = false;
             this.tooltipsEnabled = true;
             this.animating = false;
+            this.dataNavigationIsLoading = false;
+            this.items = []; // array to save all navigation items
 
             // binding dom events
             this.bindDOMEvents();
@@ -253,7 +249,11 @@ define(function() {
             // load Data
             if (!!this.options.url) {
                 this.sandbox.util.load(this.options.url, null, 'json')
-                    .then(this.render.bind(this))
+                    .then(function(data) {
+                        this.options.data = data;
+                        this.render();
+                        this.sandbox.emit('husky.navigation.initialized');
+                    }.bind(this))
                     .fail(function(data) {
                         this.sandbox.logger.log("data could not be loaded:", data);
                     }.bind(this));
@@ -263,19 +263,28 @@ define(function() {
         /**
          * renders the navigation
          * gets called after navigation data was loaded
-         * @param data
          */
-        render: function(data) {
-
-            // data storage
-            this.options.data = data;
-
-            // array to save all navigation items
-            this.items = [];
-
-            // add container class to current div
+        render: function() {
             this.sandbox.dom.addClass(this.$el, CONSTANTS.COMPONENT_CLASS);
 
+            this.renderSkeleton()
+            this.renderNavigationItems(this.options.data);
+            this.renderFooter();
+
+            // collapse if necessary
+            this.resizeListener();
+
+            // preselect item based on url
+            if (!!this.options.selectAction && this.options.selectAction.length > 0) {
+                this.preselectItem(this.options.selectAction);
+            }
+        },
+
+        /**
+         * Renders the main skeleton of the navigation and sets assigns global
+         * variables with dom-objects rendered with the skeleton.
+         */
+        renderSkeleton: function() {
             // render skeleton
             this.sandbox.dom.html(
                 this.$el,
@@ -287,23 +296,6 @@ define(function() {
 
             this.$navigation = this.$find('.navigation');
             this.$navigationContent = this.$find('.navigation-content');
-
-            // render navigation items
-            this.renderNavigationItems(this.options.data);
-
-            // render footer
-            this.renderFooter();
-
-            // collapse if necessary
-            this.resizeListener();
-
-            // preselect item based on url
-            if (!!this.options.selectAction && this.options.selectAction.length > 0) {
-                this.preselectItem(this.options.selectAction);
-            }
-
-            // emit initialized event
-            this.sandbox.emit('husky.navigation.initialized');
         },
 
         /**
@@ -362,7 +354,7 @@ define(function() {
             this.sandbox.util.foreach(data.items, function(item) {
                 item.parentTitle = data.title;
                 this.items.push(item);
-                if (item.items && item.items.length > 0) {
+                if (!!item.items && item.items.length > 0) {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {
                         item: item,
                         translate: this.sandbox.translate
@@ -433,8 +425,13 @@ define(function() {
          */
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this), '.navigation-items-toggle, .navigation-subitems-toggle');
-            this.sandbox.dom.on(this.$el, 'click', this.settingsClicked.bind(this), '.js-navigation-settings');
-            this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this), '.js-navigation-sub-item, .js-navigation-item');
+
+            this.sandbox.dom.on(this.$el, 'click', function(event) {
+                event.preventDefault();
+                this.selectMenuItem(event.currentTarget);
+                _.delay(this.resizeListener.bind(this), 700); // TODO: is this really neccessary?
+            }.bind(this), '.js-navigation-sub-item, .js-navigation-item');
+
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit(EVENT_HEADER_CLICKED);
             }.bind(this), '.navigation-header div');
@@ -539,24 +536,26 @@ define(function() {
             }
         },
 
-
         /**
-         * Takes an action and select the matching navigation point
-         * @param selectAction {string}
+         * Selects a navigation item by a given action. It selects the navigation point
+         * which's action is most similar to the given action. If no satisfiable navigation item
+         * can be found it deselects the currently selected action.
+         * @param selectAction {String} the action for which a navigation item should be selected
          */
         preselectItem: function(selectAction) {
-            var matchLength = 0, matchItem, parent, match;
+            var maxMatchValue = 0, matchValue, matchItem, parent, match;
             this.sandbox.util.foreach(this.items, function(item) {
                 if (!item || !item.action) {
                     return;
                 }
-                if (selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
+                matchValue = this.sandbox.util.compareStrings(item.action, selectAction);
+                if (matchValue > maxMatchValue) {
                     matchItem = item;
-                    matchLength = item.action.length;
+                    maxMatchValue = matchValue;
                 }
             }.bind(this));
 
-            if (matchLength > 0) {
+            if (!!matchItem && maxMatchValue > 0) {
                 match = matchItem.domObject;
 
                 if (this.sandbox.dom.hasClass(match, 'js-navigation-sub-item')) {
@@ -567,8 +566,10 @@ define(function() {
                         this.toggleItems(null, parent);
                     }
                 }
-                this.selectSubItem(null, match, false);
+                this.selectMenuItem(match, false);
                 this.checkBottomHit(null, match);
+            } else {
+                this.unmarkSelectedItem();
             }
         },
 
@@ -595,27 +596,8 @@ define(function() {
                     this.toggleItems(null, parent);
                 }
             }
-            this.selectSubItem(null, domObject, false, options);
+            this.selectMenuItem(domObject, false, options);
             this.checkBottomHit(null, domObject);
-        },
-
-
-        /**
-         * gets called when settings icon is clicked
-         * @emits husky.navigation.item.settings (name, id, parent)
-         * @param event
-         */
-        settingsClicked: function(event) {
-
-            event.stopPropagation();
-            event.preventDefault();
-
-            // emit event
-            var listItem = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
-                item = this.getItemById(this.sandbox.dom.data(listItem, 'id'));
-
-            this.sandbox.emit('husky.navigation.item.settings', item);
-
         },
 
         /**
@@ -830,61 +812,73 @@ define(function() {
          * @param emit
          * @param {Object} options Extends the item
          */
-        selectSubItem: function(event, customTarget, emit, options) {
-            if (!!event) {
-                event.preventDefault();
-            } else {
-                event = {
-                    currentTarget: customTarget
-                };
+        selectMenuItem: function(item, emit, options) {
+            var $selectItem = $(item), itemData, extendedItem;
+
+            // if a main navigation point should be selected, select its first sub-point
+            if ($selectItem.hasClass('js-navigation-item')) {
+                $selectItem = $(item).closest('li');
             }
 
-            var $subItem = this.sandbox.dom.createElement(event.currentTarget),
-                $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
-                $parent = this.sandbox.dom.parent(event.currentTarget),
-                item;
-
-            if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
-                $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
+            // if clicked item is already selected do nothing
+            if ($selectItem.hasClass('is-selected')) {
+                return;
             }
-
-            item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
-
-            // if toggle was clicked, do not set active and selected
-            if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
+            // if a toggelable item was clicked nothing should be selected, it just toggles
+            if ($(item).parent().hasClass('navigation-items-toggle') || $(item).parent().hasClass('navigation-subitems-toggle')) {
                 return;
             }
 
-            if (!item.event) {
-                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-                this.sandbox.dom.addClass($subItem, 'is-selected');
+            itemData = this.getItemById(this.sandbox.dom.data($selectItem, 'id'));
+            extendedItem = this.sandbox.util.extend(true, {}, itemData, options);
 
-                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
-                this.sandbox.dom.addClass($items, 'is-active');
-            }
-
-            var extendedItem = item;
-
-            if (!!options) {
-                extendedItem = this.sandbox.util.extend(true, {}, extendedItem, options);
+            // If it is a navigation-point with a custom configured event (like actions), the event gets emitted and nothing else.
+            if (!!itemData.event && emit !== false) {
+                this.emitItemSelectEvent(extendedItem);
+                return;
             }
 
             if (emit !== false) {
-                if (item.event) {
-                    this.sandbox.emit('husky.navigation.item.event.' + item.event, item.eventArgs);
-                } else {
-                    this.sandbox.emit(EVENT_ITEM_SELECT, extendedItem);
-                }
+                this.emitItemSelectEvent(extendedItem);
             }
 
-            if (this.hasDataNavigation()) {
+            if (!!this.hasDataNavigation()) {
                 this.removeDataNavigation();
             }
 
-            if (!!extendedItem && !!extendedItem.dataNavigation) {
-                this.renderDataNavigation(extendedItem.dataNavigation);
-            } else if (!customTarget) {
-                setTimeout(this.resizeListener.bind(this), 700);
+            this.markItemSelected($selectItem);
+            this.refreshDataNavigation(extendedItem);
+        },
+
+        /**
+         * Marks a given navigation item as selected. The main navigation-point corresponding
+         * to the given item gets marked as active
+         * @param $item The item to select
+         */
+        markItemSelected: function($item) {
+            this.unmarkSelectedItem();
+            $item.addClass('is-selected');
+            $item.closest('.js-navigation-items').addClass('is-active');
+        },
+
+        /**
+         * Unmarks the currently selected navigation item
+         */
+        unmarkSelectedItem: function() {
+            this.sandbox.dom.removeClass(this.$find('.is-selected'), 'is-selected');
+            this.sandbox.dom.removeClass(this.$find('.is-active'), 'is-active');
+        },
+
+        /**
+         * Emits a select event for a given item. If the item has a custom event configured, the
+         * custom event gets emitted, otherwise a default aura event gets emitted.
+         * @param itemData The item data
+         */
+        emitItemSelectEvent: function(itemData) {
+            if (itemData.event) {
+                this.sandbox.emit('husky.navigation.item.event.' + itemData.event, itemData.eventArgs);
+            } else {
+                this.sandbox.emit(EVENT_ITEM_SELECT, itemData);
             }
         },
 
@@ -916,7 +910,7 @@ define(function() {
         },
 
         /**
-         * Hides the navigaiton
+         * Hides the navigation
          */
         hide: function() {
             this.sandbox.dom.addClass(this.$navigation, CONSTANTS.HIDDEN_CLASS);
@@ -926,10 +920,28 @@ define(function() {
         },
 
         /**
+         * If there currently is a data navigation it gets removed. If the given item
+         * has a data navigation configured it gets created.
+         * @param itemData the item data
+         */
+        refreshDataNavigation: function(itemData) {
+            if (!!this.dataNavigationIsLoading) return;
+
+            if (!!this.hasDataNavigation()) {
+                this.removeDataNavigation();
+            }
+
+            if (!!itemData && !!itemData.dataNavigation) {
+                this.renderDataNavigation(itemData.dataNavigation);
+            }
+        },
+
+        /**
          * Render data navigation and init with item
          * @param options
          */
         renderDataNavigation: function(options) {
+            this.dataNavigationIsLoading = true;
             this.collapse();
 
             var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'}), key;
@@ -939,7 +951,8 @@ define(function() {
                 el: $element,
                 url: options.url,
                 rootUrl: options.rootUrl
-            };
+            },
+                initializedEvent = 'husky.data-navigation.initialized';
 
             // optional options
             if (!!options.resultKey) {
@@ -953,6 +966,7 @@ define(function() {
             }
             if (!!options.instanceName) {
                 componentOptions.instanceName = options.instanceName;
+                initializedEvent = 'husky.data-navigation.' + options.instanceName + '.initialized';
             }
             if (!!options.showAddBtn) {
                 componentOptions.showAddBtn = options.showAddBtn;
@@ -970,6 +984,10 @@ define(function() {
             this.sandbox.util.delay(function() {
                 $element.addClass('expanded');
             }, 0);
+
+            this.sandbox.once(initializedEvent, function() {
+                this.dataNavigationIsLoading = false;
+            }.bind(this));
 
             // init data-navigation
             this.sandbox.start([{

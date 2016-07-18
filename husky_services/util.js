@@ -314,6 +314,38 @@ define(['sprintf'], function(sprintf) {
     };
 
     /**
+     * Returns a percentage (0 to 1) on how similar two strings are
+     * http://stackoverflow.com/questions/10473745/compare-strings-javascript-return-of-likely
+     *
+     * @param x {String} the first string
+     * @param y the {String} second string
+     * @returns {number} the percentage on how similar two strings are
+     */
+    Util.prototype.compareStrings = function(x, y) {
+        var simpleCompare = function(a, b) {
+            var lengthA = a.length;
+            var lengthB = b.length;
+            if (lengthA === 0 && lengthB === 0) {
+                return 1;
+            }
+            var equivalency = 0;
+            var minLength = (a.length > b.length) ? b.length : a.length;
+            var maxLength = (a.length < b.length) ? b.length : a.length;
+
+            for (var i = 0; i < minLength; i++) {
+                if (a[i] == b[i]) {
+                    equivalency++;
+                }
+            }
+
+            return equivalency / maxLength;
+        };
+
+        // maximum of similarity from front to back and from back to front
+        return Math.max(simpleCompare(x,y), simpleCompare(x.split('').reverse().join(''), y.split('').reverse().join('')));
+    },
+
+    /**
      * Return a formatted string.
      *
      * @param {String} format
