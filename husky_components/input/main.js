@@ -32,6 +32,9 @@
  * @params {String} [options.backHtml] html to display in back
  * @params {String} [options.renderMethod] name of a special render method to execute. Currently 'colorpicker', 'datepicker', 'time'. For example 'colorpicker' initializes a colorpicker and sets a css-class
  * @params {String} [options.inputType] the actual type of the input. e.g. 'text' or 'password'
+ * @params {Object} [options.inputAttributes] html input attributes
+ * @params {String} [options.inputList] datalist id
+ * @params {Boolean} [options.appendList] append the current value to datalist
  */
 define([], function() {
 
@@ -62,6 +65,9 @@ define([], function() {
             backText: null,
             backHtml: null,
             renderMethod: null,
+            inputAttributes: {},
+            inputList: null,
+            appendList: false,
             inputType: 'text'
         },
 
@@ -81,7 +87,19 @@ define([], function() {
         },
 
         templates = {
-            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>" data-from="false" <%= disabled %>/>',
+            input: '<input type="<%= type %>" ' +
+                'value="<%= value %>" ' +
+                'placeholder="<%= placeholder %>" ' +
+                'id="<%= id %>" ' +
+                'name="<%= name %>"' +
+                '<% if (list) { %>' +
+                '    list="<%= list %>"' +
+                '<% } %> ' +
+                '<% _.each(attributes, function(value, key) { %>' +
+                '    <%= key %>="<%= value %>"' +
+                '<% }); %> ' +
+                'data-from="false" ' +
+                '<%= disabled %>/>',
             colorPickerFront: '<div class="' + constants.colorFieldClass + '"/>'
         },
 
@@ -194,6 +212,7 @@ define([], function() {
             this.input = {
                 $front: null,
                 $input: null,
+                $datalist: null,
                 $back: null
             };
             this.linkProtocol = null;
@@ -216,6 +235,7 @@ define([], function() {
             this.renderFront();
             this.renderInput();
             this.renderBack();
+            this.renderDatalist();
             // call a render method specific for the skin
             // e.g. renderColorPicker
             if (!!this.options.renderMethod && !!renderMethods[this.options.renderMethod]) {
@@ -260,6 +280,11 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'data-changed', function() {
                 this.updateValue();
             }.bind(this));
+
+            // update datalist
+            if (this.options.appendList) {
+                this.sandbox.dom.on(this.input.$input, 'focusout', this.updateDatalist.bind(this));
+            }
         },
 
         /**
@@ -291,10 +316,19 @@ define([], function() {
                 id: (!!this.options.inputId) ? this.options.inputId : 'husky-input-' + this.options.instanceName,
                 value: this.options.value,
                 placeholder: this.options.placeholder,
+                list: this.options.inputList,
+                attributes: this.options.inputAttributes,
                 disabled: (this.options.disabled === true) ? 'disabled' : ''
             }));
+
             this.sandbox.dom.append($container, this.input.$input);
             this.sandbox.dom.append(this.$el, $container);
+        },
+
+        renderDatalist: function() {
+            if (this.options.inputList) {
+                this.input.$datalist = this.sandbox.dom.find('#' + this.options.inputList);
+            }
         },
 
         /**
@@ -367,6 +401,72 @@ define([], function() {
             this.sandbox.dom.addClass(this.sandbox.dom.find('a', this.input.$front), constants.linkClickableClass);
             this.renderLockIcon();
             this.$el.data('locked', locked);
+        },
+
+        /**
+         * Update datalist when value changed.
+         */
+        updateDatalist: function() {
+            if (!this.input.$datalist || !this.options.appendList) {
+                return;
+            }
+
+            var lastValue = this.input.$input.data('last-value');
+            var value = this.input.$input.val();
+
+            // when value did not change do nothing
+            if (value === lastValue) {
+                return;
+            }
+
+            this.input.$input.data('last-value', value);
+            this.removeDatalistOption(lastValue);
+            this.createDatalistOption(value);
+        },
+
+
+        /**
+         * Remove datalist option when not in use.
+         *
+         * @param {String} value
+         */
+        removeDatalistOption: function(value) {
+            var $option = this.input.$datalist.find('option[value="' + value + '"][data-dynamic=true]');
+
+            if (!$option) {
+                return;
+            }
+
+            // check if option is in use by other input
+            var inputs = this.sandbox.dom.find('input[list=' + this.options.inputList + ']').filter(function() {
+                return $(this).val() === value;
+            });
+
+            // remove dynamic option
+            if (inputs.length === 0) {
+                $option.remove();
+            }
+        },
+
+        /**
+         * Create datalist option when not exist.
+         *
+         * @param {String} value
+         */
+        createDatalistOption: function(value) {
+            // do not create new option when option exist
+            if (this.input.$datalist.find('option[value="' + value + '"]').length) {
+                return;
+            }
+
+            var $option = this.sandbox.dom.createElement(
+                '<option value="' + value + '" data-dynamic="true"/>'
+            );
+
+            this.sandbox.dom.append(
+                this.input.$datalist,
+                $option
+            );
         },
 
         /**
@@ -499,6 +599,11 @@ define([], function() {
                 this.sandbox.dom.val(this.input.$input, value);
                 if (this.options.renderMethod === 'email' || this.options.renderMethod === 'url') {
                     this.changeFrontLink();
+                }
+
+                // update datalist
+                if (this.options.appendList) {
+                    this.updateDatalist();
                 }
             }
         },

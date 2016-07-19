@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #690 add input datalist support
     * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
     * ENHANCEMENT #684 Added parameter 'valueKey' to auto-complete-list

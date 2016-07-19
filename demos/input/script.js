@@ -27,6 +27,9 @@ require(['lib/husky'], function(Husky) {
             date: '2014-01-03T00:00:00+0200',
             time: '09 - 51',
             color: '#a7d7a7',
+            maxlength: '1234',
+            list1: 'Data 4',
+            list2: 'Data 5',
             lock: 12.34
         });
     }.bind(this));

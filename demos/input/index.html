@@ -118,6 +118,17 @@
                      data-value="#CCCCCC"></div>
             </div>
         </div>
+        <div class="grid-col-6">
+            <div class="form-group">
+                <label>Attributes (maxlength: 4)</label>
+                <div data-aura-component="input@husky"
+                     data-aura-instance-name="maxlength"
+                     data-form="true"
+                     data-aura-input-attributes='{"maxlength": 4}'
+                     data-type="husky-input"
+                     data-mapper-property="maxlength"></div>
+            </div>
+        </div>
     </div>
 
     <div class="grid-row">
@@ -135,6 +146,18 @@
                      data-value="demo@sulu.io"></div>
             </div>
         </div>
+        <div class="grid-col-6">
+            <div class="form-group">
+                <label>Datalist 1</label>
+                <div data-aura-component="input@husky"
+                     data-aura-instance-name="list1"
+                     data-form="true"
+                     data-aura-input-list="data-list"
+                     data-aura-append-list="true"
+                     data-type="husky-input"
+                     data-mapper-property="list1"></div>
+            </div>
+        </div>
     </div>
 
     <div class="grid-row">
@@ -148,6 +171,18 @@
                      data-type="husky-input"
                      data-mapper-property="lock-input"
                      data-value="35.32"></div>
+            </div>
+        </div>
+        <div class="grid-col-6">
+            <div class="form-group">
+                <label>Datalist 2</label>
+                <div data-aura-component="input@husky"
+                     data-aura-instance-name="list2"
+                     data-form="true"
+                     data-aura-input-list="data-list"
+                     data-aura-append-list="true"
+                     data-type="husky-input"
+                     data-mapper-property="list2"></div>
             </div>
         </div>
     </div>
@@ -164,6 +199,12 @@
             <div id="validate" class="btn pointer">Validate</div>
         </div>
     </div>
+
+    <datalist id="data-list">
+        <option value="Data 1" />
+        <option value="Data 2" />
+        <option value="Data 3" />
+    </datalist>
 </div>
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
