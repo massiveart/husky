@@ -5,6 +5,7 @@
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
     * ENHANCEMENT #684 Added parameter 'valueKey' to auto-complete-list
     * FEATURE     #681 add auto-complete form mapper validation type
+    * BUGFIX      #680 reseted navigation width after collapse
     * BUGFIX      #673 changed markup of search icon (fixes redirect bug)
     * ENHANCEMENT #671 Updated to current version of husky-validation
     * BUGFIX      #670 Fixed Globalizing timing issue
