@@ -252,6 +252,18 @@ require(['lib/husky'], function(Husky) {
                 resultKey: 'categories',
                 viewOptions: {
                     table: {
+                        badges: [
+                            {
+                                column: 'name',
+                                icon: 'circle',
+                                cssClass: 'badge-none badge-color-yellow',
+                                callback: function(item, badge) {
+                                    if (item.id === 5) {
+                                        return badge;
+                                    }
+                                }.bind(this)
+                            }
+                        ],
                         icons: [
                             {
                                 icon: 'pencil',

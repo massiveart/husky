@@ -3,6 +3,7 @@
 * dev-develop
     * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
+    * ENHANCEMENT #691 Added badge colors
     * ENHANCEMENT #684 Added parameter 'valueKey' to auto-complete-list
     * FEATURE     #681 add auto-complete form mapper validation type
     * BUGFIX      #680 reseted navigation width after collapse
