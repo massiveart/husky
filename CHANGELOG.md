@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.22.0 (2016-07-21)
     * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
     * ENHANCEMENT #691 Added badge colors
