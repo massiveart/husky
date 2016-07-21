@@ -28,18 +28,20 @@
 		<div class="grid-row">
 			<div class="grid-col-6">
 				<div class="auto-complete-container">
-                    <label>
-                        Autocomplete
-                        <div id="autocomplete1"></div>
-                    </label>
-				</div>
+                    <label>Autocomplete</label>
+                    <form id="mylittleform">
+                        <div id="autocomplete1"
+                             data-type="husky-auto-complete"
+                             data-mapper-property="country"
+                             data-form="true"
+                        ></div>
+                    </form>
+                </div>
 			</div>
             <div class="grid-col-6">
                 <div class="auto-complete-container">
-                    <label>
-                        Autocomplete2
-                        <div id="autocomplete2"></div>
-                    </label>
+                    <label>Autocomplete2</label>
+                    <div id="autocomplete2"></div>
                 </div>
             </div>
 		</div>
@@ -54,24 +56,29 @@
         <div class="grid-row m-top-30">
             <div class="grid-col-6">
                 <div class="auto-complete-container">
-                    <label>
-                        Autocomplete3 (no new Values)
-                        <div id="autocomplete3"></div>
-                    </label>
+                    <label>Autocomplete3 (no new Values)</label>
+                    <div id="autocomplete3"></div>
                 </div>
             </div>
             <div class="grid-col-6">
                 <div class="auto-complete-container">
-                    <label>
-                        Autocomplete4 (Albanien and Frankreich are excluded)
-                        <div id="autocomplete4"></div>
-                    </label>
+                    <label>Autocomplete4 (Albanien and Frankreich are excluded)</label>
+                    <div id="autocomplete4"></div>
                 </div>
             </div>
         </div>
         <div class="grid-row m-top-30">
             <div class="grid-col-6">
                 <button id="dynamicExlude">Exclude Altach for 1.</button>
+            </div>
+            <div class="grid-col-6">
+                <button id="overlay">Show overlay with auto-complete</button>
+            </div>
+            <div class="grid-col-6">
+                <button id="set-data">set data</button>
+            </div>
+            <div class="grid-col-6">
+                <button id="get-data">get data</button>
             </div>
         </div>
 	</div>
@@ -82,16 +89,22 @@
 <script src="../js/defaults.js"></script>
 <script type="text/javascript">
 	require.config({
-		baseUrl: '../../'
+		baseUrl: '../../',
+        paths: {
+            'form': 'bower_components/husky-validation/dist/validation',
+            'type/husky-auto-complete': 'husky_components/auto-complete/auto-complete-type'
+        }
 	});
-	require(['lib/husky'], function(Husky) {
+
+    require(['lib/husky', 'form'], function(Husky, Form) {
 		'use strict';
 
 		var app = Husky({
 					debug: {
-						enable: false
+						enable: true
 					}
 				}),
+                form = new Form($('#mylittleform')),
 				_ = app.sandbox.util._;
 
 
@@ -164,6 +177,73 @@
            app.sandbox.emit('husky.auto-complete.I1.set-excludes', ['Altach']);
         });
 
+        $('#overlay').on('click', function() {
+            var overlayContent = [
+                '<div class="grid">',
+                '   <div class="grid-row">',
+                '       <div class="form-group">',
+                '           <label for="autocomplete5" class="required">A label</label>',
+                '           <div id="autocomplete5"></div>',
+                '       </div>',
+                '   </div>',
+                '   <div class="grid-row">',
+                '       <div id="addon-price-list"></div>',
+                '   </div>',
+                '</div>'
+            ].join('');
+
+            var $overlay = $('<div>');
+            $('body').append($overlay);
+
+            app.sandbox.start([
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        el: $overlay,
+                        supportKeyInput: false,
+                        title: 'Overlay title',
+                        openOnStart: true,
+                        removeOnClose: true,
+                        instanceName: 'auto-complete-overlay',
+                        data: $(overlayContent)
+                    }
+                }
+            ]).then(function() {
+                app.sandbox.start([
+                    {
+                        name: 'auto-complete@husky',
+                        options: {
+                            el: '#autocomplete5',
+                            instanceName: 'I5',
+                            prefetchUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                            remoteUrl: 'http://husky.lo:7878/admin/api/autocomplete',
+                            suggestionIcon: 'tag',
+                            noNewValues: true,
+                            localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                        }
+                    }
+                ]);
+            });
+        });
+
+        $('#set-data').on('click', function() {
+            form.initialized.then(function() {
+                form.mapper.setData({
+                    country: {
+                        id: 3,
+                        name: "USA"
+                    }
+                }).then(
+                    function() {
+                        // console.log('resolved setdata');
+                    }
+                );
+            });
+        });
+
+        $('#get-data').on('click', function() {
+            alert(JSON.stringify(form.mapper.getData()));
+        });
 	});
 </script>
 </body>

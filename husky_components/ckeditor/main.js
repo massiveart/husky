@@ -28,7 +28,7 @@ define([], function() {
             table: true,
             link: true,
             pasteFromWord: true,
-            height: 65
+            autoStart: true
         },
 
         /**
@@ -82,40 +82,28 @@ define([], function() {
          * @returns {Object} configuration object for ckeditor
          */
         getConfig = function() {
-            var config = this.sandbox.util.extend(false, {}, this.options);
+            var config = this.sandbox.util.extend(false, {}, this.options),
+                toolbarBuilder = this.sandbox.ckeditor.getToolbarBuilder();
 
-            if (!config.toolbar) {
-                config.toolbar = [
-                    {name: 'semantics', items: ['Format']},
-                    {name: 'basicstyles', items: ['Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike']},
-                    {name: 'blockstyles', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
-                    {name: 'list', items: ['NumberedList', 'BulletedList']}
-                ];
+            if (!!config.toolbar) {
+                toolbarBuilder = this.sandbox.ckeditor.createToolbarBuilder(config.toolbar);
             }
 
-            // activate paste from Word
-            if (this.options.pasteFromWord === true) {
-                config.toolbar.push({
-                    name: 'paste',
-                    items: ['PasteFromWord']
-                });
+            // deactivate paste from Word
+            if (!this.options.pasteFromWord === true) {
+                toolbarBuilder.remove('paste', ['PasteFromWord']);
             }
 
-            // activate embed links
-            if (this.options.link === true) {
-                config.toolbar.push({
-                    name: 'links',
-                    items: ['Link', 'Unlink']
-                });
-                config.linkShowTargetTab = false;
+            // deactivate embed links
+            config.linkShowTargetTab = false;
+            if (!this.options.link) {
+                toolbarBuilder.remove('links', ['Link', 'Unlink']);
+                config.linkShowTargetTab = true;
             }
 
             // activate tables
-            if (this.options.table === true) {
-                config.toolbar.push({
-                    name: 'insert',
-                    items: ['Table']
-                });
+            if (!this.options.table) {
+                toolbarBuilder.remove('insert', ['Table']);
             }
 
             // set height
@@ -138,15 +126,12 @@ define([], function() {
                 config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
             }
 
-            // Styles
-            if (!!config.stylesSet && config.stylesSet.length > 0) {
-                config.toolbar.push({
-                    name: 'styles',
-                    items: ['Styles']
-                });
+            // deactivate styles
+            if (!config.stylesSet || 0 === config.stylesSet.length) {
+                toolbarBuilder.remove('styles', ['Styles']);
             }
 
-            config.toolbar.push({name: 'code', items: ['Source']});
+            config.toolbar = toolbarBuilder.get();
 
             delete config.initializedCallback;
             delete config.baseUrl;
@@ -170,29 +155,38 @@ define([], function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.editorContent = null;
 
-            this.startEditor();
-            this.data = this.editor.getData();
-
-            this.bindChangeEvents();
-
-            this.editor.on('instanceReady', function() {
-                // bind class to editor
-                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
-                this.sandbox.emit(INITIALIZED.call(this));
-            }.bind(this));
-
-            this.editor.on('blur', function() {
-                this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
-            }.bind(this));
+            if (!!this.options.autoStart) {
+                this.startEditor();
+            } else {
+                this.renderStartTemplate();
+            }
 
             this.sandbox.on(START.call(this), this.startEditor.bind(this));
             this.sandbox.on(DESTROY.call(this), this.destroyEditor.bind(this));
         },
 
+        renderStartTemplate: function() {
+            var $content = $(this.$el.val()),
+                text = $content.text(),
+                $trigger = $('<textarea class="form-element ckeditor-preview">' + text + '</textarea>');
+
+            this.$el.parent().append($trigger);
+
+            $trigger.one('focus', function(e) {
+                $(e.currentTarget).remove();
+
+                this.startEditor();
+
+                this.editor.once('instanceReady', function() {
+                    this.editor.focus();
+                }.bind(this));
+            }.bind(this));
+        },
+
         /**
          * Binds Events to emit a custom changed event
          */
-        bindChangeEvents: function() {
+        bindEditorEvents: function() {
             this.editor.on('dialogShow', function() {
                 this.sandbox.dom.addClass(this.sandbox.dom.parent('.cke_dialog_ui_button_ok'), 'sulu_ok_button');
                 this.sandbox.dom.addClass(this.sandbox.dom.parent('.cke_dialog_ui_button_cancel'), 'sulu_cancel_button');
@@ -207,6 +201,16 @@ define([], function() {
                 if (this.data !== this.editor.getData()) {
                     this.emitChangedEvent();
                 }
+            }.bind(this));
+
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+                this.sandbox.emit(INITIALIZED.call(this));
+            }.bind(this));
+
+            this.editor.on('blur', function() {
+                this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
             }.bind(this));
         },
 
@@ -225,17 +229,24 @@ define([], function() {
             if (!!this.editorContent) {
                 this.editor.setData(this.editorContent);
             }
+
+            this.data = this.editor.getData();
+            this.bindEditorEvents();
         },
 
         destroyEditor: function() {
             if (!!this.editor) {
                 this.editorContent = this.editor.getData();
-                if (this.editor.window.getFrame()) {
+                if (!!this.editor.window && !!this.editor.window.getFrame()) {
                     this.editor.destroy();
                 } else {
                     delete CKEDITOR.instances[this.editor.name];
                 }
             }
+        },
+
+        destroy: function() {
+            this.destroyEditor();
         }
     };
 

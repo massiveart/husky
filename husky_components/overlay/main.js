@@ -696,6 +696,7 @@ define([], function() {
         renderLanguageChanger: function(slide) {
             var $element = this.sandbox.dom.createElement('<div/>');
 
+            this.sandbox.dom.addClass(this.overlay.$el, 'has-language-chooser');
             this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
                 '<div class="' + constants.languageChangerClass + '"/>'
             );

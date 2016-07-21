@@ -19,10 +19,12 @@
             "dropzone": "bower_components/dropzone/dropzone",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
             "ckeditor" : "bower_components/ckeditor/ckeditor",
+            "sprintf" : "bower_components/sprintf/sprintf",
             "jqueryAdapter" : "bower_components/ckeditor/adapters/jquery",
             "jquery-minicolors" : "bower_components/jquery-minicolors/jquery.minicolors",
             "husky": "lib/husky",
             "type/husky-select": "husky_components/select/select-type",
+            "type/husky-auto-complete": "husky_components/auto-complete/auto-complete-type",
             "type/husky-input": "husky_components/input/input-type",
             "type/url-input": "husky_components/url-input/url-input",
 
@@ -135,6 +137,7 @@
             "husky-validation",
             "globalize_lib",
             "ckeditor",
+            "sprintf",
             "jqueryAdapter",
             "html.sortable",
             "uri-template",
@@ -142,6 +145,7 @@
             "dropzone",
             "tagsManager",
             "type/husky-select",
+            "type/husky-auto-complete",
             "type/husky-input",
             "type/url-input",
 

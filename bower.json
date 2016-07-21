@@ -6,7 +6,7 @@
     "backbone": "1.1.*",
     "underscore": "~1.5.1",
     "aura": "https://github.com/massiveart/aura.git#master",
-    "husky-validation": "0.7.*",
+    "husky-validation": "develop",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
     "typeahead.js": "^0.10.5",
@@ -16,7 +16,8 @@
     "jquery-minicolors": "~2.1.6",
     "bootstrap-datepicker": "~1.3.0",
     "ckeditor": "4.4.7",
-    "html.sortable": "~0.3.0"
+    "html.sortable": "~0.3.0",
+    "sprintf": "^1.0.3"
   },
   "resolutions": {
     "jquery": "~1.10.x"

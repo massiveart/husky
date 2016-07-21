@@ -1,5 +1,31 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
+    * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
+    * ENHANCEMENT #691 Added badge colors
+    * ENHANCEMENT #684 Added parameter 'valueKey' to auto-complete-list
+    * FEATURE     #681 add auto-complete form mapper validation type
+    * BUGFIX      #680 reseted navigation width after collapse
+    * BUGFIX      #673 changed markup of search icon (fixes redirect bug)
+    * ENHANCEMENT #671 Updated to current version of husky-validation
+    * BUGFIX      #670 Fixed Globalizing timing issue
+    * FEATURE     #661 Added second dot in column navigation for draft
+    * FEATURE     #664 Collapse dropdown button without visible items in list
+    * FEATURE     #636 Added possibility to display small labels
+    * BUGFIX      #666 Added auto-start on focus
+    * FEATURE     #662 Added select field to editable inputs
+    * FEATURE     #654 Added util function sprintf
+    * FEATURE     #653 Added differentiation betweeen available and active toolbar
+    * FEATURE     #658 Fixed initialization of datagrid decorator
+    * FEATURE     #654 Added util function sprintf
+    * BUGFIX      #652 Added hide tabs for only one single tab
+    * ENHANCEMENT #651 Added auto-start option for ckeditor component
+    * FEATURE     #643 Added ckeditor plugin registry
+    * BUGFIX      #644 Fixed scrollable tabs
+    * FEATURE     #641 Added preselect callback for toolbar button
+    * BUGFIX      #633 Removed bound effect respectively additional scrollbar
+
 * 0.21.1 (2016-07-14)
     * HOTFIX      #688 fixed child order in datagrid
     * HOTFIX      #670 workaround for ie dorpdown issue

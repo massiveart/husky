@@ -354,7 +354,15 @@ define(function() {
                         this.items[button].dropdownItems = items;
                         createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
                         if (!!itemId) {
-                            this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                            changeButton.call(this, this.items[button].id, itemId).then(function(item) {
+                                if (!this.items[button].dropdownOptions
+                                    || typeof this.items[button].dropdownOptions.preSelectedCallback !== 'function'
+                                ) {
+                                    return;
+                                }
+
+                                this.items[button].dropdownOptions.preSelectedCallback(item);
+                            }.bind(this));
                         }
                     } else {
                         deleteDropdown.call(this, this.items[button]);
@@ -377,11 +385,16 @@ define(function() {
                 return;
             }
 
-            var button = this.items[buttonId];
+            var button = this.items[buttonId],
+                deferred = $.Deferred();
 
             button.initialized.then(function() {
                 // update icon
                 var index = getItemIndexById.call(this, itemId, button);
+                if (index === true) {
+                    index = 0;
+                }
+
                 changeMainListItem.call(this, button.$el, button.dropdownItems[index]);
                 this.sandbox.emit(ITEM_MARK.call(this), button.dropdownItems[index].id);
                 if (executeCallback === true || !!button.dropdownItems[index].callback
@@ -389,7 +402,11 @@ define(function() {
                 ) {
                     button.dropdownItems[index].callback();
                 }
+
+                deferred.resolve(button.dropdownItems[index]);
             }.bind(this));
+
+            return deferred.promise();
         },
 
         /**
@@ -517,7 +534,12 @@ define(function() {
          * @param $button
          */
         hideItem = function($button) {
+            var $list = $button.parent('.toolbar-dropdown-menu');
             this.sandbox.dom.addClass($button, 'hidden');
+
+            if ($list.length > 0) {
+                updateDropdownArrow.call(this, $list);
+            }
         },
 
         /**
@@ -525,7 +547,12 @@ define(function() {
          * @param $button
          */
         showItem = function($button) {
+            var $list = $button.parent('.toolbar-dropdown-menu');
             this.sandbox.dom.removeClass($button, 'hidden');
+
+            if ($list.length > 0) {
+                updateDropdownArrow.call(this, $list);
+            }
         },
 
         /**
@@ -585,8 +612,11 @@ define(function() {
                 visible;
             if (!!this.sandbox.dom.find('.dropdown-toggle', $list).length) {
                 // abort if disabled or dropdown-arrow wasn't clicked and but the onlyOnClickOnArrow option was true
-                if (!item || item.disabled ||
-                    (item.dropdownOptions.onlyOnClickOnArrow === true && !this.sandbox.dom.hasClass(event.target, 'dropdown-toggle'))) {
+                if (!item
+                    || item.disabled
+                    || (item.dropdownOptions.onlyOnClickOnArrow === true && !this.sandbox.dom.hasClass(event.target, 'dropdown-toggle'))
+                    || !countVisibleItemsInDropdown($list.children('.toolbar-dropdown-menu'))
+                ) {
                     return false;
                 }
 
@@ -656,8 +686,12 @@ define(function() {
                 $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null;
 
             // stop if loading or the dropdown gets opened
-            if (item.loading || (!!item.dropdownItems && item.dropdownOptions.onlyOnClickOnArrow !== true) ||
-                this.sandbox.dom.hasClass(event.target, 'dropdown-toggle')) {
+            if (item.loading || (
+                    !!item.dropdownItems
+                    && item.dropdownOptions.onlyOnClickOnArrow !== true
+                    && !!countVisibleItemsInDropdown($(event.currentTarget).children('.toolbar-dropdown-menu'))
+                ) || this.sandbox.dom.hasClass(event.target, 'dropdown-toggle')
+            ) {
                 return false;
             }
             hideDropdowns.call(this);
@@ -838,6 +872,21 @@ define(function() {
                 }
                 this.sandbox.dom.append($list, $item);
             }.bind(this));
+
+            updateDropdownArrow.call(this, $list);
+        },
+
+        countVisibleItemsInDropdown = function($list) {
+            return $list.children('li:not(.hidden)').length;
+        },
+
+        updateDropdownArrow = function($list) {
+            var $dropdownToggle = $list.siblings('.dropdown-toggle');
+            if (!!countVisibleItemsInDropdown($list)) {
+                $dropdownToggle.css('display', '');
+            } else {
+                $dropdownToggle.css('display', 'none');
+            }
         },
 
         /**
