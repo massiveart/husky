@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #694 prevent item select when ordering a column
+
 * 0.22.0 (2016-07-21)
     * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
