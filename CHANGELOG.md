@@ -2,6 +2,7 @@
 
 * dev-develop
     * BUGFIX      #687 fixed thumbnail rendering in datagrid
+    * BUGFIX      #694 prevent item select when ordering a column
 
 * 0.22.0 (2016-07-21)
     * ENHANCEMENT #692 fixed style bug on add button
