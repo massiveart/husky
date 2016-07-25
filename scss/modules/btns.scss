@@ -142,7 +142,6 @@ a.btn-black, a.btn-highlight {
 
 
 .addButton {
-    @extend .fa;
     border-radius: $borderRadius;
     display: inline-block;
     font-size: 12px;
@@ -150,11 +149,12 @@ a.btn-black, a.btn-highlight {
     background-color: $highlightColor;
     padding: 0 10px;
     height: 20px;
-    line-height: 18px;
+    line-height: 20px;
     vertical-align: middle;
     cursor: pointer;
 
     &:before {
+        @extend .fa;
         content: $fa-var-plus-circle;
         font-size: 12px;
         vertical-align: middle;
