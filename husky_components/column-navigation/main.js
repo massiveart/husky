@@ -743,13 +743,13 @@ define(function() {
                     if (!!data[this.options.publishedName]) {
                         this.sandbox.dom.append(
                             $container,
-                            '<span class="not-published col-icon"  title="' + this.sandbox.translate(this.options.tooltipTranslations.unpublished) + '"></span>'
+                            '<span class="published-icon col-icon" title="' + this.sandbox.translate(this.options.tooltipTranslations.unpublished) + '"></span>'
                         );
                     }
 
                     this.sandbox.dom.append(
                         $container,
-                        '<span class="not-published-state col-icon"  title="' + this.sandbox.translate(this.options.tooltipTranslations.unpublished) + '"></span>'
+                        '<span class="draft-icon col-icon" title="' + this.sandbox.translate(this.options.tooltipTranslations.unpublished) + '"></span>'
                     );
                 }
             }

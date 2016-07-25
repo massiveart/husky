@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #698 Created published icons for itembox
     * BUGFIX      #696 prevent propagation of key events in search component
 
 * 0.23.0 (2016-07-28)

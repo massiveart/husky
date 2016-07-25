@@ -80,7 +80,7 @@ define(function() {
                 return [
                     '<div class="white-box form-element" id="', this.ids.container, '">',
                     '    <div class="header">',
-                    '        <span class="', this.options.actionIcon ,' icon left action', !!this.options.hideAddButton ? ' hidden' : '', '" id="', this.ids.addButton, '"></span>',
+                    '        <span class="', this.options.actionIcon, ' icon left action', !!this.options.hideAddButton ? ' hidden' : '', '" id="', this.ids.addButton, '"></span>',
                     '        <span class="selected-counter', !!this.options.hideSelectedCounter ? ' hidden' : '', '">',
                     '            <span class="num">0</span><span> ', this.sandbox.translate(this.options.translations.elementsSelected) ,'</span>',
                     '        </span>',
@@ -469,8 +469,8 @@ define(function() {
                 var $item = this.sandbox.dom.createElement(templates.item.call(
                     this,
                     item[this.options.idKey],
-                    this.getItemContent(item))
-                );
+                    this.getItemContent(item)
+                ));
 
                 this.sandbox.dom.append(this.$list, $item);
 
