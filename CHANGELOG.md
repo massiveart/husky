@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #687 fixed thumbnail rendering in datagrid
+
 * 0.22.0 (2016-07-21)
     * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
