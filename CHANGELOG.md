@@ -7,6 +7,7 @@
     * ENHANCEMENT #698 Created published icons for itembox
     * BUGFIX      #701 Prefixed the slide class of the search component
     * BUGFIX      #696 prevent propagation of key events in search component
+    * BUGFIX      #695 added a locale field to the data navigation
 
 * 0.23.0 (2016-07-28)
     * FEATURE     #697 Created buttons for label component
