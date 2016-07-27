@@ -39,6 +39,48 @@
         cursor: pointer;
         font-size: 15px;
     }
+    .buttons {
+        position: absolute;
+        right: 53px;
+        top: 50%;
+        @include transform(translate(0, -50%));
+        height: 20px;
+    }
+    .button {
+        display: inline-block;
+        position: relative;
+        padding: 0 20px;
+        margin-left: 10px;
+        line-height: 20px;
+        text-align: center;
+        cursor: pointer;
+        background: $white;
+        border-radius: $borderRadius;
+        @include user-select(none);
+
+        & > div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            @include transform(translate(-50%, -50%));
+        }
+    }
+    .button.critical {
+        background: $red;
+        color: $white;
+    }
+
+    &.is-loading .buttons {
+        display: none;
+    }
+
+    .loader {
+        display: inline-block;
+        position: absolute;
+        right: 72px;
+        top: 50%;
+        @include transform(translate(0, -50%));
+    }
 }
 
 .husky-label-error,
