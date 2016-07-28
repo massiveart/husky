@@ -16,6 +16,9 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
     <style>
+        body {
+            overflow: auto;
+        }
         .container {
             padding: 30px 0 0 30px;
         }
@@ -41,15 +44,28 @@
                 <div id="errorLabel"></div>
             </div>
         </div>
-        <div class="grid-row">&nbsp;</div>
         <div class="grid-row">
             <div class="grid-col-6">
                 <div id="successLabel"></div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
                 <div id="warningLabelWithoutTitle"></div>
                 <div id="warningLabel"></div>
                 <div id="warningLabelLong"></div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
                 <div id="warningLabelSmall"></div>
                 <div id="warningLabelSmallWithoutClose"></div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <div id="warningLabelSmallWithButtons"></div>
+                <div id="warningLabelWithButtons"></div>
             </div>
         </div>
         <div class="grid-row">
@@ -159,6 +175,60 @@
                     description: 'This is a neat warning-label',
                     additionalLabelClasses: 'small',
                     hasClose: false
+                }
+            },
+            {
+                name: 'label@husky',
+                options: {
+                    el: '#warningLabelSmallWithButtons',
+                    type: 'WARNING',
+                    autoVanish: false,
+                    instanceName: 'warning-small-buttons',
+                    description: 'This is a neat warning-label',
+                    additionalLabelClasses: 'small',
+                    hasClose: false,
+                    buttons: [
+                        {
+                            id: 'critical-operation',
+                            title: 'Critical operation',
+                            skin: 'critical',
+                            onClick: function() {
+                                app.sandbox.emit('husky.label.warning-small-buttons.loading');
+                                _.delay(function() {
+                                    app.sandbox.emit('husky.label.warning-small-buttons.reset');
+                                }, 2000);
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'label@husky',
+                options: {
+                    el: '#warningLabelWithButtons',
+                    type: 'WARNING',
+                    autoVanish: false,
+                    instanceName: 'warning-buttons',
+                    description: 'This is a neat warning-label',
+                    hasClose: true,
+                    buttons: [
+                        {
+                            id: 'very-critical',
+                            title: 'Very critical',
+                            skin: 'critical',
+                            onClick: function() {
+                                app.logger.log('Very critical clicked');
+                            }
+                        },
+                        {
+                            id: 'more-critical',
+                            title: 'Even more critical',
+                            skin: 'critical',
+                            onClick: function() {
+                                app.logger.log('Even more critical clicked');
+                            }
+                        }
+                    ]
                 }
             },
             {
