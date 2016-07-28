@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.23.0 (2016-07-28)
     * FEATURE     #697 Created buttons for label component
     * BUGFIX      #687 fixed thumbnail rendering in datagrid
     * BUGFIX      #694 prevent item select when ordering a column
