@@ -121,6 +121,10 @@ define([], function() {
                 this.sandbox.dom.on(this.$find('input'), 'focus', this.expand.bind(this));
                 this.sandbox.dom.on(this.$find('input'), 'blur', this.collapse.bind(this));
             }
+
+            this.$el.on('keydown keyup', function(event) {
+                event.stopPropagation();
+            }.bind(this));
         },
 
         collapse: function() {
