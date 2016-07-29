@@ -106,10 +106,10 @@
 
             decorators = {
                 views: {
-                    table: decoratorTableView
+                    'table': decoratorTableView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination,
+                    'dropdown': decoratorDropdownPagination,
                     'infinite-scroll': infiniteScrollPagination
                 }
             },
@@ -481,9 +481,9 @@
             },
 
             /**
-             * used to add a data record
-             * @event husky.datagrid.record.add
-             * @param {Object} the data of the new record
+             * used to add multiple data records
+             * @event husky.datagrid.records.add
+             * @param {Object} the array of new records
              * @param callback {Function} callback to execute after process has been finished
              */
             RECORDS_ADD = function() {
@@ -498,6 +498,16 @@
             RECORD_REMOVE = function() {
                 return this.createEventName('record.remove');
             },
+
+            /**
+             * used to remove multiple data-record
+             * @event husky.datagrid.records.remove
+             * @param {String} array of ids of the records to be removed
+             */
+            RECORDS_REMOVE = function() {
+                return this.createEventName('records.remove');
+            },
+
 
             /**
              * listens on and merges one or more data-records with a given ones
@@ -515,6 +525,15 @@
              */
             RECORDS_SET = function() {
                 return this.createEventName('records.set');
+            },
+
+            /**
+             * used to get the currently displayed items
+             * @event husky.datagrid.records.get
+             * @param {Function} callback function receives array of records
+             */
+            RECORDS_GET = function() {
+                return this.createEventName('records.get');
             },
 
             /**
@@ -1526,8 +1545,10 @@
                 this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
                 this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
+                this.sandbox.on(RECORDS_REMOVE.call(this), this.removeRecordsHandler.bind(this));
                 this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
                 this.sandbox.on(RECORDS_SET.call(this), this.setRecordsHandler.bind(this));
+                this.sandbox.on(RECORDS_GET.call(this), this.getRecordsHandler.bind(this));
                 this.sandbox.on(NUMBER_SELECTIONS.call(this), this.updateSelectedCounter.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_SHOW.call(this), this.showMediumLoader.bind(this));
                 this.sandbox.on(MEDIUM_LOADER_HIDE.call(this), this.hideMediumLoader.bind(this));
@@ -1647,13 +1668,15 @@
              * Handles the record add event
              */
             addRecordHandler: function(recordData) {
-                if (!!this.gridViews[this.viewId].addRecord) {
-                    if (!!recordData[this.options.idKey]) {
-                        this.pushRecords([recordData]);
-                    }
-                    this.gridViews[this.viewId].addRecord(recordData, false);
-                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                if (!this.gridViews[this.viewId].addRecord) {
+                    return;
                 }
+                
+                if (!!recordData[this.options.idKey]) {
+                    this.pushRecords([recordData]);
+                }
+                this.gridViews[this.viewId].addRecord(recordData, false);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
             },
 
             /**
@@ -1663,29 +1686,48 @@
              * @param callback {Function} callback to execute after process has been finished
              */
             addRecordsHandler: function(records, callback) {
-                if (!!this.gridViews[this.viewId].addRecord) {
-                    this.sandbox.util.foreach(records, function(record) {
-                        if (!!record[this.options.idKey]) {
-                            this.pushRecords([record]);
-                            this.gridViews[this.viewId].addRecord(record, false);
-                        }
-                    }.bind(this));
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                if (!this.gridViews[this.viewId].addRecord) {
+                    return;
                 }
+                
+                this.sandbox.util.foreach(records, function(record) {
+                    if (!!record[this.options.idKey]) {
+                        this.pushRecords([record]);
+                        this.gridViews[this.viewId].addRecord(record, false);
+                    }
+                }.bind(this));
+                if (typeof callback === 'function') {
+                    callback();
+                }
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
             },
 
             /**
              * Handles the row remove event
              */
             removeRecordHandler: function(recordId) {
-                if (!!this.gridViews[this.viewId].removeRecord && !!recordId) {
+                if (!this.gridViews[this.viewId].removeRecord || !recordId) {
+                    return;
+                }
+                
+                this.gridViews[this.viewId].removeRecord(recordId);
+                this.removeRecordFromSelected(recordId);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+            },
+
+            /**
+             * Handles the row remove event
+             */
+            removeRecordsHandler: function(recordIds) {
+                if (!this.gridViews[this.viewId].removeRecord || !recordIds) {
+                    return;
+                }
+                
+                this.sandbox.util.foreach(recordIds, function(recordId) {
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.removeRecordFromSelected(recordId);
-                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
-                }
+                }.bind(this));
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
             },
 
             /**
@@ -1728,6 +1770,14 @@
 
                 this.rerenderView();
                 this.rerenderPagination();
+            },
+
+            /**
+             * Calls the given callback-function with all displayed records.
+             * @param {Array} records array of data-records
+             */
+            getRecordsHandler: function(callback) {
+                callback(this.sandbox.util.deepCopy(this.data.embedded));
             },
 
             /**
