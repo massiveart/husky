@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #698 Added responsive-width skin in overlay component
     * BUGFIX      #699 Made url comparison in navigation use url parts an not characters
     * ENHANCEMENT #698 Created published icons for itembox
     * BUGFIX      #701 Prefixed the slide class of the search component

@@ -4,7 +4,7 @@
 @import "compass/css3/transition";
 
 .husky-overlay-container {
-    width: $overlayContainerWidth;
+    width: $overlayContainerWidthSmall;
     border-radius: $borderRadius;
     display: inline-block;
     vertical-align: middle;
@@ -26,24 +26,44 @@
     }
 
     &.wide {
-        width: $overlayContainerWidthExtraWide;
+        width: $overlayContainerWidthMedium;
 
         .slides .slide {
-            width: $overlayContainerWidthExtraWide;
+            width: $overlayContainerWidthMedium;
 
             .overlay-footer {
-                width: $overlayContainerWidthExtraWide;
+                width: $overlayContainerWidthMedium;
+            }
+        }
+    }
+
+    &.responsive-width {
+        @media(min-width: 768px) {
+            &, .slides .slide, .slides .slide .overlay-footer {
+                width: $overlayContainerWidthMedium;
+            }
+        }
+
+        @media(min-width: 1024px) {
+            &, .slides .slide, .slides .slide .overlay-footer {
+                width: $overlayContainerWidthLarge;
+            }
+        }
+
+        @media(min-width: 1600px) {
+            &, .slides .slide, .slides .slide .overlay-footer {
+                width: $overlayContainerWidthExtraLarge;
             }
         }
     }
 
     &.dropzone {
-        width: $overlayContainerWidthExtraWide;
+        width: $overlayContainerWidthMedium;
         .slides {
             margin: 0;
             padding: 0;
             .slide {
-                width: $overlayContainerWidthExtraWide
+                width: $overlayContainerWidthMedium
             }
         }
         .overlay-header {
@@ -65,9 +85,6 @@
                 padding-top: 40px;
             }
         }
-        .overlay-content {
-            margin: 0;
-        }
     }
 
     .slides {
@@ -80,7 +97,7 @@
         .slide {
             display: inline-block;
             vertical-align: top;
-            width: $overlayContainerWidth;
+            width: $overlayContainerWidthSmall;
         }
     }
 }
@@ -129,7 +146,7 @@
     border-top: 1px solid $borderColor;
     text-align: center;
     border-radius: 0 0 $borderRadius $borderRadius;
-    width: $overlayContainerWidth;
+    width: $overlayContainerWidthSmall;
     position: absolute;
     bottom: 0;
     left: auto;
@@ -182,7 +199,6 @@
 .overlay-content {
     position: relative;
     white-space: normal;
-    margin: 20px;
 
     .message {
         padding: 10px 105px 40px;
@@ -203,6 +219,10 @@
         position: absolute;
         top: -60px;
         right: 0;
+    }
+
+    &.content-spacing {
+        margin: 20px;
     }
 }
 
