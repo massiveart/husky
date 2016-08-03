@@ -13,7 +13,7 @@
         color: #3e3e3e;
     }
 
-    &.slide {
+    &.search-slide {
       @include single-transition(width, $slideDuration);
     }
     &.slide-collapsed {

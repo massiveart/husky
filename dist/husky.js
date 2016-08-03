@@ -36358,7 +36358,7 @@ define('__component__$search@husky',[], function() {
             slide: false
         },
         constants = {
-            slideClass: 'slide',
+            slideClass: 'search-slide',
             slideCollapsedClass: 'slide-collapsed',
             slideExpandedClass: 'slide-expanded'
         },
