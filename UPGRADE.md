@@ -1,5 +1,12 @@
 # Upgrade
 
+## dev-develop
+
+### Thumbnail view in datagrid
+
+The thumbnail view in the datagrid got removed and is not supported
+anymore.
+
 ## 0.17.0
 
 ### DataNavigation events
