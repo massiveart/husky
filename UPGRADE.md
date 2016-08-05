@@ -2,6 +2,13 @@
 
 ## dev-develop
 
+### DataNavigation locale
+
+When the data navigation initializes it waits for a locale, which
+can be either passed via its options or with an event. The name
+of the introduced option is `locale`, the event is called
+`husky.data-navigation.set-locale`.
+
 ### Thumbnail view in datagrid
 
 The thumbnail view in the datagrid got removed and is not supported
