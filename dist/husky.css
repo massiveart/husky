@@ -12457,6 +12457,82 @@ label.husky-toggler-label ~ .input-description {
   margin: 10px 0 10px 0;
 }
 
+/* line 5, ../scss/modules/tiles.scss */
+.tiles-view {
+  margin: 0 -20px -20px 0;
+}
+/* line 10, ../scss/modules/tiles.scss */
+.tiles-view .tile,
+.tiles-view .add-new-tile {
+  width: 120px;
+  height: 120px;
+  display: inline-block;
+  margin: 0 20px 20px 0;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+/* line 22, ../scss/modules/tiles.scss */
+.tiles-view .tile {
+  background: #fff;
+  box-shadow: 0 0 10px -10px rgba(0, 0, 0, 0.1);
+  -moz-transition: box-shadow 200ms;
+  -o-transition: box-shadow 200ms;
+  -webkit-transition: box-shadow 200ms;
+  transition: box-shadow 200ms;
+}
+/* line 27, ../scss/modules/tiles.scss */
+.tiles-view .tile:hover {
+  box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.1);
+}
+/* line 32, ../scss/modules/tiles.scss */
+.tiles-view .add-new-tile {
+  -moz-transition: color 80ms, border-color 80ms;
+  -o-transition: color 80ms, border-color 80ms;
+  -webkit-transition: color 80ms, border-color 80ms;
+  transition: color 80ms, border-color 80ms;
+  color: #999;
+  border: 1px dashed #ccc;
+}
+/* line 35, ../scss/modules/tiles.scss */
+.tiles-view .add-new-tile .icon {
+  -moz-transition: color 80ms;
+  -o-transition: color 80ms;
+  -webkit-transition: color 80ms;
+  transition: color 80ms;
+  color: #ccc;
+}
+/* line 43, ../scss/modules/tiles.scss */
+.tiles-view .add-new-tile:hover {
+  color: #000;
+  border-color: #000;
+}
+/* line 46, ../scss/modules/tiles.scss */
+.tiles-view .add-new-tile:hover .icon {
+  color: #000;
+}
+/* line 52, ../scss/modules/tiles.scss */
+.tiles-view .icon {
+  font-size: 38px;
+  line-height: 38px;
+  padding: 20px 0 15px 0;
+  color: #ddd;
+}
+/* line 59, ../scss/modules/tiles.scss */
+.tiles-view .title, .tiles-view .description {
+  display: block;
+  font-size: 12px;
+  line-height: 20px;
+  margin: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* line 68, ../scss/modules/tiles.scss */
+.tiles-view .description {
+  color: #999;
+}
+
 /* line 1, ../scss/modules/badge.scss */
 .badge {
   vertical-align: middle;
@@ -12550,7 +12626,7 @@ label.husky-toggler-label ~ .input-description {
   color: #EA524E;
 }
 
-/* line 57, ../scss/husky.scss */
+/* line 58, ../scss/husky.scss */
 [class^="fa-"] {
   text-decoration: none;
 }

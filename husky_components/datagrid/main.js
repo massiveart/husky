@@ -44,9 +44,10 @@
 
     define([
         'husky_components/datagrid/decorators/table-view',
+        'husky_components/datagrid/decorators/tiles-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
         'husky_components/datagrid/decorators/infinite-scroll-pagination'
-    ], function(decoratorTableView, decoratorDropdownPagination, infiniteScrollPagination) {
+    ], function(decoratorTableView, decoratorTilesView, decoratorDropdownPagination, infiniteScrollPagination) {
 
         /* Default values for options */
 
@@ -106,7 +107,8 @@
 
             decorators = {
                 views: {
-                    'table': decoratorTableView
+                    table: decoratorTableView,
+                    tiles: decoratorTilesView
                 },
                 paginations: {
                     'dropdown': decoratorDropdownPagination,
@@ -1671,7 +1673,7 @@
                 if (!this.gridViews[this.viewId].addRecord) {
                     return;
                 }
-                
+
                 if (!!recordData[this.options.idKey]) {
                     this.pushRecords([recordData]);
                 }
@@ -1689,7 +1691,7 @@
                 if (!this.gridViews[this.viewId].addRecord) {
                     return;
                 }
-                
+
                 this.sandbox.util.foreach(records, function(record) {
                     if (!!record[this.options.idKey]) {
                         this.pushRecords([record]);
@@ -1709,7 +1711,7 @@
                 if (!this.gridViews[this.viewId].removeRecord || !recordId) {
                     return;
                 }
-                
+
                 this.gridViews[this.viewId].removeRecord(recordId);
                 this.removeRecordFromSelected(recordId);
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
@@ -1722,7 +1724,7 @@
                 if (!this.gridViews[this.viewId].removeRecord || !recordIds) {
                     return;
                 }
-                
+
                 this.sandbox.util.foreach(recordIds, function(recordId) {
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.removeRecordFromSelected(recordId);
@@ -2134,7 +2136,8 @@
                         // return if no page is passed or passed invalidly
                         if (!page || page > this.data.pages || page < 1) {
                             this.sandbox.logger.log("invalid page number or reached start/end!");
-                            return;
+                            def.resolve();
+                            return def;
                         }
                         // if no limit is passed keep current limit
                         if (!limit) {

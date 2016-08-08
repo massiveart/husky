@@ -1,0 +1,74 @@
+{
+    "_links": {
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/tiles"
+        }
+    },
+    "_embedded": {
+        "items": [
+            {
+                "id": "1",
+                "title": "Folder title 1",
+                "elementsCount": 100
+            },
+            {
+                "id": "2",
+                "title": "Folder title 2",
+                "elementsCount": 120
+            },
+            {
+                "id": "3",
+                "title": "Folder title 3",
+                "elementsCount": 130
+            },
+            {
+                "id": "4",
+                "title": "Folder title 4",
+                "elementsCount": 140
+            },
+            {
+                "id": "5",
+                "title": "Folder title 5",
+                "elementsCount": 150
+            },
+            {
+                "id": "6",
+                "title": "Folder title 6",
+                "elementsCount": 160
+            },
+            {
+                "id": "7",
+                "title": "Folder title 7",
+                "elementsCount": 170
+            },
+            {
+                "id": "8",
+                "title": "Folder title 8 with a very very long title",
+                "elementsCount": 180
+            },
+            {
+                "id": "9",
+                "title": "Folder title 9",
+                "elementsCount": 190
+            },
+            {
+                "id": "10",
+                "title": "Folder title 10",
+                "elementsCount": 200
+            },
+            {
+                "id": "11",
+                "title": "Folder title 11",
+                "elementsCount": 210
+            },
+            {
+                "id": "12",
+                "title": "Folder title 12",
+                "elementsCount": 220
+            }
+        ]
+    },
+    "total": 12,
+    "pages": 1,
+    "page": 1
+}
