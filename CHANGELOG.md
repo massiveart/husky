@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #708 Only show draft and publish icons in column navigation when page is no ghost
+
 * 0.24.0 (2016-08-08)
     * ENHANCEMENT #698 Added responsive-width skin in overlay component
     * ENHANCEMENT #702 Implemented error handling on column-navigation load
