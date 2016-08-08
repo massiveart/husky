@@ -11,8 +11,7 @@ require(['lib/husky'], function(Husky) {
     'use strict';
 
 
-    var app,
-        view, pagination,
+    var app, pagination,
         constants = {
             setData: {
                 fieldList: [
@@ -101,8 +100,7 @@ require(['lib/husky'], function(Husky) {
                         contentContainer: '#content',
                         highlightSelected: true,
                         croppedMaxLength: 5
-                    },
-                    thumbnail: {}
+                    }
                 },
                 sortable: true,
                 searchInstanceName: 'test',
@@ -118,68 +116,6 @@ require(['lib/husky'], function(Husky) {
                 actionCallback: function(item, data) {
                     app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
                 }
-            }
-        },
-
-        {
-            name: 'datagrid@husky',
-            options: {
-                url: 'http://husky.lo:7878/admin/api/datagrid',
-                paginationOptions: {
-                    dropdown: {
-                        limit: 4
-                    }
-                },
-                view: 'thumbnail',
-                viewOptions: {
-                    thumbnail: {
-                        large: true
-                    }
-                },
-                sortable: true,
-                searchInstanceName: 'test',
-                columnOptionsInstanceName: '',
-                el: '#datagrid2',
-                instanceName: 'grid2',
-                selectedCounter: true,
-                selectedCounterText: 'selected elements',
-                matchings: [
-                    {
-                        content: 'Content 1',
-                        width: "25%",
-                        name: "content1",
-                        editable: true,
-                        sortable: true,
-                        type: 'title',
-                        validation: {
-                            required: true
-                        }
-                    },
-                    {
-                        content: 'Content 2',
-                        width: "25%",
-                        name: "content2",
-                        editable: false,
-                        sortable: true,
-                        type: 'bytes',
-                        validation: {
-                            required: true
-                        }
-                    },
-                    {
-                        content: 'Content 3',
-                        width: "25%",
-                        name: "content3",
-                        type: 'thumbnails'
-                    },
-                    {
-                        content: 'Date',
-                        width: "25%",
-                        sortable: true,
-                        name: 'date',
-                        type: 'date'
-                    }
-                ]
             }
         },
         {
@@ -519,25 +455,6 @@ require(['lib/husky'], function(Husky) {
                     app.logger.log('Husky.Ui.DataGrid item action: ' + item, data);
                 }
             }
-        },
-        {
-            name: 'datagrid@husky',
-            options: {
-                url: 'http://husky.lo:7878/admin/api/datagrid',
-                view: 'thumbnail', //path is configured with require.config.paths (see above)
-                pagination: 'infinite-scroll',
-                paginationOptions: {
-                    'infinite-scroll': {
-                        scrollContainer: '#datagrid-infinite',
-                    }
-                },
-                columnOptionsInstanceName: '',
-                el: '#datagrid-infinite',
-                instanceName: 'datagrid-infinite',
-                matchings: 'http://husky.lo:7878/admin/api/datagrid/fields',
-                selectedCounter: true,
-                selectedCounterText: 'selected elements'
-            }
         }
     ]).then(function() {
         App = app;
@@ -583,19 +500,6 @@ require(['lib/husky'], function(Husky) {
                     content3: {alt: "lorempixel", thumb: "http://placehold.it/170x170"}
                 }
             ]);
-        });
-
-        $('#new-group').on('click', function() {
-            app.sandbox.emit('husky.datagrid.grid-thumbnails.record.add', {
-                id: 13,
-                title: 'A brand new collection',
-                mediaNumber: 0,
-                thumbnails: [
-                    {url: 'http://lorempixel.com/150/100/sports/x', title: 'Media title'},
-                    {url: 'http://lorempixel.com/150/100/sports/y', title: 'Media title'},
-                    {url: 'http://lorempixel.com/150/100/sports/z', title: 'Media title'}
-                ]
-            });
         });
 
         $('#get-from-data').on('click', function() {
@@ -651,13 +555,6 @@ require(['lib/husky'], function(Husky) {
 
         $('#save').on('click', function() {
             app.sandbox.emit('husky.datagrid.data.save');
-        });
-
-        view = 'thumbnail';
-        $('#change-view').on('click', function() {
-            var large = (Math.random() < 0.5) ? true : false;
-            app.sandbox.emit('husky.datagrid.view.change', view, {large: large});
-            view = (view === 'thumbnail') ? 'table' : 'thumbnail';
         });
 
         pagination = 'showall';

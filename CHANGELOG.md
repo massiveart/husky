@@ -1,5 +1,14 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * ENHANCEMENT #698 Added responsive-width skin in overlay component
+    * ENHANCEMENT #702 Implemented error handling on column-navigation load
+    * BUGFIX      #699 Made url comparison in navigation use url parts an not characters
+    * ENHANCEMENT #698 Created published icons for itembox
+    * BUGFIX      #701 Prefixed the slide class of the search component
+    * BUGFIX      #696 prevent propagation of key events in search component
+    * BUGFIX      #695 added a locale field to the data navigation
+
 * 0.23.0 (2016-07-28)
     * FEATURE     #697 Created buttons for label component
     * BUGFIX      #687 fixed thumbnail rendering in datagrid
@@ -7,6 +16,7 @@
 
 * 0.22.0 (2016-07-21)
     * ENHANCEMENT #692 fixed style bug on add button
+    * ENHANCEMENT #689 removed dead thumbnails view
     * BUGFIX      #686 removed "click," event from ckeditor (notice the ",")
     * BUGFIX      #685 navigation refactoring and made navigation history back sensitive
     * ENHANCEMENT #691 Added badge colors

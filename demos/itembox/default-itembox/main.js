@@ -21,7 +21,11 @@ define([], function() {
                 var id = Math.ceil(Math.random() * 1000000),
                     data = this.getData();
 
-                this.addItem({id: id, title: 'added'});
+                this.addItem({
+                    id: id,
+                    title: 'added',
+                    publishedState: false
+                });
 
                 data.push(id);
                 this.setData(data, false);

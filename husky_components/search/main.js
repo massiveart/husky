@@ -33,7 +33,7 @@ define([], function() {
             slide: false
         },
         constants = {
-            slideClass: 'slide',
+            slideClass: 'search-slide',
             slideCollapsedClass: 'slide-collapsed',
             slideExpandedClass: 'slide-expanded'
         },
@@ -121,6 +121,10 @@ define([], function() {
                 this.sandbox.dom.on(this.$find('input'), 'focus', this.expand.bind(this));
                 this.sandbox.dom.on(this.$find('input'), 'blur', this.collapse.bind(this));
             }
+
+            this.$el.on('keydown keyup', function(event) {
+                event.stopPropagation();
+            }.bind(this));
         },
 
         collapse: function() {

@@ -21,6 +21,7 @@
  * @param {String} [options.childrenLinkKey] - key of children link in object
  * @param {String} [options.showAddButton] - Indicates if add button should be rendered
  * @param {Object} [options.translates] Holds the translates
+ * @param {String} [options.locale] The locale option to send with each request
  * @param {Boolean} [options.globalEvents] Should global events be sent
  */
 define([
@@ -42,6 +43,7 @@ define([
             limit: 20,
             showAddButton: true,
             globalEvents: true,
+            locale: null,
             translates: {
                 noData: 'No Data',
                 title: 'Data',
@@ -176,6 +178,15 @@ define([
         },
 
         /**
+         * Setter for current locale
+         * @param {string} locale locale to set
+         * @event husky.data-navigation.content.set-locale
+         */
+        SET_LOCALE = function() {
+            return createEventName.call(this, 'set-locale');
+        },
+
+        /**
          * Navigation will be reloaded with current url
          * @event husky.data-navigation.content.reload
          */
@@ -201,10 +212,17 @@ define([
          */
         initialize: function() {
             this.currentView = null;
+            this.locale = null;
             this.cache = this.sandbox.cacheFactory.create();
             this.options = this.sandbox.util.extend(true, {}, defaultOptions, this.options);
             this.mainTpl = this.sandbox.util.template(templates.main());
             this.headerTpl = this.sandbox.util.template(templates.header());
+            this.whenLocaleReceived = $.Deferred();
+
+            if (!!this.options.locale) {
+                this.locale = this.options.locale;
+                this.whenLocaleReceived.resolve();
+            }
 
             this.render();
             this.bindCustomEvents();
@@ -213,17 +231,30 @@ define([
             this.sandbox.once('husky.loader.initialized', function() {
                 this.showLoader();
 
-                this.load()
-                    .then(function(data) {
-                        this.hideLoader();
-                        this.sandbox.emit(INITIALIZED.call(this));
+                this.whenLocaleReceived.then(function() {
+                    this.load()
+                        .then(function(data) {
+                            this.hideLoader();
+                            this.sandbox.emit(INITIALIZED.call(this));
 
-                        this.currentView = this.createView(data);
-                        this.updateHeader(data);
-                        this.storeData(data);
-                        this.appendView();
-                    }.bind(this));
+                            this.currentView = this.createView(data);
+                            this.updateHeader(data);
+                            this.storeData(data);
+                            this.appendView();
+                        }.bind(this));
+                }.bind(this));
             }.bind(this));
+        },
+
+        /**
+         * Sets the locale for the component and resolves the
+         * corresponding promise.
+         *
+         * @param {String} locale The locale to set
+         */
+        setLocale: function(locale) {
+            this.locale = locale;
+            this.whenLocaleReceived.resolve();
         },
 
         /**
@@ -357,6 +388,8 @@ define([
                 }
             }.bind(this));
 
+            this.sandbox.on(SET_LOCALE.call(this), this.setLocale.bind(this));
+
             this.sandbox.on(SELECT.call(this), function(id) {
                 this.showChildren(id);
             }.bind(this));
@@ -421,11 +454,11 @@ define([
             this.page = 1;
             this.loading = true;
 
-            return this.sandbox.util.load(this.getUrl(url))
-                .then(this.parse.bind(this))
+            return this.sandbox.util.load(this.getUrl(url), {
+                locale: this.locale
+            }).then(this.parse.bind(this))
                 .then(function(data) {
                     this.loading = false;
-
                     return data;
                 }.bind(this));
         },

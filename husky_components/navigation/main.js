@@ -548,7 +548,7 @@ define(function() {
                 if (!item || !item.action) {
                     return;
                 }
-                matchValue = this.sandbox.util.compareStrings(item.action, selectAction);
+                matchValue = this.sandbox.util.compareURIs(item.action, selectAction);
                 if (matchValue > maxMatchValue) {
                     matchItem = item;
                     maxMatchValue = matchValue;

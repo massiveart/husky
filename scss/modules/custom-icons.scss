@@ -59,3 +59,26 @@
 
 .fa-shadow-node:before { content: $fa-var-share; }
 .fa-internal-link:before { content: $fa-var-link; }
+
+.draft-icon,
+.published-icon {
+    display: inline-block;
+    border: 1px $white solid;
+    border-radius: 6px;
+    width: 11px;
+    height: 11px;
+    margin-top: 4px;
+}
+
+.draft-icon {
+    margin-right: 5px;
+    background-color: $infoColor;
+}
+
+.published-icon {
+    background-color: $green;
+}
+
+.published-icon + .draft-icon {
+    margin-left: -6px;
+}

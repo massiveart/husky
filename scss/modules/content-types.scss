@@ -5,8 +5,8 @@
 .sortable {
     .text-block {
 
-        .container,
-        .collapsed-container {
+        & > .container,
+        & > .collapsed-container {
             padding-left: 40px;
         }
 
@@ -86,8 +86,8 @@
         text-align: left;
     }
 
-    .container,
-    .collapsed-container{
+    & > .container,
+    & > .collapsed-container{
         padding: 20px;
         position: relative;
 
@@ -102,7 +102,7 @@
         }
     }
 
-    .collapsed-container {
+    & > .collapsed-container {
         color: $grayLight;
         cursor: pointer;
         padding-top: 10px;
@@ -167,10 +167,10 @@
     }
 
     &.collapsed {
-        .container {
+        & > .container {
             display: none;
         }
-        .collapsed-container {
+        & > .collapsed-container {
             display: block;
         }
     }
