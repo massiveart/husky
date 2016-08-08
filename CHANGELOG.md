@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.24.0 (2016-08-08)
     * ENHANCEMENT #698 Added responsive-width skin in overlay component
     * ENHANCEMENT #702 Implemented error handling on column-navigation load
     * BUGFIX      #699 Made url comparison in navigation use url parts an not characters

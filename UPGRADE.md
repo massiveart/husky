@@ -1,6 +1,6 @@
 # Upgrade
 
-## dev-develop
+## 0.24.0
 
 ### DataNavigation locale
 
