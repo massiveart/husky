@@ -42021,9 +42021,13 @@ define('__component__$column-navigation@husky',[],function() {
             var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item),
                 actionIcon = getActionIcon.call(this, data);
 
-            if (this.options.showActionIcon === true && actionIcon && !disabled) {
+            // show action icon only for non-ghost pages
+            if ((!data[this.options.typeName] || data[this.options.typeName].name !== 'ghost') &&
+                this.options.showActionIcon === true && actionIcon && !disabled
+            ) {
                 this.sandbox.dom.append($container, '<span class="' + actionIcon + ' action col-icon"></span>');
             }
+
             if (!!data[this.options.hasSubName] && (!disabled || !this.options.disabledChildren)) {
                 this.sandbox.dom.append($container, '<span class="fa-chevron-right arrow inactive col-icon"></span>');
             }
