@@ -1424,7 +1424,7 @@ define(function() {
          * @param event {Object} the event object
          */
         allSelectItemChangeHandler: function(event) {
-            if (this.data.total == 0) {
+            if (this.data.embedded.length == 0) {
                 this.sandbox.dom.prop(event.target, 'checked', false);
                 return false;
             }
