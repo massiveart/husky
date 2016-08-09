@@ -4,6 +4,7 @@
     * BUGFIX      #709 Removed action icon for ghost pages in column-navigation
     * ENHANCEMENT #700 added datagrid get-records and delete-records event
     * BUGFIX      #708 Only show draft and publish icons in column navigation when page is no ghost
+    * BUGFIX      #710 Fixed tooltip translations in column-navigation
 
 * 0.24.0 (2016-08-08)
     * ENHANCEMENT #698 Added responsive-width skin in overlay component
