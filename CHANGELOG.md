@@ -2,6 +2,7 @@
 
 * dev-develop
     * BUGFIX      #707 Added translations to titles in matrix
+    * ENHANCEMENT #711 Adjusted responsive overlay widths for masonry datagrid decorator
     * BUGFIX      #718 Made infinite scroll pagination add all records at once if possible
     * ENHANCEMENT #716 Made the reset to the "show all" only happen, when the datagrid was in the "show selected" state before
     * ENHANCEMENT #713 Removed overlay from dropzone and implemented own overlay-style for dropzone
