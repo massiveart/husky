@@ -96,11 +96,6 @@ $fadeDuration: 100ms;
 
     &.collapsed + .navigation-data-container.expanded {
         width: 250px;
-
-        .data-navigation-header,
-        .data-navigation-list-container {
-            opacity: 1;
-        }
     }
 
     &.disappeared.collapseIcon .navigation-close-icon {
@@ -609,12 +604,6 @@ li a.navigation-settings-icon {
     width: 200px;
     margin-left: 50px;
     height: 100%;
-
-    .data-navigation-header,
-    .data-navigation-list-container {
-        @include transition(opacity .2s ease-in-out);
-        opacity: 0;
-    }
 }
 
 //effects

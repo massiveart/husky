@@ -1508,20 +1508,32 @@
                 if (this.options.selectedCounter) {
                     this.sandbox.dom.on(this.$el,
                         'click',
-                        function(event) {
-                            this.sandbox.dom.stopPropagation(event);
-                            if (!this.gridViews[this.viewId].showSelected) {
-                                return;
-                            }
-
-                            this.show = !this.show;
-                            this.gridViews[this.viewId].showSelected(this.show);
-
-                            this.updateSelectedCounter();
-                        }.bind(this),
+                        this.toggleSelectedClickHandler.bind(this),
                         '.selected-elements .show-selected'
                     );
                 }
+            },
+
+            /**
+             * Handlers the click on the "show selected" and "show all" button.
+             *
+             * @param {Object} event The click event
+             */
+            toggleSelectedClickHandler: function(event) {
+                this.sandbox.dom.stopPropagation(event);
+                if (!this.gridViews[this.viewId].showSelected) {
+                    return;
+                }
+
+                this.show = !this.show;
+                this.gridViews[this.viewId].showSelected(this.show);
+                if (!!this.show && !!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                } else {
+                    this.rerenderPagination();
+                }
+
+                this.updateSelectedCounter();
             },
 
             unbindWindowResize: function() {
@@ -1833,6 +1845,9 @@
                         this.getSelectedItemIds().length === 0
                     ) {
                         this.show = false;
+                        if (!!this.gridViews[this.viewId].rendered) {
+                            this.gridViews[this.viewId].showSelected(false);
+                        }
                     }
 
                     if (!!this.show) {
