@@ -90,6 +90,7 @@ define(function() {
                 ghost: 'column-navigation.ghost',
                 shadow: 'column-navigation.shadow',
                 unpublished: 'public.unpublished',
+                publishedWithDraft: 'public.published-with-draft',
                 internalLink: 'public.internal-link',
                 externalLink: 'public.external-link'
             },
@@ -734,7 +735,7 @@ define(function() {
          * @param data - the item's data
          */
         renderLeftInfo: function($item, data) {
-            var $container = this.sandbox.dom.find('.' + constants.iconsLeftClass, $item);
+            var $container = this.sandbox.dom.find('.' + constants.iconsLeftClass, $item), tooltip;
             this.sandbox.dom.append($container, '<span class="fa-check pull-left marked-icon"></span>');
             if (!!this.options.showStatus) {
                 // link
@@ -756,17 +757,21 @@ define(function() {
                         this.sandbox.dom.append($container,
                             '<span class="fa-shadow-node col-icon"  title="' + this.sandbox.translate(this.options.tooltipTranslations.shadow) + '"></span>');
                     }
-                } else if (!data[this.options.publishedStateName]) {
+                }
+                // unpublished
+                if (!data[this.options.publishedStateName]) {
+                    tooltip = this.sandbox.translate(this.options.tooltipTranslations.unpublished);
                     if (!!data[this.options.publishedName]) {
+                        tooltip = this.sandbox.translate(this.options.tooltipTranslations.publishedWithDraft);
                         this.sandbox.dom.append(
                             $container,
-                            '<span class="published-icon col-icon" title="' + this.sandbox.translate(this.options.tooltipTranslations.unpublished) + '"></span>'
+                            '<span class="published-icon col-icon" title="' + tooltip + '"></span>'
                         );
                     }
 
                     this.sandbox.dom.append(
                         $container,
-                        '<span class="draft-icon col-icon" title="' + this.sandbox.translate(this.options.tooltipTranslations.unpublished) + '"></span>'
+                        '<span class="draft-icon col-icon" title="' + tooltip + '"></span>'
                     );
                 }
             }
