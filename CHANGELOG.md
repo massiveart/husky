@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.25.0 (2016-08-11)
     * BUGFIX      #709 Removed action icon for ghost pages in column-navigation
     * ENHANCEMENT #700 added datagrid get-records and delete-records event
     * BUGFIX      #708 Only show draft and publish icons in column navigation when page is no ghost
