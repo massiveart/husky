@@ -57,26 +57,6 @@
         }
     }
 
-    &.dropzone {
-        width: $overlayContainerWidthMedium;
-        .slides {
-            margin: 0;
-            padding: 0;
-            .slide {
-                width: $overlayContainerWidthMedium
-            }
-        }
-        .overlay-header {
-            display: none;
-        }
-        .overlay-content {
-            margin-bottom: 20px;
-        }
-        .overlay-footer {
-            display: none;
-        }
-    }
-
     &.alert {
         .overlay-header {
             height: 70px;

@@ -3,285 +3,361 @@
 // --------------------------------------------------
 
 .husky-dropzone {
-  $dropzoneHeight: 130px;
-  $transitionDuration: 300ms;
-  $previewItemWidth: 70px;
-  $smallHeight: 70px;
-  $dropzoneSmallFontSize: 18px;
+    $dropzoneHeight: 150px;
+    $transitionDuration: 300ms;
+    $previewItemWidth: 70px;
+    $smallHeight: 70px;
+    $dropzoneSmallFontSize: 18px;
+    $loaderAppearDuration: 150ms;
 
-  overflow: hidden;
-  position: relative;
-  top: 0px;
-  left: 0px;
-  padding-bottom: 20px;
-
-  width: 100%;
-  height: auto;
-  border: 1px dashed $borderColor;
-  border-radius: $borderRadius;
-  cursor: pointer;
-  @include single-transition(opacity, $transitionDuration);
-
-  .description {
-    text-align: center;
-    height: $dropzoneHeight;
-    position: absolute;
+    overflow: hidden;
+    position: relative;
     top: 0px;
     left: 0px;
+
     width: 100%;
-    z-index: 5;
-    @include single-transition(margin-top, $transitionDuration);
-
-    .icon {
-      color: $blue;
-      font-size: 72px;
-      line-height: 72px;
-      margin-bottom: 5px;
-      margin-top: 10px;
-    }
-    .title {
-      font-size: $reallyBigFontSize;
-      line-height: $reallyBigFontSize;
-    }
-    span {
-      display: block;
-    }
-  }
-
-  .upload-items {
-    height: $dropzoneHeight;
-    padding: 20px 0 0 20px;
-    position: relative;
-    z-index: 10;
-    @include clear-float;
-
-    .item {
-      width: $previewItemWidth;
-      height: 90px;
-      border: 1px solid $white;
-      background: $white;
-      border-radius: $borderRadiusSmall;
-      margin-right: 20px;
-      margin-bottom: 20px;
-      float: left;
-
-      .success-content {
-        display: none;
-      }
-      .loading-content {
-        padding-top: 20px;
-      }
-      .file-size {
-        text-align: center;
-        font-size: $smallestFontSize;
-        line-height: 10px;
-        color: $grayLight;
-        padding-top: 15px;
-        padding-bottom: 5px;
-        * {
-          font-weight: normal;
-        }
-      }
-      .progress {
-        width: 50px;
-        height: 6px;
-        margin: 0 auto;
-        background: $grayLighter;
-        border-radius: 3px;
-        overflow: hidden;
-        .bar {
-          height: 100%;
-          background: $blue;
-          width: 0%;
-        }
-      }
-      .icon {
-        height: 25px;
-        color: $grayLight;
-        font-size: 25px;
-        text-align: center;
-        display: block;
-        animation: ROTATE-ANIMATION 1s linear infinite;
-        -webkit-animation: ROTATE-ANIMATION 1s linear infinite;
-        -moz-animation: ROTATE-ANIMATION 1s linear infinite;
-        -o-animation: ROTATE-ANIMATION 1s linear infinite;
-      }
-      .image {
-        padding: 10px 10px 5px 10px;
-        height: 65px;
-        line-height: 45px;
-        text-align: center;
-        img {
-          vertical-align: bottom;
-          max-width: 100%;
-          max-height: 100%;
-        }
-      }
-      .tick {
-        text-align: center;
-        color: $grayLight;
-        font-size: 15px;
-        line-height: 15px;
-        display: block;
-      }
-
-      &.dz-success {
-        border-color: $borderColor;
-        background: transparent;
-        .success-content {
-          display: block;
-        }
-        .loading-content {
-          display: none;
-        }
-      }
-    }
-  }
-
-  // hover with file
-  &.dz-drag-hover {
-    opacity: 0.5;
-  }
-  // at least on file dropped
-  &.dropped {
-    padding-bottom: 0;
-    @include single-transition(padding, $transitionDuration);
+    height: auto;
+    border: 1px dashed $borderColor;
+    border-radius: $borderRadius;
+    @include single-transition(opacity, $transitionDuration);
 
     .description {
-      margin-top: -$dropzoneHeight - 20px;
-    }
-  }
+        text-align: center;
+        height: $dropzoneHeight;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10;
+        cursor: pointer;
+        @include single-transition(margin-top, $transitionDuration);
 
-  &.small {
-    padding-bottom: 0;
-    height: $smallHeight;
-    @include single-transition(height, $transitionDuration);
-
-    .addition {
-      display: none;
-    }
-    .description {
-      height: $smallHeight;
-
-      .icon {
-        font-size: 25px;
-        line-height: 25px;
-      }
-      .title {
-        font-size: $dropzoneSmallFontSize;
-        line-height: $dropzoneSmallFontSize;
-      }
-    }
-    .upload-items {
-      height: $smallHeight;
-    }
-
-    &.dropped {
-      height: $dropzoneHeight;
-    }
-  }
-
-  &.overlay {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    border: none;
-
-    .dropzone-container {
-      width: 200px;
-      height: 200px;
-      background-color: $white;
-      opacity: 0;
-      @include centerBlock;
-
-      border-radius: 50%;
-      overflow: hidden;
-
-      @include transition(transform 200ms, opacity 200ms);
-      @include transform(translate(-50%, -50%) scale(0.8));
-
-      .description {
-        width: initial;
-        height: initial;
-        @include centerBlock;
-
-        opacity: 1;
-        @include transition(opacity 100ms);
-
+        .icon {
+            color: $blue;
+            font-size: 72px;
+            line-height: 72px;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
         .title {
-          display: none;
+            font-size: $reallyBigFontSize;
+            line-height: $reallyBigFontSize;
         }
-
-        .addition {
-          color: $gray;
+        span {
+            display: block;
         }
-      }
+        * {
+            @include transition(opacity $transitionDuration);
+        }
+    }
 
-      .upload-items {
-        width: initial;
-        height: initial;
-        padding: 0;
-        @include centerBlock;
+    .upload-items {
+        height: $dropzoneHeight;
+        padding: 20px 0 0 20px;
+        position: relative;
+        z-index: 5;
+        @include clear-float;
 
         .item {
-          width: initial;
-          height: initial;
-          margin: 0;
-          border: none;
+            width: $previewItemWidth;
+            height: 90px;
+            border: 1px solid $white;
+            background: $white;
+            border-radius: $borderRadiusSmall;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            float: left;
 
-          .loading-content {
-            padding: 0;
-
-            .icon {
-              display: none;
+            .success-content {
+                display: none;
             }
-
+            .loading-content {
+                padding-top: 20px;
+            }
             .file-size {
-              padding-top: 0;
-              padding-bottom: 6px;
-              font-size: 14px;
-              line-height: 14px;
+                text-align: center;
+                font-size: $smallestFontSize;
+                line-height: 10px;
+                color: $grayLight;
+                padding-top: 15px;
+                padding-bottom: 5px;
+                * {
+                    font-weight: normal;
+                }
             }
-
             .progress {
-              width: 80px;
-              height: 8px;
-              border-radius: 4px;
+                width: 50px;
+                height: 6px;
+                margin: 0 auto;
+                background: $grayLighter;
+                border-radius: 3px;
+                overflow: hidden;
+                .bar {
+                    height: 100%;
+                    background: $blue;
+                    width: 0%;
+                }
             }
-          }
-
-          .success-content {
+            .icon {
+                height: 25px;
+                color: $grayLight;
+                font-size: 25px;
+                text-align: center;
+                display: block;
+            }
             .image {
-              display: none;
+                padding: 10px 10px 5px 10px;
+                height: 65px;
+                line-height: 45px;
+                text-align: center;
+                img {
+                    vertical-align: bottom;
+                    max-width: 100%;
+                    max-height: 100%;
+                }
             }
             .tick {
-              font-size: 72px;
-              line-height: 72px;
+                text-align: center;
+                color: $grayLight;
+                font-size: 15px;
+                line-height: 15px;
+                display: block;
             }
-          }
+
+            &.dz-success {
+                border-color: $borderColor;
+                .success-content {
+                    display: block;
+                }
+                .loading-content {
+                    display: none;
+                }
+            }
         }
-      }
     }
 
-    &:hover, &.dz-drag-hover, &.dropped {
-      .dropzone-container {
-        @include transform(translate(-50%, -50%) scale(1));
-        opacity: 0.8;
-      }
+    .dropzone-loader {
+        position: relative;
+        z-index: 9002;
+        display: none;
     }
 
+    // hover with file
     &.dz-drag-hover {
-      opacity: 1; // overwrite default
-      .dropzone-container {
-        border: 1px dashed $gray;
-      }
+        opacity: 0.5;
+    }
+    // at least on file dropped
+    &.dropped {
+        padding-bottom: 0;
+        @include single-transition(padding, $transitionDuration);
+
+        .description {
+            margin-top: -$dropzoneHeight - 20px;
+        }
+        .description * {
+            opacity: 0;
+        }
     }
 
-    &.dropped {
-      .description {
-        margin: 0; // overwrite
-        opacity: 0;
-      }
+    &.small {
+        padding-bottom: 0;
+        height: $smallHeight;
+        @include single-transition(height, $transitionDuration);
+
+        .addition {
+            display: none;
+        }
+        .description {
+            height: $smallHeight;
+
+            .icon {
+                font-size: 25px;
+                line-height: 25px;
+            }
+            .title {
+                font-size: $dropzoneSmallFontSize;
+                line-height: $dropzoneSmallFontSize;
+            }
+        }
+        .upload-items {
+            height: $smallHeight;
+        }
+
+        &.dropped {
+            height: $dropzoneHeight;
+        }
     }
-  }
+
+    &.overlay {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: none;
+
+        .dropzone-container {
+            width: 200px;
+            height: 200px;
+            background-color: $white;
+            opacity: 0;
+            @include centerBlock;
+
+            border-radius: 50%;
+            overflow: hidden;
+
+            @include transition(transform 200ms, opacity 200ms);
+            @include transform(translate(-50%, -50%) scale(0.8));
+
+            .description {
+                width: initial;
+                height: initial;
+                @include centerBlock;
+
+                opacity: 1;
+                @include transition(opacity 100ms);
+
+                .title {
+                    display: none;
+                }
+
+                .addition {
+                    color: $gray;
+                }
+            }
+
+            .upload-items {
+                width: initial;
+                height: initial;
+                padding: 0;
+                @include centerBlock;
+
+                .item {
+                    width: initial;
+                    height: initial;
+                    margin: 0;
+                    border: none;
+
+                    .loading-content {
+                        padding: 0;
+
+                        .icon {
+                            display: none;
+                        }
+
+                        .file-size {
+                            padding-top: 0;
+                            padding-bottom: 6px;
+                            font-size: 14px;
+                            line-height: 14px;
+                        }
+
+                        .progress {
+                            width: 80px;
+                            height: 8px;
+                            border-radius: 4px;
+                        }
+                    }
+
+                    .success-content {
+                        .image {
+                            display: none;
+                        }
+                        .tick {
+                            font-size: 72px;
+                            line-height: 72px;
+                        }
+                    }
+                }
+            }
+        }
+
+        &:hover, &.dz-drag-hover, &.dropped {
+            .dropzone-container {
+                @include transform(translate(-50%, -50%) scale(1));
+                opacity: 0.8;
+            }
+        }
+
+        &.dz-drag-hover {
+            opacity: 1; // overwrite default
+            .dropzone-container {
+                border: 1px dashed $gray;
+            }
+        }
+
+        &.dropped {
+            .description {
+                margin: 0; // overwrite
+                opacity: 0;
+            }
+        }
+    }
+
+    &.dropzone-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9000;
+        margin: 0;
+        padding: 20px;
+        border: none;
+        border-radius: 0;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: $black;
+            opacity: 0.8;
+            z-index: 9001;
+        }
+
+        .dropzone-container {
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            border-radius: 5px;
+            z-index: 9002;
+            border: 1px dashed $white;
+            overflow: auto;
+            @include transition(top $loaderAppearDuration);
+        }
+
+        .dropzone-container .description {
+            @include centerBlock;
+            display: inline-block;
+            width: auto;
+            color: $white;
+            .icon {
+                margin-top: 0;
+                color: $white;
+            }
+        }
+
+        .dropzone-loader {
+            display: block;
+            opacity: 0;
+            @include transition(opacity $loaderAppearDuration);
+        }
+
+        &.dropped {
+            .dropzone-loader {
+                opacity: 1;
+            }
+
+            .dropzone-container {
+                top: 80px;
+            }
+        }
+
+        &:hover, &.dz-drag-hover {
+            opacity: 1;
+        }
+    }
 }
