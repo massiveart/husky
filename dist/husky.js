@@ -33907,7 +33907,6 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.$loader = null;
                 this.$mediumLoader = null;
                 this.isLoading = false;
-                this.initialLoaded = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -33929,6 +33928,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         this.renderSelectedCounter();
                     }
                     this.loadAndEvaluateMatchings().then(function() {
+                        // merge dom-selected and option-preselected items
+                        this.preSelectItems();
                         this.loadAndRenderData();
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
@@ -33949,11 +33950,12 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 if (!!this.options.url) {
                     url = this.options.url;
 
-                    this.sandbox.logger.log('load data from url');
                     if (this.requestFields.length > 0) {
                         url += (url.indexOf('?') === -1) ? '?' : '&';
                         url += 'fields=' + this.requestFields.join(',');
                     }
+
+                    this.sandbox.logger.log('load data from url');
 
                     this.loading();
                     this.load({
@@ -34073,10 +34075,6 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * Renders the data of the datagrid
              */
             render: function() {
-                if (!this.initialLoaded) {
-                    this.preSelectItems();
-                    this.initialLoaded = true;
-                }
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
@@ -34177,6 +34175,10 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              */
             load: function(params) {
                 this.currentUrl = this.getUrl(params);
+
+                if (!params.data) params.data = {};
+                params.data['expand'] = this.getSelectedItemIds().join(',');
+
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
@@ -34808,9 +34810,11 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * @returns {Number|String} the index of the found record
              */
             getRecordIndexById: function(id) {
-                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.data.embedded[i].id === id) {
-                        return i;
+                if (!!this.data && !!this.data.embedded) {
+                    for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (this.data.embedded[i].id === id) {
+                            return i;
+                        }
                     }
                 }
 
