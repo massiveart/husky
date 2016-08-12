@@ -29532,7 +29532,6 @@ define('__component__$navigation@husky',[],function() {
             this.hidden = false;
             this.tooltipsEnabled = true;
             this.animating = false;
-            this.dataNavigationIsLoading = false;
             this.items = []; // array to save all navigation items
 
             // binding dom events
@@ -30075,10 +30074,8 @@ define('__component__$navigation@husky',[],function() {
         unCollapse: function(forced) {
             if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
                 if (forced) {
-                    if (!this.hasDataNavigation()) {
-                        // freeze width of parent so that the navigation overlaps the content
-                        this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
-                    }
+                    // freeze width of parent so that the navigation overlaps the content
+                    this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
                     this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
                 } else {
                     this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
@@ -30137,12 +30134,7 @@ define('__component__$navigation@husky',[],function() {
                 this.emitItemSelectEvent(extendedItem);
             }
 
-            if (!!this.hasDataNavigation()) {
-                this.removeDataNavigation();
-            }
-
             this.markItemSelected($selectItem);
-            this.refreshDataNavigation(extendedItem);
         },
 
         /**
@@ -30212,102 +30204,6 @@ define('__component__$navigation@husky',[],function() {
             this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
             this.sandbox.dom.width(this.$navigation, 0);
             this.hidden = true;
-        },
-
-        /**
-         * If there currently is a data navigation it gets removed. If the given item
-         * has a data navigation configured it gets created.
-         * @param itemData the item data
-         */
-        refreshDataNavigation: function(itemData) {
-            if (!!this.dataNavigationIsLoading) return;
-
-            if (!!this.hasDataNavigation()) {
-                this.removeDataNavigation();
-            }
-
-            if (!!itemData && !!itemData.dataNavigation) {
-                this.renderDataNavigation(itemData.dataNavigation);
-            }
-        },
-
-        /**
-         * Render data navigation and init with item
-         * @param options
-         */
-        renderDataNavigation: function(options) {
-            this.dataNavigationIsLoading = true;
-            this.collapse();
-
-            var $element = this.sandbox.dom.createElement('<div/>', {class: 'navigation-data-container'}), key;
-            this.sandbox.dom.append(this.$el, $element);
-
-            var componentOptions = {
-                el: $element,
-                url: options.url,
-                rootUrl: options.rootUrl
-            },
-                initializedEvent = 'husky.data-navigation.initialized';
-
-            // optional options
-            if (!!options.resultKey) {
-                componentOptions.resultKey = options.resultKey;
-            }
-            if (!!options.nameKey) {
-                componentOptions.nameKey = options.nameKey;
-            }
-            if (!!options.childrenLinkKey) {
-                componentOptions.childrenLinkKey = options.childrenLinkKey;
-            }
-            if (!!options.instanceName) {
-                componentOptions.instanceName = options.instanceName;
-                initializedEvent = 'husky.data-navigation.' + options.instanceName + '.initialized';
-            }
-            if (!!options.showAddBtn) {
-                componentOptions.showAddBtn = options.showAddBtn;
-            }
-            if (!!options.translates) {
-                componentOptions.translates = {};
-
-                for (key in options.translates) {
-                    componentOptions.translates[key] = this.sandbox.translate(options.translates[key]);
-                }
-            }
-
-            this.sandbox.dom.addClass(this.$el, 'data-navigation-opened');
-            this.sandbox.dom.width(this.$el, '');
-            this.sandbox.util.delay(function() {
-                $element.addClass('expanded');
-            }, 0);
-
-            this.sandbox.once(initializedEvent, function() {
-                this.dataNavigationIsLoading = false;
-            }.bind(this));
-
-            // init data-navigation
-            this.sandbox.start([{
-                name: 'data-navigation@husky',
-                options: componentOptions
-            }]);
-        },
-
-        /**
-         * Remove data navigation
-         */
-        removeDataNavigation: function() {
-            this.sandbox.dom.removeClass(this.$el, 'data-navigation-opened');
-
-            this.sandbox.stop(this.$find('.navigation-data-container'));
-
-            this.unCollapse();
-        },
-
-        /**
-         * Returns true if a data navigation is initialized
-         * @returns {boolean}
-         */
-        hasDataNavigation: function() {
-            return this.$find('.navigation-data-container').length > 0;
         }
     };
 });
@@ -34768,20 +34664,32 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 if (this.options.selectedCounter) {
                     this.sandbox.dom.on(this.$el,
                         'click',
-                        function(event) {
-                            this.sandbox.dom.stopPropagation(event);
-                            if (!this.gridViews[this.viewId].showSelected) {
-                                return;
-                            }
-
-                            this.show = !this.show;
-                            this.gridViews[this.viewId].showSelected(this.show);
-
-                            this.updateSelectedCounter();
-                        }.bind(this),
+                        this.toggleSelectedClickHandler.bind(this),
                         '.selected-elements .show-selected'
                     );
                 }
+            },
+
+            /**
+             * Handlers the click on the "show selected" and "show all" button.
+             *
+             * @param {Object} event The click event
+             */
+            toggleSelectedClickHandler: function(event) {
+                this.sandbox.dom.stopPropagation(event);
+                if (!this.gridViews[this.viewId].showSelected) {
+                    return;
+                }
+
+                this.show = !this.show;
+                this.gridViews[this.viewId].showSelected(this.show);
+                if (!!this.show && !!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                } else {
+                    this.rerenderPagination();
+                }
+
+                this.updateSelectedCounter();
             },
 
             unbindWindowResize: function() {
@@ -35093,6 +35001,9 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                         this.getSelectedItemIds().length === 0
                     ) {
                         this.show = false;
+                        if (!!this.gridViews[this.viewId].rendered) {
+                            this.gridViews[this.viewId].showSelected(false);
+                        }
                     }
 
                     if (!!this.show) {
@@ -38198,7 +38109,10 @@ define('__component__$toolbar@husky',[],function() {
                     }
 
                     // create title span
-                    title = (!!item.title && this.options.showTitle === true) ? item.title : '';
+                    title = '';
+                    if (!!item.title && (this.options.showTitle === true || item.showTitle === true)) {
+                        title = item.title;
+                    }
                     this.sandbox.dom.append($listItem, '<span class="title">' + title + '</span>');
 
                     // add dropdown-toggle element (hidden at default)

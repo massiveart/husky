@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #712 Removed data-navigation from navigation component
     * FEATURE     #706 Created tiles view for datagrid
 
 * 0.25.0 (2016-08-11)

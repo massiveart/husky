@@ -1262,7 +1262,10 @@ define(function() {
                     }
 
                     // create title span
-                    title = (!!item.title && this.options.showTitle === true) ? item.title : '';
+                    title = '';
+                    if (!!item.title && (this.options.showTitle === true || item.showTitle === true)) {
+                        title = item.title;
+                    }
                     this.sandbox.dom.append($listItem, '<span class="title">' + title + '</span>');
 
                     // add dropdown-toggle element (hidden at default)
