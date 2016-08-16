@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #714 Tabs and language Changer are now in a new section -> language Changer can be used without Tabs.
     * ENHANCEMENT #721 Improved cropping in tiles view and fixed dropzone issue when destroying
     * ENHANCEMENT #715 Display effective limit in dropdown-pagination decorator
     * ENHANCEMENT #715 Replace expand-icon with loader when loading children in datagrid
