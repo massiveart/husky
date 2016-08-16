@@ -2262,6 +2262,8 @@
              * @param recordId {Number|String}
              */
             loadChildren: function(recordId) {
+                var def = this.sandbox.data.deferred();
+
                 if (!!this.data.links.children) {
                     var template = this.sandbox.uritemplate.parse(this.data.links.children.href),
                         url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
@@ -2269,11 +2271,16 @@
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
                             this.addRecordsHandler(response._embedded[this.options.resultKey]);
+                            def.resolve();
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);
                         }.bind(this));
+                } else {
+                    def.resolve();
                 }
+
+                return def;
             },
 
             /**

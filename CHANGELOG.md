@@ -2,6 +2,8 @@
 
 * dev-develop
     * ENHANCEMENT #721 Improved cropping in tiles view and fixed dropzone issue when destroying
+    * ENHANCEMENT #715 Replace expand-icon with loader when loading children in datagrid
+    * ENHANCEMENT #715 Append currently selected items to request when loading data in datagrid
     * BUGFIX      #707 Added translations to titles in matrix
     * BUGFIX      #718 Made infinite scroll pagination add all records at once if possible
     * ENHANCEMENT #716 Made the reset to the "show all" only happen, when the datagrid was in the "show selected" state before

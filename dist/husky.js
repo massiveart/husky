@@ -32245,7 +32245,27 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param recordId {Number|String} the id of the parent to load the children for
          */
         loadChildren: function(recordId) {
-            this.datagrid.loadChildren.call(this.datagrid, recordId);
+            var $el = $('<div style="margin-right: -3px"/>'),
+                $icon = $(this.table.rows[recordId].$el).find('.' + constants.toggleIconClass);
+
+            // replace icon with loader while loading children
+            this.sandbox.dom.append($icon, $el);
+            this.sandbox.dom.removeClass($icon, constants.collapsedIcon);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $el,
+                        size: '8px',
+                        color: '#999999'
+                    }
+                }
+            ]);
+
+            this.datagrid.loadChildren.call(this.datagrid, recordId).then(function () {
+                this.sandbox.stop($el);
+            }.bind(this))
+
             this.table.rows[recordId].childrenLoaded = true;
         },
 
@@ -35432,6 +35452,8 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * @param recordId {Number|String}
              */
             loadChildren: function(recordId) {
+                var def = this.sandbox.data.deferred();
+
                 if (!!this.data.links.children) {
                     var template = this.sandbox.uritemplate.parse(this.data.links.children.href),
                         url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
@@ -35439,11 +35461,16 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
                             this.addRecordsHandler(response._embedded[this.options.resultKey]);
+                            def.resolve();
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);
                         }.bind(this));
+                } else {
+                    def.resolve();
                 }
+
+                return def;
             },
 
             /**
