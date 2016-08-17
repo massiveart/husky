@@ -1844,10 +1844,10 @@
                     if (!!this.gridViews[this.viewId] && !!this.gridViews[this.viewId].showSelected &&
                         this.getSelectedItemIds().length === 0
                     ) {
-                        this.show = false;
-                        if (!!this.gridViews[this.viewId].rendered) {
+                        if (this.show === true && !!this.gridViews[this.viewId].rendered) {
                             this.gridViews[this.viewId].showSelected(false);
                         }
+                        this.show = false;
                     }
 
                     if (!!this.show) {

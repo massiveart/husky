@@ -1712,11 +1712,6 @@ define(function() {
                 $items.hide();
             } else {
                 $items.show();
-
-                this.collapseAllChildren();
-                if (!!this.options.openPathToSelectedChildren) {
-                    this.openPathToSelectedChildren();
-                }
             }
         }
     };
