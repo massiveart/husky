@@ -19,7 +19,7 @@
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
- * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'dropzone', 'wide', 'responsive-width'
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide', 'responsive-width'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {Boolean} [options.displayHeader] Defines if overlay Header with title should be shown
  * @params {Boolean} [options.contentSpacing] Defines if there should be a spacing between overlay borders and content
