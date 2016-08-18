@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #717 Fixed bug with select all/ select none problems and changed design in matrix
     * BUGFIX      #748 Fixed itembox children remove without existing list
 
 * 0.27.0 (2016-11-03)

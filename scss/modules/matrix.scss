@@ -24,6 +24,17 @@
             margin: 0;
             border: none;
             white-space: nowrap;
+
+            > span:last-child{
+                display: none;
+                padding-left: 3px;
+            }
+        }
+
+        &.value:hover {
+            > span:last-child{
+                display: inline;
+            }
         }
 
         &.all {
