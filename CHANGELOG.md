@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #718 Made infinite scroll pagination add all records at once if possible
     * ENHANCEMENT #716 Made the reset to the "show all" only happen, when the datagrid was in the "show selected" state before
     * ENHANCEMENT #713 Removed overlay from dropzone and implemented own overlay-style for dropzone
     * ENHANCEMENT #712 Removed data-navigation from navigation component
