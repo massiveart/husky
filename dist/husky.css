@@ -6239,20 +6239,20 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 /* line 28, ../scss/modules/overlay.scss */
 .husky-overlay-container.wide {
-  width: 700px;
+  width: 720px;
 }
 /* line 31, ../scss/modules/overlay.scss */
 .husky-overlay-container.wide .slides .slide {
-  width: 700px;
+  width: 720px;
 }
 /* line 34, ../scss/modules/overlay.scss */
 .husky-overlay-container.wide .slides .slide .overlay-footer {
-  width: 700px;
+  width: 720px;
 }
 @media (min-width: 768px) {
   /* line 42, ../scss/modules/overlay.scss */
   .husky-overlay-container.responsive-width, .husky-overlay-container.responsive-width .slides .slide, .husky-overlay-container.responsive-width .slides .slide .overlay-footer {
-    width: 700px;
+    width: 720px;
   }
 }
 @media (min-width: 1024px) {
@@ -6264,7 +6264,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 @media (min-width: 1600px) {
   /* line 54, ../scss/modules/overlay.scss */
   .husky-overlay-container.responsive-width, .husky-overlay-container.responsive-width .slides .slide, .husky-overlay-container.responsive-width .slides .slide .overlay-footer {
-    width: 1360px;
+    width: 1420px;
   }
 }
 /* line 61, ../scss/modules/overlay.scss */
