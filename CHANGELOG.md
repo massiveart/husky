@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #719 Added isTabChangeAllowed option to tab component
     * BUGFIX      #707 Added translations to titles in matrix
     * BUGFIX      #718 Made infinite scroll pagination add all records at once if possible
     * ENHANCEMENT #716 Made the reset to the "show all" only happen, when the datagrid was in the "show selected" state before
