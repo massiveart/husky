@@ -29,6 +29,10 @@
              data-aura-data='[{"name":"Details","action":"details","id":"529f1f5b777f1"},{"name":"Permissions","action":"permissions","id":"529f1f5b7782f"},{"name":"Settings","action":"settings","id":"529f1f5b7782f"},{"name":"Utils","action":"utils","id":"529f1f5b7782f"}]'
                 data-aura-preselect="Permissions" data-aura-preselector="title"></div>
 
+        <h3>tabs with isTabChangeAllowed function</h3>
+
+        <div id="tabsWithChangeAllowedChecker"></div>
+
         <h3>tabs loaded by passing url with pre select event</h3>
         <div data-aura-component="tabs@husky"
              data-aura-url="http://husky.lo:7878/admin/api/tabs"
@@ -76,6 +80,29 @@
                         app.logger.log('triggered select item via pre select (manually)');
                         app.sandbox.emit('husky.tabs.contacts.item.clicked', event);
                     });
+
+                    var isTabChangeAllowed = function () {
+                        var allowed = $.Deferred();
+                        if (Math.floor(Math.random() * 2) >= 1) {
+                            app.logger.log('Tab change allowed!');
+                            allowed.resolve();
+                        } else {
+                            app.logger.log('Tab change not allowed!');
+                            allowed.fail();
+                        }
+                        return allowed;
+                    }
+
+                    app.sandbox.start([{
+                        name: 'tabs@husky',
+                        options: {
+                            el: $('#tabsWithChangeAllowedChecker'),
+                            url: 'http://husky.lo:7878/admin/api/tabs',
+                            preselect: 'Permissions',
+                            preselector: 'title',
+                            tabChangeAllowed: isTabChangeAllowed
+                        }
+                    }]);
                 });
 
                 $('#deactivate').on('click', function() {
