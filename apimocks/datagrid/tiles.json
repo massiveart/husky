@@ -48,7 +48,7 @@
             },
             {
                 "id": "9",
-                "title": "Folder title 9",
+                "title": "Folder title 9 with an even longer title. This one is really long.",
                 "elementsCount": 190
             },
             {
@@ -65,10 +65,20 @@
                 "id": "12",
                 "title": "Folder title 12",
                 "elementsCount": 220
+            },
+            {
+                "id": "13",
+                "title": "Foldertitle12hasatitlewhichisoneword.",
+                "elementsCount": 230
+            },
+            {
+                "id": "14",
+                "title": "Foldertitle14whichisjustonewordandveryveryverylongsoithastobecropped.",
+                "elementsCount": 230
             }
         ]
     },
-    "total": 12,
+    "total": 13,
     "pages": 1,
     "page": 1
 }
