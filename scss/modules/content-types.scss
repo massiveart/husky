@@ -339,11 +339,15 @@
                 line-height: 50px;
                 border-bottom: 1px solid $borderColor;
                 position: relative;
+                display: table;
+                width: 100%;
                 .icon {
                     cursor: move;
                     color: $black;
                     font-size: 15px;
                     padding-right: 10px;
+                    display: table-cell;
+                    width: 1px; // make cell fit content
                 }
                 img {
                     padding-top: 8px;
@@ -354,34 +358,59 @@
                 .num {
                     color: $grayLight;
                     padding-right: 15px;
+                    display: table-cell;
+                    width: 1px; // make cell fit content
                 }
 
-                a {
-                    text-decoration: none;
+                & > a, .item-content > a {
+                    display: table;
+                    width: 100%;
+                    &, & * {
+                        text-decoration: none;
+                    }
+
+                    .value, .title, &:hover .description {
+                        color: black;
+                    }
+
+                    & > * {
+                        display: table-cell;
+                        width: 1px;
+                    }
 
                     .value, .title {
-                        color: black;
+                        width: auto;
+                    }
+
+                    .description {
+                        width: 50%;
                     }
                 }
 
-                .value {
+                .value, .title {
                     color: $grayLight;
+                    white-space: normal;
+                }
+                .description {
+                    color: $grayLight;
+                    font-size: $smallFontSize;
                 }
                 .remove {
-                    position: absolute;
-                    top: 50%;
-                    right: -8px;
-                    margin-top: -20px;
+                    display: table-cell;
                     cursor: pointer;
-                    width: 40px;
-                    height: 40px;
-                    line-height: 40px;
+                    width: 50px;
+                    line-height: 50px;
                     background: $white;
                     text-align: center;
                     color: $black;
                 }
             }
         }
+    }
+
+    .item-content {
+        position: relative;
+        display: table-cell;
     }
 
     .footer {
