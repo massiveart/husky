@@ -2,6 +2,7 @@
 
 * dev-develop
     * ENHANCEMENT #721 Improved cropping in tiles view and fixed dropzone issue when destroying
+    * ENHANCEMENT #715 Display effective limit in dropdown-pagination decorator
     * ENHANCEMENT #715 Replace expand-icon with loader when loading children in datagrid
     * ENHANCEMENT #715 Append currently selected items to request when loading data in datagrid
     * BUGFIX      #707 Added translations to titles in matrix

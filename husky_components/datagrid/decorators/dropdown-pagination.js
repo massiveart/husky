@@ -286,7 +286,7 @@ define(function() {
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
-                description = this.data.embedded.length;
+                description = this.data.limit;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     desc: description,
                     text: translations.elementsPerPage,

@@ -32881,7 +32881,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
-                description = this.data.embedded.length;
+                description = this.data.limit;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     desc: description,
                     text: translations.elementsPerPage,
@@ -34197,7 +34197,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                 this.currentUrl = this.getUrl(params);
 
                 if (!params.data) params.data = {};
-                params.data['expand'] = this.getSelectedItemIds().join(',');
+                params.data['expandIds'] = this.getSelectedItemIds().join(',');
 
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)
@@ -35452,7 +35452,7 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
              * @param recordId {Number|String}
              */
             loadChildren: function(recordId) {
-                var def = this.sandbox.data.deferred();
+                var deferred = this.sandbox.data.deferred();
 
                 if (!!this.data.links.children) {
                     var template = this.sandbox.uritemplate.parse(this.data.links.children.href),
@@ -35461,16 +35461,17 @@ define('husky_components/datagrid/decorators/infinite-scroll-pagination',[],func
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
                             this.addRecordsHandler(response._embedded[this.options.resultKey]);
-                            def.resolve();
+                            deferred.resolve();
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);
+                            deferred.fail();
                         }.bind(this));
                 } else {
-                    def.resolve();
+                    deferred.resolve();
                 }
 
-                return def;
+                return deferred;
             },
 
             /**
