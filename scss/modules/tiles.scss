@@ -9,6 +9,7 @@
 
     .tile,
     .add-new-tile {
+        position: relative;
         width: 120px;
         height: 120px;
         display: inline-block;
@@ -57,15 +58,24 @@
     }
 
     .title, .description {
+        position: absolute;
         display: block;
+        width: 100%;
         font-size: $smallFontSize;
-        line-height: 20px;
-        margin: 0 5px;
-        white-space: nowrap;
-        overflow: hidden;
+        padding: 0 8px;
+    }
+
+    .title {
+        bottom: 28px;
+        line-height: 15px;
     }
 
     .description {
+        position: absolute;
+        bottom: 5px;
         color: $grayLight;
+        white-space: nowrap;
+        overflow: hidden;
+        line-height: 20px;
     }
 }

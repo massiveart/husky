@@ -252,13 +252,15 @@ define([], function() {
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
-        
+
         /**
          * Handler which gets called when the component gets destroyed.
          */
         destroy: function() {
             this.sandbox.stop(this.$loader);
             $('body').off('.dropzone' + this.options.instanceName);
+            this.dropzone.destroy();
+            this.$dropzone.remove();
         },
 
         /**
