@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #726 Added singleMarkable option and get-marked event
     * HOTFIX      #725 Added locale to pagination request of data-navigation
 
 * 0.25.0 (2016-08-11)
