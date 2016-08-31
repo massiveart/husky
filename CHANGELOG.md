@@ -8,6 +8,7 @@
     * ENHANCEMENT #713 Removed overlay from dropzone and implemented own overlay-style for dropzone
     * ENHANCEMENT #712 Removed data-navigation from navigation component
     * FEATURE     #706 Created tiles view for datagrid
+    * FEATURE     #705 Added placeholder option to ckeditor component
 
 * 0.25.0 (2016-08-11)
     * BUGFIX      #709 Removed action icon for ghost pages in column-navigation

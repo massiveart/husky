@@ -28,7 +28,8 @@ define([], function() {
             table: true,
             link: true,
             pasteFromWord: true,
-            autoStart: true
+            autoStart: true,
+            placeholder: ''
         },
 
         /**
@@ -145,6 +146,8 @@ define([], function() {
             delete config.link;
             delete config.table;
             delete config.maxHeight;
+            delete config.autoStart;
+            delete config.placeholder;
 
             return config;
         };
@@ -168,8 +171,15 @@ define([], function() {
         renderStartTemplate: function() {
             var $content = $(this.$el.val()),
                 text = $content.text(),
-                $trigger = $('<textarea class="form-element ckeditor-preview">' + text + '</textarea>');
+                $trigger = $(
+                    [
+                        '<textarea class="form-element ckeditor-preview" placeholder="', this.options.placeholder, '">',
+                        text,
+                        '</textarea>'
+                    ].join('')
+                );
 
+            this.$el.hide();
             this.$el.parent().append($trigger);
 
             $trigger.one('focus', function(e) {
@@ -224,8 +234,12 @@ define([], function() {
 
         startEditor: function() {
             var config = getConfig.call(this);
-            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
 
+            if (!this.options.autoStart) {
+                this.$el.show();
+            }
+
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
             if (!!this.editorContent) {
                 this.editor.setData(this.editorContent);
             }
@@ -249,5 +263,4 @@ define([], function() {
             this.destroyEditor();
         }
     };
-
 });
