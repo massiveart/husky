@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #727 Added isTabChangeAllowed option to tab component
     * HOTFIX      #726 Added singleMarkable option and get-marked event
     * HOTFIX      #725 Added locale to pagination request of data-navigation
 
