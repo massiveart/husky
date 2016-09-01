@@ -45,6 +45,13 @@
     }
 
     &.dropdowns {
+        .dropdown-menu {
+            margin-top: 5px;
+        }
+        .dropdown-toggle::after {
+            margin-left: 12px;
+        }
+
         .pagination-loader {
             padding-top: 5px;
         }
