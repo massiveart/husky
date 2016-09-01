@@ -115,10 +115,31 @@
     }
 }
 
-.overlay-tabs {
+.overlay-subheader {
     background: $white;
     padding: 0 20px;
     border-top: 1px solid $grayLightMedium2;
+    width: 100%;
+    position: relative;
+
+    .language-changer,
+    .language-changer-frame {
+        width: 80px;
+        margin: 10px 0;
+        top: 0;
+        position: absolute;
+        right: 20px;
+    }
+
+    .language-changer {
+        &-frame {
+            right: 10px;
+        }
+
+        &-corrector {
+            height: 51px;
+        }
+    }
 }
 
 .overlay-footer {
@@ -192,13 +213,6 @@
             text-align: left;
             padding: 10px;
         }
-    }
-
-    .language-changer {
-        width: 80px;
-        position: absolute;
-        top: -60px;
-        right: 0;
     }
 
     &.content-spacing {
