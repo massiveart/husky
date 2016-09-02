@@ -37795,7 +37795,7 @@ define('__component__$toolbar@husky',[],function() {
          * @param itemId {Number|String} the id of the item
          */
         uniqueMarkItem = function(itemId) {
-            if (!!this.items[itemId] && !!this.items[itemId].parentId) {
+            if (!!this.items[itemId] && !!this.items[itemId].parentId && !this.items[itemId].disabled) {
                 // unmark all items with the same parent
                 this.sandbox.util.each(this.items, function(id, item) {
                     if (item.parentId === this.items[itemId].parentId) {
@@ -43411,7 +43411,6 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide', 'responsive-width'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
- * @params {Boolean} [options.displayHeader] Defines if overlay Header with title should be shown
  * @params {Boolean} [options.contentSpacing] Defines if there should be a spacing between overlay borders and content
  * @params {String} [options.type] The type of the overlay ('normal' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
@@ -43426,6 +43425,7 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
  * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
  * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submitted
+ * @params {Boolean} [options.slides[].displayHeader] callback which gets executed after the overlay gets submitted
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
  * @params {Boolean} [options.slides[].okInactive] If true all ok-buttons start deactivated
@@ -43460,7 +43460,6 @@ define('__component__$overlay@husky',[], function() {
             backdropClose: true,
             skin: '',
             supportKeyInput: true,
-            displayHeader: true,
             contentSpacing: true,
             propagateEvents: true,
             type: 'normal',
@@ -43474,6 +43473,7 @@ define('__component__$overlay@husky',[], function() {
             index: -1,
             title: '',
             subTitle: null,
+            displayHeader: true,
             message: '',
             closeCallback: null,
             cancelCallback: null,
@@ -44064,7 +44064,7 @@ define('__component__$overlay@husky',[], function() {
                     subTitle: !!this.slides[slide].subTitle ? this.slides[slide].subTitle : null,
                     index: this.slides[slide].index,
                     cssClass: this.slides[slide].cssClass,
-                    displayHeader: this.options.displayHeader,
+                    displayHeader: this.slides[slide].displayHeader,
                     spacingClass: (!!this.options.contentSpacing) ? 'content-spacing' : ''
                 })
             );

@@ -894,7 +894,7 @@ define(function() {
          * @param itemId {Number|String} the id of the item
          */
         uniqueMarkItem = function(itemId) {
-            if (!!this.items[itemId] && !!this.items[itemId].parentId) {
+            if (!!this.items[itemId] && !!this.items[itemId].parentId && !this.items[itemId].disabled) {
                 // unmark all items with the same parent
                 this.sandbox.util.each(this.items, function(id, item) {
                     if (item.parentId === this.items[itemId].parentId) {
