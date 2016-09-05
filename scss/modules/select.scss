@@ -165,6 +165,13 @@
         }
     }
 
+    &.white-border {
+        .dropdown-label {
+            background: $white;
+            border: 1px solid $grayLighter;
+        }
+    }
+
     &.action {
         .dropdown-label {
             background: $blue;

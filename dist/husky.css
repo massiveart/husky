@@ -10306,11 +10306,16 @@ a.btn-black, a.btn-highlight {
   background: #fff;
 }
 /* line 169, ../scss/modules/select.scss */
+.husky-select-container.white-border .dropdown-label {
+  background: #fff;
+  border: 1px solid #ccc;
+}
+/* line 176, ../scss/modules/select.scss */
 .husky-select-container.action .dropdown-label {
   background: #52B6CA;
   color: #fff;
 }
-/* line 175, ../scss/modules/select.scss */
+/* line 182, ../scss/modules/select.scss */
 .husky-select-container select {
   opacity: 0;
   position: absolute;
