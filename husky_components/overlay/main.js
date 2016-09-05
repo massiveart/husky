@@ -38,6 +38,7 @@
  * @params {Boolean} [options.slides[].displayHeader] callback which gets executed after the overlay gets submitted
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
+ * @params {String} [options.slides[].panelContent] The content to render in the panel container in the sub-header
  * @params {Boolean} [options.slides[].okInactive] If true all ok-buttons start deactivated
  * @params {String} [options.slides[].okDefaultText] The default text for ok buttons
  * @params {String} [options.slides[].cancelDefaultText] The default text for cancel buttons
@@ -92,6 +93,7 @@ define([], function() {
             okCallback: null,
             type: 'normal',
             data: '',
+            panelContent: '',
             tabs: null,
             okInactive: false,
             buttonsDefaultAlign: 'center',
@@ -121,7 +123,7 @@ define([], function() {
             overlayCancelSelector: '.overlay-cancel',
             overlayOtherButtonsSelector: '.overlay-button',
             subheaderClass: 'overlay-subheader',
-            languageChangerClass: 'language-changer'
+            panelClass: 'panel'
         },
 
         types = {
@@ -677,6 +679,10 @@ define([], function() {
                     $el = this.initSlideSkeleton(slide);
                     this.initButtons(slide);
                     this.setContent(slide);
+                    // render a language changer into the header if configured
+                    if (!!this.slides[slide].languageChanger) {
+                        this.renderLanguageChanger(slide);
+                    }
                     this.sandbox.dom.append(this.overlay.$slides, $el);
                 }
             }
@@ -699,14 +705,19 @@ define([], function() {
             this.overlay.slides[slide].$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.slides[slide].$el);
 
-            if (this.slides[slide].languageChanger !== null || this.slides[slide].tabs !== null) {
+            if (!!this.slides[slide].languageChanger || !!this.slides[slide].tabs || !!this.slides[slide].panelContent) {
                 this.overlay.slides[slide].$subheader = this.sandbox.dom.createElement('<div class="' + constants.subheaderClass + '"/>');
                 this.overlay.slides[slide].$header.after(this.overlay.slides[slide].$subheader)
             }
 
-            // render a language changer into the header if configured
-            if (this.slides[slide].languageChanger !== null) {
-                this.renderLanguageChanger(slide);
+            if (!!this.slides[slide].languageChanger || !!this.slides[slide].panelContent) {
+                this.overlay.slides[slide].$panel = $('<div class="' + constants.panelClass + '"/>');
+                this.overlay.slides[slide].$subheader.append(this.overlay.slides[slide].$panel);
+            }
+
+            if (!!this.slides[slide].panelContent) {
+                this.overlay.slides[slide].$panel.append('<div class="panel-content"/>');
+                this.overlay.slides[slide].$panel.find('.panel-content').append(this.slides[slide].panelContent);
             }
 
             // add classes for various styling
@@ -720,16 +731,8 @@ define([], function() {
          * Renders a language changer and places it within the header
          */
         renderLanguageChanger: function(slide) {
-            var $element = this.sandbox.dom.createElement('<div/>');
-
-            this.sandbox.dom.addClass(this.overlay.$el, 'has-language-chooser');
-            this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
-                (this.slides[slide].tabs !== null) ? '<div class="' + constants.languageChangerClass + '"/>' :
-                '<div class="' + constants.languageChangerClass + '-corrector"/>' +
-                '<div class="' + constants.languageChangerClass + '-frame"/>'
-            );
-            this.overlay.slides[slide].$subheader.append(this.overlay.slides[slide].$languageChanger);
-            this.overlay.slides[slide].$languageChanger.append($element);
+            var $element = this.sandbox.dom.createElement('<div class="language-changer"/>');
+            this.overlay.slides[slide].$panel.append($element);
 
             this.sandbox.start([
                 {
@@ -834,8 +837,8 @@ define([], function() {
          * Starts the tabs-component
          */
         startTabsComponent: function(slide) {
-            var $element = this.sandbox.dom.createElement('<div/>');
-            this.overlay.slides[slide].$subheader.append($element);
+            var $element = this.sandbox.dom.createElement('<div class="overlay-tabs"/>');
+            this.overlay.slides[slide].$subheader.prepend($element);
 
             this.sandbox.start([
                 {
