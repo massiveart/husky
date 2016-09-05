@@ -70,14 +70,18 @@
     .slides {
         position: relative;
         left: 0px;
-        @include single-transition(left, 500ms);
         white-space: nowrap;
         padding-bottom: 70px;
+        @include transition(left, 500ms);
 
         .slide {
             display: inline-block;
             vertical-align: top;
             width: $overlayContainerWidthSmall;
+        }
+
+        &.no-animation {
+            @include transition(none);
         }
     }
 }

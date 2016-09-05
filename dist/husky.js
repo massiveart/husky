@@ -43432,6 +43432,7 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {String} [options.slides[].okDefaultText] The default text for ok buttons
  * @params {String} [options.slides[].cancelDefaultText] The default text for cancel buttons
  * @params {String} [options.slides[].type] The type of the overlay ('normal', 'error' or 'warning')
+ * @params {Number} [options.startingSlide] The index of the slide to start with
  *
  * @params {Object} [options.slides[].languageChanger] If set language-changer will be displayed in the header
  * @params {Array} [options.slides[].languageChanger.locales] array of locale strings for the dropdown
@@ -43465,6 +43466,7 @@ define('__component__$overlay@husky',[], function() {
             type: 'normal',
             cssClass: '',
             slides: [],
+            startingSlide: null,
             top: null,
             left: null
         },
@@ -43905,6 +43907,10 @@ define('__component__$overlay@husky',[], function() {
 
                     this.insertOverlay(true);
 
+                    if (!!this.options.startingSlide) {
+                        this.slideTo(this.options.startingSlide, false);
+                    }
+
                     this.sandbox.start([{name: 'loader@husky', options: {el: this.$el.find('.loader'), size: '30px'}}]);
                 } else {
                     this.insertOverlay(true);
@@ -43942,7 +43948,7 @@ define('__component__$overlay@husky',[], function() {
                 slide = this.slides.length - 1;
             }
 
-            this.slideTo(slide);
+            this.slideTo(slide, true);
         },
 
         /**
@@ -43954,7 +43960,7 @@ define('__component__$overlay@husky',[], function() {
                 slide = 0;
             }
 
-            this.slideTo(slide);
+            this.slideTo(slide, true);
         },
 
         /**
@@ -43969,17 +43975,28 @@ define('__component__$overlay@husky',[], function() {
                 return;
             }
 
-            this.slideTo(slide);
+            this.slideTo(slide, true);
         },
 
         /**
          * slide to given number
          */
-        slideTo: function(slide) {
+        slideTo: function(slide, animated) {
             this.activeSlide = slide;
 
             var width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
-            this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * width + 'px');
+            animated = (typeof animated === 'undefined') ? true : animated;
+
+            if (!animated) {
+                this.overlay.$slides.addClass('no-animation');
+            }
+            this.overlay.$slides.css('left', '-' + slide * width + 'px');
+            if (!animated) {
+                // The following line makes sure the browsers apply the change in `left` before the class gets removed
+                // http://stackoverflow.com/questions/11131875/what-is-the-cleanest-way-to-disable-css-transition-effects-temporarily
+                this.overlay.$slides[0].offsetHeight;
+                this.overlay.$slides.removeClass('no-animation');
+            }
         },
 
         /**
