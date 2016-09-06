@@ -1,0 +1,54 @@
+{
+    "_links": {
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?pageSize=4&sortBy=content1&sortOrder=desc"
+        }
+    },
+    "_embedded": {
+        "items": [
+            {
+                "id": 1,
+                "status": 0,
+                "task": "Unpublish",
+                "schedule": "2014-02-19T22:04:40+0100",
+                "created": "Manually",
+                "creator": "Donald Duck"
+            },
+            {
+                "id": 2,
+                "status": 0,
+                "task": "Unpublish",
+                "schedule": "2015-02-19T22:04:40+0100",
+                "created": "Manually",
+                "creator": "Mickey Mouse"
+            },
+            {
+                "id": 3,
+                "status": 1,
+                "task": "Publish",
+                "schedule": "2016-02-19T22:04:40+0100",
+                "created": "From event",
+                "creator": "Dagobert Duck"
+            },
+            {
+                "id": 4,
+                "status": 2,
+                "task": "Send message",
+                "schedule": "2014-05-19T22:04:40+0100",
+                "created": "From event",
+                "creator": "Donald Duck"
+            },
+            {
+                "id": 5,
+                "status": 0,
+                "task": "Publish",
+                "schedule": "2016-03-19T22:04:40+0100",
+                "created": "Manually",
+                "creator": "Trick Duck"
+            }
+        ]
+    },
+    "total": 5,
+    "pages": 1,
+    "page": 1
+}

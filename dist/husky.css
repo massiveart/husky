@@ -10707,6 +10707,57 @@ a.btn-black, a.btn-highlight {
   display: block;
 }
 
+/* line 7, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table .custom-checkbox input + .icon {
+  border-color: #999;
+}
+/* line 11, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table tr.row {
+  border-bottom: 1px solid #ccc;
+}
+/* line 14, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table tr.row th, .husky-table.light .table tr.row td {
+  border-right: none;
+}
+/* line 20, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table thead .is-sortable {
+  color: #999;
+}
+/* line 24, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table thead tr {
+  background: transparent;
+}
+/* line 27, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table thead tr th {
+  font-weight: bold;
+}
+/* line 34, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table tbody tr.selected {
+  border-left: none;
+}
+/* line 38, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table tbody .row.even, .husky-table.light .table tbody .row.odd {
+  background: transparent;
+}
+/* line 43, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table .task-state {
+  width: 30px;
+  text-align: center;
+  margin-left: 10px;
+}
+/* line 48, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table .task-state.fa-check-circle {
+  color: #5DC774;
+}
+/* line 51, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table .task-state.fa-exclamation-triangle {
+  color: #E8CE33;
+}
+/* line 54, ../scss/modules/datagrid-table-view-styling.scss */
+.husky-table.light .table .task-state.fa-ban {
+  color: #EA524E;
+}
+
 /* line 5, ../scss/modules/datagrid-tiles.scss */
 .tiles-view {
   margin: 0 -20px -20px 0;
@@ -12769,7 +12820,7 @@ label.husky-toggler-label ~ .input-description {
   color: #EA524E;
 }
 
-/* line 59, ../scss/husky.scss */
+/* line 60, ../scss/husky.scss */
 [class^="fa-"] {
   text-decoration: none;
 }
