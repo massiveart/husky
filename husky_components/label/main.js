@@ -148,6 +148,14 @@ define(function() {
     },
 
     /**
+     * listens on and vanishes the label
+     * @event husky.label.[INSTANCE_NAME].vanish
+     */
+    VANISH = function() {
+        return createEventName.call(this, 'vanish');
+    },
+
+    /**
      * listens on and sets the label into loading state
      * @event husky.label.[INSTANCE_NAME].loading
      */
@@ -220,6 +228,7 @@ define(function() {
             this.sandbox.on(REFRESH.call(this), this.refresh.bind(this));
             this.sandbox.on(LOADING.call(this), this.setLoadingState.bind(this));
             this.sandbox.on(RESET.call(this), this.resetState.bind(this));
+            this.sandbox.on(VANISH.call(this), this.vanish.bind(this));
         },
 
         /**
@@ -345,8 +354,8 @@ define(function() {
                 this.label.$content = this.sandbox.dom.createElement(this.options.html);
             } else {
                 this.label.$content = this.sandbox.dom.createElement(this.sandbox.util.template(templates.basic, {
-                    title: this.options.title,
-                    description: this.options.description,
+                    title: this.sandbox.translate(this.options.title),
+                    description: this.sandbox.translate(this.options.description),
                     counter: this.options.counter,
                     hasClose: this.options.hasClose
                 }));

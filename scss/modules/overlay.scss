@@ -38,7 +38,7 @@
     }
 
     &.responsive-width {
-        @media(min-width: 768px) {
+        @media(min-width: 880px) {
             &, .slides .slide, .slides .slide .overlay-footer {
                 width: $overlayContainerWidthMedium;
             }
@@ -147,13 +147,41 @@
     .panel-content  {
         display: inline-block;
         vertical-align: middle;
+        height: 100%;
+        border-right: 1px solid $grayLightMedium2;
+        padding-right: 20px;
+        margin-right: 20px;
+
+        &::before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        & > * {
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
 
     .language-changer {
-        margin-left: 10px;
         display: inline-block;
-        vertical-align: middle;
         width: 80px;
+        height: 100%;
+
+        &::before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        & > * {
+            width: 100%;
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
 }
 
@@ -231,7 +259,7 @@
     }
 
     &.content-spacing {
-        margin: 20px;
+        padding: 20px;
     }
 }
 
@@ -239,20 +267,36 @@
     width: 100%;
     height: 100%;
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     z-index: 999;
     text-align: center;
-    white-space: nowrap;
-    overflow: auto;
-    background: rgba(0, 0, 0, 0.5);
 
-    &::before {
-        content: '';
-        display: inline-block;
+    .husky-overlay-scroll-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
         height: 100%;
-        vertical-align: middle;
-        margin-right: -0.25em;
+        overflow: auto;
+        white-space: nowrap;
+
+        &::before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em;
+        }
+    }
+
+    .husky-overlay-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
     }
 
     // workaround for overlapping bug:

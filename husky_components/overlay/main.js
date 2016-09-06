@@ -35,7 +35,7 @@
  * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
  * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
  * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submitted
- * @params {Boolean} [options.slides[].displayHeader] callback which gets executed after the overlay gets submitted
+ * @params {Boolean} [options.slides[].displayHeader] Boolean variable which determines wether or not the header gets rendered
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
  * @params {String} [options.slides[].panelContent] The content to render in the panel container in the sub-header
@@ -109,7 +109,7 @@ define([], function() {
             $header: null,
             $content: null,
             $languageChanger: null,
-            $subheader: null, //tabs component container
+            $subheader: null,
             tabs: null //contains tabs related data
         },
 
@@ -122,7 +122,6 @@ define([], function() {
             overlayOkSelector: '.overlay-ok',
             overlayCancelSelector: '.overlay-cancel',
             overlayOtherButtonsSelector: '.overlay-button',
-            subheaderClass: 'overlay-subheader',
             panelClass: 'panel'
         },
 
@@ -213,7 +212,15 @@ define([], function() {
                 '</div>'
             ].join(''),
             wrapper: [
-                '<div class="husky-overlay-wrapper"></div>'
+                '<div class="husky-overlay-wrapper">',
+                '   <div class="husky-overlay-scroll-wrapper"></div>',
+                '   <div class="husky-overlay-backdrop"></div>',
+                '</div>'
+            ].join(''),
+            subheader: [
+                '<div class="overlay-subheader">',
+                '   <div class="overlay-tabs"></div>',
+                '</div>'
             ].join(''),
             message: [
                 '<div class="message"><%= message %></div>'
@@ -482,6 +489,7 @@ define([], function() {
                 slides: []
             };
             this.$wrapper = null;
+            this.$backdrop = null;
             this.activeTab = null;
             this.slides = [];
             this.activeSlide = 0;
@@ -616,6 +624,7 @@ define([], function() {
          */
         initWrapper: function() {
             this.$wrapper = this.sandbox.dom.createElement(templates.wrapper);
+            this.$backdrop = this.$wrapper.find('.husky-overlay-backdrop');
             this.$wrapper.hide();
         },
 
@@ -642,7 +651,7 @@ define([], function() {
          * Inserts the overlay-element into the DOM
          */
         insertOverlay: function(emitEvent) {
-            this.sandbox.dom.append(this.$wrapper, this.overlay.$el);
+            this.$wrapper.find('.husky-overlay-scroll-wrapper').append(this.overlay.$el);
             this.sandbox.dom.append(this.$el, this.$wrapper);
             this.$wrapper.show();
 
@@ -706,12 +715,12 @@ define([], function() {
             this.overlay.slides[slide].$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.slides[slide].$el);
 
             if (!!this.slides[slide].languageChanger || !!this.slides[slide].tabs || !!this.slides[slide].panelContent) {
-                this.overlay.slides[slide].$subheader = this.sandbox.dom.createElement('<div class="' + constants.subheaderClass + '"/>');
+                this.overlay.slides[slide].$subheader = $(templates.subheader);
                 this.overlay.slides[slide].$header.after(this.overlay.slides[slide].$subheader)
             }
 
             if (!!this.slides[slide].languageChanger || !!this.slides[slide].panelContent) {
-                this.overlay.slides[slide].$panel = $('<div class="' + constants.panelClass + '"/>');
+                this.overlay.slides[slide].$panel =  $('<div class="' + constants.panelClass + '"/>');
                 this.overlay.slides[slide].$subheader.append(this.overlay.slides[slide].$panel);
             }
 
@@ -837,14 +846,11 @@ define([], function() {
          * Starts the tabs-component
          */
         startTabsComponent: function(slide) {
-            var $element = this.sandbox.dom.createElement('<div class="overlay-tabs"/>');
-            this.overlay.slides[slide].$subheader.prepend($element);
-
             this.sandbox.start([
                 {
                     name: 'tabs@husky',
                     options: {
-                        el: $element,
+                        el: this.overlay.slides[slide].$subheader.find('.overlay-tabs'),
                         data: this.overlay.slides[slide].tabs,
                         instanceName: 'overlay' + this.options.instanceName,
                         skin: 'overlay'
@@ -896,11 +902,7 @@ define([], function() {
                 this.buttonHandler.bind(this), constants.overlayOtherButtonsSelector);
 
             if (this.options.backdropClose === true) {
-                this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
-                    if (event.target === this.$wrapper.get(0)) {
-                        this.closeHandler(event);
-                    }
-                }.bind(this));
+                this.$backdrop.on('click', this.closeHandler.bind(this));
             }
 
             this.bindOverlayCustomEvents();

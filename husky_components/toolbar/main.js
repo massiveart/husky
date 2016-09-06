@@ -870,6 +870,9 @@ define(function() {
                 if (dropdownItem.marked === true) {
                     uniqueMarkItem.call(this, dropdownItem.id);
                 }
+                if (!!dropdownItem.styleClass) {
+                    $item.addClass(dropdownItem.styleClass);
+                }
                 this.sandbox.dom.append($list, $item);
             }.bind(this));
 

@@ -20,16 +20,16 @@
         line-height: 30px;
         border-radius: $borderRadius;
         font-size: $smallFontSize;
-        @include clear-float;
+        white-space: nowrap;
         .checkbox {
-            padding-right: 20px;
+            padding-right: 16px;
         }
         .icon {
-            float: left;
             font-size: 15px;
             padding-right: 4px;
-            display: block;
+            display: inline-block;
             line-height: 30px;
+            vertical-align: top;
         }
         .toggle-icon {
             position: absolute;
@@ -48,11 +48,14 @@
     }
 
     .husky-select-label {
-        min-height: 30px;
+        height: 30px;
+        line-height: 30px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        display: block;
+        display: inline-block;
+        vertical-align: top;
+        max-width: calc(100% - 20px);
     }
 
     .dropdown-list {
@@ -155,7 +158,9 @@
         }
 
         .husky-select-label {
-            min-height: 20px;
+            height: 20px;
+            line-height: 20px;
+            max-width: calc(100% - 10px);
         }
     }
 
