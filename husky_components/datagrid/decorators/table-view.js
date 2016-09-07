@@ -1478,6 +1478,10 @@ define(function() {
          * @param select {Boolean} true to select false to deselect
          */
         toggleSelectRecord: function(id, select) {
+            if (!this.table.rows[id]) {
+                return;
+            }
+
             if (select === true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
                 // ensure that checkboxes are checked
