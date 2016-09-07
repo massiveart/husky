@@ -18,6 +18,7 @@
  * @param {String} [options.columnOptionsInstanceName] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
+ * @param {Array} [options.expandIds] array of ids which is appended to expandIds-parameter when loading list items
  * @param {Array} [options.preselected] preselected ids
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
@@ -1007,7 +1008,9 @@
                 this.currentUrl = this.getUrl(params);
 
                 if (!params.data) params.data = {};
-                params.data['expandIds'] = this.getSelectedItemIds().join(',');
+                var expandIds = this.getSelectedItemIds();
+                expandIds = (!!this.options.expandIds) ? expandIds.concat(this.options.expandIds) : expandIds;
+                params.data['expandIds'] = expandIds.join(',');
 
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)
