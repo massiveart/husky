@@ -32106,31 +32106,35 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param select {Boolean} true to select false to deselect
          */
         toggleSelectRecord: function(id, select) {
-            if (!this.table.rows[id]) {
-                return;
-            }
-
             if (select === true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
-                // ensure that checkboxes are checked
-                this.sandbox.dom.prop(
-                    this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
-                );
-                this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
-                this.indeterminateSelectParents(id);
+
+                if (this.table.rows[id]) {
+                    // ensure that checkboxes are checked
+                    this.sandbox.dom.prop(
+                        this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
+                    );
+                    this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
+                    this.indeterminateSelectParents(id);
+                }
             } else {
                 this.datagrid.setItemUnselected.call(this.datagrid, id);
-                // ensure that checkboxes are unchecked
-                this.sandbox.dom.prop(
-                    this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
-                );
-                if (this.table.rows[id].selectedChildren > 0) {
+
+                if (this.table.rows[id]) {
+                    // ensure that checkboxes are unchecked
                     this.sandbox.dom.prop(
-                        this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'indeterminate', true
+                        this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', false
                     );
+                    if (this.table.rows[id].selectedChildren > 0) {
+                        this.sandbox.dom.prop(
+                            this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el),
+                            'indeterminate',
+                            true
+                        );
+                    }
+                    this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
+                    this.indeterminateUnselectParents(id);
                 }
-                this.sandbox.dom.removeClass(this.table.rows[id].$el, constants.selectedRowClass);
-                this.indeterminateUnselectParents(id);
             }
 
             this.updateSelectAll();
