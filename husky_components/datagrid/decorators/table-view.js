@@ -356,6 +356,9 @@ define(function() {
                 }
             }.bind(this));
 
+            // deselect record to adjust parent-checkboxes
+            this.deselectRecord(recordId);
+
             this.datagrid.removeRecord.call(this.datagrid, recordId);
             this.sandbox.dom.remove(this.table.rows[recordId].$el);
             delete this.table.rows[recordId];
