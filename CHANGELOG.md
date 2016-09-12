@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #723 Added description class to itembox and made content take up the whole width
     * ENHANCEMENT #721 Improved cropping in tiles view and fixed dropzone issue when destroying
     * ENHANCEMENT #715 Display effective limit in dropdown-pagination decorator
     * ENHANCEMENT #715 Replace expand-icon with loader when loading children in datagrid
