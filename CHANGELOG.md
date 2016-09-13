@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEAUTRE     #733 Created addImage functionality in dropzone
     * ENHANCEMENT #723 Added description class to itembox and made content take up the whole width
     * FEATURE     #714 Tabs and language Changer are now in a new section -> language Changer can be used without Tabs.
     * ENHANCEMENT #721 Improved cropping in tiles view and fixed dropzone issue when destroying
