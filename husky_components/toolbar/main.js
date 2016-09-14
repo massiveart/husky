@@ -870,6 +870,9 @@ define(function() {
                 if (dropdownItem.marked === true) {
                     uniqueMarkItem.call(this, dropdownItem.id);
                 }
+                if (!!dropdownItem.styleClass) {
+                    $item.addClass(dropdownItem.styleClass);
+                }
                 this.sandbox.dom.append($list, $item);
             }.bind(this));
 
@@ -894,7 +897,7 @@ define(function() {
          * @param itemId {Number|String} the id of the item
          */
         uniqueMarkItem = function(itemId) {
-            if (!!this.items[itemId] && !!this.items[itemId].parentId) {
+            if (!!this.items[itemId] && !!this.items[itemId].parentId && !this.items[itemId].disabled) {
                 // unmark all items with the same parent
                 this.sandbox.util.each(this.items, function(id, item) {
                     if (item.parentId === this.items[itemId].parentId) {

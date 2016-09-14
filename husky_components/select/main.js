@@ -1207,7 +1207,7 @@ define([], function() {
             } else if (
                 this.options.direction !== 'bottom'
                 && dropdownHeight + dropdownTop > windowHeight + scrollTop
-                // only change direction if there is more space on the other side    
+                // only change direction if there is more space on the other side
                 && windowHeight / 2 < dropdownTop - scrollTop
             ) {
                 this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
