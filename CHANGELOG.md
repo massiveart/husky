@@ -1,5 +1,6 @@
 # CHANGELOG for husky
 
+
 * dev-develop
     * ENHANCEMENT #723 Added description class to itembox and made content take up the whole width
     * FEATURE     #714 Tabs and language Changer are now in a new section -> language Changer can be used without Tabs.
@@ -14,6 +15,10 @@
     * ENHANCEMENT #712 Removed data-navigation from navigation component
     * FEATURE     #706 Created tiles view for datagrid
     * FEATURE     #705 Added placeholder option to ckeditor component
+
+* 0.25.1 (2016-09-15)
+    * HOTFIX      #726 Added singleMarkable option and get-marked event
+    * HOTFIX      #725 Added locale to pagination request of data-navigation
 
 * 0.25.0 (2016-08-11)
     * BUGFIX      #709 Removed action icon for ghost pages in column-navigation
