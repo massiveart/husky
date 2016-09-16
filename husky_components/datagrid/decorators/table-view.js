@@ -345,9 +345,20 @@ define(function() {
 
         /**
          * Removes a record from the view
+         * If the record has child-records, the child records are removed too.
          * @param recordId {Number|String}
          */
         removeRecord: function(recordId) {
+            // remove children of record
+            this.table.rows[recordId].$el.siblings().each(function(key, sibling) {
+                if ($(sibling).data('parent') === recordId) {
+                    this.removeRecord($(sibling).data('id'));
+                }
+            }.bind(this));
+
+            // deselect record to adjust parent-checkboxes
+            this.deselectRecord(recordId);
+
             this.datagrid.removeRecord.call(this.datagrid, recordId);
             this.sandbox.dom.remove(this.table.rows[recordId].$el);
             delete this.table.rows[recordId];
