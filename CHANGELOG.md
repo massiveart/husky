@@ -2,6 +2,7 @@
 
 * dev-develop
     * ENHANCEMENT #741 Change logo by overwritable variable in navigation
+    * BUGFIX      #734 Adapted overlays to match grid system
 
 * 0.26.0 (2016-10-06)
     * FEATURE     #737 Added possibility to define overlay spacing for each slide
@@ -25,6 +26,13 @@
     * ENHANCEMENT #712 Removed data-navigation from navigation component
     * FEATURE     #706 Created tiles view for datagrid
     * FEATURE     #705 Added placeholder option to ckeditor component
+
+* 0.26.0 (2016-10-06)
+    * FEATURE     #737 Added possibility to define overlay spacing for each slide
+    * BUGFIX      #738 Removed action icon in datagrid if no icon is defined
+    * ENHANCEMENT #735 Added maxHeight options to toolbar dropdownOptions
+    * BUGFIX      #722 Fixed create hover button for ghost pages and made it optional
+    * FEATURE     #733 Created addImage functionality in dropzone
 
 * 0.25.1 (2016-09-15)
     * HOTFIX      #726 Added singleMarkable option and get-marked event

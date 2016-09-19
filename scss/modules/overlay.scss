@@ -25,15 +25,21 @@
         overflow: hidden;
     }
 
-    &.wide {
-        width: $overlayContainerWidthMedium;
+    &.small {
+        &, & .slides .slide, & .overlay-footer {
+            width: $overlayContainerWidthSmall;
+        }
+    }
 
-        .slides .slide {
+    &.medium {
+        &, & .slides .slide, & .overlay-footer {
             width: $overlayContainerWidthMedium;
+        }
+    }
 
-            .overlay-footer {
-                width: $overlayContainerWidthMedium;
-            }
+    &.large {
+        &, & .slides .slide, & .overlay-footer {
+            width: $overlayContainerWidthLarge;
         }
     }
 
@@ -245,7 +251,7 @@
     white-space: normal;
 
     .message {
-        padding: 10px 105px 40px;
+        padding: 10px 20px 40px;
         background: $white;
         font-size: $bigFontSize;
         color: $grayLight;
