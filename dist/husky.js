@@ -43681,6 +43681,7 @@ define('__component__$overlay@husky',[], function() {
             data: '',
             panelContent: '',
             tabs: null,
+            contentSpacing: true,
             okInactive: false,
             buttonsDefaultAlign: 'center',
             cancelDefaultText: 'public.cancel',
@@ -44597,7 +44598,6 @@ define('__component__$overlay@husky',[], function() {
             }
         }
     };
-
 });
 
 /**

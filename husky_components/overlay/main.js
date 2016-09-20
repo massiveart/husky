@@ -95,6 +95,7 @@ define([], function() {
             data: '',
             panelContent: '',
             tabs: null,
+            contentSpacing: true,
             okInactive: false,
             buttonsDefaultAlign: 'center',
             cancelDefaultText: 'public.cancel',
@@ -1011,5 +1012,4 @@ define([], function() {
             }
         }
     };
-
 });
