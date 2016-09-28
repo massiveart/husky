@@ -100,6 +100,7 @@ define([], function() {
             cancelDefaultText: 'public.cancel',
             okDefaultText: 'public.ok',
             languageChanger: null,
+            contentSpacing: true,
             cssClass: ''
         },
 
@@ -707,7 +708,7 @@ define([], function() {
                     index: this.slides[slide].index,
                     cssClass: this.slides[slide].cssClass,
                     displayHeader: this.slides[slide].displayHeader,
-                    spacingClass: (!!this.options.contentSpacing) ? 'content-spacing' : ''
+                    spacingClass: (!!this.slides[slide].contentSpacing) ? 'content-spacing' : ''
                 })
             );
             this.overlay.slides[slide].$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.slides[slide].$el);
