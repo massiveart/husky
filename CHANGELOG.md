@@ -2,6 +2,7 @@
 
 * dev-develop
     * FEATURE     #737 Added possibility to define overlay spacing for each slide
+    * BUGFIX      #738 Removed action icon in datagrid if no icon is defined
     * ENHANCEMENT #735 Added maxHeight options to toolbar dropdownOptions
     * BUGFIX      #722 Fixed create hover button for ghost pages and made it optional
     * ENHANCEMENT #723 Added description class to itembox and made content take up the whole width
