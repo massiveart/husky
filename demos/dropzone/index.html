@@ -35,6 +35,7 @@
                  data-aura-url="http://husky.lo:7878/admin/api/dropzone"
                  data-aura-instance-name="pictures"
                  data-aura-show-overlay="false"></div>
+            <button id="add-image">Add a nice image</button>
         </div>
     </div>
 
@@ -152,6 +153,10 @@ require(['lib/husky'], function(Husky) {
     $('#unlock').on('click', function() {
        app.sandbox.emit('husky.dropzone.pictures.unlock-popup');
     });
+
+    $('#add-image').on('click', function() {
+        app.sandbox.emit('husky.dropzone.pictures.add-image', 'http://i.imgur.com/ATA1Mip.jpg');
+    })
 });
 </script>
 

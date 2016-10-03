@@ -214,6 +214,15 @@ define([], function() {
             return createEventName.call(this, 'disable');
         },
 
+        /**
+         * listens on and adds an image to the dropzone by a given url
+         * @event husky.dropzone.<instance-name>.add-file
+         * @param {String} url The url to the file to add
+         */
+        ADD_IMAGE = function() {
+            return createEventName.call(this, 'add-image');
+        },
+
         /** returns normalized event names */
         createEventName = function(postFix, global) {
             return [
@@ -331,6 +340,19 @@ define([], function() {
                     this.openOverlay();
                 }.bind(this));
             }
+
+            this.sandbox.on(ADD_IMAGE.call(this), this.addImage.bind(this));
+        },
+
+        /**
+         * Adds an image to the the dropzone by a given url.
+         *
+         * @param {String} url The url to first load the image from and than upload it via the dropzone
+         */
+        addImage: function(url) {
+            this.sandbox.util.loadImageAsBlob(url).then(function(imageBlob) {
+                this.dropzone.addFile(imageBlob);
+            }.bind(this));
         },
 
         /**
