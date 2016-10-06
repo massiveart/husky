@@ -37,7 +37,7 @@
  * *
  *****************************************************************************/
 
-define(function() {
+define(['services/husky/expression-language'], function(ExpressionLanguage) {
 
     'use strict';
 
@@ -222,7 +222,7 @@ define(function() {
             this.sandbox.util.foreach(this.data, function(item) {
                 var $item = this.$find('li[data-id="' + item.id + '"]');
 
-                if (!!item.displayConditions && !this.evaluate(item.displayConditions, values)) {
+                if (!!item.displayConditions && !ExpressionLanguage.evaluate(item.displayConditions, values)) {
                     this.sandbox.dom.hide($item);
                 } else {
                     this.sandbox.dom.show($item);
@@ -334,53 +334,6 @@ define(function() {
             return Math.floor((Math.random() * 1677721500000000)).toString(16);
         },
 
-        /**
-         * Evaluates the given display-conditions against the condition-data.
-         *
-         * @param {[{property, operator, value}]} displayConditions
-         * @param {Object} values
-         *
-         * @returns {boolean}
-         */
-        evaluate: function(displayConditions, values) {
-            for (var i = 0, length = displayConditions.length; i < length; i++) {
-                var item = this.sandbox.util.extend(
-                    true,
-                    {},
-                    {
-                        property: null,
-                        operator: null,
-                        value: null
-                    }, displayConditions[i]
-                );
-
-                if (!values.hasOwnProperty(item.property)) {
-                    this.sandbox.logger.warn('property "' + item.property + '" does not exists in data');
-
-                    return false;
-                }
-
-                switch (item.operator) {
-                    case 'eq':
-                        if (values[item.property] !== item.value) {
-                            return false;
-                        }
-                        break;
-                    case 'neq':
-                        if (values[item.property] === item.value) {
-                            return false;
-                        }
-                        break;
-                    default:
-                        this.sandbox.logger.error('operator "' + item.operator + '" is not implemented.');
-
-                        return false;
-                }
-            }
-
-            return true;
-        },
-
         render: function(data, values) {
             this.data = this.generateIds(data);
 
@@ -407,7 +360,7 @@ define(function() {
                 this.sandbox.dom.append($list, $item);
 
                 if ((!!item.disabled && item.disabled.toString() === 'true')
-                    || (!!item.displayConditions && !this.evaluate(item.displayConditions, values))
+                    || (!!item.displayConditions && !ExpressionLanguage.evaluate(item.displayConditions, values))
                 ) {
                     this.sandbox.dom.hide($item);
                 } else {
