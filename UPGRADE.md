@@ -1,6 +1,6 @@
 # Upgrade
 
-## dev-develop
+## 0.26.0
 
 ### Lock and Unlocking the dropzone overlay
 
