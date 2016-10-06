@@ -843,6 +843,10 @@ define(function() {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
                 $item;
 
+            if (!!parent.dropdownOptions && !!parent.dropdownOptions.maxHeight) {
+                $list.css('maxHeight', parent.dropdownOptions.maxHeight);
+            }
+
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.dropdownItems, function(dropdownItem) {
                 dropdownItem.title = this.sandbox.translate(dropdownItem.title);
@@ -870,6 +874,9 @@ define(function() {
                 if (dropdownItem.marked === true) {
                     uniqueMarkItem.call(this, dropdownItem.id);
                 }
+                if (!!dropdownItem.styleClass) {
+                    $item.addClass(dropdownItem.styleClass);
+                }
                 this.sandbox.dom.append($list, $item);
             }.bind(this));
 
@@ -894,7 +901,7 @@ define(function() {
          * @param itemId {Number|String} the id of the item
          */
         uniqueMarkItem = function(itemId) {
-            if (!!this.items[itemId] && !!this.items[itemId].parentId) {
+            if (!!this.items[itemId] && !!this.items[itemId].parentId && !this.items[itemId].disabled) {
                 // unmark all items with the same parent
                 this.sandbox.util.each(this.items, function(id, item) {
                     if (item.parentId === this.items[itemId].parentId) {
@@ -1262,7 +1269,10 @@ define(function() {
                     }
 
                     // create title span
-                    title = (!!item.title && this.options.showTitle === true) ? item.title : '';
+                    title = '';
+                    if (!!item.title && (this.options.showTitle === true || item.showTitle === true)) {
+                        title = item.title;
+                    }
                     this.sandbox.dom.append($listItem, '<span class="title">' + title + '</span>');
 
                     // add dropdown-toggle element (hidden at default)

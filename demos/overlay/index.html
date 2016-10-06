@@ -83,6 +83,10 @@
             </div>
             <div class="grid-row m-top-20">
                 <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="slidesWithSpacings">Show me an overlay slides with different spacings</div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
                 <div class="btn pointer grid-col-3 align-center" id="muchContent">This is an overlay with lots of content</div>
             </div>
             <div class="grid-row m-top-20">
@@ -105,6 +109,7 @@
         <div id="overlay-skin-responsive"></div>
         <div id="insertOverlayHere"></div>
         <div id="overlaySlides"></div>
+        <div id="overlaySlidesWithSpacings"></div>
         <script src="../js/jquery.js"></script>
 
         <script src="../js/require.js"></script>
@@ -189,6 +194,31 @@
                                         app.sandbox.emit('husky.overlay.slides.slide-left');
                                         return false;
                                     }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: 'overlay@husky',
+                        options: {
+                            el: '#overlaySlidesWithSpacings',
+                            triggerEl: '#slidesWithSpacings',
+                            instanceName: 'slidesWithSpacing',
+                            slides: [
+                                {
+                                    title: 'Slide 1',
+                                    data: [
+                                        '<div>Test with spacing</div>',
+                                        '<span class="pointer" id="slideWithSpacingRight">Click to slide right</span>'
+                                    ].join('')
+                                },
+                                {
+                                    title: 'Slide 2',
+                                    data: [
+                                        '<div>Test without spacing</div>',
+                                        '<span class="pointer" id="slideWithSpacingLeft">Click to slide left</span>',
+                                    ].join(''),
+                                    contentSpacing: false
                                 }
                             ]
                         }
@@ -286,6 +316,7 @@
                                 {title: 'scrollable', data: '<h2>Scrollable</h2>'},
                                 {title: 'last-tab', data: '<h2>last tab</h2>'}
                             ],
+                            panelContent: '<div class="btn action">Very long text in a button.</div>',
                             languageChanger: {
                                 locales: ['EN', 'DE', 'ES'],
                                 preSelected: 'DE'
@@ -376,6 +407,14 @@
 
                     $('body').on('click', '#slideme', function() {
                         app.sandbox.emit('husky.overlay.slides.slide-right');
+                    });
+
+                    $('body').on('click', '#slideWithSpacingRight', function() {
+                        app.sandbox.emit('husky.overlay.slidesWithSpacing.slide-right');
+                    });
+
+                    $('body').on('click', '#slideWithSpacingLeft', function() {
+                        app.sandbox.emit('husky.overlay.slidesWithSpacing.slide-left')
                     });
 
                     app.sandbox.on('husky.overlay.deactivated.opened', function() {

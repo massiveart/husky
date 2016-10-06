@@ -514,6 +514,14 @@ require(['lib/husky'], function(Husky) {
             app.sandbox.emit('husky.datagrid.url.update', {search: null, content1: "fdsa"});
         });
 
+        $('#remove-parent').on('click', function() {
+            app.sandbox.emit('husky.datagrid.assignment-datagrid.record.remove', 8);
+        });
+
+        $('#remove-child').on('click', function() {
+            app.sandbox.emit('husky.datagrid.assignment-datagrid.record.remove', 7);
+        });
+
         app.sandbox.on('husky.datagrid.row.removed', function(item) {
             app.logger.log('remove: ' + item);
         });

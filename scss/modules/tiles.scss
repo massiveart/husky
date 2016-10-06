@@ -1,0 +1,81 @@
+//
+// Tiles (Datagrid decorator)
+// --------------------------------------------------
+
+.tiles-view {
+    $spacing: 20px;
+
+    margin: 0 (-$spacing) (-$spacing) 0;
+
+    .tile,
+    .add-new-tile {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        display: inline-block;
+        margin: 0 $spacing $spacing 0;
+        cursor: pointer;
+        text-align: center;
+        vertical-align: middle;
+        border-radius: $borderRadiusSmall;
+    }
+
+    .tile {
+        background: $white;
+        box-shadow: 0 0 10px -10px rgba(0, 0, 0, 0.1);
+        @include transition(box-shadow 200ms);
+
+        &:hover {
+            box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .add-new-tile {
+        $hoverEffectDuration: 80ms;
+
+        .icon {
+            @include transition(color $hoverEffectDuration);
+            color: $grayLighter;
+        }
+        @include transition(color $hoverEffectDuration, border-color $hoverEffectDuration);
+        color: $grayLight;
+        border: 1px dashed $grayLighter;
+
+        &:hover {
+            color: $black;
+            border-color: $black;
+            .icon {
+                color: $black;
+            }
+        }
+    }
+
+    .icon {
+        font-size: 38px;
+        line-height: 38px;
+        padding: 20px 0 15px 0;
+        color: $grayLighterer;
+    }
+
+    .title, .description {
+        position: absolute;
+        display: block;
+        width: 100%;
+        font-size: $smallFontSize;
+        padding: 0 8px;
+    }
+
+    .title {
+        bottom: 28px;
+        line-height: 15px;
+    }
+
+    .description {
+        position: absolute;
+        bottom: 5px;
+        color: $grayLight;
+        white-space: nowrap;
+        overflow: hidden;
+        line-height: 20px;
+    }
+}

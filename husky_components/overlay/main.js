@@ -19,9 +19,8 @@
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
- * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'dropzone', 'wide', 'responsive-width'
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide', 'responsive-width'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
- * @params {Boolean} [options.displayHeader] Defines if overlay Header with title should be shown
  * @params {Boolean} [options.contentSpacing] Defines if there should be a spacing between overlay borders and content
  * @params {String} [options.type] The type of the overlay ('normal' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
@@ -36,12 +35,15 @@
  * @params {Function} [options.slides[].closeCallback] @deprecated Use 'cancelCallback' instead
  * @params {Function} [options.slides[].cancelCallback] callback which gets executed after the overlay gets canceled
  * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submitted
+ * @params {Boolean} [options.slides[].displayHeader] Boolean variable which determines wether or not the header gets rendered
  * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
+ * @params {String} [options.slides[].panelContent] The content to render in the panel container in the sub-header
  * @params {Boolean} [options.slides[].okInactive] If true all ok-buttons start deactivated
  * @params {String} [options.slides[].okDefaultText] The default text for ok buttons
  * @params {String} [options.slides[].cancelDefaultText] The default text for cancel buttons
  * @params {String} [options.slides[].type] The type of the overlay ('normal', 'error' or 'warning')
+ * @params {Number} [options.startingSlide] The index of the slide to start with
  *
  * @params {Object} [options.slides[].languageChanger] If set language-changer will be displayed in the header
  * @params {Array} [options.slides[].languageChanger.locales] array of locale strings for the dropdown
@@ -70,12 +72,12 @@ define([], function() {
             backdropClose: true,
             skin: '',
             supportKeyInput: true,
-            displayHeader: true,
             contentSpacing: true,
             propagateEvents: true,
             type: 'normal',
             cssClass: '',
             slides: [],
+            startingSlide: null,
             top: null,
             left: null
         },
@@ -84,18 +86,21 @@ define([], function() {
             index: -1,
             title: '',
             subTitle: null,
+            displayHeader: true,
             message: '',
             closeCallback: null,
             cancelCallback: null,
             okCallback: null,
             type: 'normal',
             data: '',
+            panelContent: '',
             tabs: null,
             okInactive: false,
             buttonsDefaultAlign: 'center',
             cancelDefaultText: 'public.cancel',
             okDefaultText: 'public.ok',
             languageChanger: null,
+            contentSpacing: true,
             cssClass: ''
         },
 
@@ -105,7 +110,7 @@ define([], function() {
             $header: null,
             $content: null,
             $languageChanger: null,
-            $tabs: null, //tabs component container
+            $subheader: null,
             tabs: null //contains tabs related data
         },
 
@@ -118,8 +123,7 @@ define([], function() {
             overlayOkSelector: '.overlay-ok',
             overlayCancelSelector: '.overlay-cancel',
             overlayOtherButtonsSelector: '.overlay-button',
-            tabsClass: 'overlay-tabs',
-            languageChangerClass: 'language-changer'
+            panelClass: 'panel'
         },
 
         types = {
@@ -209,7 +213,15 @@ define([], function() {
                 '</div>'
             ].join(''),
             wrapper: [
-                '<div class="husky-overlay-wrapper"></div>'
+                '<div class="husky-overlay-wrapper">',
+                '   <div class="husky-overlay-scroll-wrapper"></div>',
+                '   <div class="husky-overlay-backdrop"></div>',
+                '</div>'
+            ].join(''),
+            subheader: [
+                '<div class="overlay-subheader">',
+                '   <div class="overlay-tabs"></div>',
+                '</div>'
             ].join(''),
             message: [
                 '<div class="message"><%= message %></div>'
@@ -478,6 +490,7 @@ define([], function() {
                 slides: []
             };
             this.$wrapper = null;
+            this.$backdrop = null;
             this.activeTab = null;
             this.slides = [];
             this.activeSlide = 0;
@@ -514,6 +527,10 @@ define([], function() {
                     this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
 
                     this.insertOverlay(true);
+
+                    if (!!this.options.startingSlide) {
+                        this.slideTo(this.options.startingSlide, false);
+                    }
 
                     this.sandbox.start([{name: 'loader@husky', options: {el: this.$el.find('.loader'), size: '30px'}}]);
                 } else {
@@ -552,7 +569,7 @@ define([], function() {
                 slide = this.slides.length - 1;
             }
 
-            this.slideTo(slide);
+            this.slideTo(slide, true);
         },
 
         /**
@@ -564,7 +581,7 @@ define([], function() {
                 slide = 0;
             }
 
-            this.slideTo(slide);
+            this.slideTo(slide, true);
         },
 
         /**
@@ -579,17 +596,28 @@ define([], function() {
                 return;
             }
 
-            this.slideTo(slide);
+            this.slideTo(slide, true);
         },
 
         /**
          * slide to given number
          */
-        slideTo: function(slide) {
+        slideTo: function(slide, animated) {
             this.activeSlide = slide;
 
             var width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
-            this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * width + 'px');
+            animated = (typeof animated === 'undefined') ? true : animated;
+
+            if (!animated) {
+                this.overlay.$slides.addClass('no-animation');
+            }
+            this.overlay.$slides.css('left', '-' + slide * width + 'px');
+            if (!animated) {
+                // The following line makes sure the browsers apply the change in `left` before the class gets removed
+                // http://stackoverflow.com/questions/11131875/what-is-the-cleanest-way-to-disable-css-transition-effects-temporarily
+                this.overlay.$slides[0].offsetHeight;
+                this.overlay.$slides.removeClass('no-animation');
+            }
         },
 
         /**
@@ -597,6 +625,7 @@ define([], function() {
          */
         initWrapper: function() {
             this.$wrapper = this.sandbox.dom.createElement(templates.wrapper);
+            this.$backdrop = this.$wrapper.find('.husky-overlay-backdrop');
             this.$wrapper.hide();
         },
 
@@ -623,7 +652,7 @@ define([], function() {
          * Inserts the overlay-element into the DOM
          */
         insertOverlay: function(emitEvent) {
-            this.sandbox.dom.append(this.$wrapper, this.overlay.$el);
+            this.$wrapper.find('.husky-overlay-scroll-wrapper').append(this.overlay.$el);
             this.sandbox.dom.append(this.$el, this.$wrapper);
             this.$wrapper.show();
 
@@ -660,6 +689,10 @@ define([], function() {
                     $el = this.initSlideSkeleton(slide);
                     this.initButtons(slide);
                     this.setContent(slide);
+                    // render a language changer into the header if configured
+                    if (!!this.slides[slide].languageChanger) {
+                        this.renderLanguageChanger(slide);
+                    }
                     this.sandbox.dom.append(this.overlay.$slides, $el);
                 }
             }
@@ -674,17 +707,27 @@ define([], function() {
                     subTitle: !!this.slides[slide].subTitle ? this.slides[slide].subTitle : null,
                     index: this.slides[slide].index,
                     cssClass: this.slides[slide].cssClass,
-                    displayHeader: this.options.displayHeader,
-                    spacingClass: (!!this.options.contentSpacing) ? 'content-spacing' : ''
+                    displayHeader: this.slides[slide].displayHeader,
+                    spacingClass: (!!this.slides[slide].contentSpacing) ? 'content-spacing' : ''
                 })
             );
             this.overlay.slides[slide].$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.slides[slide].$el);
 
-            // render a language changer into the header if configured
-            if (this.slides[slide].languageChanger !== null) {
-                this.renderLanguageChanger(slide);
+            if (!!this.slides[slide].languageChanger || !!this.slides[slide].tabs || !!this.slides[slide].panelContent) {
+                this.overlay.slides[slide].$subheader = $(templates.subheader);
+                this.overlay.slides[slide].$header.after(this.overlay.slides[slide].$subheader)
+            }
+
+            if (!!this.slides[slide].languageChanger || !!this.slides[slide].panelContent) {
+                this.overlay.slides[slide].$panel =  $('<div class="' + constants.panelClass + '"/>');
+                this.overlay.slides[slide].$subheader.append(this.overlay.slides[slide].$panel);
+            }
+
+            if (!!this.slides[slide].panelContent) {
+                this.overlay.slides[slide].$panel.append('<div class="panel-content"/>');
+                this.overlay.slides[slide].$panel.find('.panel-content').append(this.slides[slide].panelContent);
             }
 
             // add classes for various styling
@@ -698,14 +741,8 @@ define([], function() {
          * Renders a language changer and places it within the header
          */
         renderLanguageChanger: function(slide) {
-            var $element = this.sandbox.dom.createElement('<div/>');
-
-            this.sandbox.dom.addClass(this.overlay.$el, 'has-language-chooser');
-            this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
-                '<div class="' + constants.languageChangerClass + '"/>'
-            );
-            this.sandbox.dom.append(this.overlay.slides[slide].$content, this.overlay.slides[slide].$languageChanger);
-            this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
+            var $element = this.sandbox.dom.createElement('<div class="language-changer"/>');
+            this.overlay.slides[slide].$panel.append($element);
 
             this.sandbox.start([
                 {
@@ -791,8 +828,6 @@ define([], function() {
          */
         renderTabs: function(slide) {
             this.overlay.slides[slide].tabs = [];
-            this.overlay.slides[slide].$tabs = this.sandbox.dom.createElement('<div class="' + constants.tabsClass + '"/>');
-            this.sandbox.dom.after(this.overlay.slides[slide].$header, this.overlay.slides[slide].$tabs);
 
             for (var i = -1, length = this.slides[slide].tabs.length; ++i < length;) {
                 this.overlay.slides[slide].tabs.push({
@@ -812,14 +847,11 @@ define([], function() {
          * Starts the tabs-component
          */
         startTabsComponent: function(slide) {
-            var $element = this.sandbox.dom.createElement('<div/>');
-            this.sandbox.dom.html(this.overlay.slides[slide].$tabs, $element);
-
             this.sandbox.start([
                 {
                     name: 'tabs@husky',
                     options: {
-                        el: $element,
+                        el: this.overlay.slides[slide].$subheader.find('.overlay-tabs'),
                         data: this.overlay.slides[slide].tabs,
                         instanceName: 'overlay' + this.options.instanceName,
                         skin: 'overlay'
@@ -871,11 +903,7 @@ define([], function() {
                 this.buttonHandler.bind(this), constants.overlayOtherButtonsSelector);
 
             if (this.options.backdropClose === true) {
-                this.sandbox.dom.on(this.$wrapper, 'click', function(event) {
-                    if (event.target === this.$wrapper.get(0)) {
-                        this.closeHandler(event);
-                    }
-                }.bind(this));
+                this.$backdrop.on('click', this.closeHandler.bind(this));
             }
 
             this.bindOverlayCustomEvents();

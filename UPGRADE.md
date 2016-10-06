@@ -1,5 +1,19 @@
 # Upgrade
 
+## dev-develop
+
+### Lock and Unlocking the dropzone overlay
+
+The behaviour of the overlay in the dropzone got slightly changed.
+The changes introduced, forces the overlay to either be a popup
+or a "normal" dropzone directly rendered into the dom. This changes
+made locking and unlocking the dropzone popup obsolete.
+
+### Dropzone canceling upload when overlay closes
+
+The component option `cancelUploadOnOverlayClick` got renamed to
+`cancelUploadOnOverlayClose`.
+
 ## 0.24.0
 
 ### DataNavigation locale
