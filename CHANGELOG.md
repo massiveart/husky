@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * ENHANCEMENT #741 Change logo by overwritable variable in navigation
+
 * 0.26.0 (2016-10-06)
     * FEATURE     #737 Added possibility to define overlay spacing for each slide
     * BUGFIX      #738 Removed action icon in datagrid if no icon is defined
