@@ -2,6 +2,7 @@
 
 * dev-develop
     * ENHANCEMENT #741 Change logo by overwritable variable in navigation
+    * BUGFIX      #734 Adapted overlays to match grid system
 
 * 0.26.0 (2016-10-06)
     * FEATURE     #737 Added possibility to define overlay spacing for each slide

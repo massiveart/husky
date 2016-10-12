@@ -2,8 +2,9 @@
 // Grid System
 // --------------------------------------------------
 
-$grid-padding-left: 8px;
-$grid-padding-right: 8px;
+$grid-padding: 20px;
+$grid-padding-count: 11;
+$grid-padding-complete: $grid-padding-count * $grid-padding;
 $grid-margin-bottom: 20px;
 $grid-margin-bottom-small: 10px;
 
@@ -35,8 +36,6 @@ $grid-margin-bottom-small: 10px;
         max-width: 100%;
     }
 }
-
-
 
 .grid-row.small {
     .grid-col-1.floating  {
@@ -73,19 +72,14 @@ $grid-margin-bottom-small: 10px;
 
 [class*="grid-col-"] {
     float: left;
-    padding-left: $grid-padding-left;
-    padding-right: $grid-padding-right;
+    padding-left: $grid-padding;
     min-height: 1px;
-    &:last-of-type {
-      padding-right: 0;
-    }
+    @include box-sizing(content-box);
     &:first-of-type {
         padding-left: 0;
-        padding-right: $grid-padding-right;
     }
     &:only-of-type {
       padding-left: 0;
-      padding-right: 0;
     }
     &.no-padding {
         padding: 0;
@@ -93,7 +87,7 @@ $grid-margin-bottom-small: 10px;
 }
 
 .grid-col-1 {
-    width: 8.33%;
+    width: calc((100% - #{$grid-padding-complete}) / 12);
 
     &.floating {
         &:nth-child(n+13) {
@@ -102,17 +96,12 @@ $grid-margin-bottom-small: 10px;
 
         &:nth-child(12n+1) {
             padding-left: 0;
-            padding-right: $grid-padding-right;
-        }
-
-        &:nth-child(12n) {
-            padding-right: 0;
         }
     }
 }
 
 .grid-col-2 {
-    width: 16.66%;
+    width: calc((100% - #{$grid-padding-complete}) / 6 + #{$grid-padding});
 
     &.floating {
         &:nth-child(n+7) {
@@ -121,17 +110,12 @@ $grid-margin-bottom-small: 10px;
 
         &:nth-child(6n+1) {
             padding-left: 0;
-            padding-right: $grid-padding-right;
-        }
-
-        &:nth-child(6n) {
-            padding-right: 0;
         }
     }
 }
 
 .grid-col-3 {
-    width: 25%;
+    width: calc((100% - #{$grid-padding-complete}) / 4 + #{2 * $grid-padding});
 
     &.floating {
         &:nth-child(n+5) {
@@ -140,17 +124,12 @@ $grid-margin-bottom-small: 10px;
 
         &:nth-child(4n+1) {
             padding-left: 0;
-            padding-right: $grid-padding-right;
-        }
-
-        &:nth-child(4n) {
-            padding-right: 0;
         }
     }
 }
 
 .grid-col-4 {
-    width: 33.33%;
+    width: calc((100% - #{$grid-padding-complete}) / 3 + #{3 * $grid-padding});
 
     &.floating {
         &:nth-child(n+4) {
@@ -159,22 +138,16 @@ $grid-margin-bottom-small: 10px;
 
         &:nth-child(3n+1) {
             padding-left: 0;
-            padding-right: $grid-padding-right;
-        }
-
-        &:nth-child(3n) {
-            padding-right: 0;
         }
     }
 }
 
 .grid-col-5 {
-    width: 41.66%;
+    width: calc((100% - #{$grid-padding-complete}) / 12 * 5 + #{4 * $grid-padding});
 }
 
 .grid-col-6 {
-    width: 50%;
-
+    width: calc((100% - #{$grid-padding-complete}) / 2 + #{5 * $grid-padding});
 
     &.floating {
         &:nth-child(n+3) {
@@ -183,33 +156,28 @@ $grid-margin-bottom-small: 10px;
 
         &:nth-child(odd) {
             padding-left: 0;
-            padding-right: $grid-padding-right;
-        }
-
-        &:nth-child(even) {
-            padding-right: 0;
         }
     }
 }
 
 .grid-col-7 {
-    width: 58.33%;
+    width: calc((100% - #{$grid-padding-complete}) / 12 * 7 + #{6 * $grid-padding});
 }
 
 .grid-col-8 {
-    width: 66.66%;
+    width: calc((100% - #{$grid-padding-complete}) / 1.5 + #{7 * $grid-padding});
 }
 
 .grid-col-9 {
-    width: 75%;
+    width: calc((100% - #{$grid-padding-complete}) / 4 * 3 + #{8 * $grid-padding});
 }
 
 .grid-col-10 {
-    width: 83.33%;
+    width: calc((100% - #{$grid-padding-complete}) / 12 * 10 + #{9 * $grid-padding});
 }
 
 .grid-col-11 {
-    width: 91.66%;
+    width: calc((100% - #{$grid-padding-complete}) / 12 * 11 + #{10 * $grid-padding});
 }
 
 .grid-col-12 {
@@ -221,7 +189,6 @@ $grid-margin-bottom-small: 10px;
         }
         &:nth-child(n) {
             padding-left: 0;
-            padding-right: 0;
         }
     }
 }
@@ -233,17 +200,9 @@ $grid-margin-bottom-small: 10px;
         margin-top: 15px;
 
         padding-left: 0;
-        padding-right: 0;
 
         &:first-of-type {
             margin-top: 0;
-            padding-right: 0;
-        }
-
-        &.floating {
-            &:nth-child(n) {
-                padding-right: 0;
-            }
         }
     }
 }
