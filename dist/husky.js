@@ -36566,20 +36566,12 @@ define('services/husky/logger',[],function() {
 
     'use strict';
 
-    var instance = null,
-        getInstance = function() {
-            if (instance == null) {
-                instance = new Logger();
-            }
-            return instance;
-        };
-
     function Logger() {
     }
 
     Logger.prototype = window.Husky.logger;
 
-    return getInstance();
+    return new Logger();
 });
 
 /*
@@ -36591,20 +36583,11 @@ define('services/husky/logger',[],function() {
  * with this source code in the file LICENSE.
  */
 
-define('services/husky/expression-language',['underscore', 'services/husky/logger'], function(_, Logger) {
+define('services/husky/expression',['underscore', 'services/husky/logger'], function(_, Logger) {
 
     'use strict';
 
-    var instance,
-        getInstance = function() {
-            if (instance == null) {
-                instance = new ExpressionLanguage();
-            }
-
-            return instance;
-        };
-
-    function ExpressionLanguage() {
+    function Expression() {
     }
 
     /**
@@ -36615,7 +36598,7 @@ define('services/husky/expression-language',['underscore', 'services/husky/logge
      *
      * @returns {boolean}
      */
-    ExpressionLanguage.prototype.evaluate = function(displayConditions, values) {
+    Expression.prototype.evaluate = function(displayConditions, values) {
         for (var i = 0, length = displayConditions.length; i < length; i++) {
             var item = _.extend(
                 {
@@ -36653,7 +36636,7 @@ define('services/husky/expression-language',['underscore', 'services/husky/logge
         return true;
     };
 
-    return getInstance();
+    return new Expression();
 });
 
 /**
@@ -36695,7 +36678,7 @@ define('services/husky/expression-language',['underscore', 'services/husky/logge
  * *
  *****************************************************************************/
 
-define('__component__$tabs@husky',['services/husky/expression-language'], function(ExpressionLanguage) {
+define('__component__$tabs@husky',['services/husky/expression'], function(Expression) {
 
     'use strict';
 
@@ -36880,7 +36863,7 @@ define('__component__$tabs@husky',['services/husky/expression-language'], functi
             this.sandbox.util.foreach(this.data, function(item) {
                 var $item = this.$find('li[data-id="' + item.id + '"]');
 
-                if (!!item.displayConditions && !ExpressionLanguage.evaluate(item.displayConditions, values)) {
+                if (!!item.displayConditions && !Expression.evaluate(item.displayConditions, values)) {
                     this.sandbox.dom.hide($item);
                 } else {
                     this.sandbox.dom.show($item);
@@ -37018,7 +37001,7 @@ define('__component__$tabs@husky',['services/husky/expression-language'], functi
                 this.sandbox.dom.append($list, $item);
 
                 if ((!!item.disabled && item.disabled.toString() === 'true')
-                    || (!!item.displayConditions && !ExpressionLanguage.evaluate(item.displayConditions, values))
+                    || (!!item.displayConditions && !Expression.evaluate(item.displayConditions, values))
                 ) {
                     this.sandbox.dom.hide($item);
                 } else {

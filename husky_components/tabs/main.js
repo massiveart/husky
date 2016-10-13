@@ -37,7 +37,7 @@
  * *
  *****************************************************************************/
 
-define(['services/husky/expression-language'], function(ExpressionLanguage) {
+define(['services/husky/expression'], function(Expression) {
 
     'use strict';
 
@@ -222,7 +222,7 @@ define(['services/husky/expression-language'], function(ExpressionLanguage) {
             this.sandbox.util.foreach(this.data, function(item) {
                 var $item = this.$find('li[data-id="' + item.id + '"]');
 
-                if (!!item.displayConditions && !ExpressionLanguage.evaluate(item.displayConditions, values)) {
+                if (!!item.displayConditions && !Expression.evaluate(item.displayConditions, values)) {
                     this.sandbox.dom.hide($item);
                 } else {
                     this.sandbox.dom.show($item);
@@ -360,7 +360,7 @@ define(['services/husky/expression-language'], function(ExpressionLanguage) {
                 this.sandbox.dom.append($list, $item);
 
                 if ((!!item.disabled && item.disabled.toString() === 'true')
-                    || (!!item.displayConditions && !ExpressionLanguage.evaluate(item.displayConditions, values))
+                    || (!!item.displayConditions && !Expression.evaluate(item.displayConditions, values))
                 ) {
                     this.sandbox.dom.hide($item);
                 } else {

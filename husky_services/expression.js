@@ -11,16 +11,7 @@ define(['underscore', 'services/husky/logger'], function(_, Logger) {
 
     'use strict';
 
-    var instance,
-        getInstance = function() {
-            if (instance == null) {
-                instance = new ExpressionLanguage();
-            }
-
-            return instance;
-        };
-
-    function ExpressionLanguage() {
+    function Expression() {
     }
 
     /**
@@ -31,7 +22,7 @@ define(['underscore', 'services/husky/logger'], function(_, Logger) {
      *
      * @returns {boolean}
      */
-    ExpressionLanguage.prototype.evaluate = function(displayConditions, values) {
+    Expression.prototype.evaluate = function(displayConditions, values) {
         for (var i = 0, length = displayConditions.length; i < length; i++) {
             var item = _.extend(
                 {
@@ -69,5 +60,5 @@ define(['underscore', 'services/husky/logger'], function(_, Logger) {
         return true;
     };
 
-    return getInstance();
+    return new Expression();
 });

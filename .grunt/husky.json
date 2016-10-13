@@ -33,7 +33,7 @@
             "services/husky/translator": "husky_services/translator",
             "services/husky/url-validator": "husky_services/url-validator",
             "services/husky/logger": "husky_services/logger",
-            "services/husky/expression-language": "husky_services/expression-language",
+            "services/husky/expression": "husky_services/expression",
 
             "bootstrap-datepicker": "bower_components/bootstrap-datepicker/bootstrap-datepicker",
             "datepicker-ar": "bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az",

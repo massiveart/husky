@@ -11,18 +11,10 @@ define(function() {
 
     'use strict';
 
-    var instance = null,
-        getInstance = function() {
-            if (instance == null) {
-                instance = new Logger();
-            }
-            return instance;
-        };
-
     function Logger() {
     }
 
     Logger.prototype = window.Husky.logger;
 
-    return getInstance();
+    return new Logger();
 });
