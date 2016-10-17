@@ -2,6 +2,7 @@
 
 * dev-develop
     * ENHANCEMENT #742 Extracted expression into a service
+    * BUGFIX      #744 Removed default placeholder for datepicker
     * ENHANCEMENT #741 Change logo by overwritable variable in navigation
     * BUGFIX      #734 Adapted overlays to match grid system
 
