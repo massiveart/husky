@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #746 Considered mime type when adding image to dropzone
     * ENHANCEMENT #742 Extracted expression into a service
     * BUGFIX      #744 Removed default placeholder for datepicker
     * ENHANCEMENT #741 Change logo by overwritable variable in navigation
