@@ -1,5 +1,14 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * FEATURE     #728 Added actionOnGhostPage option in column navigation
+    * BUGFIX      #724 Removed bug with displaced multifield remove icon
+    * BUGFIX      #746 Considered mime type when adding image to dropzone
+    * ENHANCEMENT #742 Extracted expression into a service
+    * BUGFIX      #744 Removed default placeholder for datepicker
+    * ENHANCEMENT #741 Change logo by overwritable variable in navigation
+    * BUGFIX      #734 Adapted overlays to match grid system
+
 * 0.26.0 (2016-10-06)
     * FEATURE     #737 Added possibility to define overlay spacing for each slide
     * BUGFIX      #738 Removed action icon in datagrid if no icon is defined

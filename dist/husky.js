@@ -28007,51 +28007,23 @@ define('services/husky/util',['sprintf'], function(sprintf) {
          * base64 string for that image
          *
          * @param {Object} $img The image dom element
+         * @param {string} mimeType The mime type of the image
          *
          * @returns {string} the base64 string
          */
-        getBase64FromImageTag = function($img) {
-            var canvas = document.createElement('canvas'), ctx, dataUrl;
+        getBlobFromImageTag = function($img, mimeType) {
+            var deferred = $.Deferred(), canvas = document.createElement('canvas'), ctx;
 
             canvas.width = $img.get(0).width;
             canvas.height = $img.get(0).height;
             ctx = canvas.getContext('2d');
             ctx.drawImage($img.get(0), 0, 0);
-            dataUrl = canvas.toDataURL('image/png');
 
-            return dataUrl.replace(/^data:image\/(png|jpg);base64,/, '');
-        },
+            canvas.toBlob(function(blob) {
+                deferred.resolve(blob);
+            }, mimeType);
 
-        /**
-         * Converts a base64 string to a blob
-         *
-         * @param {String} b64Data The base64 string
-         * @param {String} contentType The content type of the base64 string
-         *
-         * @returns {Blob}
-         */
-        base64toBlob = function(b64Data, contentType) {
-            var byteCharacters = atob(b64Data),
-                byteArrays = [],
-                sliceSize = 512,
-                byteNumbers, byteArray, blob, slice, i;
-
-            for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-                slice = byteCharacters.slice(offset, offset + sliceSize);
-
-                byteNumbers = new Array(slice.length);
-                for (i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
-                }
-
-                byteArray = new Uint8Array(byteNumbers);
-
-                byteArrays.push(byteArray);
-            }
-
-            blob = new Blob(byteArrays, {type: contentType});
-
-            return blob;
+            return deferred.promise();
         },
 
         /**
@@ -28408,11 +28380,10 @@ define('services/husky/util',['sprintf'], function(sprintf) {
      *
      * @returns {Object} a promise which gets resolved with the image blob
      */
-    Util.prototype.loadImageAsBlob = function(imageUrl) {
+    Util.prototype.loadImageAsBlob = function(imageUrl, mimeType) {
         var $container = $('<div/>'),
             $img = $('<img crossOrigin="Anonymous" src="' + imageUrl + '"/>'),
-            whenImageLoaded = $.Deferred(),
-            base64Image, blob;
+            whenImageLoaded = $.Deferred();
 
         $container.width(0);
         $container.height(0);
@@ -28420,11 +28391,10 @@ define('services/husky/util',['sprintf'], function(sprintf) {
         $('body').append($container);
 
         $img.on('load', function() {
-            base64Image = getBase64FromImageTag($img);
-            $container.remove();
-            blob = base64toBlob(base64Image, 'image/png');
-            blob.name = 'blob.png';
-            whenImageLoaded.resolve(blob);
+            getBlobFromImageTag($img, mimeType).then(function(blob) {
+                $container.remove();
+                whenImageLoaded.resolve(blob);
+            });
         });
         $container.append($img);
 
@@ -36553,6 +36523,92 @@ define('__component__$search@husky',[], function() {
 
 });
 
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+define('services/husky/logger',[],function() {
+
+    'use strict';
+
+    function Logger() {
+    }
+
+    Logger.prototype = window.Husky.logger;
+
+    return new Logger();
+});
+
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+define('services/husky/expression',['underscore', 'services/husky/logger'], function(_, Logger) {
+
+    'use strict';
+
+    function Expression() {
+    }
+
+    /**
+     * Evaluates the given display-conditions against the condition-data.
+     *
+     * @param {[{property, operator, value}]} displayConditions
+     * @param {Object} values
+     *
+     * @returns {boolean}
+     */
+    Expression.prototype.evaluate = function(displayConditions, values) {
+        for (var i = 0, length = displayConditions.length; i < length; i++) {
+            var item = _.extend(
+                {
+                    property: null,
+                    operator: null,
+                    value: null
+                },
+                displayConditions[i]
+            );
+
+            if (!values.hasOwnProperty(item.property)) {
+                Logger.warn('property "' + item.property + '" does not exists in data');
+
+                return false;
+            }
+
+            switch (item.operator) {
+                case 'eq':
+                    if (values[item.property] !== item.value) {
+                        return false;
+                    }
+                    break;
+                case 'neq':
+                    if (values[item.property] === item.value) {
+                        return false;
+                    }
+                    break;
+                default:
+                    Logger.error('operator "' + item.operator + '" is not implemented.');
+
+                    return false;
+            }
+        }
+
+        return true;
+    };
+
+    return new Expression();
+});
+
 /**
  * @class Tabs
  * @constructor
@@ -36592,7 +36648,7 @@ define('__component__$search@husky',[], function() {
  * *
  *****************************************************************************/
 
-define('__component__$tabs@husky',[],function() {
+define('__component__$tabs@husky',['services/husky/expression'], function(Expression) {
 
     'use strict';
 
@@ -36777,7 +36833,7 @@ define('__component__$tabs@husky',[],function() {
             this.sandbox.util.foreach(this.data, function(item) {
                 var $item = this.$find('li[data-id="' + item.id + '"]');
 
-                if (!!item.displayConditions && !this.evaluate(item.displayConditions, values)) {
+                if (!!item.displayConditions && !Expression.evaluate(item.displayConditions, values)) {
                     this.sandbox.dom.hide($item);
                 } else {
                     this.sandbox.dom.show($item);
@@ -36889,53 +36945,6 @@ define('__component__$tabs@husky',[],function() {
             return Math.floor((Math.random() * 1677721500000000)).toString(16);
         },
 
-        /**
-         * Evaluates the given display-conditions against the condition-data.
-         *
-         * @param {[{property, operator, value}]} displayConditions
-         * @param {Object} values
-         *
-         * @returns {boolean}
-         */
-        evaluate: function(displayConditions, values) {
-            for (var i = 0, length = displayConditions.length; i < length; i++) {
-                var item = this.sandbox.util.extend(
-                    true,
-                    {},
-                    {
-                        property: null,
-                        operator: null,
-                        value: null
-                    }, displayConditions[i]
-                );
-
-                if (!values.hasOwnProperty(item.property)) {
-                    this.sandbox.logger.warn('property "' + item.property + '" does not exists in data');
-
-                    return false;
-                }
-
-                switch (item.operator) {
-                    case 'eq':
-                        if (values[item.property] !== item.value) {
-                            return false;
-                        }
-                        break;
-                    case 'neq':
-                        if (values[item.property] === item.value) {
-                            return false;
-                        }
-                        break;
-                    default:
-                        this.sandbox.logger.error('operator "' + item.operator + '" is not implemented.');
-
-                        return false;
-                }
-            }
-
-            return true;
-        },
-
         render: function(data, values) {
             this.data = this.generateIds(data);
 
@@ -36962,7 +36971,7 @@ define('__component__$tabs@husky',[],function() {
                 this.sandbox.dom.append($list, $item);
 
                 if ((!!item.disabled && item.disabled.toString() === 'true')
-                    || (!!item.displayConditions && !this.evaluate(item.displayConditions, values))
+                    || (!!item.displayConditions && !Expression.evaluate(item.displayConditions, values))
                 ) {
                     this.sandbox.dom.hide($item);
                 } else {
@@ -41564,7 +41573,11 @@ define('__component__$password-fields@husky',[], function() {
  * @params {Boolean} [options.showStatus] hide or display status of elements
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
+<<<<<<< 76cfc9f9d9eb8f8abf34f388ef807f5629319370
  * @params {Boolean} [options.singleMarkable] If true just one item is markable
+=======
+ * @params {Boolean} [options.actionOnGhostPage] If true action Button on ghost page will be shown
+>>>>>>> Added actionOnGhostPage option in column navigation
  * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
  * @params {Array} [options.disableIds] an array of uuids which will be disabled
  * @params {Array} [options.disabledChildren] an array of uuids which will be disabled
@@ -41607,6 +41620,7 @@ define('__component__$column-navigation@husky',[],function() {
             responsive: true,
             showOptions: true,
             showStatus: true,
+            actionOnGhost: false,
             premarkedIds: [],
             disableIds: [],
             disabledChildren: false,
@@ -42368,8 +42382,8 @@ define('__component__$column-navigation@husky',[],function() {
                 actionIcon = this.options.unmarkIcon;
             }
 
-            // show action icon only for non-ghost pages
-            if ((!data[this.options.typeName] || data[this.options.typeName].name !== 'ghost') &&
+            // show action icon only for non-ghost pages if actionOnGhost is disabled
+            if ((!data[this.options.typeName] || (data[this.options.typeName].name !== 'ghost' || this.options.actionOnGhost)) &&
                 this.options.showActionIcon === true && actionIcon && !disabled
             ) {
                 this.sandbox.dom.append($container, '<span class="' + actionIcon + ' action col-icon"></span>');
@@ -43605,7 +43619,7 @@ define('__component__$ckeditor@husky',[], function() {
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
- * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide', 'responsive-width'
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'small', 'medium', 'large', 'responsive-width'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {Boolean} [options.contentSpacing] Defines if there should be a spacing between overlay borders and content
  * @params {String} [options.type] The type of the overlay ('normal' or 'warning')
@@ -44597,7 +44611,6 @@ define('__component__$overlay@husky',[], function() {
             }
         }
     };
-
 });
 
 /**
@@ -45619,10 +45632,15 @@ define('__component__$dropzone@husky',[], function() {
          * Adds an image to the the dropzone by a given url.
          *
          * @param {String} url The url to first load the image from and than upload it via the dropzone
+         * @param {string} mimeType The mime type of the loaded image
+         * @param {string} fileName The name under which the file should be saved
          */
-        addImage: function(url) {
-            this.sandbox.util.loadImageAsBlob(url).then(function(imageBlob) {
-                this.dropzone.addFile(imageBlob);
+        addImage: function(url, mimeType, fileName) {
+            this.sandbox.util.loadImageAsBlob(url, mimeType).then(function(imageBlob) {
+                if (!!fileName) {
+                    imageBlob.name = fileName;
+                }
+                this.dropzone.addFile(imageBlob, mimeType);
             }.bind(this));
         },
 
@@ -46036,7 +46054,6 @@ define('__component__$input@husky',[], function() {
             },
             date: {
                 frontIcon: 'calendar',
-                placeholder: 'TT - MM - JJJJ',
                 renderMethod: 'datepicker'
             },
             time: {

@@ -134,7 +134,6 @@ define([], function() {
             },
             date: {
                 frontIcon: 'calendar',
-                placeholder: 'TT - MM - JJJJ',
                 renderMethod: 'datepicker'
             },
             time: {

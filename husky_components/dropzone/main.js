@@ -348,10 +348,15 @@ define([], function() {
          * Adds an image to the the dropzone by a given url.
          *
          * @param {String} url The url to first load the image from and than upload it via the dropzone
+         * @param {string} mimeType The mime type of the loaded image
+         * @param {string} fileName The name under which the file should be saved
          */
-        addImage: function(url) {
-            this.sandbox.util.loadImageAsBlob(url).then(function(imageBlob) {
-                this.dropzone.addFile(imageBlob);
+        addImage: function(url, mimeType, fileName) {
+            this.sandbox.util.loadImageAsBlob(url, mimeType).then(function(imageBlob) {
+                if (!!fileName) {
+                    imageBlob.name = fileName;
+                }
+                this.dropzone.addFile(imageBlob, mimeType);
             }.bind(this));
         },
 
