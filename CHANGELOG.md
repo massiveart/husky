@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.27.0 (2016-11-03)
     * FEATURE     #728 Added actionOnGhostPage option in column navigation
     * BUGFIX      #724 Removed bug with displaced multifield remove icon
     * BUGFIX      #746 Considered mime type when adding image to dropzone
