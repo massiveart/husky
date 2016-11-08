@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #748 Fixed itembox children remove without existing list
+
 * 0.27.0 (2016-11-03)
     * FEATURE     #728 Added actionOnGhostPage option in column navigation
     * BUGFIX      #724 Removed bug with displaced multifield remove icon

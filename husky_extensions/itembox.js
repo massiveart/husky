@@ -364,7 +364,9 @@ define(function() {
                     this.updateVisibility();
                 } else {
                     // remove content
-                    this.$list.children().remove();
+                    if (this.$list) {
+                        this.$list.children().remove();
+                    }
 
                     this.addNoContentClass();
                 }
