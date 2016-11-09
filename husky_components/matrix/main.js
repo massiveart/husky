@@ -11,7 +11,8 @@ define(function() {
 
     'use strict';
 
-    var activeClass = 'is-active';
+    var activeClass = 'is-active',
+        selectButtonSelector = 'td:last-child > span:last-child';
 
     return {
         initialize: function() {
@@ -32,7 +33,7 @@ define(function() {
                 this.toggleIcon.bind(this),
                 'tbody > tr > td.value > span[class^="fa-"]'
             );
-            this.sandbox.dom.on(this.$element, 'click', this.toggleRow.bind(this), 'tbody > tr > td:last-child');
+            this.sandbox.dom.on(this.$element, 'click', this.toggleRow.bind(this), selectButtonSelector);
         },
 
         bindCustomEvents: function() {
@@ -42,15 +43,16 @@ define(function() {
 
         toggleIcon: function(event) {
             var $target = event.currentTarget,
-                $tr = this.sandbox.dom.parent($target),
-                $allTargets = this.sandbox.dom.find('span[class^="fa-"]', $tr),
+                $td = this.sandbox.dom.parent($target),
+                $tr = this.sandbox.dom.parent($td),
+                $allTargets = this.sandbox.dom.find('span[class^="fa-"]', $td),
                 $activeTargets,
-                $link = this.sandbox.dom.find('td:last-child span', $tr);
+                $link = this.sandbox.dom.find(selectButtonSelector, $tr);
 
             this.sandbox.dom.toggleClass($target, activeClass);
 
-            $activeTargets = this.sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr);
-            if ($activeTargets.length < $allTargets.length) {
+            $activeTargets = this.sandbox.dom.find('span[class^="fa-"].' + activeClass, $td);
+            if ($activeTargets.length == 0) {
                 this.sandbox.dom.html($link, this.options.captions.all);
             } else {
                 this.sandbox.dom.html($link, this.options.captions.none);
@@ -65,12 +67,12 @@ define(function() {
         },
 
         toggleRow: function(event) {
-            var $tr = this.sandbox.dom.parent(event.currentTarget),
+            var $tr = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
                 $targets = this.sandbox.dom.find('span[class^="fa-"]', $tr),
                 $activeTargets = this.sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr),
-                $link = this.sandbox.dom.find('td:last-child span', $tr), activated;
+                $link = this.sandbox.dom.find(selectButtonSelector, $tr), activated;
 
-            if ($activeTargets.length < $targets.length) {
+            if ($activeTargets.length == 0) {
                 this.sandbox.dom.addClass($targets, activeClass);
                 this.sandbox.dom.html($link, this.options.captions.none);
                 activated = true;
@@ -95,6 +97,8 @@ define(function() {
 
             // emit events for communication with the outside
             this.sandbox.dom.each($trs, function(key, tr) {
+                var $link = this.sandbox.dom.find(selectButtonSelector, tr);
+                this.sandbox.dom.html($link, this.options.captions.none);
                 this.sandbox.emit('husky.matrix.changed', {
                     section: this.sandbox.dom.data(this.sandbox.dom.find('td.section', tr), 'section'),
                     value: this.options.values.horizontal[$(tr).data('row-count')],
@@ -110,6 +114,8 @@ define(function() {
 
             // emit events for communication with the outsite
             this.sandbox.dom.each($trs, function(key, tr) {
+                var $link = this.sandbox.dom.find(selectButtonSelector, tr);
+                this.sandbox.dom.html($link, this.options.captions.all);
                 this.sandbox.emit('husky.matrix.changed', {
                     section: this.sandbox.dom.data(this.sandbox.dom.find('td.section', tr), 'section'),
                     value: this.options.values.horizontal[$(tr).data('row-count')],
@@ -165,9 +171,6 @@ define(function() {
                 }.bind(this));
             }
 
-            // add empty th for all link
-            this.sandbox.dom.append($tr, this.sandbox.dom.createElement('<th/>'));
-
             this.sandbox.dom.append($thead, $tr);
 
             return $thead;
@@ -187,9 +190,8 @@ define(function() {
         prepareTableRow: function($tbody, rowCount) {
             var $tr = this.sandbox.dom.createElement('<tr/>'),
                 $tdHead = this.sandbox.dom.createElement('<td class="section"/>'),
-                $tdValue = this.sandbox.dom.createElement('<td class="value"/>'),
-                $tdAll = this.sandbox.dom.createElement('<td class="all"/>'),
-                allActive;
+                $tdValue = this.sandbox.dom.createElement('<td class="value"></td>'),
+                someActive;
 
             $tr.data('row-count', rowCount);
 
@@ -203,9 +205,9 @@ define(function() {
             this.sandbox.dom.data($tdHead, 'section', this.options.values.vertical[rowCount]);
             this.sandbox.dom.append($tr, $tdHead);
 
-            // flag for checking if every flag is true
+            // flag for checking if every flag is false
             // insert values of matrix
-            allActive = this.prepareTableColumn(
+            someActive = this.prepareTableColumn(
                 $tdValue,
                 this.options.values.horizontal[rowCount],
                 this.options.values.vertical[rowCount],
@@ -215,21 +217,19 @@ define(function() {
             this.sandbox.dom.append($tr, $tdValue);
 
             //add all link
-            this.sandbox.dom.html(
-                $tdAll,
-                [
-                    '<span class="pointer">',
-                    (!!allActive) ? this.options.captions.none : this.options.captions.all,
-                    '</span>'
-                ].join('')
-            );
-            this.sandbox.dom.append($tr, $tdAll);
+                $tdValue.append(
+                    [   '<span class="all pointer">',
+                        (!!someActive) ? this.options.captions.none : this.options.captions.all,
+                        '</span>'
+                    ].join('')
+                );
+            this.sandbox.dom.append($tr, $tdValue);
 
             this.sandbox.dom.append($tbody, $tr);
         },
 
         prepareTableColumn: function($tdValue, columnData, section, value) {
-            var allActive = true,
+            var someActive = false,
                 title,
                 $span,
                 i;
@@ -250,15 +250,13 @@ define(function() {
                 // set activated if set in delivered data
                 if (!!value && !!value[i]) {
                     this.sandbox.dom.addClass($span, activeClass);
-                } else {
-                    // set the flag to false if there is one
-                    allActive = false;
+                    someActive = true;
                 }
 
                 this.sandbox.dom.append($tdValue, $span);
             }
 
-            return allActive;
+            return someActive;
         }
     };
 });
