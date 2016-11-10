@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-develop
+* 0.28.0 (2016-11-10)
     * BUGFIX      #749 Added null check for url-validate
     * BUGFIX      #745 Fixed clickable ghost pages in column navigation
     * BUGFIX      #717 Fixed bug with select all/ select none problems and changed design in matrix
