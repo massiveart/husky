@@ -22153,6 +22153,67 @@ return!1},null,null,20);if(e.config.autoUpdateElementJquery&&b.is("textarea")&&a
 return!0}return g.call(b,d)});if(i.length){var b=new a.Deferred;a.when.apply(this,i).done(function(){b.resolveWith(k)});return b.promise()}return f}var f=a(this).eq(0),c=f.data("ckeditorInstance");return f.is("textarea")&&c?c.getData():g.call(f)}})))})(window.jQuery);
 define("jqueryAdapter", function(){});
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/ckeditor
+ */
+
+define('pasteFromWordPlugin',[],function() {
+
+    'use strict';
+
+    var addText = function(editor, content) {
+        var element = editor.document.createElement('p');
+        element.setHtml(content);
+        editor.insertElement(element);
+    };
+
+    return function(sandbox) {
+        return {
+            init: function(editor) {
+                editor.addCommand('pasteFromWordDialog', {
+                    dialogName: 'pasteFromWordDialog',
+                    exec: function() {
+                        var $element = $('<div/>');
+                        $('body').append($element);
+
+                        sandbox.start([
+                            {
+                                name: 'ckeditor/plugins/paste-from-word@husky',
+                                options: {
+                                    el: $element,
+                                    title: editor.lang.pastefromword.title,
+                                    info: editor.lang.clipboard.copyError,
+                                    message: editor.lang.clipboard.pasteMsg,
+                                    saveCallback: function(content) {
+                                        sandbox.stop($element);
+                                        addText(editor, content);
+                                    }
+                                }
+                            }
+                        ]);
+                    }
+                });
+
+                editor.ui.addButton(
+                    'PasteFromWord',
+                    {
+                        label: editor.lang.pastefromword.toolbar,
+                        command: 'pasteFromWordDialog',
+                        toolbar: 'clipboard,50'
+                    }
+                );
+            }
+        };
+    };
+});
+
 ;(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     define('html.sortable',['jquery'], factory);
@@ -27754,6 +27815,10 @@ define('services/husky/url-validator',[],function() {
     Validator.prototype.match = function(url, schemes) {
         if (!schemes) {
             schemes = this.getDefaultSchemes();
+        }
+
+        if (!url) {
+            return false;
         }
 
         var match = url.match(getRegexp(schemes));
@@ -36033,7 +36098,8 @@ define('__component__$matrix@husky',[],function() {
 
     'use strict';
 
-    var activeClass = 'is-active';
+    var activeClass = 'is-active',
+        selectButtonSelector = 'td:last-child > span:last-child';
 
     return {
         initialize: function() {
@@ -36054,7 +36120,7 @@ define('__component__$matrix@husky',[],function() {
                 this.toggleIcon.bind(this),
                 'tbody > tr > td.value > span[class^="fa-"]'
             );
-            this.sandbox.dom.on(this.$element, 'click', this.toggleRow.bind(this), 'tbody > tr > td:last-child');
+            this.sandbox.dom.on(this.$element, 'click', this.toggleRow.bind(this), selectButtonSelector);
         },
 
         bindCustomEvents: function() {
@@ -36064,15 +36130,16 @@ define('__component__$matrix@husky',[],function() {
 
         toggleIcon: function(event) {
             var $target = event.currentTarget,
-                $tr = this.sandbox.dom.parent($target),
-                $allTargets = this.sandbox.dom.find('span[class^="fa-"]', $tr),
+                $td = this.sandbox.dom.parent($target),
+                $tr = this.sandbox.dom.parent($td),
+                $allTargets = this.sandbox.dom.find('span[class^="fa-"]', $td),
                 $activeTargets,
-                $link = this.sandbox.dom.find('td:last-child span', $tr);
+                $link = this.sandbox.dom.find(selectButtonSelector, $tr);
 
             this.sandbox.dom.toggleClass($target, activeClass);
 
-            $activeTargets = this.sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr);
-            if ($activeTargets.length < $allTargets.length) {
+            $activeTargets = this.sandbox.dom.find('span[class^="fa-"].' + activeClass, $td);
+            if ($activeTargets.length == 0) {
                 this.sandbox.dom.html($link, this.options.captions.all);
             } else {
                 this.sandbox.dom.html($link, this.options.captions.none);
@@ -36087,12 +36154,12 @@ define('__component__$matrix@husky',[],function() {
         },
 
         toggleRow: function(event) {
-            var $tr = this.sandbox.dom.parent(event.currentTarget),
+            var $tr = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
                 $targets = this.sandbox.dom.find('span[class^="fa-"]', $tr),
                 $activeTargets = this.sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr),
-                $link = this.sandbox.dom.find('td:last-child span', $tr), activated;
+                $link = this.sandbox.dom.find(selectButtonSelector, $tr), activated;
 
-            if ($activeTargets.length < $targets.length) {
+            if ($activeTargets.length == 0) {
                 this.sandbox.dom.addClass($targets, activeClass);
                 this.sandbox.dom.html($link, this.options.captions.none);
                 activated = true;
@@ -36117,6 +36184,8 @@ define('__component__$matrix@husky',[],function() {
 
             // emit events for communication with the outside
             this.sandbox.dom.each($trs, function(key, tr) {
+                var $link = this.sandbox.dom.find(selectButtonSelector, tr);
+                this.sandbox.dom.html($link, this.options.captions.none);
                 this.sandbox.emit('husky.matrix.changed', {
                     section: this.sandbox.dom.data(this.sandbox.dom.find('td.section', tr), 'section'),
                     value: this.options.values.horizontal[$(tr).data('row-count')],
@@ -36132,6 +36201,8 @@ define('__component__$matrix@husky',[],function() {
 
             // emit events for communication with the outsite
             this.sandbox.dom.each($trs, function(key, tr) {
+                var $link = this.sandbox.dom.find(selectButtonSelector, tr);
+                this.sandbox.dom.html($link, this.options.captions.all);
                 this.sandbox.emit('husky.matrix.changed', {
                     section: this.sandbox.dom.data(this.sandbox.dom.find('td.section', tr), 'section'),
                     value: this.options.values.horizontal[$(tr).data('row-count')],
@@ -36187,9 +36258,6 @@ define('__component__$matrix@husky',[],function() {
                 }.bind(this));
             }
 
-            // add empty th for all link
-            this.sandbox.dom.append($tr, this.sandbox.dom.createElement('<th/>'));
-
             this.sandbox.dom.append($thead, $tr);
 
             return $thead;
@@ -36209,9 +36277,8 @@ define('__component__$matrix@husky',[],function() {
         prepareTableRow: function($tbody, rowCount) {
             var $tr = this.sandbox.dom.createElement('<tr/>'),
                 $tdHead = this.sandbox.dom.createElement('<td class="section"/>'),
-                $tdValue = this.sandbox.dom.createElement('<td class="value"/>'),
-                $tdAll = this.sandbox.dom.createElement('<td class="all"/>'),
-                allActive;
+                $tdValue = this.sandbox.dom.createElement('<td class="value"></td>'),
+                someActive;
 
             $tr.data('row-count', rowCount);
 
@@ -36225,9 +36292,9 @@ define('__component__$matrix@husky',[],function() {
             this.sandbox.dom.data($tdHead, 'section', this.options.values.vertical[rowCount]);
             this.sandbox.dom.append($tr, $tdHead);
 
-            // flag for checking if every flag is true
+            // flag for checking if every flag is false
             // insert values of matrix
-            allActive = this.prepareTableColumn(
+            someActive = this.prepareTableColumn(
                 $tdValue,
                 this.options.values.horizontal[rowCount],
                 this.options.values.vertical[rowCount],
@@ -36237,21 +36304,19 @@ define('__component__$matrix@husky',[],function() {
             this.sandbox.dom.append($tr, $tdValue);
 
             //add all link
-            this.sandbox.dom.html(
-                $tdAll,
-                [
-                    '<span class="pointer">',
-                    (!!allActive) ? this.options.captions.none : this.options.captions.all,
-                    '</span>'
-                ].join('')
-            );
-            this.sandbox.dom.append($tr, $tdAll);
+                $tdValue.append(
+                    [   '<span class="all pointer">',
+                        (!!someActive) ? this.options.captions.none : this.options.captions.all,
+                        '</span>'
+                    ].join('')
+                );
+            this.sandbox.dom.append($tr, $tdValue);
 
             this.sandbox.dom.append($tbody, $tr);
         },
 
         prepareTableColumn: function($tdValue, columnData, section, value) {
-            var allActive = true,
+            var someActive = false,
                 title,
                 $span,
                 i;
@@ -36272,15 +36337,13 @@ define('__component__$matrix@husky',[],function() {
                 // set activated if set in delivered data
                 if (!!value && !!value[i]) {
                     this.sandbox.dom.addClass($span, activeClass);
-                } else {
-                    // set the flag to false if there is one
-                    allActive = false;
+                    someActive = true;
                 }
 
                 this.sandbox.dom.append($tdValue, $span);
             }
 
-            return allActive;
+            return someActive;
         }
     };
 });
@@ -42875,7 +42938,9 @@ define('__component__$column-navigation@husky',[],function() {
          */
         mark: function(id, item) {
             var $element = this.$find('li[data-id="' + id + '"]');
-            if (!!$element.length) {
+
+            // mark only non-ghost pages if showActionButtonOnGhost is disabled
+            if (!!$element.length && (!item.type || item.type.name !== 'ghost' || this.options.showActionButtonOnGhost)) {
                 // if single markable unmark all the others
                 if (this.options.singleMarkable === true) {
                     $.each(this.marked, function (key, value) {
@@ -43594,6 +43659,92 @@ define('__component__$ckeditor@husky',[], function() {
 
         destroy: function() {
             this.destroyEditor();
+        }
+    };
+});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/ckeditor
+ */
+
+/**
+ * Overlay for paste-from-word plugin.
+ *
+ * @class PasteFromWord
+ * @constructor
+ */
+define('__component__$ckeditor/plugins/paste-from-word@husky',['underscore'], function(_) {
+
+    'use strict';
+
+    var defaults = {
+        title: 'Paste from Word',
+        info: '',
+        saveCallback: function(content) {
+        }
+    };
+
+    return {
+
+        templates: {
+            form: _.template('<p class="input-description"><%= info %></p><p class="input-description"><%= message %></p><textarea class="form-element"></textarea>')
+        },
+
+        initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, defaults.options, this.options);
+
+            this.initializeDialog();
+        },
+
+        initializeDialog: function() {
+            var $element = this.sandbox.dom.createElement('<div class="overlay-container"/>');
+            this.sandbox.dom.append(this.$el, $element);
+
+            this.sandbox.start([
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        openOnStart: true,
+                        removeOnClose: true,
+                        el: $element,
+                        container: this.$el,
+                        instanceName: 'paste-from-word',
+                        slides: [
+                            {
+                                title: this.options.title,
+                                data: this.templates.form({info: this.options.info, message: this.options.message}),
+                                buttons: [
+                                    {
+                                        type: 'cancel',
+                                        align: 'left'
+                                    },
+                                    {
+                                        type: 'ok',
+                                        text: 'OK',
+                                        align: 'right'
+                                    }
+                                ],
+                                okCallback: function() {
+                                    var text = this.$el.find('textarea').val();
+
+                                    this.options.saveCallback(text.split("\n").join('</p><p>'));
+                                }.bind(this)
+                            }
+                        ]
+                    }
+                }
+            ]);
+
+            this.sandbox.once('husky.overlay.paste-from-word.opened', function() {
+                this.$el.find('textarea').focus();
+            }.bind(this));
         }
     };
 });
@@ -47869,7 +48020,8 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
     require.config({
         paths: {
             ckeditor: 'bower_components/ckeditor/ckeditor',
-            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery'
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery',
+            pasteFromWordPlugin: 'husky_components/ckeditor/plugins/paste-from-word/plugin'
         },
         shim: {
             jqueryAdapter: {
@@ -47878,7 +48030,13 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
         }
     });
 
-    define('husky_extensions/ckeditor-extension',['underscore', 'services/husky/util', 'ckeditor', 'jqueryAdapter'], function(_, Util) {
+    define('husky_extensions/ckeditor-extension',[
+        'underscore',
+        'services/husky/util',
+        'pasteFromWordPlugin',
+        'ckeditor',
+        'jqueryAdapter'
+    ], function(_, Util, PasteFromWordPlugin) {
 
         var getConfig = function() {
             return {
@@ -47966,14 +48124,13 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
                         basicstyles: ['Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike'],
                         blockstyles: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
                         list: ['NumberedList', 'BulletedList'],
-                        paste: ['PasteFromWord'],
                         links: ['Link'],
                         insert: ['Table'],
                         styles: ['Styles'],
                         code: ['Source']
                     },
                     toolbar,
-                    plugins = ['justify', 'format', 'sourcearea', 'link', 'table', 'pastefromword', 'autogrow'],
+                    plugins = ['justify', 'format', 'sourcearea', 'link', 'table', 'autogrow'],
                     icons = {
                         Format: 'font',
                         Strike: 'strikethrough',
@@ -48104,18 +48261,18 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
                                 var infoTab = dialogDefinition.getContents('info'),
                                     targetTab = dialogDefinition.getContents('target'),
 
-                                // get a reference to the link type
+                                    // get a reference to the link type
                                     linkOptions = infoTab.get('linkType'),
                                     targetOptions = targetTab.get('linkTargetType'),
 
-                                // list of included link options
+                                    // list of included link options
                                     includedLinkOptions = [
                                         'url',
                                         'email'
                                     ],
                                     selectedLinkOption = [],
 
-                                // list of included link target options
+                                    // list of included link target options
                                     includedTargetOptions = [
                                         'notSet',
                                         '_blank',
@@ -48153,6 +48310,12 @@ define('__component__$url-input@husky',['services/husky/url-validator'], functio
                         }
                     }
                 };
+
+                app.sandbox.ckeditor.addPlugin(
+                    'huskyPasteFromWord',
+                    new PasteFromWordPlugin(app.sandboxes.create('plugin-paste-from-word'))
+                );
+                app.sandbox.ckeditor.addToolbarButton('paste', 'PasteFromWord');
             }
 
         };
@@ -52839,7 +53002,9 @@ define('husky_extensions/itembox',[],function() {
                     this.updateVisibility();
                 } else {
                     // remove content
-                    this.$list.children().remove();
+                    if (this.$list) {
+                        this.$list.children().remove();
+                    }
 
                     this.addNoContentClass();
                 }
