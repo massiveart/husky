@@ -57,11 +57,13 @@ define(['underscore'], function(_) {
                                 data: this.templates.form({info: this.options.info, message: this.options.message}),
                                 buttons: [
                                     {
-                                        type: 'cancel'
+                                        type: 'cancel',
+                                        align: 'left'
                                     },
                                     {
                                         type: 'ok',
-                                        text: 'OK'
+                                        text: 'OK',
+                                        align: 'right'
                                     }
                                 ],
                                 okCallback: function() {
