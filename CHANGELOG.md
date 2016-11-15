@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCMENT  #720 Changed vertical align to middle for class "form-group"
     * BUGFIX      #749 Fixed defaultDisplayOption in itembox
 
 * 0.28.0 (2016-11-10)

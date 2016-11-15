@@ -89,11 +89,11 @@ input {
 
         > * {
             display: table-cell;
+            vertical-align: middle;
         }
 
         > :first-child {
             text-align: right;
-            vertical-align: middle;
             padding-right: 20px;
             width: 140px;
         }
