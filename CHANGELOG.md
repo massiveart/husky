@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #749 Fixed defaultDisplayOption in itembox
+
 * 0.28.0 (2016-11-10)
     * BUGFIX      #749 Added null check for url-validate
     * BUGFIX      #745 Fixed clickable ghost pages in column navigation
