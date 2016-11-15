@@ -45,7 +45,6 @@ define(function() {
             },
             translations: {
                 noContentSelected: 'listbox.nocontent-selected',
-                viewAll: 'public.view-all',
                 viewLess: 'public.view-less',
                 of: 'public.of',
                 visible: 'public.visible',
@@ -110,7 +109,7 @@ define(function() {
                     '<li data-id="', id, '">',
                     !!this.options.sortable ? '    <span class="fa-ellipsis-v icon move"></span>' : '',
                     '    <span class="num"></span>',
-                    content,
+                    '    <div class="item-content">' + content + '</div>',
                     !!this.options.removable ? '    <span class="fa-times remove"></span>' : '',
                     '</li>'
                 ].join('');
@@ -220,9 +219,11 @@ define(function() {
             render: function() {
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-                var data = this.getData();
+                if (!!this.options.defaultDisplayOption) {
+                    this.options.dataDefault.displayOption = this.options.defaultDisplayOption;
+                }
 
-                this.viewAll = true;
+                var data = this.getData();
 
                 this.ids = {
                     container: 'listbox-' + this.options.instanceName + '-container',
@@ -324,9 +325,6 @@ define(function() {
             loadContent: function(data) {
                 this.$container.addClass(constants.isLoadingClass);
 
-                // reset items visible when new content is loaded
-                this.viewAll = false;
-
                 if (!!data && (!data.length || data.length > 0)) {
                     this.sandbox.util.load(this.getUrl(data))
                         .then(function(data) {
@@ -364,7 +362,9 @@ define(function() {
                     this.updateVisibility();
                 } else {
                     // remove content
-                    this.$list.children().remove();
+                    if (this.$list) {
+                        this.$list.children().remove();
+                    }
 
                     this.addNoContentClass();
                 }
@@ -411,7 +411,6 @@ define(function() {
              * @param event
              */
             changeDisplayOption: function(event) {
-                // TODO move display options to own component?
                 var position = this.sandbox.dom.data(event.currentTarget, 'position');
 
                 this.setDisplayOption(position);
@@ -523,6 +522,7 @@ define(function() {
             /**
              * Checks if the given data is empty, can be overriden by the concrete implementation.
              * Especially useful if data is not an array.
+             *
              * @param data {object} The data to check
              */
             isDataEmpty: function(data) {
@@ -530,8 +530,10 @@ define(function() {
             },
 
             /**
-             * Returns the selector for the given id
+             * Returns the selector for the given id.
+             *
              * @param type {string} The type of the element, for which the id should be returned
+             *
              * @returns {string} The id of the element
              */
             getId: function(type) {
@@ -539,7 +541,8 @@ define(function() {
             },
 
             /**
-             * Returns the URL for the list based on the data
+             * Returns the URL for the list based on the data.
+             *
              * @param data {object} The data for which the URL should be generated
              */
             getUrl: function(data) {
@@ -547,7 +550,8 @@ define(function() {
             },
 
             /**
-             * Returns the HTML for an item in the list
+             * Returns the HTML for an item in the list.
+             *
              * @param item
              */
             getItemContent: function(item) {
@@ -555,7 +559,8 @@ define(function() {
             },
 
             /**
-             * This function is called when the sorting has been updated
+             * This function is called when the sorting has been updated.
+             *
              * @param ids {array} The new order of the ids
              */
             sortHandler: function(ids) {
@@ -563,7 +568,8 @@ define(function() {
             },
 
             /**
-             * Handler, which is called when a row is removed
+             * Handler, which is called when a row is removed.
+             *
              * @param id {number} The id of the item to remove
              */
             removeHandler: function(id) {

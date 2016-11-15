@@ -194,6 +194,7 @@
 
         .child-wrapper {
             .toggle-icon {
+                display: inline-block;
                 margin-right: 10px;
             }
             .custom-checkbox {
@@ -306,7 +307,7 @@
 
     .selected-elements {
         display: block;
-        height: 20px;
+        height: 40px;
         @include transition(height 200ms);
         overflow: hidden;
         &.indent {

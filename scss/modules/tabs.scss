@@ -67,11 +67,6 @@
             }
         }
     }
-
-    .has-language-chooser & {
-        width: calc(100% - 100px); //reduce language chooser width
-        border-right: 1px solid $grayLightMedium2;
-    }
 }
 
 

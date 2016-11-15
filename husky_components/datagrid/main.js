@@ -18,6 +18,7 @@
  * @param {String} [options.columnOptionsInstanceName] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
+ * @param {Array} [options.expandIds] array of ids which is appended to expandIds-parameter when loading list items
  * @param {Array} [options.preselected] preselected ids
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
@@ -737,7 +738,6 @@
                 this.$loader = null;
                 this.$mediumLoader = null;
                 this.isLoading = false;
-                this.initialLoaded = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -759,6 +759,8 @@
                         this.renderSelectedCounter();
                     }
                     this.loadAndEvaluateMatchings().then(function() {
+                        // merge dom-selected and option-preselected items
+                        this.preSelectItems();
                         this.loadAndRenderData();
                         this.sandbox.emit(INITIALIZED.call(this));
                     }.bind(this));
@@ -779,11 +781,12 @@
                 if (!!this.options.url) {
                     url = this.options.url;
 
-                    this.sandbox.logger.log('load data from url');
                     if (this.requestFields.length > 0) {
                         url += (url.indexOf('?') === -1) ? '?' : '&';
                         url += 'fields=' + this.requestFields.join(',');
                     }
+
+                    this.sandbox.logger.log('load data from url');
 
                     this.loading();
                     this.load({
@@ -903,10 +906,6 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                if (!this.initialLoaded) {
-                    this.preSelectItems();
-                    this.initialLoaded = true;
-                }
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
@@ -1006,7 +1005,15 @@
              * @param params url
              */
             load: function(params) {
+                var expandIds;
+
                 this.currentUrl = this.getUrl(params);
+
+                if (!params.data) params.data = {};
+                expandIds = this.getSelectedItemIds();
+                expandIds = (!!this.options.expandIds) ? expandIds.concat(this.options.expandIds) : expandIds;
+                params.data['expandIds'] = expandIds.join(',');
+
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
@@ -1638,9 +1645,11 @@
              * @returns {Number|String} the index of the found record
              */
             getRecordIndexById: function(id) {
-                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (this.data.embedded[i].id === id) {
-                        return i;
+                if (!!this.data && !!this.data.embedded) {
+                    for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (this.data.embedded[i].id === id) {
+                            return i;
+                        }
                     }
                 }
 
@@ -2258,6 +2267,8 @@
              * @param recordId {Number|String}
              */
             loadChildren: function(recordId) {
+                var deferred = this.sandbox.data.deferred();
+
                 if (!!this.data.links.children) {
                     var template = this.sandbox.uritemplate.parse(this.data.links.children.href),
                         url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
@@ -2265,11 +2276,17 @@
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
                             this.addRecordsHandler(response._embedded[this.options.resultKey]);
+                            deferred.resolve();
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);
+                            deferred.fail();
                         }.bind(this));
+                } else {
+                    deferred.resolve();
                 }
+
+                return deferred;
             },
 
             /**

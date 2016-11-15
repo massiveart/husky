@@ -18,6 +18,9 @@
  * @params {String} [options.fallbackUrl] url to load data from, when loading from the main url fails.
  * @params {String} [options.selected] id of selected element - needed to restore state
  * @params {String|Function} [options.actionIcon] icon class of action button
+ * @params {String|Function} [options.unmarkIcon] icon class of action button to unmark
+ * @params {String} [options.actionButtonOnGhostText] Text for the action button
+ * @params {Boolean} [options.showActionButtonOnGhost] if set true create button for ghost page is enabled
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String}  [options.data[].mode] if 'order' - column gets set in order mode if clicked
  * @params {Function}  [options.data[].enabler] Gets called each time the options change columns.
@@ -39,6 +42,11 @@
  * @params {Boolean} [options.showStatus] hide or display status of elements
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
  * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
+<<<<<<< 76cfc9f9d9eb8f8abf34f388ef807f5629319370
+ * @params {Boolean} [options.singleMarkable] If true just one item is markable
+=======
+ * @params {Boolean} [options.actionOnGhostPage] If true action Button on ghost page will be shown
+>>>>>>> Added actionOnGhostPage option in column navigation
  * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
  * @params {Array} [options.disableIds] an array of uuids which will be disabled
  * @params {Array} [options.disabledChildren] an array of uuids which will be disabled
@@ -64,6 +72,9 @@ define(function() {
             instanceName: '',
             hasSubName: 'hasSub',
             actionIcon: 'fa-pencil',
+            unmarkIcon: 'fa-minus-circle',
+            actionButtonOnGhostText: 'create',
+            showActionButtonOnGhost: false,
             addButton: true,
             idName: 'id',
             pathName: 'path',
@@ -78,10 +89,12 @@ define(function() {
             responsive: true,
             showOptions: true,
             showStatus: true,
+            actionOnGhost: false,
             premarkedIds: [],
             disableIds: [],
             disabledChildren: false,
             markable: false,
+            singleMarkable: false,
             orderable: true,
             showActionIcon: true,
             orderConfirmTitle: 'column-navigation.order-title',
@@ -276,6 +289,15 @@ define(function() {
         },
 
         /**
+         * @event husky.column-navigation.get-marked
+         * @description listens on and passes all the marked objects to a callback
+         * @param {Function} callback to which the marked items get passed
+         */
+        GET_MARKED = function() {
+            return createEventName.call(this, 'get-marked');
+        },
+
+        /**
          * @event husky.column-navigation.highlight
          * @description listens on and highlights an item with a given uuid
          * @param {Number|String} the id of the item to highlight
@@ -347,6 +369,15 @@ define(function() {
          * @returns {string}
          */
         getActionIcon = function(data) {
+            // if is markable change action Icon
+            if (this.options.markable && this.options.actionIcon === defaults.actionIcon) {
+                if (this.options.singleMarkable) {
+                    this.options.actionIcon  = 'fa-check';
+                } else {
+                    this.options.actionIcon  = 'fa-plus-circle';
+                }
+            }
+
             var actionItem = this.options.actionIcon;
 
             if (typeof(this.options.actionIcon) === 'function') {
@@ -446,8 +477,14 @@ define(function() {
 
             this.columns = [];
             this.selected = [];
-            // array with all marked ids
-            this.marked = this.options.premarkedIds || [];
+
+            this.marked = {};
+            if (this.options.premarkedIds) {
+                this.options.premarkedIds.forEach(function (premarkedId) {
+                    // write empty object as value because element not available yet
+                    this.marked[premarkedId] = {};
+                }.bind(this));
+            }
         },
 
         /**
@@ -671,9 +708,14 @@ define(function() {
             var $list = this.sandbox.dom.find('ul', $column), nodeWithSubNodes, lastSelected;
             this.sandbox.util.each(data._embedded[this.options.resultKey], function(index, itemData) {
                 itemData.order = (index + 1);
+                if (itemData[this.options.idName] in this.marked) {
+                    // write missing values in this marked
+                    this.marked[this.options.idName] = itemData;
+                }
                 var $item = this.renderItem(itemData);
                 itemData.$el = $item;
                 this.storeDataItem(number, itemData);
+
                 this.sandbox.dom.append($list, $item);
                 this.setItemsTextWidth($item);
 
@@ -716,7 +758,7 @@ define(function() {
                 })),
                 disabled = (this.options.disableIds.indexOf(data[this.options.idName]) !== -1);
 
-            if (this.marked.indexOf(data[this.options.idName]) !== -1) { // if is marked
+            if (data[this.options.idName] in this.marked) { // if is marked
                 this.sandbox.dom.addClass($item, constants.markedClass);
             }
             if (disabled) { // if is marked
@@ -804,11 +846,23 @@ define(function() {
             var $container = this.sandbox.dom.find('.' + constants.iconsRightClass, $item),
                 actionIcon = getActionIcon.call(this, data);
 
-            // show action icon only for non-ghost pages
-            if ((!data[this.options.typeName] || data[this.options.typeName].name !== 'ghost') &&
+            // if is marked change action Icon
+            if (data[this.options.idName] in this.marked) {
+                actionIcon = this.options.unmarkIcon;
+            }
+
+            // show action icon only for non-ghost pages if actionOnGhost is disabled
+            if ((!data[this.options.typeName] || (data[this.options.typeName].name !== 'ghost' || this.options.actionOnGhost)) &&
                 this.options.showActionIcon === true && actionIcon && !disabled
             ) {
                 this.sandbox.dom.append($container, '<span class="' + actionIcon + ' action col-icon"></span>');
+            }
+
+            // show create Button for ghost pages
+            if ((!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') && this.options.showActionButtonOnGhost &&
+                this.options.showActionIcon === true && actionIcon && !disabled
+            ) {
+                this.sandbox.dom.append($container, '<span class="action col-icon">' + this.options.actionButtonOnGhostText + '</span>');
             }
 
             if (!!data[this.options.hasSubName] && (!disabled || !this.options.disabledChildren)) {
@@ -1185,6 +1239,11 @@ define(function() {
 
                 this.initialize();
             }.bind(this));
+            this.sandbox.on(GET_MARKED.call(this), function (callback) {
+                if (typeof callback === "function") {
+                    callback(this.marked);
+                }
+            }.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
@@ -1281,14 +1340,46 @@ define(function() {
         },
 
         /**
+         * Returns all the marked objects.
+         */
+        mark: function(id, item) {
+            var $element = this.$find('li[data-id="' + id + '"]');
+
+            // mark only non-ghost pages if showActionButtonOnGhost is disabled
+            if (!!$element.length && (!item.type || item.type.name !== 'ghost' || this.options.showActionButtonOnGhost)) {
+                // if single markable unmark all the others
+                if (this.options.singleMarkable === true) {
+                    $.each(this.marked, function (key, value) {
+                        this.unmark(key);
+                    }.bind(this));
+                }
+                this.sandbox.dom.addClass($element, constants.markedClass);
+                if(!(id in this.marked)) {
+                    this.marked[id] = item;
+                }
+                this.setItemsTextWidth($element);
+                // change unmark to mark icon
+                var $markButton = $element.find('span:last-child > .' + this.options.actionIcon);
+                $markButton.removeClass(this.options.actionIcon);
+                this.sandbox.dom.prependClass($markButton, this.options.unmarkIcon);
+            }
+        },
+
+        /**
          * Unmarks a node for a given id
          * @param id {Number|String} the id of the node to unmark
          */
         unmark: function(id) {
             var $element = this.$find('li[data-id="' + id + '"]');
             if (!!$element.length) {
-                this.sandbox.dom.removeClass($element, constants.markedClass);
-                this.marked.splice(this.marked.indexOf(id), 1);
+                $element.removeClass(constants.markedClass);
+                if(id in this.marked) {
+                    delete this.marked[id];
+                }
+                // change unmark to mark icon
+                var $unmarkButton = $element.find('span:last-child > .' + this.options.unmarkIcon);
+                $unmarkButton.removeClass(this.options.unmarkIcon);
+                this.sandbox.dom.prependClass($unmarkButton, this.options.actionIcon);
             }
         },
 
@@ -1576,9 +1667,11 @@ define(function() {
             item = this.columns[column][id];
 
             if (this.options.markable === true) {
-                this.sandbox.dom.addClass($listItem, constants.markedClass);
-                this.marked.push(id);
-                this.setItemsTextWidth($listItem);
+                if (!(id in this.marked)) {
+                    this.mark(id, item)
+                } else {
+                    this.unmark(id);
+                }
             }
 
             this.sandbox.dom.stopPropagation(event);

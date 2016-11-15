@@ -14,7 +14,8 @@
     require.config({
         paths: {
             ckeditor: 'bower_components/ckeditor/ckeditor',
-            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery'
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery',
+            pasteFromWordPlugin: 'husky_components/ckeditor/plugins/paste-from-word/plugin'
         },
         shim: {
             jqueryAdapter: {
@@ -23,7 +24,13 @@
         }
     });
 
-    define(['underscore', 'services/husky/util', 'ckeditor', 'jqueryAdapter'], function(_, Util) {
+    define([
+        'underscore',
+        'services/husky/util',
+        'pasteFromWordPlugin',
+        'ckeditor',
+        'jqueryAdapter'
+    ], function(_, Util, PasteFromWordPlugin) {
 
         var getConfig = function() {
             return {
@@ -111,14 +118,13 @@
                         basicstyles: ['Superscript', 'Subscript', 'Italic', 'Bold', 'Underline', 'Strike'],
                         blockstyles: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
                         list: ['NumberedList', 'BulletedList'],
-                        paste: ['PasteFromWord'],
                         links: ['Link'],
                         insert: ['Table'],
                         styles: ['Styles'],
                         code: ['Source']
                     },
                     toolbar,
-                    plugins = ['justify', 'format', 'sourcearea', 'link', 'table', 'pastefromword', 'autogrow'],
+                    plugins = ['justify', 'format', 'sourcearea', 'link', 'table', 'autogrow'],
                     icons = {
                         Format: 'font',
                         Strike: 'strikethrough',
@@ -249,18 +255,18 @@
                                 var infoTab = dialogDefinition.getContents('info'),
                                     targetTab = dialogDefinition.getContents('target'),
 
-                                // get a reference to the link type
+                                    // get a reference to the link type
                                     linkOptions = infoTab.get('linkType'),
                                     targetOptions = targetTab.get('linkTargetType'),
 
-                                // list of included link options
+                                    // list of included link options
                                     includedLinkOptions = [
                                         'url',
                                         'email'
                                     ],
                                     selectedLinkOption = [],
 
-                                // list of included link target options
+                                    // list of included link target options
                                     includedTargetOptions = [
                                         'notSet',
                                         '_blank',
@@ -298,6 +304,12 @@
                         }
                     }
                 };
+
+                app.sandbox.ckeditor.addPlugin(
+                    'huskyPasteFromWord',
+                    new PasteFromWordPlugin(app.sandboxes.create('plugin-paste-from-word'))
+                );
+                app.sandbox.ckeditor.addToolbarButton('paste', 'PasteFromWord');
             }
 
         };

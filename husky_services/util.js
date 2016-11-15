@@ -33,11 +33,36 @@ define(['sprintf'], function(sprintf) {
         },
 
         /**
+         * From a given image-tag, with an already loaded image. This function returns the
+         * base64 string for that image
+         *
+         * @param {Object} $img The image dom element
+         * @param {string} mimeType The mime type of the image
+         *
+         * @returns {string} the base64 string
+         */
+        getBlobFromImageTag = function($img, mimeType) {
+            var deferred = $.Deferred(), canvas = document.createElement('canvas'), ctx;
+
+            canvas.width = $img.get(0).width;
+            canvas.height = $img.get(0).height;
+            ctx = canvas.getContext('2d');
+            ctx.drawImage($img.get(0), 0, 0);
+
+            canvas.toBlob(function(blob) {
+                deferred.resolve(blob);
+            }, mimeType);
+
+            return deferred.promise();
+        },
+
+        /**
          * Calculates the number of matches parts of the first array
          * have with parts of the second array
          *
          * @param {Array} parts1
          * @param {Array} parts2
+         *
          * @returns {number}
          */
         getSuccessfulMatches = function(parts1, parts2) {
@@ -377,6 +402,34 @@ define(['sprintf'], function(sprintf) {
      * @return {String}
      */
     Util.prototype.sprintf = sprintf.sprintf;
+
+    /**
+     * Loads an image from a given url and converts it into a blob.
+     *
+     * @param {String} imageUrl The url to load the image from
+     *
+     * @returns {Object} a promise which gets resolved with the image blob
+     */
+    Util.prototype.loadImageAsBlob = function(imageUrl, mimeType) {
+        var $container = $('<div/>'),
+            $img = $('<img crossOrigin="Anonymous" src="' + imageUrl + '"/>'),
+            whenImageLoaded = $.Deferred();
+
+        $container.width(0);
+        $container.height(0);
+        $container.css('visibility', 'hidden');
+        $('body').append($container);
+
+        $img.on('load', function() {
+            getBlobFromImageTag($img, mimeType).then(function(blob) {
+                $container.remove();
+                whenImageLoaded.resolve(blob);
+            });
+        });
+        $container.append($img);
+
+        return whenImageLoaded;
+    };
 
     Util.getInstance = function() {
         if (instance == null) {

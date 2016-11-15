@@ -1,12 +1,12 @@
 {
   "name": "husky",
-  "version": "0.25.0",
+  "version": "0.28.0",
   "main": "js/husky.js",
   "dependencies": {
     "backbone": "1.1.*",
     "underscore": "~1.5.1",
     "aura": "https://github.com/massiveart/aura.git#master",
-    "husky-validation": "develop",
+    "husky-validation": "0.7.*",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
     "typeahead.js": "^0.10.5",

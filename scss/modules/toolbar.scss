@@ -247,6 +247,7 @@ $toolbarBigHeight: 50px;
 
         display: none;
         position: absolute;
+        overflow: auto;
         top: 100%;
         left: 0;
         min-width: 160px;
@@ -293,16 +294,28 @@ $toolbarBigHeight: 50px;
                 }
             }
 
-            &.marked {
+            &.marked, &.warning, &.checked {
                 &::before {
                     @extend .fa;
-                    content: $fa-var-caret-right;
-                    display: block;
-                    position: absolute;
-                    top: 9px;
-                    left: 7px;
+                    display: inline-block;
+                    margin-left: -10px;
+                    margin-right: 5px;
                     font-size: 12px;
                 }
+            }
+
+            &.marked::before {
+                content: $fa-var-caret-right;
+            }
+
+            &.warning::before {
+                content: $fa-var-exclamation;
+            }
+
+            &.checked::before {
+                margin-left: -15px;
+                margin-right: 3px;
+                content: $fa-var-check;
             }
 
             &.disabled:hover,

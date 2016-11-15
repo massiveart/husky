@@ -2,12 +2,50 @@
 
 * dev-develop
     * ENHANCMENT  #720 Changed vertical align to middle for class "form-group"
+    * BUGFIX      #749 Fixed defaultDisplayOption in itembox
+
+* 0.28.0 (2016-11-10)
+    * BUGFIX      #749 Added null check for url-validate
+    * BUGFIX      #745 Fixed clickable ghost pages in column navigation
+    * BUGFIX      #717 Fixed bug with select all/ select none problems and changed design in matrix
+    * BUGFIX      #748 Fixed itembox children remove without existing list
+    * ENHANCEMENT #659 Added own implementation for paste-from-word plugin
+
+* 0.27.0 (2016-11-03)
+    * FEATURE     #728 Added actionOnGhostPage option in column navigation
+    * BUGFIX      #724 Removed bug with displaced multifield remove icon
+    * BUGFIX      #746 Considered mime type when adding image to dropzone
+    * ENHANCEMENT #742 Extracted expression into a service
+    * BUGFIX      #744 Removed default placeholder for datepicker
+    * ENHANCEMENT #741 Change logo by overwritable variable in navigation
+    * BUGFIX      #734 Adapted overlays to match grid system
+
+* 0.26.0 (2016-10-06)
+    * FEATURE     #737 Added possibility to define overlay spacing for each slide
+    * BUGFIX      #738 Removed action icon in datagrid if no icon is defined
+    * ENHANCEMENT #735 Added maxHeight options to toolbar dropdownOptions
+    * BUGFIX      #722 Fixed create hover button for ghost pages and made it optional
+    * FEATURE     #733 Created addImage functionality in dropzone
+    * ENHANCEMENT #723 Added description class to itembox and made content take up the whole width
+    * FEATURE     #714 Tabs and language Changer are now in a new section -> language Changer can be used without Tabs.
+    * BUGFIX      #729 Update parent checkbox style when removing child in table-view datagrid-decorator
+    * BUGFIX      #729 Remove children rows on parent deletion in table-view datagrid-decorator
+    * ENHANCEMENT #731 Added expandIds-option to the datagrid component
+    * ENHANCEMENT #721 Improved cropping in tiles view and fixed dropzone issue when destroying
+    * ENHANCEMENT #715 Display effective limit in dropdown-pagination decorator
+    * ENHANCEMENT #715 Replace expand-icon with loader when loading children in datagrid
+    * ENHANCEMENT #715 Append currently selected items to request when loading data in datagrid
     * BUGFIX      #707 Added translations to titles in matrix
     * BUGFIX      #718 Made infinite scroll pagination add all records at once if possible
     * ENHANCEMENT #716 Made the reset to the "show all" only happen, when the datagrid was in the "show selected" state before
     * ENHANCEMENT #713 Removed overlay from dropzone and implemented own overlay-style for dropzone
     * ENHANCEMENT #712 Removed data-navigation from navigation component
     * FEATURE     #706 Created tiles view for datagrid
+    * FEATURE     #705 Added placeholder option to ckeditor component
+
+* 0.25.1 (2016-09-15)
+    * HOTFIX      #726 Added singleMarkable option and get-marked event
+    * HOTFIX      #725 Added locale to pagination request of data-navigation
 
 * 0.25.0 (2016-08-11)
     * BUGFIX      #709 Removed action icon for ghost pages in column-navigation

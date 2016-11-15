@@ -1,6 +1,13 @@
 # Upgrade
 
-## dev-develop
+## 0.26.0
+
+### Overlay skins
+
+The overlays have been fixed to match the grid system. Therefore the `wide`
+skin was replaced by a `small`, `medium` and `large` skin. The old one was
+removed, because all the widths were changed and overlays have to be
+reconsidered anyway.
 
 ### Lock and Unlocking the dropzone overlay
 

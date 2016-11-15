@@ -25,7 +25,7 @@ define(function() {
         addNewIcon: 'fa-plus-circle',
         fields: {
             title: ['title'],
-            description: ['elements']
+            description: ['elementsCount']
         },
         translations: {
             items: 'public.items',
@@ -37,7 +37,7 @@ define(function() {
         tile: [
             '<div class="tile">',
             '   <span class="<%= icon %> icon"></span>',
-            '   <span title="<%= title %>" class="title"><%= croppedTitle %></span>',
+            '   <span title="<%= title %>" class="title"><%= title %></span>',
             '   <span class="description"><%= description %></span>',
             '</div>'
         ].join(''),
@@ -165,17 +165,26 @@ define(function() {
          */
         renderRecord: function(record) {
             record = processContentFilters.call(this, record);
-            var title = this.getTitleString(record),
-                description = this.getDescriptionSring(record);
+            var title = this.getTitle(record),
+                description = this.getDescription(record),
+                $title, lineHeight, countLinesOfTitle, isOverflownHorizontally;
+
             this.$tiles[record.id] = $(_.template(templates.tile, {
                 icon: this.options.icon,
                 title: title,
-                croppedTitle: this.sandbox.util.cropMiddle(this.getTitleString(record), 20),
-                description: this.sandbox.util.cropMiddle(description, 20)
+                description: this.sandbox.util.cropMiddle(description, 18)
             }));
             this.$tiles[record.id].data('id', record.id);
 
             this.$el.append(this.$tiles[record.id]);
+
+            $title = this.$tiles[record.id].find('.title');
+            lineHeight = parseInt($title.css('line-height').replace('px', ''));
+            countLinesOfTitle = $title.height() / lineHeight;
+            isOverflownHorizontally = $title.get(0).scrollWidth > $title.innerWidth();
+            if (countLinesOfTitle > 2 || !!isOverflownHorizontally) {
+                this.$tiles[record.id].find('.title').html(this.sandbox.util.cropMiddle(title, 18));
+            }
         },
 
         /**
@@ -184,7 +193,7 @@ define(function() {
          * @param {Object} record the data to construct the title from
          * @return {String} the constructed title
          */
-        getTitleString: function(record) {
+        getTitle: function(record) {
             var title = '';
             this.options.fields.title.forEach(function(titleField) {
                 title += record[titleField] + ' ';
@@ -199,7 +208,7 @@ define(function() {
          * @param {Object} record the data to construct the description from
          * @return {String} the constructed description
          */
-        getDescriptionSring: function(record) {
+        getDescription: function(record) {
             var description = '';
             this.options.fields.description.forEach(function(descriptionField) {
                 description += record[descriptionField] + ' ';

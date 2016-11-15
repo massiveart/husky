@@ -278,7 +278,7 @@
         }
 
         &.dz-drag-hover {
-            opacity: 1; // overwrite default
+            opacity: 1;
             .dropzone-container {
                 border: 1px dashed $gray;
             }
@@ -286,7 +286,7 @@
 
         &.dropped {
             .description {
-                margin: 0; // overwrite
+                margin: 0;
                 opacity: 0;
             }
         }
