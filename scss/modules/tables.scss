@@ -29,6 +29,7 @@ table {
 
     thead {
         th {
+            background: $grayLighterer;
             vertical-align: bottom;
             color: $grayLight;
             font-weight: normal;
@@ -42,8 +43,8 @@ table {
                     font-weight: bold;
                 }
             }
-
         }
+
         tr {
             background: $grayLighterer;
         }
