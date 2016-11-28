@@ -2,7 +2,7 @@
 // Table view (Datagrid decorator), styling example
 // --------------------------------------------------
 
-.husky-table.light{
+.husky-table.light {
     .table {
         .custom-checkbox input + .icon {
             border-color: $grayLight;
@@ -25,6 +25,7 @@
                 background: transparent;
 
                 th {
+                    background: transparent;
                     font-weight: bold;
                 }
             }
@@ -39,21 +40,9 @@
                 background: transparent;
             }
         }
+    }
 
-        .task-state {
-            width: 30px;
-            text-align: center;
-            margin-left: 10px;
-
-            &.fa-check-circle{
-                color: $green;
-            }
-            &.fa-exclamation-triangle{
-                color: $yellowWarning;
-            }
-            &.fa-ban{
-                color: $red;
-            }
-        }
+    .empty-list {
+        background: transparent;
     }
 }

@@ -1,8 +1,9 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * ENHANCEMENT #754 Added new table-view style
     * BUGFIX      #753 Fixed bug with required date-picker
-    * ENHANCMENT  #720 Changed vertical align to middle for class "form-group"
+    * ENHANCEMENT #720 Changed vertical align to middle for class "form-group"
     * BUGFIX      #749 Fixed defaultDisplayOption in itembox
 
 * 0.28.0 (2016-11-10)

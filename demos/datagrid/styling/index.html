@@ -1,8 +1,12 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -18,11 +22,31 @@
             margin: 0 0;
             padding: 0 50px;
         }
+
         h1 {
             padding: 20px 0 30px;
         }
+
         body {
             overflow: auto;
+        }
+
+        .task-state {
+            width: 30px;
+            text-align: center;
+            margin-left: 10px;
+        }
+
+        .task-state.fa-check-circle {
+            color: green;
+        }
+
+        .task-state.fa-exclamation-triangle {
+            color: yellow;
+        }
+
+        .task-state.fa-ban {
+            color: red;
         }
     </style>
 </head>
@@ -32,7 +56,7 @@
         <h2 class="divider m-top-30">datagrid | default</h2>
         <div id="datagrid-default" class="grid-row"></div>
 
-        <h2 class="divider m-top-30">datagrid | styled with datagrid-table-view-styling.scss</h2>
+        <h2 class="divider m-top-30">datagrid | styled with datagrid-table-view-light.scss</h2>
         <div id="datagrid-light" class="grid-row"></div>
     </div>
 

@@ -60,6 +60,7 @@ require(['lib/husky'], function(Husky) {
             options: {
                 el: '#datagrid-default',
                 url: 'http://husky.lo:7878/admin/api/datagrid/tasks',
+                contentFilters: contentFilter,
                 viewOptions: {
                     table: {
                         selectItem: false
