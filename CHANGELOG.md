@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #753 Fixed bug with required date-picker
     * ENHANCMENT  #720 Changed vertical align to middle for class "form-group"
     * BUGFIX      #749 Fixed defaultDisplayOption in itembox
 
