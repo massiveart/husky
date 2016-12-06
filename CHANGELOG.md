@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * FEATURE     #755 Added notification badge to tab-component
     * ENHANCEMENT #754 Added new table-view style
     * BUGFIX      #753 Fixed bug with required date-picker
     * ENHANCEMENT #720 Changed vertical align to middle for class "form-group"
