@@ -28,23 +28,6 @@
                 text-decoration: none;
                 font-size: $baseFontSize;
                 outline: 0;
-
-                /* Notification badge */
-                position: relative;
-                &[data-badge]:after {
-                    content: attr(data-badge);
-                    position: absolute;
-                    top: -10px;
-                    right: -20px;
-                    font-size: .7em;
-                    background: $red;
-                    color: white;
-                    width: 18px;
-                    height: 18px;
-                    text-align: center;
-                    line-height: 18px;
-                    border-radius: 50%;
-                }
             }
 
             &.is-selected {
