@@ -29,7 +29,8 @@ define([], function() {
             link: true,
             pasteFromWord: true,
             autoStart: true,
-            placeholder: ''
+            placeholder: '',
+            entities: false
         },
 
         /**
