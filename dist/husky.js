@@ -43483,7 +43483,8 @@ define('__component__$ckeditor@husky',[], function() {
             link: true,
             pasteFromWord: true,
             autoStart: true,
-            placeholder: ''
+            placeholder: '',
+            entities: false
         },
 
         /**
