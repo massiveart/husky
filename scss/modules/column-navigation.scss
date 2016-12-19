@@ -233,6 +233,13 @@
             &.disabled {
                 color: $grayLighter;
             }
+
+            &.broken {
+                .item-text {
+                    text-decoration: line-through;
+                    color: $grayLighter;
+                }
+            }
         }
 
         .orderer {
