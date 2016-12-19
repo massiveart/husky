@@ -32,12 +32,15 @@
         }
 
         tbody {
-            tr.selected {
-                border-left: none;
-            }
+            tr {
+                &.selected {
+                    border-left: none;
+                }
 
-            .row.even, .row.odd {
-                background: transparent;
+                &:nth-child(2n),
+                &:nth-child(2n+1) {
+                    background: transparent;
+                }
             }
         }
     }

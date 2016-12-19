@@ -318,6 +318,36 @@ $toolbarBigHeight: 50px;
                 content: $fa-var-check;
             }
 
+            &.no-link {
+                cursor: default;
+            }
+
+            &.info {
+                background-color: $yellow;
+                height: auto;
+                margin: 5px 0 -5px 0;
+                line-height: 20px;
+                padding-top: 10px;
+                padding-bottom: 5px;
+                font-size: $reallySmallFontSize;
+
+                *:first-child {
+                    margin-top: 0;
+                }
+                *:last-child {
+                    margin-bottom: 0;
+                }
+
+                p.smaller {
+                    line-height: 15px;
+                }
+
+                color: $black;
+                &:hover {
+                    color: $black;
+                }
+            }
+
             &.disabled:hover,
             &.disabled {
                 cursor: default;
@@ -328,7 +358,7 @@ $toolbarBigHeight: 50px;
                 }
             }
 
-            &:active {
+            &:not(.no-link):active {
                 background-color: lighten($highlightColor, 5%);
             }
 
