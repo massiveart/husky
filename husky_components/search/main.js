@@ -15,7 +15,7 @@
  * @param {String} [options.placeholderText=Search...] the text to be shown as placeholder
  * @param {String} [options.appearance=gray] appearance can be 'gray', 'white' or 'small'
  */
-define([], function() {
+define(['services/husky/storage'], function(storage) {
 
     'use strict';
 
@@ -76,6 +76,7 @@ define([], function() {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
+            this.storage = storage.get('datagrid', this.options.instanceName);
 
             this.render();
 
@@ -100,6 +101,10 @@ define([], function() {
             }
 
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
+
+            if (this.storage.has('searchString')) {
+                this.$el.find('input').val(this.storage.get('searchString'));
+            }
         },
 
         // bind dom elements
@@ -143,6 +148,7 @@ define([], function() {
             }
 
             this.searchSubmitted = false;
+            this.storage.remove('searchString');
         },
 
         checkKeyPressed: function(event) {
@@ -184,6 +190,7 @@ define([], function() {
             }
 
             this.searchSubmitted = true;
+            this.storage.set('searchString', searchString);
 
             // emit event
             this.sandbox.emit(SEARCH.call(this), searchString);
@@ -210,7 +217,6 @@ define([], function() {
         selectInput: function(event) {
             this.sandbox.dom.trigger(event.currentTarget, 'select');
         },
-
 
         /**
          * function emits event based on options.name
