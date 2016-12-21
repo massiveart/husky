@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.28.1 (2016-11-21)
     * HOTFIX      #757 Changed ckeditor to not escape umlauts
     * HOTFIX      #693 fix remove of title when datagrid is cropped with a badge
 
