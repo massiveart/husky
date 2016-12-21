@@ -769,7 +769,7 @@ define(function() {
             this.table.rows[record.id].cells[column.attribute] = {
                 $el: $cell,
                 originalData: record[column.attribute],
-                originalContent: this.sandbox.dom.html(content),
+                originalContent: this.sandbox.dom.text($cell),
                 editable: !!column.editable,
                 croppable: isCroppable
             };
