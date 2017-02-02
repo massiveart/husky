@@ -28,6 +28,7 @@ define(['services/husky/storage'], function(storage) {
         },
         defaults = {
             instanceName: null,
+            storageName: null,
             placeholderText: 'public.search',
             appearance: 'gray',
             slide: false
@@ -76,7 +77,7 @@ define(['services/husky/storage'], function(storage) {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
-            this.storage = storage.get('datagrid', this.options.instanceName);
+            this.storage = storage.get('search', this.options.storageName || this.sandbox.util.uniqueId('search'));
 
             this.render();
 
@@ -104,6 +105,7 @@ define(['services/husky/storage'], function(storage) {
 
             if (this.storage.has('searchString')) {
                 this.$el.find('input').val(this.storage.get('searchString'));
+                this.$el.find('.remove-icon').show();
             }
         },
 

@@ -43,18 +43,16 @@ define(function() {
         return this.get(key);
     };
 
-    function StorageService() {
-        this.storages = {};
-    }
+    var stores = {};
 
-    StorageService.prototype.get = function(type, instanceName) {
-        var key = type + '.' + instanceName;
-        if (!this.storages.hasOwnProperty(key)) {
-            this.storages[key] = new Storage();
+    return {
+        get: function(type, instanceName) {
+            var key = type + '.' + instanceName;
+            if (!stores.hasOwnProperty(key)) {
+                stores[key] = new Storage();
+            }
+
+            return stores[key];
         }
-
-        return this.storages[key];
     };
-
-    return new StorageService();
 });
