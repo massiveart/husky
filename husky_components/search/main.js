@@ -106,6 +106,7 @@ define(['services/husky/storage'], function(storage) {
             if (this.storage.has('searchString')) {
                 this.$el.find('input').val(this.storage.get('searchString'));
                 this.$el.find('.remove-icon').show();
+                this.searchSubmitted = true;
             }
         },
 
