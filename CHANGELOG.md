@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-develop
+    * BUGFIX      #762 Fixed empty list for non-table views in datagrid
     * BUGFIX      #759 Added inline-block to toggle icon in datagrid
     * FEATURE     #755 Added notification badge to tab-component
     * ENHANCEMENT #754 Added new table-view style
