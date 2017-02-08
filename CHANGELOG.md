@@ -3,6 +3,7 @@
 * dev-develop
     * BUGFIX      #762 Fixed empty list for non-table views in datagrid
     * FEATURE     #760 Implement basic storage and used it in datagrid
+    * ENHANCEMENT #761 Changed default image format for datagrid
     * BUGFIX      #759 Added inline-block to toggle icon in datagrid
     * FEATURE     #755 Added notification badge to tab-component
     * ENHANCEMENT #754 Added new table-view style
