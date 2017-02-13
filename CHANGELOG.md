@@ -1,5 +1,16 @@
 # CHANGELOG for husky
 
+* 0.29.0 (2017-02-13)
+    * BUGFIX      #762 Fixed empty list for non-table views in datagrid
+    * FEATURE     #760 Implement basic storage and used it in datagrid
+    * ENHANCEMENT #761 Changed default image format for datagrid
+    * BUGFIX      #759 Added inline-block to toggle icon in datagrid
+    * FEATURE     #755 Added notification badge to tab-component
+    * ENHANCEMENT #754 Added new table-view style
+    * BUGFIX      #753 Fixed bug with required date-picker
+    * ENHANCEMENT #720 Changed vertical align to middle for class "form-group"
+    * BUGFIX      #749 Fixed defaultDisplayOption in itembox
+
 * 0.28.1 (2016-11-21)
     * HOTFIX      #757 Changed ckeditor to not escape umlauts
     * HOTFIX      #693 fix remove of title when datagrid is cropped with a badge

@@ -1,0 +1,51 @@
+//
+// Table view (Datagrid decorator), styling example
+// --------------------------------------------------
+
+.husky-table.light {
+    .table {
+        .custom-checkbox input + .icon {
+            border-color: $grayLight;
+        }
+
+        tr.row {
+            border-bottom: 1px solid $grayLighter;
+
+            th, td {
+                border-right: none;
+            }
+        }
+
+        thead {
+            .is-sortable {
+                color: $grayLight;
+            }
+
+            tr {
+                background: transparent;
+
+                th {
+                    background: transparent;
+                    font-weight: bold;
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                &.selected {
+                    border-left: none;
+                }
+
+                &:nth-child(2n),
+                &:nth-child(2n+1) {
+                    background: transparent;
+                }
+            }
+        }
+    }
+
+    .empty-list {
+        background: transparent;
+    }
+}

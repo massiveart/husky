@@ -27,7 +27,7 @@
         "disabled": false,
         "default": false,
         "sortable": true,
-        "type": "title",
+        "type": "string",
         "width": "25%",
         "minWidth": "",
         "editable": true
