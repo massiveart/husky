@@ -47,8 +47,9 @@
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/tiles-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
-        'husky_components/datagrid/decorators/infinite-scroll-pagination'
-    ], function(decoratorTableView, decoratorTilesView, decoratorDropdownPagination, infiniteScrollPagination) {
+        'husky_components/datagrid/decorators/infinite-scroll-pagination',
+        'services/husky/storage'
+    ], function(decoratorTableView, decoratorTilesView, decoratorDropdownPagination, infiniteScrollPagination, storage) {
 
         /* Default values for options */
 
@@ -72,6 +73,7 @@
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
+                storageName: null,
                 searchFields: [],
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
@@ -719,6 +721,8 @@
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+                this.storage = storage.get('datagrid', this.options.storageName || this.sandbox.util.uniqueId('datgrid'));
+
                 this.matchings = [];
                 this.requestFields = [];
                 this.selectedItems = [];
@@ -777,13 +781,18 @@
              * Gets the data either via the url or the array
              */
             loadAndRenderData: function() {
-                var url;
+                var url, separator;
                 if (!!this.options.url) {
-                    url = this.options.url;
+                    if (this.storage.has('url')) {
+                        url = this.storage.get('url');
+                    } else {
+                        url = this.options.url;
+                        separator = (url.indexOf('?') === -1) ? '?' : '&';
 
-                    if (this.requestFields.length > 0) {
-                        url += (url.indexOf('?') === -1) ? '?' : '&';
-                        url += 'fields=' + this.requestFields.join(',');
+                        if (this.requestFields.length > 0) {
+                            url += separator + 'fields=' + this.requestFields.join(',');
+                            separator = '&';
+                        }
                     }
 
                     this.sandbox.logger.log('load data from url');
@@ -2175,6 +2184,10 @@
                         url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, limit: limit});
                     }
 
+                    if (this.viewId === 'table') {
+                        this.storage.set('url', url);
+                    }
+
                     this.sandbox.emit(PAGE_CHANGE.call(this), url);
                     this.load({
                         url: url,
@@ -2310,6 +2323,11 @@
                             searchString: searchString,
                             searchFields: this.options.searchFields.join(',')
                         });
+                    }
+                    if (searchString !== '') {
+                        this.storage.set('url', url);
+                    } else {
+                        this.storage.remove('url');
                     }
 
                     this.destroy();

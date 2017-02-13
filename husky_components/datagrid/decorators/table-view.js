@@ -49,7 +49,7 @@ define(function() {
             addRowTop: true,
             excludeFields: [''],
             cssClass: '',
-            thumbnailFormat: '50x50',
+            thumbnailFormat: 'sulu-50x50',
             showHead: true,
             hideChildrenAtBeginning: true,
             openChildId: null,
@@ -1499,7 +1499,12 @@ define(function() {
                 if (this.table.rows[id]) {
                     // ensure that checkboxes are checked
                     this.sandbox.dom.prop(
-                        this.sandbox.dom.find('.' + constants.checkboxClass, this.table.rows[id].$el), 'checked', true
+                        this.sandbox.dom.find(
+                            '.' + constants.checkboxClass + ', .' + constants.radioClass,
+                            this.table.rows[id].$el
+                        ),
+                        'checked',
+                        true
                     );
                     this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
                     this.indeterminateSelectParents(id);
