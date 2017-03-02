@@ -384,7 +384,7 @@ define(function() {
             if (this.options.footer === true) {
                 var $footer = this.sandbox.dom.find('footer', this.$el);
                 this.sandbox.dom.html($footer, _.template(templates.footer)({
-                    userName: this.options.userName,
+                    userName: this.sandbox.util.escapeHtml(this.options.userName),
                     system: this.options.systemName,
                     version: this.options.systemVersion,
                     versionHistory: this.sandbox.translate(this.options.translations.versionHistory),

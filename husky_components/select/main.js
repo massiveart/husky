@@ -455,6 +455,8 @@ define([], function() {
                 template = (this.options.isNative) ? this.template.optionElement : this.template.menuElement,
                 idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
+            value = this.sandbox.util.escapeHtml(value);
+
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0
             ) {
@@ -1145,16 +1147,15 @@ define([], function() {
         changeLabel: function() {
             if (this.options.fixedLabel !== true) {
                 if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
-                    this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
+                    this.sandbox.dom.html(this.$label, this.options.checkedAllLabel);
                 } else if (this.selectedElements.length === 0) {
-                    this.sandbox.dom.text(this.$label, this.options.defaultLabel);
+                    this.sandbox.dom.html(this.$label, this.options.defaultLabel);
                 } else {
-
-                    var text = "", labelWidth;
+                    var text = "";
                     this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
                         text += ' ' + value + ',';
                     });
-                    this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                    this.sandbox.dom.html(this.$label, text.substring(1, text.length - 1));
                 }
             }
         },
