@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #766 Added missing escaping of HTML
+
 * 0.29.0 (2017-02-13)
     * BUGFIX      #762 Fixed empty list for non-table views in datagrid
     * FEATURE     #760 Implement basic storage and used it in datagrid
