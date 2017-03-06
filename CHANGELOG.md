@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.29.1 (2017-03-06)
     * HOTFIX      #766 Added missing escaping of HTML
 
 * 0.29.0 (2017-02-13)
