@@ -2,7 +2,7 @@
 // TODO: initialized (own describe)
 // TODO: settings event
 
-define(['husky'], function(husky) {
+define(['husky', 'sinon'], function(husky, sinon) {
 
     'use strict';
 
@@ -66,7 +66,7 @@ define(['husky'], function(husky) {
             ]);
 
             runs(function() {
-                app = husky({ debug: { enable: true }});
+                app = husky({ debug: { enable: false }});
 
                 // Fix multiple events
                 $('body').off();
@@ -86,7 +86,7 @@ define(['husky'], function(husky) {
 
             waitsFor(function() {
                 return respond;
-            }, 'Fake server should have respond!', 750);
+            }, 'Fake server should have respond!', 2000);
         });
 
         afterEach(function() {
@@ -112,8 +112,8 @@ define(['husky'], function(husky) {
          check if the navigation was initialized by checking
          if it appears in the dom
          */
-        it('should have class navigation-container', function() {
-            $navigation = $('.navigation-container');
+        it('should have class husky-navigation', function() {
+            $navigation = $('.husky-navigation');
             expect($navigation.size()).toEqual(1);
         });
 
@@ -126,18 +126,10 @@ define(['husky'], function(husky) {
         });
 
         /**
-         check if navigation search was inserted into the dom
-         */
-        it('should have class navigation-search', function() {
-            var $search = $('.navigation-search');
-            expect($search.size()).toEqual(1);
-        });
-
-        /**
          check if the navigation item-container was inserted into the dom
          */
         it('should have class navigation-item-container', function() {
-            var $navigationItem = $('.navigation-container');
+            var $navigationItem = $('.navigation-item-container');
             expect($navigationItem.size()).toEqual(1);
         });
 
@@ -162,7 +154,7 @@ define(['husky'], function(husky) {
          check if two section-toggle items have been inserted into dom
          */
         it('should have class section-toggle', function() {
-            var $toggle = $('.navigation-container .section-toggle');
+            var $toggle = $('.navigation-item-container .section-toggle');
             expect($toggle.size()).toEqual(2);
         });
 
@@ -170,7 +162,7 @@ define(['husky'], function(husky) {
          check if correct amount of section-items (lists) have been inserted
          */
         it('should have two section-items', function() {
-            var $sectionItems = $('.navigation-container .section-items');
+            var $sectionItems = $('.navigation-item-container .section-items');
             expect($sectionItems.size()).toEqual(2);
         });
 
@@ -214,7 +206,7 @@ define(['husky'], function(husky) {
 
                 var $sectionLink = $('.section').first().find('.section-toggle a');
                 $sectionLink.trigger('click');
-                expect($sectionLink.html()).toEqual('Show');
+                expect($sectionLink.html()).toEqual('navigation.show');
             });
         });
 
