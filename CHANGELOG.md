@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #768 Made line height in column navigation fixed
+
 * 0.29.1 (2017-03-06)
     * HOTFIX      #766 Added missing escaping of HTML
 
