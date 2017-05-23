@@ -175,7 +175,9 @@
                     addPlugin: function(name, plugin) {
                         plugins.push(name);
 
-                        CKEDITOR.plugins.add(name, plugin);
+                        if (!!plugin) {
+                            CKEDITOR.plugins.add(name, plugin);
+                        }
                     },
 
                     addToolbarButton: function(sectionName, button, icon, buttonRelations) {
