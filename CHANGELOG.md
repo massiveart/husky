@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #770 Fix issue when using addPlugin method of ckeditor extension without passing a plugin parameter
+
 * 0.29.1 (2017-03-06)
     * HOTFIX      #766 Added missing escaping of HTML
 
