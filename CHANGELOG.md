@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.29.2 (2017-05-31)
     * HOTFIX      #770 Fix issue when using addPlugin method of ckeditor extension without passing a plugin parameter
 
 * 0.29.1 (2017-03-06)
