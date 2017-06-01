@@ -1,5 +1,10 @@
 # CHANGELOG for husky
 
+* dev-develop
+    * BUGFIX      #765 Fixed deselect of radio button
+    * FEATURE     #769 Added option to concat dropdown url and static items
+    * BUGFIX      #768 Made line height in column navigation fixed
+
 * 0.29.2 (2017-05-31)
     * HOTFIX      #770 Fix issue when using addPlugin method of ckeditor extension without passing a plugin parameter
 
