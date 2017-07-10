@@ -2058,6 +2058,7 @@
                 for (key in parameters) {
                     url = setGetParameter.call(this, url, key, parameters[key]);
                 }
+                this.storage.set('url', url);
 
                 this.destroy();
                 this.loading();
