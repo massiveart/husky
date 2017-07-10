@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* 0.30.1 (2017-07-10)
+    * HOTFIX      #771 Added save url to storage for update-url event
+
 * 0.30.0 (2017-06-01)
     * BUGFIX      #765 Fixed deselect of radio button
     * FEATURE     #769 Added option to concat dropdown url and static items
