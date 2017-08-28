@@ -42658,7 +42658,7 @@ define('__component__$column-navigation@husky',[],function() {
                 overflow;
 
             //set the item text to the original title
-            this.sandbox.dom.html($itemText, title);
+            this.sandbox.dom.text($itemText, title);
             this.sandbox.dom.css($itemText, 'font-weight', 'bold');
 
             overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth > this.sandbox.dom.width($itemText));
@@ -42666,7 +42666,7 @@ define('__component__$column-navigation@husky',[],function() {
             while (overflow === true) {
                 maxLength--;
                 croppedTitle = this.sandbox.util.cropMiddle(title, maxLength);
-                this.sandbox.dom.html($itemText, croppedTitle);
+                this.sandbox.dom.text($itemText, croppedTitle);
                 overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth > this.sandbox.dom.width($itemText));
             }
             this.sandbox.dom.css($itemText, 'font-weight', '');
