@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #XXX Fixed bug in `escapeHtml` method
+
 * 0.30.1 (2017-07-10)
     * HOTFIX      #771 Added save url to storage for update-url event
 
