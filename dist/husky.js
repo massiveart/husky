@@ -28372,6 +28372,10 @@ define('services/husky/util',['sprintf'], function(sprintf) {
      * @returns {string}
      */
     Util.prototype.escapeHtml = function(string) {
+        if (!string) {
+            return string;
+        }
+
         return String(string).replace(/[&<>"'\/]/g, function(s) {
             return entityMap[s];
         });
