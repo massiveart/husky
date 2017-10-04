@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.30.2 (2017-10-04)
     * HOTFIX      #774 Fixed bug in `escapeHtml` method
 
 * 0.30.1 (2017-07-10)
