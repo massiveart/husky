@@ -479,9 +479,9 @@ define([], function() {
                 this.selectedElementsValues.push(value);
 
                 if (this.options.emitValues === true) {
-                    this.triggerPreSelect(idString);
-                } else {
                     this.triggerPreSelect(value);
+                } else {
+                    this.triggerPreSelect(idString);
                 }
             } else {
                 $item = this.sandbox.dom.createElement(

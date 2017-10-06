@@ -167,8 +167,7 @@ define(function() {
         },
 
     // renders selects at a certain depth
-        renderSelect = function(data, depth, preselect) {
-
+        renderSelect = function(data, depth, preselect, init) {
             depth = typeof depth !== 'undefined' ? depth : 0;
 
             if (!this.options.container || !this.options.container[depth]) {
@@ -181,13 +180,12 @@ define(function() {
             // get child
                 $child = findStopAndCreateNewChild.call(this, this.options.container[depth]);
 
-            // create callback
-
-            selectionCallback = function(id) {
+            // create callbacks
+            selectionCallback = function(id, init) {
                 // if there are more selects left
                 if (this.options.container.length > depth && !!data[0].items) {
                     var items = getDataById.call(this, data, id).items;
-                    renderSelect.call(this, items, depth + 1);
+                    renderSelect.call(this, items, depth + 1, null, init);
                 }
                 // trigger events
                 this.sandbox.emit(ITEM_SELECTED.call(this), id, depth);
@@ -213,13 +211,18 @@ define(function() {
                 singleSelect: true,
                 instanceName: depth,
                 data: data,
-                selectCallback: selectionCallback,
+                selectCallback: function(id){selectionCallback(id, false)}.bind(this),
+                preselectCallback: function(id){selectionCallback(id, true)}.bind(this),
                 deselectCallback: deselectionCallback,
                 isNative: this.options.isNative,
                 preSelectedElements: !!preselect ? [preselect] : [],
                 deselectField: this.options.deselectField,
                 defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
             }, options);
+
+            if (!init) {
+                delete options.preSelectedElements;
+            }
 
             // start select component
             this.sandbox.start([
@@ -252,7 +255,7 @@ define(function() {
 
         render: function(data) {
             // create items array
-            renderSelect.call(this, data, 0, this.options.preselect);
+            renderSelect.call(this, data, 0, this.options.preselect, true);
             renderEmptySelect.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
 
             // initialization finished
