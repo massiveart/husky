@@ -40767,12 +40767,13 @@ define('__component__$select@husky',[], function() {
             checkboxVisible = checkboxVisible !== false;
             var $item,
                 template = (this.options.isNative) ? this.template.optionElement : this.template.menuElement,
-                idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId(),
+                originalValue = value;
 
             value = this.sandbox.util.escapeHtml(value);
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
-                this.options.preSelectedElements.indexOf(value) >= 0
+                this.options.preSelectedElements.indexOf(originalValue) >= 0
             ) {
                 this.setToolTip(value);
                 $item = this.sandbox.dom.createElement(this.sandbox.util.template(

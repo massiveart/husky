@@ -2,6 +2,7 @@
 
 * dev-master
     * HOTFIX      #775 Fixed bug in `dependent-select` component
+    * HOTFIX      #772 Fix issue when value of select has escaped data
 
 * 0.30.2 (2017-10-04)
     * HOTFIX      #774 Fixed bug in `escapeHtml` method
