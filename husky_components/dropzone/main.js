@@ -523,7 +523,7 @@ define([], function() {
                         this.on('error', function(file, message) {
                             this.removeFile(file);
 
-                            if (file.size / 1024 > that.options.maxFilesize || file.xhr.status === 413) {
+                            if (file.size / 1024 > that.options.maxFilesize || (file.xhr && file.xhr.status === 413)) {
                                 that.sandbox.emit(
                                     ERROR_FILE_TO_BIG.call(this),
                                     that.getMessage.call(that, that.options.fileTooBigKey, file),

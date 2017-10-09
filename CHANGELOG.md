@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * dev-master
+    * HOTFIX      #776 Fixed bug for dropzone component
     * HOTFIX      #775 Fixed bug in `dependent-select` component
     * HOTFIX      #772 Fix issue when value of select has escaped data
 
