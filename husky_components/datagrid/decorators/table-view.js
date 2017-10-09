@@ -897,12 +897,17 @@ define(function() {
          */
         addIconsToCellContent: function(content, column, $cell, record) {
             var iconStr;
-            this.sandbox.util.foreach(this.icons, function(icon, index) {
-                if (icon.column === column.attribute && (!icon.disableCallback || icon.disableCallback(record))) {
-                    iconStr = this.sandbox.util.template(templates.icon)({
-                        icon: icon.icon,
-                        align: icon.align,
-                        cssClass: icon.cssClass,
+            this.sandbox.util.foreach(this.icons, function(iconItem, index) {
+                var icon = iconItem.icon;
+                if (typeof icon === 'function') {
+                    icon = icon(record);
+                }
+
+                if (iconItem.column === column.attribute && (!iconItem.disableCallback || iconItem.disableCallback(record))) {
+                    iconStr = this.sandbox.util.template(templates.icon, {
+                        icon: icon,
+                        align: iconItem.align,
+                        cssClass: iconItem.cssClass,
                         index: index
                     });
                     if (typeof content === 'object') {
@@ -910,7 +915,7 @@ define(function() {
                     } else if (typeof content === 'string') {
                         content += iconStr;
                     }
-                    if (icon.actionIcon === true) {
+                    if (iconItem.actionIcon === true) {
                         this.sandbox.dom.addClass($cell, constants.actionClass);
                     }
                 }
