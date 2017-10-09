@@ -167,7 +167,7 @@ define(function() {
         },
 
     // renders selects at a certain depth
-        renderSelect = function(data, depth, preselect, init) {
+        renderSelect = function(data, depth, preselect, firstCall) {
             depth = typeof depth !== 'undefined' ? depth : 0;
 
             if (!this.options.container || !this.options.container[depth]) {
@@ -181,11 +181,11 @@ define(function() {
                 $child = findStopAndCreateNewChild.call(this, this.options.container[depth]);
 
             // create callbacks
-            selectionCallback = function(id, init) {
+            selectionCallback = function(id, firstCall) {
                 // if there are more selects left
                 if (this.options.container.length > depth && !!data[0].items) {
                     var items = getDataById.call(this, data, id).items;
-                    renderSelect.call(this, items, depth + 1, null, init);
+                    renderSelect.call(this, items, depth + 1, null, firstCall);
                 }
                 // trigger events
                 this.sandbox.emit(ITEM_SELECTED.call(this), id, depth);
@@ -211,8 +211,12 @@ define(function() {
                 singleSelect: true,
                 instanceName: depth,
                 data: data,
-                selectCallback: function(id){selectionCallback(id, false)}.bind(this),
-                preselectCallback: function(id){selectionCallback(id, true)}.bind(this),
+                selectCallback: function(id) {
+                    selectionCallback(id, false)
+                }.bind(this),
+                preselectCallback: function(id) {
+                    selectionCallback(id, true)
+                }.bind(this),
                 deselectCallback: deselectionCallback,
                 isNative: this.options.isNative,
                 preSelectedElements: !!preselect ? [preselect] : [],
@@ -220,8 +224,8 @@ define(function() {
                 defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
             }, options);
 
-            if (!init) {
-                delete options.preSelectedElements;
+            if (!firstCall) {
+                options.preSelectedElements = [];
             }
 
             // start select component
