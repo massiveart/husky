@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #775 Fixed bug in `dependent-select` component
+
 * 0.30.2 (2017-10-04)
     * HOTFIX      #774 Fixed bug in `escapeHtml` method
 
