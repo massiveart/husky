@@ -2,6 +2,7 @@
 
 * dev-master
     * HOTFIX      #776 Fixed bug for dropzone component
+    * ENHANCEMENT #777 Added possibility to use callback for action-icon
     * HOTFIX      #775 Fixed bug in `dependent-select` component
     * HOTFIX      #772 Fix issue when value of select has escaped data
 
