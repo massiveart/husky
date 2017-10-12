@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.30.3 (2017-10-12)
     * HOTFIX      #776 Fixed bug for dropzone component
     * ENHANCEMENT #777 Added possibility to use callback for action-icon
     * HOTFIX      #775 Fixed bug in `dependent-select` component
