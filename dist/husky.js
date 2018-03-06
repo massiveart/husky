@@ -22190,6 +22190,7 @@ define('pasteFromWordPlugin',[],function() {
                                     el: $element,
                                     title: editor.lang.pastefromword.title,
                                     info: editor.lang.clipboard.copyError,
+                                    enterMode: editor.config.enterMode,
                                     message: editor.lang.clipboard.pasteMsg,
                                     saveCallback: function(content) {
                                         sandbox.stop($element);
@@ -43848,6 +43849,7 @@ define('__component__$ckeditor/plugins/paste-from-word@husky',['underscore'], fu
     var defaults = {
         title: 'Paste from Word',
         info: '',
+        enterMode: 'P',
         saveCallback: function(content) {
         }
     };
@@ -43894,8 +43896,25 @@ define('__component__$ckeditor/plugins/paste-from-word@husky',['underscore'], fu
                                 ],
                                 okCallback: function() {
                                     var text = this.$el.find('textarea').val();
+                                    // remove all spaces at the begin and end of a line
+                                    text = text.replace(/^ +| +$/gm, '');
 
-                                    this.options.saveCallback(text.split("\n").join('</p><p>'));
+                                    // replace all breaks with br tag
+                                    text = text.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+
+                                    if ('P' === this.options.enterMode) {
+                                        // replace all double br tags with paragraphs
+                                        text = text.replace(/<br\/><br\/>/g, '</p><p>');
+                                        // wrap text with paragraph
+                                        text = '<p>' + text + '</p>';
+                                    } else if ('DIV' === this.options.enterMode) {
+                                        // replace all double br tags with divs
+                                        text = text.replace(/<br\/><br\/>/g, '</div><div>');
+                                        // wrap text with div
+                                        text = '<div>' + text + '</div>';
+                                    }
+
+                                    this.options.saveCallback(text);
                                 }.bind(this)
                             }
                         ]
