@@ -18,7 +18,8 @@
 
         <style type="text/css">
             #content,
-            #content-2 {
+            #content-2,
+            #content-3 {
                 width: 800px;
                 margin-left: 300px;
                 margin-top: 100px;
@@ -74,6 +75,7 @@
                     data-aura-ui-color="#ffcc00"
                     >Texteditor sample with custom ckeditor parameters</textarea>
         </div>
+
         <div id="content-2" class="grid">
                 <textarea
                     id="ckeditor-2"
@@ -83,6 +85,17 @@
                     data-aura-instance-name="myInstance-2"
                     data-aura-toolbar=""
                     data-aura-enter-mode="br">Texteditor sample with BR Entermode</textarea>
+        </div>
+
+        <div id="content-3" class="grid">
+                <textarea
+                    id="ckeditor-3"
+                    data-aura-component="ckeditor@husky"
+                    data-aura-max-height="50"
+                    data-aura-language="de"
+                    data-aura-instance-name="myInstance-2"
+                    data-aura-toolbar=""
+                    data-aura-enter-mode="div">Texteditor sample with DIV Entermode</textarea>
         </div>
 
         <script src="../../bower_components/jquery/jquery.js"></script>

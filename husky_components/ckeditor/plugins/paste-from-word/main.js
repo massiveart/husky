@@ -22,6 +22,7 @@ define(['underscore'], function(_) {
     var defaults = {
         title: 'Paste from Word',
         info: '',
+        enterMode: 'P',
         saveCallback: function(content) {
         }
     };
@@ -68,8 +69,25 @@ define(['underscore'], function(_) {
                                 ],
                                 okCallback: function() {
                                     var text = this.$el.find('textarea').val();
+                                    // remove all spaces at the begin and end of a line
+                                    text = text.replace(/^ +| +$/gm, '');
 
-                                    this.options.saveCallback(text.split("\n").join('</p><p>'));
+                                    // replace all breaks with br tag
+                                    text = text.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+
+                                    if ('P' === this.options.enterMode) {
+                                        // replace all double br tags with paragraphs
+                                        text = text.replace(/<br\/><br\/>/g, '</p><p>');
+                                        // wrap text with paragraph
+                                        text = '<p>' + text + '</p>';
+                                    } else if ('DIV' === this.options.enterMode) {
+                                        // replace all double br tags with divs
+                                        text = text.replace(/<br\/><br\/>/g, '</div><div>');
+                                        // wrap text with div
+                                        text = '<div>' + text + '</div>';
+                                    }
+
+                                    this.options.saveCallback(text);
                                 }.bind(this)
                             }
                         ]
