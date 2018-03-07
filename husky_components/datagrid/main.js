@@ -1021,7 +1021,10 @@
                 if (!params.data) params.data = {};
                 expandIds = this.getSelectedItemIds();
                 expandIds = (!!this.options.expandIds) ? expandIds.concat(this.options.expandIds) : expandIds;
-                params.data['expandIds'] = expandIds.join(',');
+
+                if (expandIds.length) {
+                    params.data['expandIds'] = expandIds.join(',');
+                }
 
                 this.sandbox.dom.addClass(this.$find('.selected-elements'), 'invisible');
                 return this.sandbox.util.load(this.currentUrl, params.data)

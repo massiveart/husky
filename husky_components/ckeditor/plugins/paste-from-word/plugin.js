@@ -35,6 +35,7 @@ define(function() {
                                     el: $element,
                                     title: editor.lang.pastefromword.title,
                                     info: editor.lang.clipboard.copyError,
+                                    enterMode: editor.config.enterMode,
                                     message: editor.lang.clipboard.pasteMsg,
                                     saveCallback: function(content) {
                                         sandbox.stop($element);

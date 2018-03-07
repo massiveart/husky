@@ -8,10 +8,6 @@ First install all necessary npm modules by running:
 
     npm install
 
-Install [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
-
-    sudo npm install -g grunt-cli
-
 Install [bower](http://bower.io)
 
     sudo npm install -g bower
@@ -22,29 +18,31 @@ And now install all dependencies:
 
 Install [Compass](http://compass-style.org/install/) with [animations](https://github.com/ericam/compass-animation):
 
-
     gem update --system
     gem install compass
     gem install animation --pre
 
-Command to start an npm server, which returns data to the demos:
-
-    apimocker --config apimocker_config.json
-
-### Grunt Tasks
+### NPM Tasks
 
 Build Husky
 
-    grunt build
-
-Running Tests
-
-    grunt test
+    npm run build
 
 Compiling SCSS
 
-    grunt watch
+    npm run watch:scss
 
+Command to start an npm server, which returns data to the demos:
+
+    npm run api
+
+Command to run npm server for demos
+
+    npm run serve
+
+Running Tests
+
+    npm run test
 
 ### Documentation
 

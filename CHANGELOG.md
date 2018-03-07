@@ -1,5 +1,15 @@
 # CHANGELOG for husky
 
+* 0.30.4 (unreleased)
+    * ENHANCEMENT #779 Avoid expand ids to be added to datagrid request
+    * HOTFIX      #778 Fixed paragraphs and breaks in paste from word plugin
+
+* 0.30.3 (2017-10-12)
+    * HOTFIX      #776 Fixed bug for dropzone component
+    * ENHANCEMENT #777 Added possibility to use callback for action-icon
+    * HOTFIX      #775 Fixed bug in `dependent-select` component
+    * HOTFIX      #772 Fix issue when value of select has escaped data
+
 * 0.30.2 (2017-10-04)
     * HOTFIX      #774 Fixed bug in `escapeHtml` method
 
