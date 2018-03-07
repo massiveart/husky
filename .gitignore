@@ -24,3 +24,5 @@ doc/*
 .settings/*
 .buildpath
 .project
+/nbproject
+/nbproject/*

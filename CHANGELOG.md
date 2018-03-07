@@ -4,9 +4,10 @@
     * HOTFIX      #778 Fixed paragraphs and breaks in paste from word plugin
 
 * 0.30.3 (2017-10-12)
-    * HOTFIX      #775 fixed bug in `dependent-select` component
-    * HOTFIX      #776 fixed bug for dropzone component
-    * HOTFIX      #777 fixed possibility to use callback for action-icon
+    * HOTFIX      #776 Fixed bug for dropzone component
+    * ENHANCEMENT #777 Added possibility to use callback for action-icon
+    * HOTFIX      #775 Fixed bug in `dependent-select` component
+    * HOTFIX      #772 Fix issue when value of select has escaped data
 
 * 0.30.2 (2017-10-04)
     * HOTFIX      #774 Fixed bug in `escapeHtml` method
