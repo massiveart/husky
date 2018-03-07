@@ -788,7 +788,7 @@ define(function() {
          * @returns {String|Object} the dom object for the cell content or html
          */
         getCellContent: function(record, column, $cell) {
-            var content = record[column.attribute];
+            var content = this.sandbox.util.escapeHtml(record[column.attribute]);
             if (!!column.type && column.type === this.datagrid.types.THUMBNAILS) {
                 content = this.datagrid.manipulateContent(content, column.type, this.options.thumbnailFormat);
                 content = this.sandbox.util.template(templates.img)({

@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* 0.30.4 (unreleased)
+    * HOTFIX      #778 Fixed paragraphs and breaks in paste from word plugin
+
 * 0.30.3 (2017-10-12)
     * HOTFIX      #776 Fixed bug for dropzone component
     * ENHANCEMENT #777 Added possibility to use callback for action-icon
