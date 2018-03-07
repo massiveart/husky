@@ -1,6 +1,7 @@
 # CHANGELOG for husky
 
 * 0.30.4 (unreleased)
+    * ENHANCEMENT #779 Avoid expand ids to be added to datagrid request
     * HOTFIX      #778 Fixed paragraphs and breaks in paste from word plugin
 
 * 0.30.3 (2017-10-12)
