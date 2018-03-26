@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* dev-master
+    * HOTFIX      #781 Fixed escape cell-content for thumbnails
+
 * 0.30.4 (2018-03-19)
     * ENHANCEMENT #779 Avoid expand ids to be added to datagrid request
     * HOTFIX      #778 Fixed paragraphs and breaks in paste from word plugin
