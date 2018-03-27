@@ -94,6 +94,7 @@
             },
 
             types = {
+                STRING: 'string',
                 DATE: 'date',
                 DATETIME: 'datetime',
                 THUMBNAILS: 'thumbnails',
@@ -828,7 +829,7 @@
                 var def = this.sandbox.data.deferred();
 
                 var matchings = this.options.matchings;
-                if (typeof(matchings) === 'string') {
+                if (typeof(matchings) === types.STRING) {
                     // Load matchings/fields from url
                     this.loading();
                     this.loadMatchings({
@@ -894,7 +895,7 @@
                                 matchingObject.attribute = matching.name;
                             } else if (key === 'sortable') {
                                 matchingObject.sortable = matching.sortable;
-                                if (typeof matching.sortable === 'string') {
+                                if (typeof matching.sortable === types.STRING) {
                                     matchingObject.sortable = JSON.parse(matching.sortable);
                                 }
                             } else {
@@ -1491,7 +1492,7 @@
                     // check if filter is function or string and call filter
                     if (typeof this.options.contentFilters[attributeName] === 'function') {
                         return this.options.contentFilters[attributeName].call(this, content, argument, recordId);
-                    } else if (typeof this.options.contentFilters[attributeName] === 'string') {
+                    } else if (typeof this.options.contentFilters[attributeName] === types.STRING) {
                         type = this.options.contentFilters[attributeName];
                         return this.manipulateContent(content, type, argument, attributeName);
                     }

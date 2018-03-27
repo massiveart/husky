@@ -487,7 +487,7 @@ define(function() {
             this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
                 $headerCell = this.sandbox.dom.createElement(templates.headerCell);
 
-                if (!!column.class && typeof column.class === 'string') {
+                if (!!column.class && typeof column.class === this.datagrid.types.STRING) {
                     this.sandbox.dom.addClass($headerCell, column.class);
                 }
 
@@ -743,14 +743,14 @@ define(function() {
             if (!!this.options.selectItem && this.options.selectItem.inFirstCell === true && index === 0) {
                 this.sandbox.dom.attr($cell, 'colspan', 2);
                 selectItem = this.renderRowSelectItem(record.id, true);
-                if (typeof content === 'string') {
+                if (typeof content === this.datagrid.types.STRING) {
                     content = selectItem + content;
                 } else {
                     this.sandbox.dom.prepend(content, selectItem);
                 }
             }
 
-            if (!!column.class && typeof column.class === 'string') {
+            if (!!column.class && typeof column.class === this.datagrid.types.STRING) {
                 this.sandbox.dom.addClass($cell, column.class);
             }
             if (column.type === this.datagrid.types.THUMBNAILS) {
@@ -788,7 +788,7 @@ define(function() {
          * @returns {String|Object} the dom object for the cell content or html
          */
         getCellContent: function(record, column, $cell) {
-            var content = this.sandbox.util.escapeHtml(record[column.attribute]);
+            var content = record[column.attribute];
             if (!!column.type && column.type === this.datagrid.types.THUMBNAILS) {
                 content = this.datagrid.manipulateContent(content, column.type, this.options.thumbnailFormat);
                 content = this.sandbox.util.template(templates.img)({
@@ -798,6 +798,14 @@ define(function() {
                         this.options.noImgIcon(record) : this.options.noImgIcon
                 });
             } else {
+                if (!column.type
+                    || column.type === this.datagrid.types.STRING
+                    || column.type === this.datagrid.types.TITLE
+                ) {
+                    // escape cell-content only for string typed columns
+                    content = this.sandbox.util.escapeHtml(content);
+                }
+
                 content = this.datagrid.processContentFilter(
                     column.attribute,
                     content,
@@ -877,7 +885,7 @@ define(function() {
          * @returns {String|Object} html or a dom object
          */
         getEditableCellContent: function(content, columnName, type) {
-            type = !!type ? type : 'string';
+            type = !!type ? type : this.datagrid.types.STRING;
             var options = !!this.options.editableOptions[columnName] ? this.options.editableOptions[columnName] : {};
 
             return this.sandbox.util.template(templates.editableCellContent[type], {
@@ -912,7 +920,7 @@ define(function() {
                     });
                     if (typeof content === 'object') {
                         this.sandbox.dom.append(content, iconStr);
-                    } else if (typeof content === 'string') {
+                    } else if (typeof content === this.datagrid.types.STRING) {
                         content += iconStr;
                     }
                     if (iconItem.actionIcon === true) {
@@ -948,7 +956,7 @@ define(function() {
                     );
                     if (typeof content === 'object') {
                         this.sandbox.dom.prepend(content, badgeStr);
-                    } else if (typeof content === 'string') {
+                    } else if (typeof content === this.datagrid.types.STRING) {
                         content = badgeStr + content;
                     }
                 }
@@ -977,7 +985,7 @@ define(function() {
 
                     if (typeof content === 'object') {
                         $(content).wrap(['<span class="', cssClass, '" />'].join(''));
-                    } else if (typeof content === 'string') {
+                    } else if (typeof content === this.datagrid.types.STRING) {
                         content = ['<span class="', cssClass, '">', content, "</span>"].join('');
                     }
                 }
@@ -1071,7 +1079,7 @@ define(function() {
                                 this.sandbox.dom.removeAttr($contentContainer, 'title');
                                 this.tableCropped = false;
                             }
-                            this.sandbox.dom.html($contentContainer, content);
+                            this.sandbox.dom.text($contentContainer, content);
                         }
                     }.bind(this));
                 }.bind(this));
