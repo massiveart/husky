@@ -1,6 +1,6 @@
 # CHANGELOG for husky
 
-* dev-master
+* 0.30.5 (2018-04-24)
     * HOTFIX      #781 Fixed escape cell-content for thumbnails
 
 * 0.30.4 (2018-03-19)
