@@ -3,7 +3,11 @@ module.exports = function(grunt) {
     'use strict';
 
     // load all grunt tasks
-    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+    require('matchdep').filterDev('grunt-*').forEach(function(name) {
+        if ('grunt-cli' !== name) {
+            grunt.loadNpmTasks(name);
+        }
+    });
 
     var huskyConfig = grunt.file.readJSON('.grunt/husky.json'),
         clone = grunt.util._.clone,

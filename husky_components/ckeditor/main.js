@@ -170,7 +170,7 @@ define([], function() {
         },
 
         renderStartTemplate: function() {
-            var $content = $(this.$el.val()),
+            var $content = $('<body>' + this.$el.val() + '</body>'),
                 text = $content.text(),
                 $trigger = $(
                     [
