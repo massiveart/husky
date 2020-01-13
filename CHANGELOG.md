@@ -1,5 +1,8 @@
 # CHANGELOG for husky
 
+* 0.30.7 (2020-01-13)
+    * BUGFIX      #784 Add maximum-height to template dropdown
+
 * 0.30.5 (2018-04-24)
     * HOTFIX      #781 Fixed escape cell-content for thumbnails
 
