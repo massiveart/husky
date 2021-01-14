@@ -75,8 +75,8 @@ module.exports = function(grunt) {
                 configFile: 'karma.conf.js',
                 autoWatch: true
             },
-            travis: {
-                configFile: 'karma.travis.conf.js',
+            ci: {
+                configFile: 'karma.ci.conf.js',
                 autoWatch: true
             }
         },
@@ -411,9 +411,9 @@ module.exports = function(grunt) {
         'karma:unit'
     ]);
 
-    // Travis CI task.
-    grunt.registerTask('travis', [
-        'karma:travis'
+    // CI task.
+    grunt.registerTask('ci', [
+        'karma:ci'
     ]);
 
     grunt.registerTask('build', [
