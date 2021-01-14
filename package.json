@@ -36,7 +36,7 @@
     "matchdep": "~0.1.1"
   },
   "scripts": {
-    "test": "grunt travis --verbose",
+    "test": "grunt ci --verbose",
     "api": "apimocker --config apimocker_config.json",
     "serve": "grunt",
     "build": "grunt build",
