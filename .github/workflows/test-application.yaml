@@ -43,4 +43,4 @@ jobs:
                   npm install
 
             - name: Execute test cases
-              run: grunt ci
+              run: grunt ci --force
