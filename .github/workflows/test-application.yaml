@@ -30,7 +30,8 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
 
-            - uses: actions/cache@v2
+            - name: Cache dependencies
+              uses: actions/cache@v2
               with:
                   path: ~/.npm
                   key: ${{ runner.os }}-node-${{ hashFiles('package.json', 'package-lock.json') }}
