@@ -37,14 +37,14 @@ define(function() {
         tile: [
             '<div class="tile">',
             '   <span class="<%= icon %> icon"></span>',
-            '   <span title="<%= title %>" class="title"><%= title %></span>',
-            '   <span class="description"><%= description %></span>',
+            '   <span title="<%- title %>" class="title"><%- title %></span>',
+            '   <span class="description"><%- description %></span>',
             '</div>'
         ].join(''),
         addNewTile: [
             '<div class="add-new-tile">',
             '   <span class="<%= icon %> icon"></span>',
-            '   <span class="title"><%= title %></span>',
+            '   <span class="title"><%- title %></span>',
             '</div>'
         ].join('')
     },
