@@ -240,7 +240,7 @@ define([], function() {
                     '   <div class="border">' +
                     '       <div class="text">' +
                     '           <% _.each(fields, function(field, idx) { %>' +
-                    '           <div class="suggestion-column" style="width: <%= field.width %>;"><%= context[field.id] %></div>' +
+                    '           <div class="suggestion-column" style="width: <%= field.width %>;"><%- context[field.id] %></div>' +
                     '           <% }) %>' +
                     '       </div>' +
                     '   </div>' +
@@ -250,7 +250,7 @@ define([], function() {
                     '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
                     '   <div class="border">' +
                             iconHTML +
-                    '       <div class="text"><%= context[this.options.valueKey] %></div>' +
+                    '       <div class="text"><%- context[this.options.valueKey] %></div>' +
                     '   </div>' +
                     '</div>');
             }
